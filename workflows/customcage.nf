@@ -62,7 +62,10 @@ def multiqc_report = []
 workflow CUSTOMCAGE {
 
     ch_versions = Channel.empty()
+    Channel.fromFilePairs("/Users/dbaranasic/data/playground/mock_fq/*_L00{1,2}_*.fastq.gz")
+        .view()
 
+/*
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
@@ -74,6 +77,8 @@ workflow CUSTOMCAGE {
     // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
     // ! There is currently no tooling to help you write a sample sheet schema
 
+*/
+/*
     //
     // MODULE: Run FastQC
     //
@@ -108,6 +113,7 @@ workflow CUSTOMCAGE {
         ch_multiqc_logo.toList()
     )
     multiqc_report = MULTIQC.out.report.toList()
+*/
 }
 
 /*
