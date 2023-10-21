@@ -56,7 +56,7 @@ include { CUSTOMCAGE } from './workflows/customcage'
 // WORKFLOW: Run main ComputationalRegulatoryGenomicsICL/customcage analysis pipeline
 //
 workflow COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE {
-    CUSTOMCAGE ()
+    CUSTOMCAGE ().out.view()
 }
 
 /*
