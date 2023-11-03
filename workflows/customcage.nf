@@ -4,18 +4,20 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// Test git push comment
-
-include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
+include { paramsSummaryLog;
+        paramsSummaryMap;
+        validateParameters;
+        paramsHelp; 
+        fromSamplesheet } from 'plugin/nf-validation'
 
 def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
 def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
 def summary_params = paramsSummaryMap(workflow)
 
 // Print parameter summary log to screen
-log.info logo + paramsSummaryLog(workflow) + citation
+// log.info logo + paramsSummaryLog(workflow) + citation
 
-WorkflowCustomcage.initialise(params, log)
+// WorkflowCustomcage.initialise(params, log)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,9 +50,12 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { FASTQC                      } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
+
+include { FASTQC } from '../modules/nf-core/fastqc/main.nf'
+include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
+include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
+include { TRIMGALORE } from '../modules/nf-core/trimgalore/main.nf'
+// include {  } from '../modules/nf-core/modules/ /main.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,30 +69,91 @@ def multiqc_report = []
 workflow CUSTOMCAGE {
 
     ch_versions = Channel.empty()
-    Channel.fromFilePairs("/Users/dbaranasic/data/playground/mock_fq/*_L00{1,2}_*.fastq.gz")
-        .view()
+    // Channel.fromFilePairs("/Users/dbaranasic/data/playground/mock_fq/*_L00{1,2}_*.fastq.gz")
+    // Channel
+    //     // .fromFilePairs("/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/*_L00{1,2}_*.fastq.gz")
+    //     // .fromPath("/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/*_L00{1,2}_*.fastq.gz")
+    //     .fromFilePairs("/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/*_R{1,2}_*.fastq.gz")
+    //     .set{ ch_reads_pe }
+    // ch_reads_pe.view()
 
-/*
+    Channel
+        .fromPath("/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/*_L00{1,2}*R1*.fastq.gz")
+        .set{ ch_reads_se }
+    ch_reads_se.view()
+        
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
-    INPUT_CHECK (
-        file(params.input)
-    )
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+
+    // INPUT_CHECK (
+    //     ch_reads_pe
+    //     // ch_reads
+    //     // file(params.input)
+    // )
+
+    // ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+
     // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")
     // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
     // ! There is currently no tooling to help you write a sample sheet schema
 
-*/
-/*
+    // if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
+
+    // INPUT_CHECK (
+    //     ch_input
+    // )
+    // .map {
+    //     meta, fastq ->
+    //         meta.id = meta.id.split('_')[0..-2].join('_')
+    //         [ meta, fastq ] }
+    // .groupTuple(by: [0])
+    // .branch {
+    //     meta, fastq ->
+    //         single  : fastq.size() == 1
+    //             return [ meta, fastq.flatten() ]
+    //         multiple: fastq.size() > 1
+    //             return [ meta, fastq.flatten() ]
+    // }
+    // .set { ch_fastq }
+
+
+    // Create a new channel of metadata from a sample sheet
+    // NB: `input` corresponds to `params.input` and associated sample sheet schema
+    // ch_reads = Channel.fromSamplesheet(
+    //     "input",
+    //     parameters_schema: '/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/schema_input.json',
+    //     skip_duplicate_check: false)
+    // ch_reads.view()
+
     //
     // MODULE: Run FastQC
     //
-    FASTQC (
-        INPUT_CHECK.out.reads
-    )
-    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+
+    // srr_paired = [
+    // [
+    // [
+    //     id: "S10"
+    // ],
+    // "/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S10_S6_L001_R1_001.fastq.gz",
+    // "/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S10_S6_L001_R2_001.fastq.gz"
+    // ],
+    // ]
+
+    // Channel
+    //     .from( srr_paired )
+    //     .map{ row -> [ row[0], [ file(row[1]), file(row[2]) ] ] }
+    //     .set{ ch_srr_paired }
+
+    // ch_srr_paired.view()
+
+    // FASTQC (
+    //     ch_reads_se
+    //     // INPUT_CHECK.out.reads
+    // )
+    // ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+
+/*
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
@@ -124,16 +190,16 @@ workflow CUSTOMCAGE {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-workflow.onComplete {
-    if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
-    }
-    NfcoreTemplate.dump_parameters(workflow, params)
-    NfcoreTemplate.summary(workflow, params, log)
-    if (params.hook_url) {
-        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
-    }
-}
+// workflow.onComplete {
+//     if (params.email || params.email_on_fail) {
+//         NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
+//     }
+//     NfcoreTemplate.dump_parameters(workflow, params)
+//     NfcoreTemplate.summary(workflow, params, log)
+//     if (params.hook_url) {
+//         NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
+//     }
+// }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

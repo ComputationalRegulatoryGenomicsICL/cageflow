@@ -50,13 +50,15 @@ WorkflowMain.initialise(workflow, params, log)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { CUSTOMCAGE } from './workflows/customcage'
+include { CUSTOMCAGE } from './workflows/customcage.nf'
 
 //
 // WORKFLOW: Run main ComputationalRegulatoryGenomicsICL/customcage analysis pipeline
 //
 workflow COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE {
-    CUSTOMCAGE ().out.view()
+    // CUSTOMCAGE().out.view()
+    CUSTOMCAGE().out
+    // CUSTOMCAGE()
 }
 
 /*
@@ -70,7 +72,7 @@ workflow COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
-    COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE ()
+    COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE()
 }
 
 /*

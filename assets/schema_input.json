@@ -29,8 +29,13 @@
                         "maxLength": 0
                     }
                 ]
-            }
+            },
+            "single_end": {
+                "type": "string",
+                "errorMessage": "Single-end status must be provided and be one of 'True', which indicates the library is single-end mode or 'False', which indicates paired-end mode",
+                "enum": ["True", "False"]
+              }
         },
-        "required": ["sample", "fastq_1"]
+        "required": ["sample", "fastq_1", "single_end"]
     }
 }
