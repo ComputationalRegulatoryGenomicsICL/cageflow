@@ -4,8 +4,8 @@
 # I would also probably add input and output as $1 and $2
 # files=$(ls /path/to/your/root/folder/*fastq.gz)
 # folder_path="/path/to/your/folder"
-folder_path="../assets/mock_fq"
-output_csv="../assets/samplesheet.csv"
+folder_path="/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq"
+output_csv="/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/samplesheet.csv"
 
 # Write the header to the CSV
 echo "sample,fastq_1,fastq_2,single_end" > "${output_csv}"
@@ -17,12 +17,14 @@ for r1 in "${folder_path}"/*_R1*; do
     sample_name=$(basename "$r1" | cut -d'_' -f1)
 
     # Check for corresponding R2 file
-    r2="${folder_path}/${sample_name}_*_R2*"
+    # r2="${folder_path}/${sample_name}_*_R2*"
+    full_sample_name=$(basename "$r1" | awk -F'_R[1-2]' '{print $1}')
+    r2="${folder_path}/${full_sample_name}_R2*"
 
     if [ -f $r2 ]; then
-        echo "${sample_name},$(basename "$r1"),$(basename $(ls $r2)),False" >> "${output_csv}"
+        echo "${sample_name},$r1,$(ls $r2),False" >> "${output_csv}"
     else
-        echo "${sample_name},$(basename "$r1"),,True" >> "${output_csv}"
+        echo "${sample_name},$r1,,True" >> "${output_csv}"
     fi
 done
 

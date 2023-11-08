@@ -7,7 +7,7 @@
 include { paramsSummaryLog;
         paramsSummaryMap;
         validateParameters;
-        paramsHelp; 
+        paramsHelp;
         fromSamplesheet } from 'plugin/nf-validation'
 
 def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
@@ -77,22 +77,46 @@ workflow CUSTOMCAGE {
     //     .set{ ch_reads_pe }
     // ch_reads_pe.view()
 
-    Channel
-        .fromPath("/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/*_L00{1,2}*R1*.fastq.gz")
-        .set{ ch_reads_se }
-    ch_reads_se.view()
+    // Channel
+    //     .fromPath("/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/*_L00{1,2}*R1*.fastq.gz")
+    //     .set{ ch_reads_se }
+    // ch_reads_se.view()
         
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
 
-    // INPUT_CHECK (
-    //     ch_reads_pe
-    //     // ch_reads
-    //     // file(params.input)
-    // )
+    if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 
-    // ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+    INPUT_CHECK (
+        // ch_reads_pe
+        // ch_reads
+        ch_input
+        // file(params.input)
+    )
+
+    // INPUT_CHECK.out.reads.view()
+    
+    INPUT_CHECK.out.reads
+        .map {
+            meta, fastq ->
+                meta.id = meta.id.split('_')[0..-2].join('_')
+                [ meta, fastq ] }
+        // .groupTuple(by: [0])
+        // .branch {
+        //     meta, fastq ->
+        //         single  : fastq.size() == 1
+        //             return [ meta, fastq.flatten() ]
+        //         multiple: fastq.size() > 1
+        //             return [ meta, fastq.flatten() ]
+        // }
+        .set { ch_fastq }
+
+    // ch_fastq.single.view()
+    // ch_fastq.multiple.view()
+    ch_fastq.view()
+
+    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")
     // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
@@ -124,6 +148,8 @@ workflow CUSTOMCAGE {
     //     "input",
     //     parameters_schema: '/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/schema_input.json',
     //     skip_duplicate_check: false)
+    // ch_reads = Channel.fromSamplesheet(
+    //     "input")
     // ch_reads.view()
 
     //
