@@ -104,13 +104,14 @@ workflow CUSTOMCAGE {
                 meta.id = meta.id.split('_')[0..-2].join('_')
                 [ meta, fastq ] }
         .groupTuple(by: [0])
-        .branch {
-            meta, fastq ->
-                single  : fastq.size() == 1
-                    return [ meta, fastq.flatten() ]
-                multiple: fastq.size() > 1
-                    return [ meta, fastq.flatten() ]
-        }
+        // .branch {
+        //     meta, fastq ->
+        //         single  : fastq.size() == 1
+        //             return [ meta, fastq.flatten() ]
+        //         multiple: fastq.size() > 1
+        //             return [ meta, fastq.flatten() ]
+        // }
+        .map{ meta, fastq -> [ meta, fastq.flatten() ] }
         .set { ch_fastq }
 
     // ch_fastq.single.view()
@@ -123,12 +124,19 @@ workflow CUSTOMCAGE {
     //
     // MODULE: Concatenate FastQ files from same sample if required
     //
+
     CAT_FASTQ (
-        ch_fastq.multiple
+        ch_fastq
     )
-    .reads
-    .mix(ch_fastq.single)
-    .set { ch_cat_fastq }
+        .reads
+        .set { ch_cat_fastq }
+
+    // CAT_FASTQ (
+    //     ch_fastq.multiple
+    // )
+    // .reads
+    // .mix(ch_fastq.single)
+    // .set { ch_cat_fastq }
 
     ch_cat_fastq.view()
     ch_versions = ch_versions.mix(CAT_FASTQ.out.versions.first().ifEmpty(null))
