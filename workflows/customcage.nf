@@ -51,6 +51,7 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 // MODULE: Installed directly from nf-core/modules
 //
 
+include { CAT_FASTQ } from '../modules/nf-core/cat/fastq/main.nf'
 include { FASTQC } from '../modules/nf-core/fastqc/main.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
@@ -102,21 +103,35 @@ workflow CUSTOMCAGE {
             meta, fastq ->
                 meta.id = meta.id.split('_')[0..-2].join('_')
                 [ meta, fastq ] }
-        // .groupTuple(by: [0])
-        // .branch {
-        //     meta, fastq ->
-        //         single  : fastq.size() == 1
-        //             return [ meta, fastq.flatten() ]
-        //         multiple: fastq.size() > 1
-        //             return [ meta, fastq.flatten() ]
-        // }
+        .groupTuple(by: [0])
+        .branch {
+            meta, fastq ->
+                single  : fastq.size() == 1
+                    return [ meta, fastq.flatten() ]
+                multiple: fastq.size() > 1
+                    return [ meta, fastq.flatten() ]
+        }
         .set { ch_fastq }
 
     // ch_fastq.single.view()
     // ch_fastq.multiple.view()
-    ch_fastq.view()
+
+    // ch_fastq.view()
 
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+
+    //
+    // MODULE: Concatenate FastQ files from same sample if required
+    //
+    CAT_FASTQ (
+        ch_fastq.multiple
+    )
+    .reads
+    .mix(ch_fastq.single)
+    .set { ch_cat_fastq }
+
+    ch_cat_fastq.view()
+    ch_versions = ch_versions.mix(CAT_FASTQ.out.versions.first().ifEmpty(null))
 
     // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")
     // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
