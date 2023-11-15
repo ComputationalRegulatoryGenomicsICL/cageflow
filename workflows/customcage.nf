@@ -62,6 +62,26 @@ include { BOWTIE2_ALIGN } from '../modules/nf-core/bowtie2/align/main.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    LOAD REFERENCE GENOME
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+genome = [
+    [
+    [
+        id: "GENOME"
+    ], 
+    params.genome
+    ]
+]
+
+Channel
+    .from( genome )
+    .map{ row -> [ row[0], [ file(row[1]) ] ] }
+    .set{ ch_genome }
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
@@ -235,14 +255,20 @@ workflow CUSTOMCAGE {
     TRIMGALORE (
         ch_cat_fastq
     )
+    ch_versions = ch_versions.mix(TRIMGALORE.out.versions.first())
 
-    // BOWTIE2_BUILD (
+    BOWTIE2_BUILD (
+        ch_genome
+    )
+    ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions.first())
 
-    // )
-
-    // BOWTIE2_ALIGN(
-
-    // )
+    BOWTIE2_ALIGN(
+        TRIMGALORE.out.reads,
+        BOWTIE2_BUILD.out.index,
+        false,
+        false
+    )
+    ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions.first())
 
 }
 
