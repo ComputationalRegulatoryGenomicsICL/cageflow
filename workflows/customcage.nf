@@ -203,8 +203,6 @@ workflow CUSTOMCAGE {
     )
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
-/*
-
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
@@ -231,7 +229,6 @@ workflow CUSTOMCAGE {
         ch_multiqc_logo.toList()
     )
     multiqc_report = MULTIQC.out.report.toList()
-*/
 }
 
 /*
