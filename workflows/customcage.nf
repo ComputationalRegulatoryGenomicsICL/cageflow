@@ -138,7 +138,7 @@ workflow CUSTOMCAGE {
     // .mix(ch_fastq.single)
     // .set { ch_cat_fastq }
 
-    ch_cat_fastq.view()
+    // ch_cat_fastq.view()
     ch_versions = ch_versions.mix(CAT_FASTQ.out.versions.first().ifEmpty(null))
 
     // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")
@@ -196,11 +196,12 @@ workflow CUSTOMCAGE {
 
     // ch_srr_paired.view()
 
-    // FASTQC (
-    //     ch_reads_se
-    //     // INPUT_CHECK.out.reads
-    // )
-    // ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+    FASTQC (
+        // ch_reads_se
+        // INPUT_CHECK.out.reads
+        ch_cat_fastq
+    )
+    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
 /*
 
