@@ -56,6 +56,8 @@ include { FASTQC } from '../modules/nf-core/fastqc/main.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
 include { TRIMGALORE } from '../modules/nf-core/trimgalore/main.nf'
+include { BOWTIE2_BUILD } from '../modules/nf-core/bowtie2/build/main.nf' 
+include { BOWTIE2_ALIGN } from '../modules/nf-core/bowtie2/align/main.nf'
 // include {  } from '../modules/nf-core/modules/ /main.nf'
 
 /*
@@ -229,6 +231,19 @@ workflow CUSTOMCAGE {
         ch_multiqc_logo.toList()
     )
     multiqc_report = MULTIQC.out.report.toList()
+
+    TRIMGALORE (
+        ch_cat_fastq
+    )
+
+    // BOWTIE2_BUILD (
+
+    // )
+
+    // BOWTIE2_ALIGN(
+
+    // )
+
 }
 
 /*
