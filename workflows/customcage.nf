@@ -93,19 +93,7 @@ def multiqc_report = []
 workflow CUSTOMCAGE {
 
     ch_versions = Channel.empty()
-    // Channel.fromFilePairs("/Users/dbaranasic/data/playground/mock_fq/*_L00{1,2}_*.fastq.gz")
-    // Channel
-    //     // .fromFilePairs("/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/*_L00{1,2}_*.fastq.gz")
-    //     // .fromPath("/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/*_L00{1,2}_*.fastq.gz")
-    //     .fromFilePairs("/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/*_R{1,2}_*.fastq.gz")
-    //     .set{ ch_reads_pe }
-    // ch_reads_pe.view()
 
-    // Channel
-    //     .fromPath("/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/*_L00{1,2}*R1*.fastq.gz")
-    //     .set{ ch_reads_se }
-    // ch_reads_se.view()
-        
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
@@ -113,13 +101,8 @@ workflow CUSTOMCAGE {
     if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 
     INPUT_CHECK (
-        // ch_reads_pe
-        // ch_reads
         ch_input
-        // file(params.input)
     )
-
-    // INPUT_CHECK.out.reads.view()
     
     INPUT_CHECK.out.reads
         .map {
@@ -127,20 +110,8 @@ workflow CUSTOMCAGE {
                 meta.id = meta.id.split('_')[0..-2].join('_')
                 [ meta, fastq ] }
         .groupTuple(by: [0])
-        // .branch {
-        //     meta, fastq ->
-        //         single  : fastq.size() == 1
-        //             return [ meta, fastq.flatten() ]
-        //         multiple: fastq.size() > 1
-        //             return [ meta, fastq.flatten() ]
-        // }
         .map{ meta, fastq -> [ meta, fastq.flatten() ] }
         .set { ch_fastq }
-
-    // ch_fastq.single.view()
-    // ch_fastq.multiple.view()
-
-    // ch_fastq.view()
 
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
@@ -154,74 +125,13 @@ workflow CUSTOMCAGE {
         .reads
         .set { ch_cat_fastq }
 
-    // CAT_FASTQ (
-    //     ch_fastq.multiple
-    // )
-    // .reads
-    // .mix(ch_fastq.single)
-    // .set { ch_cat_fastq }
-
-    // ch_cat_fastq.view()
     ch_versions = ch_versions.mix(CAT_FASTQ.out.versions.first().ifEmpty(null))
-
-    // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")
-    // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
-    // ! There is currently no tooling to help you write a sample sheet schema
-
-    // if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-
-    // INPUT_CHECK (
-    //     ch_input
-    // )
-    // .map {
-    //     meta, fastq ->
-    //         meta.id = meta.id.split('_')[0..-2].join('_')
-    //         [ meta, fastq ] }
-    // .groupTuple(by: [0])
-    // .branch {
-    //     meta, fastq ->
-    //         single  : fastq.size() == 1
-    //             return [ meta, fastq.flatten() ]
-    //         multiple: fastq.size() > 1
-    //             return [ meta, fastq.flatten() ]
-    // }
-    // .set { ch_fastq }
-
-
-    // Create a new channel of metadata from a sample sheet
-    // NB: `input` corresponds to `params.input` and associated sample sheet schema
-    // ch_reads = Channel.fromSamplesheet(
-    //     "input",
-    //     parameters_schema: '/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/schema_input.json',
-    //     skip_duplicate_check: false)
-    // ch_reads = Channel.fromSamplesheet(
-    //     "input")
-    // ch_reads.view()
 
     //
     // MODULE: Run FastQC
     //
 
-    // srr_paired = [
-    // [
-    // [
-    //     id: "S10"
-    // ],
-    // "/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S10_S6_L001_R1_001.fastq.gz",
-    // "/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S10_S6_L001_R2_001.fastq.gz"
-    // ],
-    // ]
-
-    // Channel
-    //     .from( srr_paired )
-    //     .map{ row -> [ row[0], [ file(row[1]), file(row[2]) ] ] }
-    //     .set{ ch_srr_paired }
-
-    // ch_srr_paired.view()
-
     FASTQC (
-        // ch_reads_se
-        // INPUT_CHECK.out.reads
         ch_cat_fastq
     )
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
@@ -281,32 +191,9 @@ workflow CUSTOMCAGE {
         BOWTIE2_BUILD.out.index
     )
 
-    // MULTI_INDEX.out.multi_index
-    //     .flatMap()
-    //     .set{ch_multi_index}
-
-    // MULTI_INDEX.out.multi_index
-    //     .view()
-    
-    // MULTI_INDEX.out.multi_index
-    //     .map{ it -> it[0], it[1] }
-    //     .view()
-    
-    // ch_multi_index.view()
-
-    // n = ch_cat_fastq.count().view()
-    // print "your value is" + n + "fastq reads" + "\n"
-
-    // ch_cat_fastq.view()
-
-    // TRIMGALORE.out.reads.view()
-    // TRIMGALORE.out.reads.count().view()
-
     BOWTIE2_ALIGN (
         TRIMGALORE.out.reads,
-        // BOWTIE2_BUILD.out.index,
         MULTI_INDEX.out.multi_index.flatMap(),
-        // ch_multi_index,
         false,
         false
     )
