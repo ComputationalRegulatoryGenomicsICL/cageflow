@@ -75,6 +75,7 @@ genome = [
     ]
 ]
 
+// Test without [] in [ file(row[1]) ], seems it is not necessary
 Channel
     .from( genome )
     .map{ row -> [ row[0], [ file(row[1]) ] ] }
@@ -255,6 +256,7 @@ workflow CUSTOMCAGE {
     TRIMGALORE (
         ch_cat_fastq
     )
+    // do not forget to add trimgalore fastqc to multiqc
     ch_versions = ch_versions.mix(TRIMGALORE.out.versions.first())
 
     BOWTIE2_BUILD (
@@ -262,13 +264,69 @@ workflow CUSTOMCAGE {
     )
     ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions.first())
 
-    BOWTIE2_ALIGN(
+    process MULTI_INDEX {
+        input:
+        val n
+        val index
+
+        output:
+        val n_index, emit: multi_index
+
+        exec:
+        n_index = [index] * n 
+    }
+
+    MULTI_INDEX (
+        ch_cat_fastq.count(),
+        BOWTIE2_BUILD.out.index
+    )
+
+    // MULTI_INDEX.out.multi_index
+    //     .flatMap()
+    //     .set{ch_multi_index}
+
+    // MULTI_INDEX.out.multi_index
+    //     .view()
+    
+    // MULTI_INDEX.out.multi_index
+    //     .map{ it -> it[0], it[1] }
+    //     .view()
+    
+    // ch_multi_index.view()
+
+    // n = ch_cat_fastq.count().view()
+    // print "your value is" + n + "fastq reads" + "\n"
+
+    // ch_cat_fastq.view()
+
+    // TRIMGALORE.out.reads.view()
+    // TRIMGALORE.out.reads.count().view()
+
+    BOWTIE2_ALIGN (
         TRIMGALORE.out.reads,
-        BOWTIE2_BUILD.out.index,
+        // BOWTIE2_BUILD.out.index,
+        MULTI_INDEX.out.multi_index.flatMap(),
+        // ch_multi_index,
         false,
         false
     )
     ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions.first())
+
+    // samtools sort and index
+    // SAMTOOLS (
+    //     BOWTIE2_ALIGN.out.aligned
+    // )
+
+    // do not forget aligned reads must be processed with multiqc
+
+    // cager
+    // CAGER (
+    //     SAMTOOLS.out.something
+    // )
+
+    // do not forget to remove COMPUTATIONALREGULATORYGENOMICSICL_CUSTOM...
+
+    // Sort out all tool versions
 
 }
 
