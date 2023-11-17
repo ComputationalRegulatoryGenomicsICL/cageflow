@@ -41,6 +41,11 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 
+//
+// MODULE: CAGEr and BSGenome module
+//
+include { CAGER } from '../modules/local/cager.nf'
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -186,7 +191,6 @@ workflow CUSTOMCAGE {
 
     // do not forget aligned reads must be processed with multiqc
 
-    // cager
     // CAGER (
     //     SAMTOOLS.out.something
     // )
