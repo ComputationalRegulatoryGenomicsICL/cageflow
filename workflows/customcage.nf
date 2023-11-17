@@ -58,6 +58,8 @@ include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
 include { TRIMGALORE } from '../modules/nf-core/trimgalore/main.nf'
 include { BOWTIE2_BUILD } from '../modules/nf-core/bowtie2/build/main.nf' 
 include { BOWTIE2_ALIGN } from '../modules/nf-core/bowtie2/align/main.nf'
+include { SAMTOOLS_SORT } from '../modules/nf-core/samtools/sort/main.nf'
+include { SAMTOOLS_INDEX } from '../modules/nf-core/samtools/index/main.nf'
 // include {  } from '../modules/nf-core/modules/ /main.nf'
 
 /*
@@ -136,33 +138,6 @@ workflow CUSTOMCAGE {
     )
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
-
-    //
-    // MODULE: MultiQC
-    //
-    workflow_summary    = WorkflowCustomcage.paramsSummaryMultiqc(workflow, summary_params)
-    ch_workflow_summary = Channel.value(workflow_summary)
-
-    methods_description    = WorkflowCustomcage.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
-    ch_methods_description = Channel.value(methods_description)
-
-    ch_multiqc_files = Channel.empty()
-    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
-
-    MULTIQC (
-        ch_multiqc_files.collect(),
-        ch_multiqc_config.toList(),
-        ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList()
-    )
-    multiqc_report = MULTIQC.out.report.toList()
-
     TRIMGALORE (
         ch_cat_fastq
     )
@@ -199,10 +174,15 @@ workflow CUSTOMCAGE {
     )
     ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions.first())
 
-    // samtools sort and index
-    // SAMTOOLS (
-    //     BOWTIE2_ALIGN.out.aligned
-    // )
+    SAMTOOLS_SORT (
+        BOWTIE2_ALIGN.out.aligned
+    )
+    ch_versions = ch_versions.mix(SAMTOOLS_SORT.out.versions.first())
+
+    SAMTOOLS_INDEX (
+        SAMTOOLS_SORT.out.bam
+    )
+    ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions.first())
 
     // do not forget aligned reads must be processed with multiqc
 
@@ -214,6 +194,34 @@ workflow CUSTOMCAGE {
     // do not forget to remove COMPUTATIONALREGULATORYGENOMICSICL_CUSTOM...
 
     // Sort out all tool versions
+
+    CUSTOM_DUMPSOFTWAREVERSIONS (
+        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    )
+
+    //
+    // MODULE: MultiQC
+    //
+    workflow_summary    = WorkflowCustomcage.paramsSummaryMultiqc(workflow, summary_params)
+    ch_workflow_summary = Channel.value(workflow_summary)
+
+    methods_description    = WorkflowCustomcage.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
+    ch_methods_description = Channel.value(methods_description)
+
+    ch_multiqc_files = Channel.empty()
+    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
+    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+
+    MULTIQC (
+        ch_multiqc_files.collect(),
+        ch_multiqc_config.toList(),
+        ch_multiqc_custom_config.toList(),
+        ch_multiqc_logo.toList()
+    )
+    multiqc_report = MULTIQC.out.report.toList()
+
 
 }
 
