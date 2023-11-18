@@ -192,7 +192,7 @@ workflow CUSTOMCAGE {
     // do not forget aligned reads must be processed with multiqc
 
     // CAGER (
-    //     SAMTOOLS.out.something
+    //     SAMTOOLS_SORT.out.bam
     // )
 
     // do not forget to remove COMPUTATIONALREGULATORYGENOMICSICL_CUSTOM...

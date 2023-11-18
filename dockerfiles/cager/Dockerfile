@@ -1,0 +1,19 @@
+# Use the official R base image
+FROM r-base:latest
+
+# Maintainer label
+LABEL maintainer="your.email@example.com"
+
+# Update and install system libraries
+RUN apt-get update && \
+    apt-get install -y \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libxml2-dev
+
+# Install Bioconductor and the desired packages
+RUN R -e "install.packages('BiocManager', repos='https://cloud.r-project.org/')"
+RUN R -e "BiocManager::install(c('CAGEr', 'BSgenome'))"
+
+# Command to run R by default when the container starts
+CMD ["R"]
