@@ -57,9 +57,11 @@ include { CUSTOMCAGE } from './workflows/customcage.nf'
 //
 workflow COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE {
     // CUSTOMCAGE().out.view()
-    // CUSTOMCAGE().out
-    CUSTOMCAGE()
+    CUSTOMCAGE().out
+    // CUSTOMCAGE()
 }
+
+// CUSTOMCAGE()
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -71,9 +73,9 @@ workflow COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE {
 // WORKFLOW: Execute a single named workflow for the pipeline
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
-// workflow {
-//     COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE()
-// }
+workflow {
+    COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE()
+}
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

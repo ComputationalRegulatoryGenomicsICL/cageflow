@@ -3,11 +3,12 @@ process CAGER {
     label 'process_medium'
     stageInMode 'copy'
 
-    container 'nikitinpavel/cager:0.1'
+    // container 'docker://hub.docker.com/nikitinpavel/cager:0.1'
+    container 'docker://quay.io/biocontainers/fastqc:0.11.9--0'
 
     input:
     tuple val(meta), path(bam)
-    path rscript
+    // path rscript
 
     output:
     tuple val(meta), path("*.RDS"), emit: rds
@@ -26,14 +27,16 @@ process CAGER {
     """
     cager.R ${bam}
 
-    # render_rmd.R $rmd bowtie2_table.tsv
-
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         Bash: \$(echo "\$BASH_VERSION")
         R: \$(R --version | head -1 | awk '{print \$3}')
-        R_dplyr: \$(Rscript -e 'packageVersion("dplyr")' | awk '{print \$2}' | tr -d "‘’")
-        R_ggplot2: \$(Rscript -e 'packageVersion("ggplot2")' | awk '{print \$2}' | tr -d "‘’")
+        R_CAGEr: \$(Rscript -e 'packageVersion("CAGEr")' | awk '{print \$2}' | tr -d "‘’")
+        R_BSgenome: \$(Rscript -e 'packageVersion("BSgenome")' | awk '{print \$2}' | tr -d "‘’")
     END_VERSIONS
     """
 }
+
+// render_rmd.R $rmd bowtie2_table.tsv
+// R_dplyr: \$(Rscript -e 'packageVersion("dplyr")' | awk '{print \$2}' | tr -d "‘’")
+// R_ggplot2: \$(Rscript -e 'packageVersion("ggplot2")' | awk '{print \$2}' | tr -d "‘’")

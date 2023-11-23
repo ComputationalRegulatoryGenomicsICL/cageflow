@@ -9,11 +9,11 @@ library(BSgenome)
 
 args = commandArgs()
 input_folder = args[8]
-arg2 = args[9]
+# arg2 = args[9]
 
 inputFiles <- list.files( input_folder
                         , ".sorted.bam$"
-                        , full.names = TRUE)
+                        , full.names = TRUE )
 
 print(inputFiles)
 
