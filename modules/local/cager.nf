@@ -3,8 +3,8 @@ process CAGER {
     label 'process_medium'
     stageInMode 'copy'
 
-    // container 'docker://hub.docker.com/nikitinpavel/cager:0.1'
-    container 'docker://quay.io/biocontainers/fastqc:0.11.9--0'
+    // container 'docker://hub.docker.com/nikitinpavel/cager:0.2'
+    // container 'docker://quay.io/biocontainers/fastqc:0.11.9--0'
 
     input:
     tuple val(meta), path(bam)
