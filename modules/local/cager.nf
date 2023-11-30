@@ -1,5 +1,5 @@
 process CAGER {
-    tag "$meta.id"
+    // tag "$meta.id"
     label 'process_medium'
     stageInMode 'copy'
 
@@ -7,11 +7,15 @@ process CAGER {
     // container 'docker://quay.io/biocontainers/fastqc:0.11.9--0'
 
     input:
-    tuple val(meta), path(bam)
+    path bsgnome
+    val meta_bam
+    // tuple val(meta), path(bam)
     // path rscript
 
     output:
-    tuple val(meta), path("*.RDS"), emit: rds
+    // tuple val(meta), path("*.RDS"), emit: rds
+    path "*.tsv", emit: tsv
+    path "*.txt", emit: txt
     // tuple val(meta), path("tsv")   , emit: tsv_dir
     // tuple val(meta), path("pdf")   , emit: pdf_dir
     // tuple val(meta), path("*.html"), emit: knitted_html
@@ -22,10 +26,18 @@ process CAGER {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    // def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    cager.R ${bam}
+    echo ${meta_bam} | \\
+        sed 's/, \\[/\\n/g' | \\
+        tr -d '[],' | \\
+        tr ' ' '\\t' | \\
+        sed 's/id://' | \\
+        sed 's/single_end://' \\
+            > sample_list.tsv
+
+    cager.R ${bsgnome} sample_list.tsv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -36,6 +48,9 @@ process CAGER {
     END_VERSIONS
     """
 }
+
+// cager.R ${bsgnome}
+// cager.R ${bam}
 
 // render_rmd.R $rmd bowtie2_table.tsv
 // R_dplyr: \$(Rscript -e 'packageVersion("dplyr")' | awk '{print \$2}' | tr -d "‘’")

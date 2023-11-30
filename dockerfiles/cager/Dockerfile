@@ -19,5 +19,8 @@ RUN apt-get update && \
 RUN R -e "install.packages('BiocManager', repos='https://cloud.r-project.org/')"
 RUN R -e "BiocManager::install(c('CAGEr', 'BSgenome'))"
 
+RUN chmod -R 777 /usr/local/lib/R/site-library/
+
+# RUN sudo usermod -a -G staff your_user_name
 # Command to run R by default when the container starts
-CMD ["R"]
+# CMD ["R"]ls -
