@@ -45,6 +45,8 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 // MODULE: CAGEr and BSGenome module
 //
 include { CAGER } from '../modules/local/cager.nf'
+include { BSGENOME } from '../modules/local/bsgenome.nf'
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -198,6 +200,8 @@ workflow CUSTOMCAGE {
     Channel
         .fromPath('/Users/pavel/Desktop/PROJECTS/hooman-2/BSgenome.Scerevisiae.UCSC.sacCer1_1.4.0.tar.gz')
         .set{ch_bsgenome}
+
+    // BSGENOME ()
     
     CAGER (
         ch_bsgenome,

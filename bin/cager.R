@@ -14,11 +14,15 @@ args = commandArgs()
 # write(input_folder, "test.RDS")
 bsgenome = args[6]
 
+# start.packages = installed.packages()[,1]
 # install.packages(bsgenome, repos = NULL, type="source")
+# a = setdiff(installed.packages()[,1], start.packages)
+# write(a, "test.txt")
+
+install.packages(bsgenome, repos = NULL, type="source")
 # BiocManager::install("BSgenome.Scerevisiae.UCSC.sacCer1")
-# library("BSgenome.Scerevisiae.UCSC.sacCer1")
-# write(seqlengths(Scerevisiae), "test.txt")
-# write(packages(), "test.txt")
+library("BSgenome.Scerevisiae.UCSC.sacCer1")
+write(seqlengths(Scerevisiae), "test.txt")
 
 sample.list = args[7]
 sample.table = read.delim(sample.list, header = FALSE, sep = "\t")
@@ -39,6 +43,7 @@ input.files = sample.table$path
 write(sample.names, "sample.names.txt")
 write(read.mode, "read.mode.txt")
 write(input.files, "input.files.txt")
+write(bam.type, "single.end.uniq.txt")
 
 # inputFiles <- list.files( input_folder,
 #                           ".sorted.bam$",
@@ -62,11 +67,15 @@ write(input.files, "input.files.txt")
 #  # it requires the BSgenome-seed file 
 # }
 
-# ce <- CAGEexp(genomeName     = BSgenome,
-#               inputFiles     = input.files,
-#               inputFilesType = "bam",
-#               sampleLabels   = sample.names)
+ce <- CAGEexp(genomeName     = "BSgenome.Scerevisiae.UCSC.sacCer1",
+              inputFiles     = input.files,
+              inputFilesType = bam.type,
+              sampleLabels   = sample.names)
+
+write(colData(ce), "ce.txt")
 
 # ce <- getCTSS(ce, removeFirstG = T, useMulticore = T, nrCores = 8)
 
-# saveRDS(ce, "/whichever/output/folder/CAGEexp_v1_readCTSS.RDS")
+# ce <- getCTSS(ce, removeFirstG = T)
+
+# saveRDS(ce, "CAGEexp_v1_readCTSS.RDS")

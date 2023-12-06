@@ -16,6 +16,7 @@ process CAGER {
     // tuple val(meta), path("*.RDS"), emit: rds
     path "*.tsv", emit: tsv
     path "*.txt", emit: txt
+    // path "*.RDS", emit: rds
     // tuple val(meta), path("tsv")   , emit: tsv_dir
     // tuple val(meta), path("pdf")   , emit: pdf_dir
     // tuple val(meta), path("*.html"), emit: knitted_html
