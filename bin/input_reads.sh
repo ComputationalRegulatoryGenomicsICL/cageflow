@@ -4,8 +4,13 @@
 # I would also probably add input and output as $1 and $2
 # files=$(ls /path/to/your/root/folder/*fastq.gz)
 # folder_path="/path/to/your/folder"
-folder_path="/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq"
-output_csv="/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/samplesheet.csv"
+# folder_path="/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq"
+
+# select single-end (se) or paired-end (pe)
+folder_path="/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/sacer_fq/se"
+output_csv="/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/samplesheet_se.csv"
+# folder_path="/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/sacer_fq/pe"
+# output_csv="/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/samplesheet_pe.csv"
 
 # Write the header to the CSV
 echo "sample,fastq_1,fastq_2,single_end" > "${output_csv}"
