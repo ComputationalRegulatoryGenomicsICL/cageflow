@@ -18,6 +18,7 @@ bsgenome = args[6]
 # BiocManager::install("BSgenome.Scerevisiae.UCSC.sacCer1")
 # library("BSgenome.Scerevisiae.UCSC.sacCer1")
 # write(seqlengths(Scerevisiae), "test.txt")
+# write(packages(), "test.txt")
 
 sample.list = args[7]
 sample.table = read.delim(sample.list, header = FALSE, sep = "\t")
