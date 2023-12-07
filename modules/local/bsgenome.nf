@@ -21,6 +21,7 @@ process BSGENOME {
     // def prefix = task.ext.prefix ?: "${meta.id}"
     
     """
+    # http://hgdownload.cse.ucsc.edu/goldenPath/sacCer1/bigZips/sacCer1.fa.gz
     wget https://bioconductor.org/packages/release/data/annotation/src/contrib/BSgenome.Scerevisiae.UCSC.sacCer1_1.4.0.tar.gz
 
     cat <<-END_VERSIONS > versions.yml

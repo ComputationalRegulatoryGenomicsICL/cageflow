@@ -201,6 +201,25 @@ workflow CUSTOMCAGE {
     //     .fromPath('/Users/pavel/Desktop/PROJECTS/hooman-2/BSgenome.Scerevisiae.UCSC.sacCer1_1.4.0.tar.gz')
     //     .set{ch_bsgenome}
 
+    // Main keys combinations:
+    // --forged_bsgenome sacCer1.tar.gz --fasta /path/to/fasta/sacCer1.fa # everyting local
+    // --bsgenome sacCer1 # downloade both fasta and the corresponding BSgenome package
+
+    // =------------------=
+
+    // --bsgenome sacCer1 --fasta /path/to/fasta/sacCer1.fa --seed /path/to/seed/sacCer1_seed.txt # forge the package from fasta
+    // --bsgenome sacCer1 --twobit /path/to/fasta/sacCer1.2bit --seed /path/to/seed/sacCer1_seed.txt # forge the package from 2bit
+
+    // 1. give --bsgenome as input key (for ex sacCer1)
+    //    another key is --fasta (optional)
+    // if only fasta, go till bsgenome
+    // if bsgenome and fasta - select downloaded fasta and bsgenome as usual
+    // if only bsgenome, download fasta
+
+    // later
+    // but if bsgenome does not exist, stop and ask user to add path to seed file, (fasta.2bit, seedfile)
+    // if package is forged locally, give it as channel --forged_bsgenome (it should be .tar.gz thing)
+
     BSGENOME ()
     
     CAGER (
