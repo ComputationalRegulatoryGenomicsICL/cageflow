@@ -99,8 +99,6 @@ Channel
 // Info required for completion email and summary
 def multiqc_report = []
 
-// params.bsgenome = 
-
 workflow CUSTOMCAGE {
 
     ch_versions = Channel.empty()
@@ -204,6 +202,11 @@ workflow CUSTOMCAGE {
     //     .set{ch_bsgenome}
 
     // Main keys combinations:
+    // --bsgenome *.tar.gz
+    //     --fasta
+    // --bsgenome
+    //     [--fasta | --twobit]
+    //         [--seed]
     // --bsgenome sacCer1.tar.gz --fasta /path/to/fasta/sacCer1.fa # everything local
     // --bsgenome sacCer1 # download both fasta and the corresponding BSgenome package
 
@@ -212,27 +215,46 @@ workflow CUSTOMCAGE {
     // --bsgenome sacCer1 --fasta /path/to/fasta/sacCer1.fa --seed /path/to/seed/sacCer1_seed.txt # forge the package from fasta
     // --bsgenome sacCer1 --twobit /path/to/fasta/sacCer1.2bit --seed /path/to/seed/sacCer1_seed.txt # forge the package from 2bit
 
-    // 1. give --bsgenome as input key (for ex sacCer1)
-    //    another key is --fasta (optional)
-    // if only fasta, go till bsgenome
-    // if bsgenome and fasta - select downloaded fasta and bsgenome as usual
-    // if only bsgenome, download fasta
+    if ( !params.bsgenome ) {
+        exit 1, "ERROR: --bsgenome is not set."
+    }
 
-    // later
-    // but if bsgenome does not exist, stop and ask user to add path to seed file, (fasta.2bit, seedfile)
-    // if package is forged locally, give it as channel --forged_bsgenome (it should be .tar.gz thing)
-
-    // bsgenome = '/Users/pavel/Desktop/PROJECTS/hooman-2/results/bsgenome/BSgenome.Scerevisiae.UCSC.sacCer1_1.4.0.tar.gz'
-    bsgenome = 'BSgenome.Scerevisiae.UCSC.sacCer1'
-
-    values = bsgenome.split('\\.')
+    values = params.bsgenome.split('\\.')
     
     if (values[-2] == "tar" && values[-1] == "gz") {
+        file(params.bsgenome, checkIfExists: true)
         Channel
-            .fromPath(bsgenome)
+            .fromPath(params.bsgenome)
             .set{ch_bsgenome}
+        if (params.fasta) {
+            file(params.fasta, checkIfExists: true)
+        } else {
+            exit 1, "ERROR: --fasta is not set."
+        }
     } else {
-        ch_bsgenome = BSGENOME(bsgenome).out.bsgenome
+        ch_bsgenome = BSGENOME(params.bsgenome).out.bsgenome
+        if (params.fasta) {
+            file(params.fasta, checkIfExists: true)
+            if (params.seed) {
+                file(params.seed, checkIfExists: true)
+                // FORGE from fasta and seed
+            } else {
+                exit 1, "ERROR: --seed is not set."
+            }
+        } else {
+            if (params.twobit) {
+                file(params.twobit, checkIfExists: true)
+                if (params.seed) {
+                    file(params.seed, checkIfExists: true)
+                    // FORGE from fasta and seed
+                } else {
+                    exit 1, "ERROR: --seed is not set."
+                }
+            } else {
+                // download fasta and seed
+                // FORGE from fasta and seed
+            }
+        }
     }
     
     CAGER (
