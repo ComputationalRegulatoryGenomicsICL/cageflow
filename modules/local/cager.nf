@@ -14,8 +14,8 @@ process CAGER {
 
     output:
     // tuple val(meta), path("*.RDS"), emit: rds
-    path "*.tsv", emit: tsv
-    path "*.txt", emit: txt
+    // path "*.tsv", emit: tsv
+    // path "*.txt", emit: txt
     path "*.RDS", emit: rds
     // tuple val(meta), path("tsv")   , emit: tsv_dir
     // tuple val(meta), path("pdf")   , emit: pdf_dir
@@ -38,7 +38,7 @@ process CAGER {
         sed 's/single_end://' \\
             > sample_list.tsv
 
-    cager.R ${bsgnome} sample_list.tsv
+    cager.R ${bsgnome} sample_list.tsv ${task.cpus}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
