@@ -67,15 +67,28 @@ write(bam.type, "single.end.uniq.txt")
 #  # it requires the BSgenome-seed file 
 # }
 
-ce <- CAGEexp(genomeName     = "BSgenome.Scerevisiae.UCSC.sacCer1",
+# write.csv(BSgenome::installed.genomes(), "bsgenome.txt")
+
+ce = CAGEexp(genomeName     = "BSgenome.Scerevisiae.UCSC.sacCer1",
               inputFiles     = input.files,
               inputFilesType = bam.type,
               sampleLabels   = sample.names)
 
-write(colData(ce), "ce.txt")
+ce = getCTSS(ce, removeFirstG = T)
+# write.table(colData(ce), "ce.txt", sep='\t')
+saveRDS(ce, "CAGEexp_v1_readCTSS.RDS")
+
+# write.table(colData(ce), "ce.txt", quote=FALSE, sep='\t')
 
 # ce <- getCTSS(ce, removeFirstG = T, useMulticore = T, nrCores = 8)
 
-# ce <- getCTSS(ce, removeFirstG = T)
 
-# saveRDS(ce, "CAGEexp_v1_readCTSS.RDS")
+# ce2 = getCTSS(ce, removeFirstG = T)
+# write.table(colData(ce2), "ce2.txt", quote=FALSE, sep='\t')
+
+# ce3 = CTSStagCountDF(ce2)
+# write.table(ce3, file='ce3.tsv', sep='\t')
+
+# ce4 = CTSScoordinatesGR(ce2)
+# write.table(ce4, file='ce4.tsv', sep='\t')
+

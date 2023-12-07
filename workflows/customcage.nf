@@ -197,14 +197,15 @@ workflow CUSTOMCAGE {
     // SAMTOOLS_SORT.out.bam.collect().view()
     // bams = Channel.fromPath( '/path/*b', type: 'dir' )
 
-    Channel
-        .fromPath('/Users/pavel/Desktop/PROJECTS/hooman-2/BSgenome.Scerevisiae.UCSC.sacCer1_1.4.0.tar.gz')
-        .set{ch_bsgenome}
+    // Channel
+    //     .fromPath('/Users/pavel/Desktop/PROJECTS/hooman-2/BSgenome.Scerevisiae.UCSC.sacCer1_1.4.0.tar.gz')
+    //     .set{ch_bsgenome}
 
-    // BSGENOME ()
+    BSGENOME ()
     
     CAGER (
-        ch_bsgenome,
+        // ch_bsgenome,
+        BSGENOME.out.bsgenome,
         SAMTOOLS_SORT.out.bam.collect()
     )
 

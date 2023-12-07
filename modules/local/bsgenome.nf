@@ -1,17 +1,16 @@
 process BSGENOME {
-    tag "$meta.id"
+    // tag "$meta.id"
     label 'process_low'
+    stageInMode 'copy'
 
-    conda "YOUR-TOOL-HERE"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/YOUR-TOOL-HERE':
-        'biocontainers/YOUR-TOOL-HERE' }"
+    // conda "YOUR-TOOLsrs/YOUR-TOOL-HERE' }"
 
-    input:
-    tuple val(meta), path(bam)
+    // input:
+    // tuple val(meta), path(bam)
 
     output:
-    tuple val(meta), path("*.bam"), emit: bam
+    path "*.tar.gz", emit: bsgenome
+    // tuple val(meta), path("*.bam"), emit: bam
     path "versions.yml"           , emit: versions
 
     when:
@@ -19,33 +18,14 @@ process BSGENOME {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    // def prefix = task.ext.prefix ?: "${meta.id}"
     
     """
-    samtools \\
-        sort \\
-        $args \\
-        -@ $task.cpus \\
-        -o ${prefix}.bam \\
-        -T $prefix \\
-        $bam
+    wget https://bioconductor.org/packages/release/data/annotation/src/contrib/BSgenome.Scerevisiae.UCSC.sacCer1_1.4.0.tar.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        : \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' ))
-    END_VERSIONS
-    """
-
-    stub:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-
-    """
-    touch ${prefix}.bam
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        : \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' ))
+        wget: \$(wget 2>&1 | head -1 | cut -d" " -f1,2)
     END_VERSIONS
     """
 }
