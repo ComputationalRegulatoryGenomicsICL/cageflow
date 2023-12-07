@@ -1,33 +1,22 @@
 process CAGER {
-    // tag "$meta.id"
     label 'process_medium'
     stageInMode 'copy'
 
-    // container 'docker://hub.docker.com/nikitinpavel/cager:0.2'
-    // container 'docker://quay.io/biocontainers/fastqc:0.11.9--0'
-
+    // container 'docker://hub.docker.com/nikitinpavel/cager:0.5'
+   
     input:
     path bsgnome
     val meta_bam
-    // tuple val(meta), path(bam)
-    // path rscript
 
     output:
-    // tuple val(meta), path("*.RDS"), emit: rds
-    // path "*.tsv", emit: tsv
-    // path "*.txt", emit: txt
-    path "*.RDS", emit: rds
-    // tuple val(meta), path("tsv")   , emit: tsv_dir
-    // tuple val(meta), path("pdf")   , emit: pdf_dir
-    // tuple val(meta), path("*.html"), emit: knitted_html
-    path "versions.yml"            , emit: versions
+    path "*.RDS",        emit: rds
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
-    // def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
     echo ${meta_bam} | \\
@@ -49,10 +38,3 @@ process CAGER {
     END_VERSIONS
     """
 }
-
-// cager.R ${bsgnome}
-// cager.R ${bam}
-
-// render_rmd.R $rmd bowtie2_table.tsv
-// R_dplyr: \$(Rscript -e 'packageVersion("dplyr")' | awk '{print \$2}' | tr -d "‘’")
-// R_ggplot2: \$(Rscript -e 'packageVersion("ggplot2")' | awk '{print \$2}' | tr -d "‘’")
