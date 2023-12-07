@@ -99,6 +99,8 @@ Channel
 // Info required for completion email and summary
 def multiqc_report = []
 
+// params.bsgenome = 
+
 workflow CUSTOMCAGE {
 
     ch_versions = Channel.empty()
@@ -202,8 +204,8 @@ workflow CUSTOMCAGE {
     //     .set{ch_bsgenome}
 
     // Main keys combinations:
-    // --forged_bsgenome sacCer1.tar.gz --fasta /path/to/fasta/sacCer1.fa # everyting local
-    // --bsgenome sacCer1 # downloade both fasta and the corresponding BSgenome package
+    // --bsgenome sacCer1.tar.gz --fasta /path/to/fasta/sacCer1.fa # everything local
+    // --bsgenome sacCer1 # download both fasta and the corresponding BSgenome package
 
     // =------------------=
 
@@ -220,11 +222,21 @@ workflow CUSTOMCAGE {
     // but if bsgenome does not exist, stop and ask user to add path to seed file, (fasta.2bit, seedfile)
     // if package is forged locally, give it as channel --forged_bsgenome (it should be .tar.gz thing)
 
-    BSGENOME ()
+    // bsgenome = '/Users/pavel/Desktop/PROJECTS/hooman-2/results/bsgenome/BSgenome.Scerevisiae.UCSC.sacCer1_1.4.0.tar.gz'
+    bsgenome = 'BSgenome.Scerevisiae.UCSC.sacCer1'
+
+    values = bsgenome.split('\\.')
+    
+    if (values[-2] == "tar" && values[-1] == "gz") {
+        Channel
+            .fromPath(bsgenome)
+            .set{ch_bsgenome}
+    } else {
+        ch_bsgenome = BSGENOME(bsgenome).out.bsgenome
+    }
     
     CAGER (
-        // ch_bsgenome,
-        BSGENOME.out.bsgenome,
+        ch_bsgenome,
         SAMTOOLS_SORT.out.bam.collect()
     )
 

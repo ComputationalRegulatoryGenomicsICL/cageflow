@@ -1,24 +1,19 @@
 process BSGENOME {
-    // tag "$meta.id"
     label 'process_low'
     stageInMode 'copy'
 
-    // conda "YOUR-TOOLsrs/YOUR-TOOL-HERE' }"
-
-    // input:
-    // tuple val(meta), path(bam)
+    input:
+    path bsgenome
 
     output:
-    path "*.tar.gz", emit: bsgenome
-    // tuple val(meta), path("*.bam"), emit: bam
-    path "versions.yml"           , emit: versions
+    path "*.tar.gz",     emit: bsgenome
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
-    // def prefix = task.ext.prefix ?: "${meta.id}"
     
     """
     # http://hgdownload.cse.ucsc.edu/goldenPath/sacCer1/bigZips/sacCer1.fa.gz
