@@ -207,6 +207,7 @@ workflow CUSTOMCAGE {
     // --bsgenome
     //     [--fasta | --twobit]
     //         [--seed]
+
     // --bsgenome sacCer1.tar.gz --fasta /path/to/fasta/sacCer1.fa # everything local
     // --bsgenome sacCer1 # download both fasta and the corresponding BSgenome package
 
@@ -246,13 +247,14 @@ workflow CUSTOMCAGE {
                 file(params.twobit, checkIfExists: true)
                 if (params.seed) {
                     file(params.seed, checkIfExists: true)
-                    // FORGE from fasta and seed
+                    // FORGE from twobit and seed
                 } else {
                     exit 1, "ERROR: --seed is not set."
                 }
             } else {
-                // download fasta and seed
-                // FORGE from fasta and seed
+                // exit 1, "ERROR: neither --fasta nor --twobit is not set."
+                // download fasta and (seed)
+                // FORGE from fasta and (seed)
             }
         }
     }
