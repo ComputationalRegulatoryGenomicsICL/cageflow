@@ -146,7 +146,7 @@ The forged package would be called `BSgenome.LatinName.custom.mySpecies`, where 
 
 ## Credits
 
-ComputationalRegulatoryGenomicsICL/customcage was originally written by Pavel Nikitin ([@nikitin-p](https://github.com/nikitin-p)), Sviatoslav Sidorov ([@sidorov-si](https://github.com/sidorov-si)) and Damir Baranasic ([@da-bar](https://github.com/da-bar)).
+**ComputationalRegulatoryGenomicsICL/customcageq** was originally written by Pavel Nikitin ([@nikitin-p](https://github.com/nikitin-p)), Sviatoslav Sidorov ([@sidorov-si](https://github.com/sidorov-si)) and Damir Baranasic ([@da-bar](https://github.com/da-bar)).
 
 ## Citations
 
