@@ -59,7 +59,7 @@ On these data, CAGEr is able to call about 30 TSSs with the single-end reads and
 
 ### How to run the pipeline
 
-Clone the repository to your machine an use the following syntax to run the pipeline:
+Clone the repository to your machine and use the following syntax to run the pipeline:
 
 ```bash
 nextflow run customcageq/main.nf \
