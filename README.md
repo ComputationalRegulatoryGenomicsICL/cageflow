@@ -24,44 +24,52 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 
 ## Usage
 
-:::note
-If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how
-to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
-with `-profile test` before running the workflow on actual data.
-:::
+### Prepare for your first run
 
-<!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate):
+Make sure you have the latest version of Nextflow, as well as the latest version of Docker (if running the pipeline on a laptop / PC) or Singularity (if running on a high-performance cluster).
 
-First, prepare a samplesheet with your input data that looks as follows:
+### Prepare your input data
 
-`samplesheet.csv`:
+Prepare the sample sheet with the description of input samples. In case of single-end reads, it should look like this:
 
 ```csv
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
+sample,fastq_1,fastq_2,single_end
+S1,/path/to/fastq/S1_S1_L001_R1_001.fastq.gz,,True
+S1,/path/to/fastq/S1_S1_L002_R1_001.fastq.gz,,True
+S2,/path/to/fastq/S2_S2_L001_R1_001.fastq.gz,,True
+S2,/path/to/fastq/S2_S2_L002_R1_001.fastq.gz,,True
 ```
 
-Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
+where
+* `sample` is a unique identifier of a sample;
+* `fastq_1` (and `fastq_2` in the case of paired-end reads) is a full path to the read libraries. In case of paired-end reads, `fastq_1` contains the full path to forward reads, while `fastq_2` contains the full path to reverse reads. One sample can be represented by more than one library if each lane stored separately;
+* `single_end` should be set to `True` for single-end reads and to `False` for paired-end reads.
 
--->
+For paired-end reads, `fastq_2` should contain the full path to reverse reads, while `single_end` should be set to `False`.
 
-Now, you can run the pipeline using:
+You can generate the input CSV table automatically using the [`input_reads.sh`](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/bin/input_reads.sh) script.
 
-<!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
+### Toy input data for testing
+
+The pipeline has toy *S. cerevisiae* "CAGE" data stored in [assets/sacer_fq](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets/sacer_fq) for testing purposes (single-end reads in the [se](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets/sacer_fq/se) subfolder and paired-end reads in [pe](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets/sacer_fq/pe) subfolder). The data was obtained from the *S. cerevisiae* genome bioinformatically, by random sampling of its subsequences.
+
+The corresponding input spreadsheets can be found in [assets](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets): [samplesheet_se.csv](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/assets/samplesheet_se.csv) for single-end reads, and [samplesheet_pe.csv](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/assets/samplesheet_pe.csv) for paired-end reads.
+
+On these data, CAGEr is able to call several tens of TSSs.
+
+### Synopsis
+
+To run the pipeline, use the following syntax
 
 ```bash
 nextflow run ComputationalRegulatoryGenomicsICL/customcage \
    -profile <docker/singularity/.../institute> \
-   --input samplesheet.csv \
-   --outdir <OUTDIR>
+   --input samplesheet.csv
 ```
 
-:::warning
-Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
-provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
-see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
-:::
+### Run examples
+
+...
 
 ## Credits
 
