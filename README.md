@@ -70,7 +70,7 @@ nextflow run customcageq/main.nf \
 ```
 
 where 
-* `--bsgenome` specifies the BSgenome R package to use. If it is a file name with a full path and the `.tar.gz` extension, then the package will be taken from the specified location; otherwise, the pipeline will try to use a BSgenome R package with the name `bsgenome.package` (see below for examples);
+* `--bsgenome` specifies the BSgenome R package to use. If it is a file name (which should have a full path and the `.tar.gz` extension), then the package will be taken from the specified location; otherwise, the pipeline will try to use a BSgenome R package with the name `bsgenome.package` (see below for examples);
 * `--fasta` specifies a full path to a FASTA file containing the reference genome. This is an optional parameter. If it is specified, then the pipeline will take the reference genome FASTA from `/path/to/fasta/genome.fa` and use it to create the Bowtie2 index. **Remark:** This option is mutually exclusive with `--index`.
 * `--index` specifies a directory with a Bowtie2 reference genome index. This is an optional parameter. If it is specified, then the pipeline will use this index to map the input CAGE data. **Remark:** This option is mutually exclusive with `--fasta`.
 * `--input` specifies the input CSV samplesheet.
