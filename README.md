@@ -15,7 +15,7 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 1. Merge per-lane FASTQ files with the [`nf-core/cat_fastq`](https://nf-co.re/modules/cat_fastq) module.
 2. Report raw read quality with [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).
 3. Trim adapters with [`TrimGalore`](https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md) and run [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) on trimmed reads.
-4. Download the reference genome FASTA file from UCSC, if not provided locally, using [`BuxyBox wget`](https://boxmatrix.info/wiki/Property:wget) within a custom module [`DOWNLOAD_FASTA`](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/modules/local/downloadfasta.nf).
+4. Download the reference genome FASTA file from the UCSC server, if not provided locally, using [`BuxyBox wget`](https://boxmatrix.info/wiki/Property:wget) within a custom module [`DOWNLOAD_FASTA`](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/modules/local/downloadfasta.nf).
 5. Build the Bowtie2 index of the reference genome FASTA file with [`bowtie2-build`](https://bowtie-bio.sourceforge.net/bowtie2/manual.shtml), if the index is not provided locally.
 6. Map the trimmed reads onto the Bowtie2 index using [`bowtie2`](https://bowtie-bio.sourceforge.net/bowtie2/manual.shtml) with options `-b -F 4 -q 20` to filter out unmapped reads and select only uniquelly mapped reads.
 7. Sort the obtained BAM files with uniquelly mapped reads using [`samtools sort`](https://www.htslib.org/doc/samtools.html).
