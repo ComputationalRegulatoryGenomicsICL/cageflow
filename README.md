@@ -136,7 +136,7 @@ Either a FASTA file or a 2bit file must be specified.
 
 Either a FASTA file or a 2bit file must be specified.
 
-The forged package would be called `BSgenome.LatinName.custom.mySpecies`, where `LatinName` could be something like `Scerevisia` and `mySpecies` could be something like `sacCer2`.
+The forged package would be called `BSgenome.LatinName.custom.mySpecies`, where `LatinName` could be something like `Scerevisia` (taken from the seed file) and `mySpecies` could be something like `sacCer2`.
 
 2. Improve the `input_reads.sh` script, according to Damir's comments within it.
 
