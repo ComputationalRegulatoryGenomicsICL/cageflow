@@ -78,7 +78,7 @@ where
 
 ### Examples
 
-1. Call TSSs from the test yeast single-end CAGE reads using the locally stored reference FASTA file and the `BSgenome.Scerevisiae.UCSC.sacCer1` R package. The package is automatically installed within the CAGEr container and used there with CAGEr:
+1. Call TSSs from the test yeast single-end CAGE reads using a locally stored reference FASTA file and the `BSgenome.Scerevisiae.UCSC.sacCer1` R package. The package is automatically installed within the CAGEr container and used there with CAGEr:
 
 ```bash
 nextflow run customcageq/main.nf \
@@ -88,7 +88,7 @@ nextflow run customcageq/main.nf \
     -profile docker
 ```
 
-2. Call TSSs from the test yeast paired-end CAGE reads using the locally stored Bowtie2 index and the locally stored `BSgenome.Scerevisiae.UCSC.sacCer1` R package. The package is automatically installed from the `.tar.gz` archive within the CAGEr container and used with CAGEr:
+2. Call TSSs from the test yeast paired-end CAGE reads using a locally stored Bowtie2 index and the locally stored `BSgenome.Scerevisiae.UCSC.sacCer1` R package. The package is automatically installed from the `.tar.gz` archive within the CAGEr container and used with CAGEr:
 
 ```bash
 nextflow run customcageq/main.nf \
@@ -98,7 +98,7 @@ nextflow run customcageq/main.nf \
     -profile docker
 ```
 
-3. Call TSSs from the test yeast single-end CAGE reads using the [sacCer1 reference FASTA file](http://hgdownload.cse.ucsc.edu/goldenPath/sacCer1/bigZips/sacCer1.fa.gz) automatically downloaded from the UCSC server and the `BSgenome.Scerevisiae.UCSC.sacCer1` R package automatically installed within the CAGEr container and used there with CAGEr. As neither `--fasta`, nor `--index`, are specified, the genome name `sacCer1` is automatically taken from the provided BSgenome package name (or the file name of the package `.tar.gz` archive stored locally, if provided):
+3. Call TSSs from the test yeast single-end CAGE reads using the [sacCer1 reference FASTA file](http://hgdownload.cse.ucsc.edu/goldenPath/sacCer1/bigZips/sacCer1.fa.gz) automatically downloaded from the UCSC server and the `BSgenome.Scerevisiae.UCSC.sacCer1` R package automatically installed within the CAGEr container and used there with CAGEr. As neither `--fasta`, nor `--index`, are specified, the genome name `sacCer1` is automatically taken from the provided BSgenome package name (or the file name of the package `.tar.gz` archive stored locally, if provided) to find and downloade the respective reference FASTA file:
 
 ```bash
 nextflow run customcageq/main.nf \
