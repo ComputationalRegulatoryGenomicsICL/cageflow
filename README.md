@@ -59,17 +59,30 @@ On these data, CAGEr is able to call several tens of TSSs.
 
 ### Synopsis
 
-To run the pipeline, use the following syntax
+Clone the repository to your machine an use the following syntax to run the pipeline:
 
 ```bash
-nextflow run ComputationalRegulatoryGenomicsICL/customcage \
-   -profile <docker/singularity/.../institute> \
-   --input samplesheet.csv
+nextflow run customcageq/main.nf \
+    --bsgenome [/path/to/]bsgenome.package[.tar.gz] \
+    [--fasta /path/to/fasta/genome.fa | --index /path/to/index/genome] \
+    --input samplesheet.csv
+   -profile custom.config
 ```
 
-### Run examples
+where 
+* `--bsgenome` specifies the BSgenome R package to use. If it is a file name with a full path and the `.tar.gz` extension, then the package will be taken from the specified location; otherwise, the pipeline will try to use a BSgenome R package with the name `bsgenome.package` (see below for examples);
+* `--fasta` specifies a full path to a FASTA file containing the reference genome. This is an optional parameter. If it is specified, then the pipeline will take the reference genome FASTA from `/path/to/fasta/genome.fa` and use it to create the Bowtie2 index. **Remark:** This option is mutually exclusive with `--index`.
+* `--index` specifies a directory with a Bowtie2 reference genome index. This is an optional parameter. If it is specified, then the pipeline will use this index to map the input CAGE data. **Remark:** This option is mutually exclusive with `--fasta`.
+* `--input` specifies the input CSV samplesheet.
+* `-profile` is a Nextflow option that specifies a config file to use with Nextflow on a given machine. See [`nf-core/configs`](https://github.com/nf-core/configs) for ready-to-use institutional configs, including the one for Jex (the high-performance computing cluster of the [Laboratory of Medical Sciences](https://lms.mrc.ac.uk/)). Also, see the [Jex wiki](https://hpcwiki.lms.mrc.ac.uk/docs/software/software/workflow_managers/#nextflow) on how to run Nextflow on Jex.
+
+### Examples
 
 ...
+
+## To-do for version 2
+
+1. ...
 
 ## Credits
 
