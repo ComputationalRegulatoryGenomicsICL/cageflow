@@ -114,7 +114,11 @@ nextflow run customcageq/main.nf \
 * Forge a BSgenome from a FASTA or a 2bit file and proceed with the CAGE preprocessing using the forged BSgenome and the FASTA file:
 
 ```bash
---forge --bsgenome mySpecies (--fasta /path/to/fasta/mySpecies.fa | --twobit /path/to/fasta/mySpecies.2bit) --seed /path/to/seed/mySpecies_seed.txt --input input.csv
+--forge \
+--bsgenome mySpecies \
+(--fasta /path/to/fasta/mySpecies.fa | --twobit /path/to/fasta/mySpecies.2bit) \
+--seed /path/to/seed/mySpecies_seed.txt \
+--input input.csv
 ```
 
 Either a FASTA file or a 2bit file must be specified.
@@ -122,7 +126,10 @@ Either a FASTA file or a 2bit file must be specified.
 * Only forge a BSgenome and exit:
 
 ```bash
---forge-only --bsgenome mySpecies (--fasta /path/to/fasta/mySpecies.fa | --twobit /path/to/fasta/mySpecies.2bit) --seed /path/to/seed/mySpecies_seed.txt
+--forge-only \
+--bsgenome mySpecies \
+(--fasta /path/to/fasta/mySpecies.fa | --twobit /path/to/fasta/mySpecies.2bit) \
+--seed /path/to/seed/mySpecies_seed.txt
 ```
 
 Either a FASTA file or a 2bit file must be specified.
