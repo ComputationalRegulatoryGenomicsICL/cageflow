@@ -42,7 +42,7 @@ S2,/path/to/fastq/S2_S2_L002_R1_001.fastq.gz,,True
 
 where
 * `sample` is a unique identifier of a sample;
-* `fastq_1` (and `fastq_2` in the case of paired-end reads) is a full path to the read libraries. In case of paired-end reads, `fastq_1` contains the full path to forward reads, while `fastq_2` contains the full path to reverse reads. One sample can be represented by more than one library if each lane stored separately;
+* `fastq_1` (and `fastq_2` in the case of paired-end reads) is a full path to the read libraries. In case of paired-end reads, `fastq_1` contains the full path to forward reads, while `fastq_2` contains the full path to reverse reads. One sample can be represented by more than one library if lanes are stored separately;
 * `single_end` should be set to `True` for single-end reads and to `False` for paired-end reads.
 
 For paired-end reads, `fastq_2` should contain the full path to reverse reads, while `single_end` should be set to `False`.
