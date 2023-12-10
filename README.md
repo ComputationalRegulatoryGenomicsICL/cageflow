@@ -57,7 +57,7 @@ The pipeline has toy *S. cerevisiae* CAGE data stored in [assets/sacer_fq](https
 
 The corresponding input spreadsheets can be found in [assets](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets): [samplesheet_se.csv](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/assets/samplesheet_se.csv) for single-end reads and [samplesheet_pe.csv](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/assets/samplesheet_pe.csv) for paired-end reads.
 
-On these data, CAGEr is able to call about 30 TSSs with the single-end reads and about ... TSSs with the paired-end reads.
+On these test data, CAGEr is able to call about 30 TSSs with the single-end reads but exits with an error trying to read paired-end BAM files. This is most probably because of the reads being not the real forward and reverse ones. We are working on a replacement with real paired-end yeast reads. However, all other steps of the pipeline run successfully on the paired-end test set.
 
 ### How to run the pipeline
 
