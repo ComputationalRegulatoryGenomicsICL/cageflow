@@ -57,7 +57,7 @@ The corresponding input spreadsheets can be found in [assets](https://github.com
 
 On these data, CAGEr is able to call about 30 TSSs with the single-end reads and about ... TSSs with the paired-end reads.
 
-### Synopsis
+### How to run the pipeline
 
 Clone the repository to your machine an use the following syntax to run the pipeline:
 
