@@ -4,7 +4,7 @@
 
 ### Input
 
-Either single-end or paired-end raw CAGE reads. Onle one type of reads (either single- or paired-end) can be used in one run of the pipeline.
+Either single-end or paired-end raw CAGE reads. Only one type of reads (either single- or paired-end) can be used in one run of the pipeline.
 
 ### Output
 
