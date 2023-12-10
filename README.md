@@ -138,7 +138,7 @@ The forged package would be called `BSgenome.LatinName.custom.mySpecies`, where 
 
 2. Improve the `input_reads.sh` script, according to Damir's comments within it.
 
-3. Make a "metromap" (schematic) of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
+3. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
   
 4. Replace the current test yeast paired-end reads with real ones.
 
