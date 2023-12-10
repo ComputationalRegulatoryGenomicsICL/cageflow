@@ -134,11 +134,13 @@ Either a FASTA file or a 2bit file must be specified.
 
 Either a FASTA file or a 2bit file must be specified.
 
-2. Make a "metromap" (schematic) of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
-  
-3. Replace the current test yeast paired-end reads with real ones.
+2. Improve the `input_reads.sh` script, according to Damir's comments within it.
 
-4. Cite all the tools we used in `CITATIONS.md`.
+3. Make a "metromap" (schematic) of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
+  
+4. Replace the current test yeast paired-end reads with real ones.
+
+5. Cite all the tools we used in `CITATIONS.md`.
 
 ## Credits
 
