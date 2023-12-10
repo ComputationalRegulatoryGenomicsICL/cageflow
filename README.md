@@ -28,7 +28,7 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 
 ### Prepare for your first run
 
-Make sure you have the latest version of Nextflow, as well as the latest version of Docker (if running the pipeline on a laptop / PC) or Singularity (if running on a high-performance cluster).
+Make sure you have the latest version of Nextflow, as well as the latest version of Docker (if running the pipeline on a laptop / PC) or Singularity (if running on a high-performance cluster). Pipeline was tested with Nextflow v23.10.0.5889 and Docker v23.0.1.
 
 ### Prepare your input data
 
