@@ -142,7 +142,7 @@ The forged package would be called `BSgenome.LatinName.custom.mySpecies`, where 
   
 4. Replace the current test yeast paired-end reads with real ones.
 
-5. Cite all the tools we used in `CITATIONS.md`.
+5. Cite in `CITATIONS.md` all the tools that we used.
 
 ## Credits
 
