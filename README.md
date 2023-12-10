@@ -8,7 +8,7 @@ Either single-end or paired-end raw CAGE reads. Only one type of reads (either s
 
 ### Output
 
-A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with CAGEr.
+A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with CAGEr. The intermediate and final results are stored in the `results` directory. The final CAGEexp object is stored in an RDS file in the `results/cager` directory.
 
 ### Steps
 
