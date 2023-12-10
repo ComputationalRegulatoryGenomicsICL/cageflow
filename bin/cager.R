@@ -8,10 +8,14 @@ bsgenome    = args[6]
 sample.list = args[7]
 cpus        = args[8]
 
-install.packages(bsgenome, repos = NULL, type="source")
+if (endsWith(bsgenome, ".tar.gz")) {
+    install.packages(bsgenome, repos = NULL, type="source")
+    ref.name = ref.name = unlist(strsplit(basename(bsgenome), "_"))[1]
+} else {
+    BiocManager::install(bsgenome)
+    ref.name = bsgenome
+}
 
-path = file.path(bsgenome)
-ref.name = unlist(strsplit(basename(path), "_"))[1]
 ref.id = unlist(strsplit(ref.name, "\\."))[4]
 
 library(ref.name, character.only = TRUE)

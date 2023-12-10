@@ -1,63 +1,22 @@
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    PRINT PARAMS SUMMARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
 include { paramsSummaryLog;
-        paramsSummaryMap;
-        validateParameters;
-        paramsHelp;
-        fromSamplesheet } from 'plugin/nf-validation'
+          paramsSummaryMap;
+          validateParameters;
+          paramsHelp;
+          fromSamplesheet } from 'plugin/nf-validation'
 
 def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
 def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
 def summary_params = paramsSummaryMap(workflow)
-
-// Print parameter summary log to screen
-// log.info logo + paramsSummaryLog(workflow) + citation
-
-// WorkflowCustomcage.initialise(params, log)
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    CONFIG FILES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
 
 ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
 ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
 ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
 ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT LOCAL MODULES/SUBWORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
 
-//
-// SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
-//
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
-
-//
-// MODULE: CAGEr and BSGenome module
-//
 include { CAGER } from '../modules/local/cager.nf'
-include { BSGENOME } from '../modules/local/bsgenome.nf'
-
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT NF-CORE MODULES/SUBWORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-//
-// MODULE: Installed directly from nf-core/modules
-//
-
+include { DOWNLOAD_FASTA } from '../modules/local/downloadfasta.nf'
 include { CAT_FASTQ } from '../modules/nf-core/cat/fastq/main.nf'
 include { FASTQC } from '../modules/nf-core/fastqc/main.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
@@ -67,50 +26,52 @@ include { BOWTIE2_BUILD } from '../modules/nf-core/bowtie2/build/main.nf'
 include { BOWTIE2_ALIGN } from '../modules/nf-core/bowtie2/align/main.nf'
 include { SAMTOOLS_SORT } from '../modules/nf-core/samtools/sort/main.nf'
 include { SAMTOOLS_INDEX } from '../modules/nf-core/samtools/index/main.nf'
-// include {  } from '../modules/nf-core/modules/ /main.nf'
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    LOAD REFERENCE GENOME
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-genome = [
-    [
-    [
-        id: "GENOME"
-    ], 
-    params.genome
-    ]
-]
-
-// Test without [] in [ file(row[1]) ], seems it is not necessary
-Channel
-    .from( genome )
-    .map{ row -> [ row[0], [ file(row[1]) ] ] }
-    .set{ ch_genome }
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    RUN MAIN WORKFLOW
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-// Info required for completion email and summary
 def multiqc_report = []
 
 workflow CUSTOMCAGE {
 
     ch_versions = Channel.empty()
 
-    //
-    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
-    //
+    if (!params.bsgenome) {
+        exit 1, '--bsgenome (either a genome name from UCSC or a file path to a tar.gz archive) is not specified.'
+    }
 
-    if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
+    if (params.input) {
+        input_handler = file(params.input, checkIfExists: true)
+    } else {
+        exit 1, '--input (input samplesheet) is not specified.'
+    }
+
+    if (!params.fasta && !params.index) {
+        bsgenome_name = file(params.bsgenome).name
+        values = bsgenome_name.split('\\.')
+        if (values[2] == "UCSC") {
+            ucscid = values[3].split('_')[0]
+            DOWNLOAD_FASTA( ucscid )
+            ch_fasta = DOWNLOAD_FASTA.out.fasta
+                .map{ it -> [[id: "FASTA"], it] }
+        } else {
+            exit 1, 'Reference fasta is not specified for a custom BSgenome.'
+        }
+    } else if (params.fasta && params.index) {
+        exit 1, 'either --fasta or --index should be specified.'
+    } else if (params.fasta) {
+        fasta = [[[id: "FASTA"], params.fasta]]
+        Channel
+            .from( fasta )
+            .map{ row -> [ row[0], file(row[1], checkIfExists: true) ] }
+            .set{ ch_fasta }
+    } else {
+        index = [[[id: "INDEX"], params.index]]
+        Channel
+            .from( index )
+            .map{ row -> [ row[0], file(row[1], checkIfExists: true) ] }
+            .set{ ch_index }
+    }
 
     INPUT_CHECK (
-        ch_input
+        input_handler
     )
     
     INPUT_CHECK.out.reads
@@ -124,21 +85,11 @@ workflow CUSTOMCAGE {
 
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
-    //
-    // MODULE: Concatenate FastQ files from same sample if required
-    //
-
     CAT_FASTQ (
         ch_fastq
-    )
-        .reads
-        .set { ch_cat_fastq }
+    ).reads.set { ch_cat_fastq }
 
     ch_versions = ch_versions.mix(CAT_FASTQ.out.versions.first().ifEmpty(null))
-
-    //
-    // MODULE: Run FastQC
-    //
 
     FASTQC (
         ch_cat_fastq
@@ -151,10 +102,13 @@ workflow CUSTOMCAGE {
     // do not forget to add trimgalore fastqc to multiqc
     ch_versions = ch_versions.mix(TRIMGALORE.out.versions.first())
 
-    BOWTIE2_BUILD (
-        ch_genome
-    )
-    ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions.first())
+    if (!params.index) {
+        BOWTIE2_BUILD (
+            ch_fasta
+        )
+        ch_index = BOWTIE2_BUILD.out.index
+        ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions.first())
+    }
 
     process MULTI_INDEX {
         input:
@@ -170,7 +124,7 @@ workflow CUSTOMCAGE {
 
     MULTI_INDEX (
         ch_cat_fastq.count(),
-        BOWTIE2_BUILD.out.index
+        ch_index
     )
 
     BOWTIE2_ALIGN (
@@ -193,108 +147,34 @@ workflow CUSTOMCAGE {
 
     // do not forget aligned reads must be processed with multiqc
 
-    // SAMTOOLS_SORT.out.bam.view()
-    // SAMTOOLS_SORT.out.bam.collect().view()
-    // bams = Channel.fromPath( '/path/*b', type: 'dir' )
-
-    // Channel
-    //     .fromPath('/Users/pavel/Desktop/PROJECTS/hooman-2/BSgenome.Scerevisiae.UCSC.sacCer1_1.4.0.tar.gz')
-    //     .set{ch_bsgenome}
-
-    // Main keys combinations:
-    // --bsgenome *.tar.gz
-    //     --fasta
-    // --bsgenome
-    //     [--fasta | --twobit]
-    //         [--seed]
-
-    // --bsgenome sacCer1.tar.gz --fasta /path/to/fasta/sacCer1.fa # everything local
-    // --bsgenome sacCer1 # download both fasta and the corresponding BSgenome package
-
-    // =------------------=
-
-    // --bsgenome sacCer1 --fasta /path/to/fasta/sacCer1.fa --seed /path/to/seed/sacCer1_seed.txt # forge the package from fasta
-    // --bsgenome sacCer1 --twobit /path/to/fasta/sacCer1.2bit --seed /path/to/seed/sacCer1_seed.txt # forge the package from 2bit
-
-    if ( !params.bsgenome ) {
-        exit 1, "ERROR: --bsgenome is not set."
-    }
-
-    values = params.bsgenome.split('\\.')
-    
-    if (values[-2] == "tar" && values[-1] == "gz") {
-        file(params.bsgenome, checkIfExists: true)
-        Channel
-            .fromPath(params.bsgenome)
-            .set{ch_bsgenome}
-        if (params.fasta) {
-            file(params.fasta, checkIfExists: true)
-        } else {
-            exit 1, "ERROR: --fasta is not set."
-        }
-    } else {
-        ch_bsgenome = BSGENOME(params.bsgenome).out.bsgenome
-        if (params.fasta) {
-            file(params.fasta, checkIfExists: true)
-            if (params.seed) {
-                file(params.seed, checkIfExists: true)
-                // FORGE from fasta and seed
-            } else {
-                exit 1, "ERROR: --seed is not set."
-            }
-        } else {
-            if (params.twobit) {
-                file(params.twobit, checkIfExists: true)
-                if (params.seed) {
-                    file(params.seed, checkIfExists: true)
-                    // FORGE from twobit and seed
-                } else {
-                    exit 1, "ERROR: --seed is not set."
-                }
-            } else {
-                // exit 1, "ERROR: neither --fasta nor --twobit is not set."
-                // download fasta and (seed)
-                // FORGE from fasta and (seed)
-            }
-        }
-    }
-    
     CAGER (
-        ch_bsgenome,
+        params.bsgenome,
         SAMTOOLS_SORT.out.bam.collect()
     )
 
-    // // // do not forget to remove COMPUTATIONALREGULATORYGENOMICSICL_CUSTOM...
+    CUSTOM_DUMPSOFTWAREVERSIONS (
+        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    )
 
-    // // // Sort out all tool versions
+    workflow_summary    = WorkflowCustomcage.paramsSummaryMultiqc(workflow, summary_params)
+    ch_workflow_summary = Channel.value(workflow_summary)
 
-    // CUSTOM_DUMPSOFTWAREVERSIONS (
-    //     ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    // )
+    methods_description    = WorkflowCustomcage.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
+    ch_methods_description = Channel.value(methods_description)
 
-    // //
-    // // MODULE: MultiQC
-    // //
-    // workflow_summary    = WorkflowCustomcage.paramsSummaryMultiqc(workflow, summary_params)
-    // ch_workflow_summary = Channel.value(workflow_summary)
+    ch_multiqc_files = Channel.empty()
+    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
+    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
 
-    // methods_description    = WorkflowCustomcage.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
-    // ch_methods_description = Channel.value(methods_description)
-
-    // ch_multiqc_files = Channel.empty()
-    // ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    // ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-    // ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
-    // ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
-
-    // MULTIQC (
-    //     ch_multiqc_files.collect(),
-    //     ch_multiqc_config.toList(),
-    //     ch_multiqc_custom_config.toList(),
-    //     ch_multiqc_logo.toList()
-    // )
-    // multiqc_report = MULTIQC.out.report.toList()
-
+    MULTIQC (
+        ch_multiqc_files.collect(),
+        ch_multiqc_config.toList(),
+        ch_multiqc_custom_config.toList(),
+        ch_multiqc_logo.toList()
+    )
+    multiqc_report = MULTIQC.out.report.toList()
 
 }
 

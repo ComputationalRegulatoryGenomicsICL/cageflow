@@ -22,7 +22,6 @@ for r1 in "${folder_path}"/*_R1*; do
     sample_name=$(basename "$r1" | cut -d'_' -f1)
 
     # Check for corresponding R2 file
-    # r2="${folder_path}/${sample_name}_*_R2*"
     full_sample_name=$(basename "$r1" | awk -F'_R[1-2]' '{print $1}')
     r2="${folder_path}/${full_sample_name}_R2*"
 

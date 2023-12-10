@@ -5,18 +5,12 @@ process CAGER {
     // container 'docker://hub.docker.com/nikitinpavel/cager:0.5'
    
     input:
-    path bsgnome
+    val bsgenome
     val meta_bam
 
     output:
     path "*.RDS",        emit: rds
     path "versions.yml", emit: versions
-
-    when:
-    task.ext.when == null || task.ext.when
-
-    script:
-    def args = task.ext.args ?: ''
 
     """
     echo ${meta_bam} | \\
@@ -27,7 +21,7 @@ process CAGER {
         sed 's/single_end://' \\
             > sample_list.tsv
 
-    cager.R ${bsgnome} sample_list.tsv ${task.cpus}
+    cager.R ${bsgenome} sample_list.tsv ${task.cpus}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
