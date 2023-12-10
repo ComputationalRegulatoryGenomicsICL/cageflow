@@ -78,7 +78,7 @@ where
 
 ### Examples
 
-1. Call TSSs from the yeast single-end read test CAGE data using the locally stored reference FASTA file and the `BSgenome.Scerevisiae.UCSC.sacCer1` R package for CAGEr. The package will be automatically installed and used within the CAGEr container:
+1. Call TSSs from the test yeast single-end CAGE reads using the locally stored reference FASTA file and the `BSgenome.Scerevisiae.UCSC.sacCer1` R package. The package is automatically installed within the CAGEr container and used there with CAGEr:
 
 ```bash
 nextflow run customcageq/main.nf \
@@ -88,30 +88,59 @@ nextflow run customcageq/main.nf \
     -profile docker
 ```
 
+2. Call TSSs from the test yeast paired-end CAGE reads using the locally stored Bowtie2 index and the locally stored `BSgenome.Scerevisiae.UCSC.sacCer1` R package. The package is automatically installed from the `.tar.gz` archive within the CAGEr container and used with CAGEr:
+
+```bash
+nextflow run customcageq/main.nf \
+    --bsgenome /path/to/bsgenome/BSgenome.Scerevisiae.UCSC.sacCer1_1.4.0.tar.gz \
+    --index /path/to/index/bowtie2 \
+    --input customcageq/assets/samplesheet_pe.csv \
+    -profile docker
+```
+
+3. Call TSSs from the test yeast single-end CAGE reads using the [sacCer1 reference FASTA file](http://hgdownload.cse.ucsc.edu/goldenPath/sacCer1/bigZips/sacCer1.fa.gz) automatically downloaded from the UCSC server and the `BSgenome.Scerevisiae.UCSC.sacCer1` R package automatically installed within the CAGEr container and used there with CAGEr. As neither `--fasta`, nor `--index`, are specified, the genome name `sacCer1` is automatically taken from the provided BSgenome package name (or the file name of the package `.tar.gz` archive stored locally, if provided):
+
+```bash
+nextflow run customcageq/main.nf \
+    --bsgenome BSgenome.Scerevisiae.UCSC.sacCer1 \
+    --input customcageq/assets/samplesheet_se.csv \
+    -profile docker
+```
+
 ## To-do for version 2
 
-1. ...
+1. Implement BSgenome forging based on a FASTA or a 2bit file and a seed file, specified by the user. Provide for the BSgenome forging and CAGE data preprocessing in one go with an option `--forge` and for BSgenome forging only with an option `--forge-only`:
+
+* Forge a BSgenome from a FASTA or a 2bit file and proceed with the CAGE preprocessing using the forged BSgenome and the FASTA file:
+
+```bash
+--forge --bsgenome mySpecies (--fasta /path/to/fasta/mySpecies.fa | --twobit /path/to/fasta/mySpecies.2bit) --seed /path/to/seed/mySpecies_seed.txt --input input.csv
+```
+
+Either a FASTA file or a 2bit file must be specified.
+
+* Only forge a BSgenome and exit:
+
+```bash
+--forge-only --bsgenome mySpecies (--fasta /path/to/fasta/mySpecies.fa | --twobit /path/to/fasta/mySpecies.2bit) --seed /path/to/seed/mySpecies_seed.txt
+```
+
+Either a FASTA file or a 2bit file must be specified.
+
+2. Make a "metromap" (schematic) of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
+  
+3. Replace the current test yeast paired-end reads with real ones.
+
+4. Cite all the tools we used in `CITATIONS.md`.
 
 ## Credits
 
-ComputationalRegulatoryGenomicsICL/customcage was originally written by Damir Baranasic.
-
-We thank the following people for their extensive assistance in the development of this pipeline:
-
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
-
-## Contributions and Support
-
-If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
+ComputationalRegulatoryGenomicsICL/customcage was originally written by Pavel Nikitin ([@nikitin-p](https://github.com/nikitin-p)), Sviatoslav Sidorov ([@sidorov-si](https://github.com/sidorov-si)) and Damir Baranasic ([@da-bar](https://github.com/da-bar)).
 
 ## Citations
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
 <!-- If you use  ComputationalRegulatoryGenomicsICL/customcage for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
-
-<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
-
-An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
 This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/master/LICENSE).
 
