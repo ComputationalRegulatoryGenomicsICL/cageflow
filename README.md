@@ -111,30 +111,29 @@ nextflow run customcageq/main.nf \
 
 ## To-do for version 2
 
-1. Implement BSgenome forging based on a FASTA or a 2bit file and a seed file, all specified by the user. Provide for the BSgenome forging and CAGE data preprocessing in one go with an option `--forge` and for BSgenome forging only - with an option `--forge-only`:
+1. Implement BSgenome forging based on a seed file specified by the user. Apart from other fields, a seed file contains a path to the directory with a FASTA file or a 2bit file to forge the BSgenome (source directory). Provide for amending the path to the source directory using an optional `--sourcedir` parameter. Additionally, provide for the BSgenome forging and CAGE data preprocessing in one go with an option `--forge` and for BSgenome forging only - with an option `--forge-only`. 
 
-* Forge a BSgenome from a FASTA or a 2bit file and proceed with CAGE preprocessing using the forged BSgenome and the FASTA file:
+* Forge a BSgenome and proceed with CAGE preprocessing using the forged BSgenome and a FASTA file. The FASTA file should either be provided for the BSgenome forging and, hence, located in the `source_dir`, or be provided with the `--fasta` option:
 
 ```bash
 --forge \
 --bsgenome mySpecies \
-(--fasta /path/to/fasta/mySpecies.fa | --twobit /path/to/fasta/mySpecies.2bit) \
+[--sourcedir /path/to/source_dir] \
+[--fasta /path/to/fasta/genome.fasta] \
 --seed /path/to/seed/mySpecies_seed.txt \
 --input input.csv
 ```
 
-Either a FASTA file or a 2bit file must be specified.
+A FASTA file must be specified with the `--fasta` option if it was not provided for the BSgenome forging.
 
 * Only forge a BSgenome and exit:
 
 ```bash
 --forge-only \
 --bsgenome mySpecies \
-(--fasta /path/to/fasta/mySpecies.fa | --twobit /path/to/fasta/mySpecies.2bit) \
+[--sourcedir /path/to/source_dir] \
 --seed /path/to/seed/mySpecies_seed.txt
 ```
-
-Either a FASTA file or a 2bit file must be specified.
 
 The forged package would be called `BSgenome.LatinName.custom.mySpecies`, where `LatinName` could be something like `Scerevisia` (taken from the seed file) and `mySpecies` could be something like `sacCer2`.
 
