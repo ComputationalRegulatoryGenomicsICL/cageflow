@@ -111,7 +111,7 @@ nextflow run customcageq/main.nf \
 
 ## To-do for version 2
 
-1. Implement BSgenome forging based on a FASTA or a 2bit file and a seed file, all specified by the user. Provide for the BSgenome forging and CAGE data preprocessing in one go with an option `--forge` and for BSgenome forging only with an option `--forge-only`:
+1. Implement BSgenome forging based on a FASTA or a 2bit file and a seed file, all specified by the user. Provide for the BSgenome forging and CAGE data preprocessing in one go with an option `--forge` and for BSgenome forging only - with an option `--forge-only`:
 
 * Forge a BSgenome from a FASTA or a 2bit file and proceed with CAGE preprocessing using the forged BSgenome and the FASTA file:
 
