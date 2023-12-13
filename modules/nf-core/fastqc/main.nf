@@ -30,6 +30,8 @@ process FASTQC {
         [ -f "\${new_name}" ] || ln -s \$old_name \$new_name
     done
 
+    echo $renamed_files
+
     fastqc \\
         $args \\
         --threads $task.cpus \\

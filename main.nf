@@ -18,7 +18,7 @@ nextflow.enable.dsl = 2
 // TODO nf-core: Remove this line if you don't need a FASTA file
 //   This is an example of how to use getGenomeAttribute() to fetch parameters
 //   from igenomes.config using `--genome`
-params.fasta = WorkflowMain.getGenomeAttribute(params, 'fasta')
+// params.fasta = WorkflowMain.getGenomeAttribute(params, 'fasta')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,23 +26,23 @@ params.fasta = WorkflowMain.getGenomeAttribute(params, 'fasta')
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { validateParameters; paramsHelp } from 'plugin/nf-validation'
+// include { validateParameters; paramsHelp } from 'plugin/nf-validation'
 
 // Print help message if needed
-if (params.help) {
-    def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
-    def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
-    def String command = "nextflow run ${workflow.manifest.name} --input samplesheet.csv --genome GRCh37 -profile docker"
-    log.info logo + paramsHelp(command) + citation + NfcoreTemplate.dashedLine(params.monochrome_logs)
-    System.exit(0)
-}
+// if (params.help) {
+//     def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
+//     def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
+//     def String command = "nextflow run ${workflow.manifest.name} --input samplesheet.csv --genome GRCh37 -profile docker"
+//     log.info logo + paramsHelp(command) + citation + NfcoreTemplate.dashedLine(params.monochrome_logs)
+//     System.exit(0)
+// }
 
 // Validate input parameters
-if (params.validate_params) {
-    validateParameters()
-}
+// if (params.validate_params) {
+//     validateParameters()
+// }
 
-WorkflowMain.initialise(workflow, params, log)
+// WorkflowMain.initialise(workflow, params, log)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,14 +50,18 @@ WorkflowMain.initialise(workflow, params, log)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { CUSTOMCAGE } from './workflows/customcage'
+include { CUSTOMCAGE } from './workflows/customcage.nf'
 
 //
 // WORKFLOW: Run main ComputationalRegulatoryGenomicsICL/customcage analysis pipeline
 //
 workflow COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE {
-    CUSTOMCAGE ().out.view()
+    // CUSTOMCAGE().out.view()
+    CUSTOMCAGE().out
+    // CUSTOMCAGE()
 }
+
+// CUSTOMCAGE()
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,7 +74,7 @@ workflow COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
-    COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE ()
+    COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE()
 }
 
 /*
