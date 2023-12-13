@@ -143,7 +143,7 @@ The forged package would be called `BSgenome.LatinName.custom.mySpecies`, where 
 
 4. Cite in `CITATIONS.md` all the tools that we used.
 
-5. Use the iGenomes repository for obtaining reference genomes: we could obtain ready-made Bowtie2 indexes from there, instead of FASTA files (http://igenomes.illumina.com.s3-website-us-east-1.amazonaws.com/README.txt). But make sure that for a given reference genome we download only the Bowtie2 index and not the whole bundle of files (which also includes other indexes and the genome sequence). iGenomes, in general, may be tricky to use because they tend to be outdated or have other problems (see the notifications in the nf-core documentation: https://nf-co.re/docs/usage/reference_genomes), so I would not prioritise the iGenomes usage, although being able to download a ready-made Bowtie2 index would be very useful!
+5. Use the iGenomes repository for obtaining reference genomes: we could obtain ready-made Bowtie2 indexes from there, instead of FASTA files (http://igenomes.illumina.com.s3-website-us-east-1.amazonaws.com/README.txt). But we need to make sure that for a given reference genome we download only the Bowtie2 index and not the whole bundle of files (which also includes other indexes and a genome sequence). iGenomes, in general, may be tricky to use because the genomes there may be outdated or have other problems (see the notifications in the nf-core documentation: https://nf-co.re/docs/usage/reference_genomes), so I would not prioritise the use of iGenomes, although being able to download a ready-made Bowtie2 index would be very useful!
 
 ## Credits
 
