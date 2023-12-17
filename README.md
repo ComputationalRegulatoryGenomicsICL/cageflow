@@ -112,8 +112,8 @@ nextflow run customcageq/main.nf \
 ## Fix in &beta;
 
 1. Support both Docker and Singulatiry for the CAGEr container. The problem is that the module cannot install a required BSgenome if run in Singularity.
-2. Try to make a module for the MULTI_INDEX process for Nextflow to be able to run it on a computational node instead of the head or Nextflow control node.
-3. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
+
+2. Describe in this README how to use the `input_reads.sh` script.
 
 ## To-do for version 2
 
@@ -143,15 +143,21 @@ A FASTA file must be specified with the `--fasta` option if it was not provided 
 
 The forged package would be called `BSgenome.LatinName.custom.mySpecies`, where `LatinName` could be something like `Scerevisia` (taken from the seed file) and `mySpecies` could be something like `sacCer2`.
 
-2. Improve the `input_reads.sh` script, according to Damir's comments within it.
+2. Improve the `input_reads.sh` script, according to Damir's comments that he left within it (as a minimum, allow providing the input directory in the command line).
 
 3. Make a module to generate the input CSV within the pipeline, based on an input directory, and allow the user to provide a CSV as input as well.
 
-4. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
+4. Try to make a module for the MULTI_INDEX process for Nextflow to be able to run it on a computational node instead of the head or Nextflow control node.
 
-5. Cite in `CITATIONS.md` all the tools that we used.
+3. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
 
-6. Use the iGenomes repository for obtaining reference genomes: we could obtain ready-made Bowtie2 indexes from there, instead of FASTA files (http://igenomes.illumina.com.s3-website-us-east-1.amazonaws.com/README.txt). But we need to make sure that for a given reference genome we download only the Bowtie2 index and not the whole bundle of files (which also includes other indexes and a genome sequence). iGenomes, in general, may be tricky to use because the genomes there may be outdated or have other problems (see the notifications in the nf-core documentation: https://nf-co.re/docs/usage/reference_genomes), so I would not prioritise the use of iGenomes, although being able to download a ready-made Bowtie2 index would be very useful!
+5. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
+
+6. Cite in `CITATIONS.md` all the tools that we used.
+
+## Possible future features
+
+1. Use the iGenomes repository for obtaining reference genomes: we could obtain ready-made Bowtie2 indexes from there, instead of FASTA files (http://igenomes.illumina.com.s3-website-us-east-1.amazonaws.com/README.txt). But we need to make sure that for a given reference genome we download only the Bowtie2 index and not the whole bundle of files (which also includes other indexes and a genome sequence). iGenomes, in general, may be tricky to use because the genomes there may be outdated or have other problems (see the notifications in the nf-core documentation: https://nf-co.re/docs/usage/reference_genomes), so I would not prioritise the use of iGenomes, although being able to download a ready-made Bowtie2 index would be very useful!
 
 ## Credits
 
