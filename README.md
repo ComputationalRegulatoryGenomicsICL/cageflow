@@ -109,6 +109,10 @@ nextflow run customcageq/main.nf \
     -profile docker
 ```
 
+## Fix in # &beta;
+
+1. Support both Docker and Singulatiry for the CAGEr container. The problem is that the module cannot install a required BSgenome if run in Singularity.
+
 ## To-do for version 2
 
 1. Implement BSgenome forging based on a seed file specified by the user. Apart from other fields, a seed file contains a path to the directory with a FASTA file or a 2bit file to forge the BSgenome (source directory). Provide for amending the path to the source directory using an optional `--sourcedir` parameter. Additionally, provide for the BSgenome forging and CAGE data preprocessing in one go with an option `--forge` and for BSgenome forging only - with an option `--forge-only`. 
