@@ -145,11 +145,13 @@ The forged package would be called `BSgenome.LatinName.custom.mySpecies`, where 
 
 2. Improve the `input_reads.sh` script, according to Damir's comments within it.
 
-3. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
+3. Make a module to generate the input CSV within the pipeline, based on an input directory, and allow the user to provide a CSV as input as well.
 
-4. Cite in `CITATIONS.md` all the tools that we used.
+4. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
 
-5. Use the iGenomes repository for obtaining reference genomes: we could obtain ready-made Bowtie2 indexes from there, instead of FASTA files (http://igenomes.illumina.com.s3-website-us-east-1.amazonaws.com/README.txt). But we need to make sure that for a given reference genome we download only the Bowtie2 index and not the whole bundle of files (which also includes other indexes and a genome sequence). iGenomes, in general, may be tricky to use because the genomes there may be outdated or have other problems (see the notifications in the nf-core documentation: https://nf-co.re/docs/usage/reference_genomes), so I would not prioritise the use of iGenomes, although being able to download a ready-made Bowtie2 index would be very useful!
+5. Cite in `CITATIONS.md` all the tools that we used.
+
+6. Use the iGenomes repository for obtaining reference genomes: we could obtain ready-made Bowtie2 indexes from there, instead of FASTA files (http://igenomes.illumina.com.s3-website-us-east-1.amazonaws.com/README.txt). But we need to make sure that for a given reference genome we download only the Bowtie2 index and not the whole bundle of files (which also includes other indexes and a genome sequence). iGenomes, in general, may be tricky to use because the genomes there may be outdated or have other problems (see the notifications in the nf-core documentation: https://nf-co.re/docs/usage/reference_genomes), so I would not prioritise the use of iGenomes, although being able to download a ready-made Bowtie2 index would be very useful!
 
 ## Credits
 
