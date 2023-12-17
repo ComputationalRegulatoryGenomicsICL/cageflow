@@ -109,7 +109,7 @@ nextflow run customcageq/main.nf \
     -profile docker
 ```
 
-## Fix in # &beta;
+## Fix in &beta;
 
 1. Support both Docker and Singulatiry for the CAGEr container. The problem is that the module cannot install a required BSgenome if run in Singularity.
 
