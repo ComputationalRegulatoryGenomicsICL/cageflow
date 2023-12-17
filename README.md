@@ -112,7 +112,8 @@ nextflow run customcageq/main.nf \
 ## Fix in &beta;
 
 1. Support both Docker and Singulatiry for the CAGEr container. The problem is that the module cannot install a required BSgenome if run in Singularity.
-2. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
+2. Try to make a module for the MULTI_INDEX process for Nextflow to be able to run it on a computational node instead of the head or Nextflow control node.
+3. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
 
 ## To-do for version 2
 
