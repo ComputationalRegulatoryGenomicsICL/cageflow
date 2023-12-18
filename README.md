@@ -147,13 +147,13 @@ The forged package would be called `BSgenome.LatinName.custom.mySpecies`, where 
 
 3. Make a module to generate the input CSV within the pipeline, based on an input directory, and allow the user to provide a CSV as input as well.
 
-4. Try to make a module for the MULTI_INDEX process for Nextflow to be able to run it on a computational node instead of the head or Nextflow control node.
+4. Try to make a module for the MULTI_INDEX process for Nextflow to be able to run it on a computational node instead of the head or Nextflow control node. Or define a custom operator instead? Or drop the process altogether and merge the channel operators?
 
-3. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
+5. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
 
-5. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
+6. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
 
-6. Cite in `CITATIONS.md` all the tools that we used.
+7. Cite in `CITATIONS.md` all the tools that we used.
 
 ## Possible future features
 
