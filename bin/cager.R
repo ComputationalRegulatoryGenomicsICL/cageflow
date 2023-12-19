@@ -8,9 +8,13 @@ bsgenome    = args[6]
 sample.list = args[7]
 cpus        = args[8]
 
+dir.create(file.path("./r_packages"))
+
+.libPaths(c("./r_packages", .libPaths()))
+
 if (endsWith(bsgenome, ".tar.gz")) {
-    install.packages(bsgenome, repos = NULL, type="source")
-    ref.name = ref.name = unlist(strsplit(basename(bsgenome), "_"))[1]
+    install.packages(bsgenome, repos = NULL, type = "source")
+    ref.name = unlist(strsplit(basename(bsgenome), "_"))[1]
 } else {
     BiocManager::install(bsgenome)
     ref.name = bsgenome

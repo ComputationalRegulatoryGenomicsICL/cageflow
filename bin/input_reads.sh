@@ -6,11 +6,21 @@
 # folder_path="/path/to/your/folder"
 # folder_path="/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq"
 
-# select single-end (se) or paired-end (pe)
-folder_path="/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/sacer_fq/se"
-output_csv="/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/samplesheet_se.csv"
-# folder_path="/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/sacer_fq/pe"
-# output_csv="/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/samplesheet_pe.csv"
+# Check that there are exactly two positional arguments
+if [ $# -ne 2 ]; then
+    echo "Error: Provide exactly 2 positional arguments: a directory with FASTQ files and the file name of the CSV table to create."
+    exit 1
+fi
+
+# Check that the first argument is an existing directory
+if ! [ -d $1 ]; then
+    echo "Error: The first argument must be an existing directory."
+    exit 1
+fi
+
+# Assign positional argument values to variables for further use
+folder_path="$1"
+output_csv="$2"
 
 # Write the header to the CSV
 echo "sample,fastq_1,fastq_2,single_end" > "${output_csv}"
