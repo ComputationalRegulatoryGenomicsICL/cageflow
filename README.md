@@ -115,6 +115,8 @@ nextflow run customcageq/main.nf \
 
 2. Describe in this README how to use the `input_reads.sh` script.
 
+3. Adjust default resource allocation for a generic HPC.
+
 ## To-do for version 2
 
 1. Implement BSgenome forging based on a seed file specified by the user. Apart from other fields, a seed file contains a path to the directory with a FASTA file or a 2bit file to forge the BSgenome (source directory). Provide for amending the path to the source directory using an optional `--sourcedir` parameter. Additionally, provide for the BSgenome forging and CAGE data preprocessing in one go with an option `--forge` and for BSgenome forging only - with an option `--forge-only`. 
