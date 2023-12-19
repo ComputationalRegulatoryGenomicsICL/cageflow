@@ -110,26 +110,9 @@ workflow CUSTOMCAGE {
         ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions.first())
     }
 
-    process MULTI_INDEX {
-        input:
-        val n
-        val index
-
-        output:
-        val n_index, emit: multi_index
-
-        exec:
-        n_index = [index] * n 
-    }
-
-    MULTI_INDEX (
-        ch_cat_fastq.count(),
-        ch_index
-    )
-
     BOWTIE2_ALIGN (
         TRIMGALORE.out.reads,
-        MULTI_INDEX.out.multi_index.flatMap(),
+        ch_index,
         false,
         false
     )
