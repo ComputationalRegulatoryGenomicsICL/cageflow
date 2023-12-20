@@ -127,7 +127,7 @@ nextflow run customcageq/main.nf \
 
 1. Support both Docker and Singulatiry for the CAGEr container. The problem is that the module cannot install a required BSgenome if run in Singularity.
 
-2. Describe in this README how to use the `input_reads.sh` script.
+2. **[Done]** Describe in this README how to use the `input_reads.sh` script.
 
 3. Adjust default resource allocation for a generic HPC.
 
