@@ -49,7 +49,21 @@ where
 
 For paired-end reads, `fastq_2` should contain the full path to reverse reads, while `single_end` should be set to `False`.
 
-You can generate the input CSV table automatically using the [`input_reads.sh`](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/bin/input_reads.sh) script.
+You can generate the input CSV table automatically using the [`input_reads.sh`](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/bin/input_reads.sh) script. It takes two positional arguments:
+
+```bash
+input_reads.sh /path/to/fastq_dir /path/to/samplesheet.csv
+```
+
+where
+* `/path/to/fastq_dir` is a full path to a directory with raw FASTQ files;
+* `/path/to/samplesheet.csv` is a file name, with a full path, of a CSV file to create.
+
+To run the script as a standalone executable (that is, without the need to provide `bash` before its name), add execution permissions to the script after cloning the repository:
+
+```bash
+chmod +x input_reads.sh
+```
 
 ### Toy input data for testing
 
