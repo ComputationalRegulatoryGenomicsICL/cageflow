@@ -59,7 +59,7 @@ where
 * `/path/to/fastq_dir` is a full path to a directory with raw FASTQ files;
 * `/path/to/samplesheet.csv` is a file name, with a full path, of a CSV file to create.
 
-To run the script as a standalone executable (that is, without the need to provide `bash` before its name), add execution permissions to the script after cloning the repository:
+To run the script as a standalone executable (that is, without the need to write `bash` before its name), add execution permissions to the script after cloning the repository:
 
 ```bash
 chmod +x input_reads.sh
