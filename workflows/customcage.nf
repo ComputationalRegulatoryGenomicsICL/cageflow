@@ -126,7 +126,7 @@ workflow CUSTOMCAGE {
     SAMTOOLS_INDEX (
         SAMTOOLS_SORT.out.bam
     )
-    ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions.first())
+    ch_versions = ch_versions.mix(SAMTOOLS_INDEXs.out.versions.first())
 
     // do not forget aligned reads must be processed with multiqc
 
@@ -134,6 +134,7 @@ workflow CUSTOMCAGE {
         params.bsgenome,
         SAMTOOLS_SORT.out.bam.collect()
     )
+    ch_versions = ch_versions.mix(CAGER.out.versions.first())
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')

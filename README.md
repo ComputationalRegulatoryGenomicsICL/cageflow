@@ -28,7 +28,7 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 
 ### Prepare for your first run
 
-Make sure you have the latest version of Nextflow, as well as the latest version of Docker (if running the pipeline on a laptop / PC) or Singularity (if running on a high-performance cluster). Pipeline was tested with Nextflow v23.10.0.5889 and Docker v23.0.1.
+Currently, pipeline works with Nextflow v23.04. Make sure that you have the latest version of Docker (if running the pipeline on a laptop / PC) or Singularity (if running on a high-performance cluster).
 
 ### Prepare your input data
 
@@ -125,13 +125,15 @@ nextflow run customcageq/main.nf \
 
 ## Fix in &beta;
 
-1. Support both Docker and Singulatiry for the CAGEr container. The problem is that the module cannot install a required BSgenome if run in Singularity.
+1. **[Done]** Support both Docker and Singulatiry for the CAGEr container. The problem is that the module cannot install a required BSgenome if run in Singularity.
 
 2. **[Done]** Describe in this README how to use the `input_reads.sh` script.
 
 3. Adjust default resource allocation for a generic HPC.
 
 4. Make sure that MultiQC is done for all relevant steps.
+
+5. Make the pipeline compatible with Nextflow v23.10.0 (or later). The problem with this version of Nextflow is that the reference genome index is not replicated in the corresponding input channel of the nf-core module bowtie2align according to the number of samples to map. Therefore, only one sample gets mapped.
 
 ## To-do for version 2
 
