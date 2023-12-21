@@ -2,7 +2,7 @@
 FROM r-base:latest
 
 # Maintainer label
-LABEL maintainer="your.email@example.com"
+LABEL maintainer="nikipavel14@gmail.com"
 
 # Update and install system libraries
 RUN apt-get update && \
@@ -18,9 +18,3 @@ RUN apt-get update && \
 # Install Bioconductor and the desired packages
 RUN R -e "install.packages('BiocManager', repos='https://cloud.r-project.org/')"
 RUN R -e "BiocManager::install(c('CAGEr', 'BSgenome'))"
-
-RUN chmod -R 777 /usr/local/lib/R/site-library/
-
-# RUN sudo usermod -a -G staff your_user_name
-# Command to run R by default when the container starts
-# CMD ["R"]ls -
