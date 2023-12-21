@@ -1,5 +1,5 @@
 process DOWNLOAD_FASTA {
-    label 'process_low'
+    label 'process_single'
     stageInMode 'copy'
 
     input:
