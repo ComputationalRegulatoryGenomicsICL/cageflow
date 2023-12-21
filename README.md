@@ -131,11 +131,19 @@ nextflow run customcageq/main.nf \
 
 3. **[Done]** Adjust default resource allocation for a generic HPC.
 
-4. Make sure that MultiQC is done for all relevant steps.
-
 ## To-do for version 2
 
-1. Implement BSgenome forging based on a seed file specified by the user. Apart from other fields, a seed file contains a path to the directory with a FASTA file or a 2bit file to forge the BSgenome (source directory). Provide for amending the path to the source directory using an optional `--sourcedir` parameter. Additionally, provide for the BSgenome forging and CAGE data preprocessing in one go with an option `--forge` and for BSgenome forging only - with an option `--forge-only`. 
+1. Make the pipeline compatible with Nextflow v23.10.0 (or later). The problem with this version of Nextflow is that the reference genome index is not replicated in the corresponding input channel of the nf-core module bowtie2align according to the number of samples to map. Therefore, only one sample gets mapped.
+
+2. Add mapping stats to the MultiQC report. For this, use nf-core modules [samtools/flagstat](https://nf-co.re/modules/samtools_flagstat) to count the number of alignments for each FLAG type,   [samtools/idxstats](https://nf-co.re/modules/samtools_idxstats) to print mapping stats per chromosome and [samtools/stats](https://nf-co.re/modules/samtools_stats) to print a comprehensive mapping summary.
+
+3. Make a module to generate the input CSV within the pipeline, based on an input directory, and allow the user to provide a CSV as input as well.
+
+4. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
+
+5. Improve the `input_reads.sh` script, according to Damir's comments that he left within it. Rename it into `make_input_csv.sh` for clarity.
+
+6. Implement BSgenome forging based on a seed file specified by the user. Apart from other fields, a seed file contains a path to the directory with a FASTA file or a 2bit file to forge the BSgenome (source directory). Provide for amending the path to the source directory using an optional `--sourcedir` parameter. Additionally, provide for the BSgenome forging and CAGE data preprocessing in one go with an option `--forge` and for BSgenome forging only - with an option `--forge-only`. 
 
 * Forge a BSgenome and proceed with CAGE preprocessing using the forged BSgenome and a FASTA file. The FASTA file should either be provided for the BSgenome forging and, hence, located in the `source_dir`, or be provided with the `--fasta` option:
 
@@ -161,19 +169,11 @@ A FASTA file must be specified with the `--fasta` option if it was not provided 
 
 The forged package would be called `BSgenome.LatinName.custom.mySpecies`, where `LatinName` could be something like `Scerevisia` (taken from the seed file) and `mySpecies` could be something like `sacCer2`.
 
-2. Make the pipeline compatible with Nextflow v23.10.0 (or later). The problem with this version of Nextflow is that the reference genome index is not replicated in the corresponding input channel of the nf-core module bowtie2align according to the number of samples to map. Therefore, only one sample gets mapped.
+7. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
 
-3. Improve the `input_reads.sh` script, according to Damir's comments that he left within it. Rename it into `make_input_csv.sh` for clarity.
+8. Cite in `CITATIONS.md` all the tools that we used.
 
-4. Make a module to generate the input CSV within the pipeline, based on an input directory, and allow the user to provide a CSV as input as well.
-
-5. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
-
-6. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
-
-7. Cite in `CITATIONS.md` all the tools that we used.
-
-8. Remove redundant nf-core files and code.
+9. Remove redundant nf-core files and code.
 
 ## Possible future features
 
