@@ -99,7 +99,6 @@ workflow CUSTOMCAGE {
     TRIMGALORE (
         ch_cat_fastq
     )
-    // do not forget to add trimgalore fastqc to multiqc
     ch_versions = ch_versions.mix(TRIMGALORE.out.versions.first())
 
     if (!params.index) {
@@ -126,7 +125,7 @@ workflow CUSTOMCAGE {
     SAMTOOLS_INDEX (
         SAMTOOLS_SORT.out.bam
     )
-    ch_versions = ch_versions.mix(SAMTOOLS_INDEXs.out.versions.first())
+    ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions.first())
 
     // do not forget aligned reads must be processed with multiqc
 
@@ -151,6 +150,7 @@ workflow CUSTOMCAGE {
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.log.collect{it[1]}.ifEmpty([]))
 
     MULTIQC (
         ch_multiqc_files.collect(),
