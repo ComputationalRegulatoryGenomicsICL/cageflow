@@ -129,11 +129,9 @@ nextflow run customcageq/main.nf \
 
 2. **[Done]** Describe in this README how to use the `input_reads.sh` script.
 
-3. Adjust default resource allocation for a generic HPC.
+3. **[Done]** Adjust default resource allocation for a generic HPC.
 
 4. Make sure that MultiQC is done for all relevant steps.
-
-5. Make the pipeline compatible with Nextflow v23.10.0 (or later). The problem with this version of Nextflow is that the reference genome index is not replicated in the corresponding input channel of the nf-core module bowtie2align according to the number of samples to map. Therefore, only one sample gets mapped.
 
 ## To-do for version 2
 
@@ -163,17 +161,19 @@ A FASTA file must be specified with the `--fasta` option if it was not provided 
 
 The forged package would be called `BSgenome.LatinName.custom.mySpecies`, where `LatinName` could be something like `Scerevisia` (taken from the seed file) and `mySpecies` could be something like `sacCer2`.
 
-2. Improve the `input_reads.sh` script, according to Damir's comments that he left within it (as a minimum, allow providing the input directory in the command line).
+2. Make the pipeline compatible with Nextflow v23.10.0 (or later). The problem with this version of Nextflow is that the reference genome index is not replicated in the corresponding input channel of the nf-core module bowtie2align according to the number of samples to map. Therefore, only one sample gets mapped.
 
-3. Make a module to generate the input CSV within the pipeline, based on an input directory, and allow the user to provide a CSV as input as well.
+3. Improve the `input_reads.sh` script, according to Damir's comments that he left within it. Rename it into `make_input_csv.sh` for clarity.
 
-4. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
+4. Make a module to generate the input CSV within the pipeline, based on an input directory, and allow the user to provide a CSV as input as well.
 
-5. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
+5. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
 
-6. Cite in `CITATIONS.md` all the tools that we used.
+6. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
 
-7. Remove redundant nf-core files and code.
+7. Cite in `CITATIONS.md` all the tools that we used.
+
+8. Remove redundant nf-core files and code.
 
 ## Possible future features
 
