@@ -173,7 +173,7 @@ The forged package would be called `BSgenome.LatinName.custom.mySpecies`, where 
 
 8. Cite in `CITATIONS.md` all the tools that we used.
 
-9. Remove redundant nf-core files and code.
+9. Move the code base into a current nf-core template (so that anyone forking our repo could use nf-core tools to develop their derivative pipeline).
 
 ## Possible future features
 
