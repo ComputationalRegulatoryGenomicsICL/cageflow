@@ -139,7 +139,7 @@ nextflow run customcageq/main.nf \
 
 3. Add plotting motifs around TSSs on both strands to check if a pyrimidine-purine (initiator-like) motif is present.
 
-4. Make a module to generate the input CSV within the pipeline, based on an input directory, and allow the user to provide a CSV as input as well (is there anything like that in the nf-validation plugin?).
+4. Make a module to generate the input CSV within the pipeline, based on an input directory, and allow the user to provide a CSV as input as well (is there anything like that in the `nf-validation` plugin?).
 
 5. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
 
