@@ -133,43 +133,17 @@ nextflow run customcageq/main.nf \
 
 ## To-do for version 2
 
-1. **[In progress]** Make the pipeline compatible with Nextflow v23.10.0 (or later). The problem with this version of Nextflow is that the reference genome index is not replicated in the corresponding input channel of the nf-core module bowtie2align according to the number of samples to map. Therefore, only one sample gets mapped.
+1. [**In progress**] Make the pipeline compatible with Nextflow v23.10.0 (or later). The problem with this version of Nextflow is that the reference genome index is not replicated in the corresponding input channel of the nf-core module bowtie2align according to the number of samples to map. Therefore, only one sample gets mapped.
 
 2. Add mapping stats to the MultiQC report. For this, use nf-core modules [samtools/flagstat](https://nf-co.re/modules/samtools_flagstat) to count the number of alignments for each FLAG type,   [samtools/idxstats](https://nf-co.re/modules/samtools_idxstats) to print mapping stats per chromosome and [samtools/stats](https://nf-co.re/modules/samtools_stats) to print a comprehensive mapping summary.
 
 3. Add plotting motifs around TSSs on both strands to check if a pyrimidine-purine (initiator-like) motif is present.
 
-4. Make a module to generate the input CSV within the pipeline, based on an input directory, and allow the user to provide a CSV as input as well (is there anything like that in the `nf-validation` plugin?).
+4. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
 
 5. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
 
-6. Improve the `input_reads.sh` script, according to Damir's comments that he left within it. Rename it into `make_input_csv.sh` for clarity.
-
-7. Implement BSgenome forging based on a seed file specified by the user. Apart from other fields, a seed file contains a path to the directory with a FASTA file or a 2bit file to forge the BSgenome (source directory). Provide for amending the path to the source directory using an optional `--sourcedir` parameter. Additionally, provide for the BSgenome forging and CAGE data preprocessing in one go with an option `--forge` and for BSgenome forging only - with an option `--forge-only`. 
-
-* Forge a BSgenome and proceed with CAGE preprocessing using the forged BSgenome and a FASTA file. The FASTA file should either be provided for the BSgenome forging and, hence, located in the `source_dir`, or be provided with the `--fasta` option:
-
-```bash
---forge \
---bsgenome mySpecies \
-[--sourcedir /path/to/source_dir] \
-[--fasta /path/to/fasta/genome.fasta] \
---seed /path/to/seed/mySpecies_seed.txt \
---input input.csv
-```
-
-A FASTA file must be specified with the `--fasta` option if it was not provided for the BSgenome forging.
-
-* Only forge a BSgenome and exit:
-
-```bash
---forge-only \
---bsgenome mySpecies \
-[--sourcedir /path/to/source_dir] \
---seed /path/to/seed/mySpecies_seed.txt
-```
-
-The forged package would be called `BSgenome.LatinName.custom.mySpecies`, where `LatinName` could be something like `Scerevisia` (taken from the seed file) and `mySpecies` could be something like `sacCer2`.
+6. Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
 
 7. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
 
