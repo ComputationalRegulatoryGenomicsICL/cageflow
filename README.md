@@ -139,13 +139,25 @@ nextflow run customcageq/main.nf \
 
 3. Add plotting motifs around TSSs on both strands to check if a pyrimidine-purine (initiator-like) motif is present.
 
-4. Make a module to generate the input CSV within the pipeline, based on an input directory, and allow the user to provide a CSV as input as well (is there anything like that in the `nf-validation` plugin?).
+4. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
 
 5. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
 
-6. Improve the `input_reads.sh` script, according to Damir's comments that he left within it. Rename it into `make_input_csv.sh` for clarity.
+6. Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
 
-7. Implement BSgenome forging based on a seed file specified by the user. Apart from other fields, a seed file contains a path to the directory with a FASTA file or a 2bit file to forge the BSgenome (source directory). Provide for amending the path to the source directory using an optional `--sourcedir` parameter. Additionally, provide for the BSgenome forging and CAGE data preprocessing in one go with an option `--forge` and for BSgenome forging only - with an option `--forge-only`. 
+7. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
+
+8. Cite in `CITATIONS.md` all the tools that we used.
+
+9. Move the code base into a current nf-core template (so that anyone forking our repo could use nf-core tools to develop their derivative pipeline).
+
+## Possible future features
+
+1. Improve the `input_reads.sh` script according to Damir's comments that he left within it. 
+
+2. Use the iGenomes repository for obtaining reference genomes: we could obtain ready-made Bowtie2 indexes from there, instead of FASTA files (http://igenomes.illumina.com.s3-website-us-east-1.amazonaws.com/README.txt). But we need to make sure that for a given reference genome we download only the Bowtie2 index and not the whole bundle of files (which also includes other indexes and a genome sequence). iGenomes, in general, may be tricky to use because the genomes there may be outdated or have other problems (see the notifications in the nf-core documentation: https://nf-co.re/docs/usage/reference_genomes), so I would not prioritise the use of iGenomes, although being able to download a ready-made Bowtie2 index would be very useful!
+
+3. Implement BSgenome forging based on a seed file specified by the user. Apart from other fields, a seed file contains a path to the directory with a FASTA file or a 2bit file to forge the BSgenome (source directory). Provide for amending the path to the source directory using an optional `--sourcedir` parameter. Additionally, provide for the BSgenome forging and CAGE data preprocessing in one go with an option `--forge` and for BSgenome forging only - with an option `--forge-only`. 
 
 * Forge a BSgenome and proceed with CAGE preprocessing using the forged BSgenome and a FASTA file. The FASTA file should either be provided for the BSgenome forging and, hence, located in the `source_dir`, or be provided with the `--fasta` option:
 
@@ -170,16 +182,6 @@ A FASTA file must be specified with the `--fasta` option if it was not provided 
 ```
 
 The forged package would be called `BSgenome.LatinName.custom.mySpecies`, where `LatinName` could be something like `Scerevisia` (taken from the seed file) and `mySpecies` could be something like `sacCer2`.
-
-7. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
-
-8. Cite in `CITATIONS.md` all the tools that we used.
-
-9. Move the code base into a current nf-core template (so that anyone forking our repo could use nf-core tools to develop their derivative pipeline).
-
-## Possible future features
-
-1. Use the iGenomes repository for obtaining reference genomes: we could obtain ready-made Bowtie2 indexes from there, instead of FASTA files (http://igenomes.illumina.com.s3-website-us-east-1.amazonaws.com/README.txt). But we need to make sure that for a given reference genome we download only the Bowtie2 index and not the whole bundle of files (which also includes other indexes and a genome sequence). iGenomes, in general, may be tricky to use because the genomes there may be outdated or have other problems (see the notifications in the nf-core documentation: https://nf-co.re/docs/usage/reference_genomes), so I would not prioritise the use of iGenomes, although being able to download a ready-made Bowtie2 index would be very useful!
 
 ## Credits
 
