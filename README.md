@@ -133,7 +133,7 @@ nextflow run customcageq/main.nf \
 
 ## To-do for version 2
 
-Aim for a [GigaScience](https://academic.oup.com/gigascience) [Technical Note](https://academic.oup.com/gigascience/pages/technical_note) (highlight the pipeline and its verification) / a [Research](https://academic.oup.com/gigascience/pages/research) article (if we see anything interesting with xenopus).
+Aim for a [GigaScience](https://academic.oup.com/gigascience) [Technical Note](https://academic.oup.com/gigascience/pages/technical_note) (highlight the pipeline and its verification) or a [Research](https://academic.oup.com/gigascience/pages/research) article (if we see anything interesting with *xenopus*).
 
 1. [**In progress**] Make the pipeline compatible with Nextflow v23.10.0 (or later). The problem with this version of Nextflow is that the reference genome index is not replicated in the corresponding input channel of the nf-core module bowtie2align according to the number of samples to map. Therefore, only one sample gets mapped.
 
