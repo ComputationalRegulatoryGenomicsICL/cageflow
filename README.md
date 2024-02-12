@@ -1,4 +1,4 @@
-# v1.5&beta;
+# v2&beta;
 
 ## Introduction
 
@@ -131,13 +131,15 @@ nextflow run customcageq/main.nf \
 
 3. **[Done]** Adjust default resource allocation for a generic HPC.
 
-## To-do for version 1.5
+## To-do for version 2
+
+Aim for a [GigaScience](https://academic.oup.com/gigascience) [Technical Note](https://academic.oup.com/gigascience/pages/technical_note) (highlight the pipeline and its verification) / a [Research](https://academic.oup.com/gigascience/pages/research) article (if we see anything interesting with xenopus).
 
 1. [**In progress**] Make the pipeline compatible with Nextflow v23.10.0 (or later). The problem with this version of Nextflow is that the reference genome index is not replicated in the corresponding input channel of the nf-core module bowtie2align according to the number of samples to map. Therefore, only one sample gets mapped.
 
 2. Add mapping stats to the MultiQC report. For this, use nf-core modules [samtools/flagstat](https://nf-co.re/modules/samtools_flagstat) to count the number of alignments for each FLAG type, [samtools/idxstats](https://nf-co.re/modules/samtools_idxstats) to print mapping stats per chromosome and [samtools/stats](https://nf-co.re/modules/samtools_stats) to print a comprehensive mapping summary.
 
-3. Add plotting motifs around TSSs on both strands to check if a pyrimidine-purine (initiator-like) motif is present. Add the plots to the MultiQC report.
+3. Extend the pipeline with standard CAGEr analysis steps (discuss with Boris and Damir). Include plotting motifs around TSSs on both strands to check if a pyrimidine-purine (initiator-like) motif is present.
 
 4. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
 
