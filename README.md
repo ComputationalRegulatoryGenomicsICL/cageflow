@@ -141,17 +141,15 @@ Aim for a [GigaScience](https://academic.oup.com/gigascience) [Technical Note](h
 
 3. Extend the pipeline with standard CAGEr analysis steps (discuss with Boris and Damir). Include plotting motifs around TSSs on both strands to check if a pyrimidine-purine (initiator-like) motif is present.
 
-4. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
+4. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
 
-5. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
+5. Move the code base into a current nf-core template (so that anyone forking our repo could use nf-core tools to develop their derivative pipeline).
 
-6. Move the code base into a current nf-core template (so that anyone forking our repo could use nf-core tools to develop their derivative pipeline).
+6. Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
 
-7. Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
+7. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
 
-8. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
-
-9. Cite in `CITATIONS.md` all the tools that we used.
+8. Cite in `CITATIONS.md` all the tools that we used.
 
 ## Possible future features
 
@@ -184,6 +182,8 @@ A FASTA file must be specified with the `--fasta` option if it was not provided 
 ```
 
 The forged package would be called `BSgenome.LatinName.custom.mySpecies`, where `LatinName` could be something like `Scerevisia` (taken from the seed file) and `mySpecies` could be something like `sacCer2`.
+
+4. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
 
 ## Credits
 
