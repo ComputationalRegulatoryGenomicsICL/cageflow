@@ -13,7 +13,6 @@ ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.mu
 ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
 ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
 
-
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { CAGER } from '../modules/local/cager.nf'
 include { DOWNLOAD_FASTA } from '../modules/local/downloadfasta.nf'
@@ -106,12 +105,16 @@ workflow CUSTOMCAGE {
             ch_fasta
         )
         ch_index = BOWTIE2_BUILD.out.index
+        //ch_index.view()
         ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions.first())
     }
 
+    ch_index1 = ch_index.map { it[1] }
+    ch_index1.view()
+    
     BOWTIE2_ALIGN (
         TRIMGALORE.out.reads,
-        ch_index,
+        ch_index1, // ch_index
         false,
         false
     )
