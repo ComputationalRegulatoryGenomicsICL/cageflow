@@ -25,6 +25,8 @@ include { BOWTIE2_BUILD } from '../modules/nf-core/bowtie2/build/main.nf'
 include { BOWTIE2_ALIGN } from '../modules/nf-core/bowtie2/align/main.nf'
 include { SAMTOOLS_SORT } from '../modules/nf-core/samtools/sort/main.nf'
 include { SAMTOOLS_INDEX } from '../modules/nf-core/samtools/index/main.nf'
+include { SAMTOOLS_FIXMATE } from '../modules/nf-core/samtools/fixmate/main.nf'
+//include { SAMTOOLSDEDUPPE } from '../modules/local/samtoolsdeduppe.nf'
 
 def multiqc_report = []
 
@@ -110,7 +112,7 @@ workflow CUSTOMCAGE {
     }
 
     ch_index1 = ch_index.map { it[1] }
-    ch_index1.view()
+    //ch_index1.view()
     
     BOWTIE2_ALIGN (
         TRIMGALORE.out.reads,
@@ -130,7 +132,16 @@ workflow CUSTOMCAGE {
     )
     ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions.first())
 
+    SAMTOOLS_SORT.out.bam.view()
+
     // do not forget aligned reads must be processed with multiqc
+
+    SAMTOOLS_FIXMATE (
+        SAMTOOLS_SORT.out.bam
+    )
+    ch_versions = ch_versions.mix(SAMTOOLS_FIXMATE.out.versions.first())
+
+    // samtools dedup
 
     CAGER (
         params.bsgenome,
