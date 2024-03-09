@@ -24,6 +24,7 @@ include { TRIMGALORE } from '../modules/nf-core/trimgalore/main.nf'
 include { BOWTIE2_BUILD } from '../modules/nf-core/bowtie2/build/main.nf' 
 include { BOWTIE2_ALIGN } from '../modules/nf-core/bowtie2/align/main.nf'
 include { SAMTOOLS_SORT } from '../modules/nf-core/samtools/sort/main.nf'
+include { SAMTOOLS_SORT as SORT_FOR_FIXMATE} from '../modules/nf-core/samtools/sort/main.nf'
 include { SAMTOOLS_INDEX } from '../modules/nf-core/samtools/index/main.nf'
 include { SAMTOOLS_FIXMATE } from '../modules/nf-core/samtools/fixmate/main.nf'
 //include { SAMTOOLSDEDUPPE } from '../modules/local/samtoolsdeduppe.nf'
@@ -122,7 +123,20 @@ workflow CUSTOMCAGE {
     )
     ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions.first())
 
-    SAMTOOLS_SORT (
+    if (!params.nodedup) {
+        SORT_FOR_FIXMATE (
+            BOWTIE2_ALIGN.out.aligned
+        )
+        ch_versions = ch_versions.mix(SORT_FOR_FIXMATE.out.versions.first())
+
+        SAMTOOLS_FIXMATE (
+            SORT_FOR_FIXMATE.out.bam
+        )
+        ch_versions = ch_versions.mix(SAMTOOLS_FIXMATE.out.versions.first())
+    }
+
+    /*SAMTOOLS_SORT (
+        // choose the channel depending on params.nodedup
         BOWTIE2_ALIGN.out.aligned
     )
     ch_versions = ch_versions.mix(SAMTOOLS_SORT.out.versions.first())
@@ -132,22 +146,20 @@ workflow CUSTOMCAGE {
     )
     ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions.first())
 
-    SAMTOOLS_SORT.out.bam.view()
+    //SAMTOOLS_SORT.out.bam.view()
+
+    // if (params.nodedup) {
+        // samtools dedup
+    }
 
     // do not forget aligned reads must be processed with multiqc
 
-    SAMTOOLS_FIXMATE (
-        SAMTOOLS_SORT.out.bam
-    )
-    ch_versions = ch_versions.mix(SAMTOOLS_FIXMATE.out.versions.first())
-
-    // samtools dedup
-
     CAGER (
         params.bsgenome,
+        // choose the channel depending on params.nodedup
         SAMTOOLS_SORT.out.bam.collect()
     )
-    ch_versions = ch_versions.mix(CAGER.out.versions.first())
+    ch_versions = ch_versions.mix(CAGER.out.versions.first()) */
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
