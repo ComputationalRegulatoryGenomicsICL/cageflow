@@ -1,0 +1,47 @@
+process SAMTOOLSDEDUP {
+    tag "$meta.id"
+    label 'process_low'
+
+    conda "${moduleDir}/environment.yml"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/samtools:1.19.2--h50ea8bc_0':
+        'biocontainers/samtools:1.19.2--h50ea8bc_0' }"
+
+    input:
+    tuple val(meta), path(bam)
+
+    output:
+    tuple val(meta), path("*.bam"), emit: bam
+    path "versions.yml"           , emit: versions
+
+    script:
+    def args = task.ext.args ?: ''
+    args = params.dist ? "${args} -d ${params.dist}" : args
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    samtools \\
+        markdup \\
+        $args \\
+        -s -f ${prefix}_stats.txt \\
+        -@ $task.cpus \\
+        $bam \\
+        ${prefix}.bam
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        samtoolsdeduppe: \$(samtools --version |& sed '1!d ; s/samtools //')
+    END_VERSIONS
+    """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}_dedup.bam
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        samtoolsdeduppe: \$(samtools --version |& sed '1!d ; s/samtools //')
+    END_VERSIONS
+    """
+}

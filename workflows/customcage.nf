@@ -27,9 +27,12 @@ include { SAMTOOLS_SORT } from '../modules/nf-core/samtools/sort/main.nf'
 include { SAMTOOLS_SORT as SORT_FOR_FIXMATE} from '../modules/nf-core/samtools/sort/main.nf'
 include { SAMTOOLS_INDEX } from '../modules/nf-core/samtools/index/main.nf'
 include { SAMTOOLS_FIXMATE } from '../modules/nf-core/samtools/fixmate/main.nf'
-//include { SAMTOOLSDEDUPPE } from '../modules/local/samtoolsdeduppe.nf'
+include { SAMTOOLSDEDUP } from '../modules/local/samtoolsdedup.nf'
 
 def multiqc_report = []
+
+params.dedup = false
+params.dist = false
 
 workflow CUSTOMCAGE {
 
@@ -70,6 +73,12 @@ workflow CUSTOMCAGE {
             .from( index )
             .map{ row -> [ row[0], file(row[1], checkIfExists: true) ] }
             .set{ ch_index }
+    }
+
+    if (params.dist) {
+        if (!params.dedup) {
+            exit 1, 'The -d option can only be used with the --dedup option.'
+        }
     }
 
     INPUT_CHECK (
@@ -123,7 +132,7 @@ workflow CUSTOMCAGE {
     )
     ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions.first())
 
-    if (!params.nodedup) {
+    if (params.dedup) {
         SORT_FOR_FIXMATE (
             BOWTIE2_ALIGN.out.aligned
         )
@@ -135,9 +144,14 @@ workflow CUSTOMCAGE {
         ch_versions = ch_versions.mix(SAMTOOLS_FIXMATE.out.versions.first())
     }
 
-    /*SAMTOOLS_SORT (
-        // choose the channel depending on params.nodedup
-        BOWTIE2_ALIGN.out.aligned
+    if (params.dedup) {
+        ch_bam_to_sort = SAMTOOLS_FIXMATE.out.bam
+    } else {
+        ch_bam_to_sort = BOWTIE2_ALIGN.out.aligned
+    }
+
+    SAMTOOLS_SORT (
+        ch_bam_to_sort
     )
     ch_versions = ch_versions.mix(SAMTOOLS_SORT.out.versions.first())
 
@@ -146,20 +160,26 @@ workflow CUSTOMCAGE {
     )
     ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions.first())
 
-    //SAMTOOLS_SORT.out.bam.view()
-
-    // if (params.nodedup) {
-        // samtools dedup
+    if (params.dedup) {
+        SAMTOOLSDEDUP (
+            SAMTOOLS_SORT.out.bam
+        )
+        ch_versions = ch_versions.mix(SAMTOOLSDEDUP.out.versions.first())
     }
 
     // do not forget aligned reads must be processed with multiqc
 
+    if (params.dedup) {
+        ch_for_cager = SAMTOOLSDEDUP.out.bam.collect()
+    } else {
+        ch_for_cager = SAMTOOLS_SORT.out.bam.collect()
+    }
+
     CAGER (
         params.bsgenome,
-        // choose the channel depending on params.nodedup
-        SAMTOOLS_SORT.out.bam.collect()
+        ch_for_cager
     )
-    ch_versions = ch_versions.mix(CAGER.out.versions.first()) */
+    ch_versions = ch_versions.mix(CAGER.out.versions.first())
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
