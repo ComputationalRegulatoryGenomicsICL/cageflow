@@ -28,6 +28,7 @@ include { SAMTOOLS_SORT as SORT_FOR_FIXMATE} from '../modules/nf-core/samtools/s
 include { SAMTOOLS_INDEX } from '../modules/nf-core/samtools/index/main.nf'
 include { SAMTOOLS_FIXMATE } from '../modules/nf-core/samtools/fixmate/main.nf'
 include { SAMTOOLSDEDUP } from '../modules/local/samtoolsdedup.nf'
+include { BAM_STATS_SAMTOOLS } from '../subworkflows/nf-core/bam_stats_samtools/main'
 
 def multiqc_report = []
 
