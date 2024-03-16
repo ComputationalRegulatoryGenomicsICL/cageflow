@@ -19,14 +19,12 @@ process SAMTOOLS_IDXSTATS {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-
     """
     samtools \\
         idxstats \\
         --threads ${task.cpus-1} \\
         $bam \\
-        > ${prefix}.idxstats
+        > ${bam}.idxstats
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -35,10 +33,8 @@ process SAMTOOLS_IDXSTATS {
     """
 
     stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
-
     """
-    touch ${prefix}.idxstats
+    touch ${bam}.idxstats
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

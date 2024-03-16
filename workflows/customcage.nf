@@ -193,11 +193,11 @@ workflow CUSTOMCAGE {
     )
     ch_versions = ch_versions.mix(SAMTOOLS_STATS.out.versions)
 
-    // SAMTOOLS_FLAGSTAT ( ch_bam_bai )
-    // ch_versions = ch_versions.mix(SAMTOOLS_FLAGSTAT.out.versions)
+    SAMTOOLS_FLAGSTAT ( ch_bam_bai )
+    ch_versions = ch_versions.mix(SAMTOOLS_FLAGSTAT.out.versions)
 
-    // SAMTOOLS_IDXSTATS ( ch_bam_bai )
-    // ch_versions = ch_versions.mix(SAMTOOLS_IDXSTATS.out.versions)
+    SAMTOOLS_IDXSTATS ( ch_bam_bai )
+    ch_versions = ch_versions.mix(SAMTOOLS_IDXSTATS.out.versions)
 
     // if (params.dedup) {
     //     ch_for_cager = SAMTOOLSDEDUP.out.bam.collect()

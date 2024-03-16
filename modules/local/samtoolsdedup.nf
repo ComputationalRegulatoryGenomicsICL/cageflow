@@ -12,6 +12,7 @@ process SAMTOOLSDEDUP {
 
     output:
     tuple val(meta), path("*.bam"), emit: bam
+    path "*_dedup_stats.txt"      , emit: txt
     path "versions.yml"           , emit: versions
 
     script:
@@ -22,7 +23,7 @@ process SAMTOOLSDEDUP {
     samtools \\
         markdup \\
         $args \\
-        -s -f ${prefix}_stats.txt \\
+        -s -f ${prefix}_dedup_stats.txt \\
         -@ $task.cpus \\
         $bam \\
         ${prefix}.bam

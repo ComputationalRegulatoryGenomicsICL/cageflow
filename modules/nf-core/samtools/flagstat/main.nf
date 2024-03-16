@@ -19,13 +19,12 @@ process SAMTOOLS_FLAGSTAT {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     samtools \\
         flagstat \\
         --threads ${task.cpus} \\
         $bam \\
-        > ${prefix}.flagstat
+        > ${bam}.flagstat
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -34,9 +33,8 @@ process SAMTOOLS_FLAGSTAT {
     """
 
     stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch ${prefix}.flagstat
+    touch ${bam}.flagstat
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

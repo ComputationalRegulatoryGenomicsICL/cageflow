@@ -20,9 +20,7 @@ process SAMTOOLS_STATS {
 
     script:
     def args = task.ext.args ?: ''
-    //def prefix = task.ext.prefix ?: "${meta.id}"
     def reference = fasta ? "--reference ${fasta}" : ""
-    //         > ${prefix}.stats
     """
     samtools \\
         stats \\
@@ -38,8 +36,6 @@ process SAMTOOLS_STATS {
     """
 
     stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    // touch ${prefix}.stats
     """
     touch ${input}.stats
 
