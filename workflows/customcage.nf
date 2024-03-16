@@ -32,7 +32,6 @@ include { SAMTOOLSDEDUP } from '../modules/local/samtoolsdedup.nf'
 include { SAMTOOLS_STATS } from '../modules/nf-core/samtools/stats/main.nf'
 include { SAMTOOLS_IDXSTATS } from '../modules/nf-core/samtools/idxstats/main.nf'
 include { SAMTOOLS_FLAGSTAT } from '../modules/nf-core/samtools/flagstat/main.nf'
-// include { BAM_STATS_SAMTOOLS } from '../subworkflows/nf-core/bam_stats_samtools/main'
 
 def multiqc_report = []
 
@@ -181,15 +180,10 @@ workflow CUSTOMCAGE {
     } else {
         ch_bam_bai = SAMTOOLS_SORT.out.bam.join(SAMTOOLS_INDEX.out.bai)
     }
-    
-    // ch_fasta_general = ch_fasta
-    //     .ifEmpty('No_FASTA')
-    //     .map { it == 'No_FASTA' ? ['No_FASTA', 'No_FASTA'] : it }
 
     SAMTOOLS_STATS ( 
         ch_bam_bai, 
         ch_fasta
-        //ch_fasta_general 
     )
     ch_versions = ch_versions.mix(SAMTOOLS_STATS.out.versions)
 
