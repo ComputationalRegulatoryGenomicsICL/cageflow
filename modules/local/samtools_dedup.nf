@@ -1,4 +1,4 @@
-process SAMTOOLSDEDUP {
+process SAMTOOLS_DEDUP {
     tag "$meta.id"
     label 'process_low'
 
@@ -25,7 +25,7 @@ process SAMTOOLSDEDUP {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        samtoolsdeduppe: \$(samtools --version |& sed '1!d ; s/samtools //')
+        samtools_dedup: \$(samtools --version |& sed '1!d ; s/samtools //')
     END_VERSIONS
     """
 
@@ -37,7 +37,7 @@ process SAMTOOLSDEDUP {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        samtoolsdeduppe: \$(samtools --version |& sed '1!d ; s/samtools //')
+        samtools_dedup: \$(samtools --version |& sed '1!d ; s/samtools //')
     END_VERSIONS
     """
 }

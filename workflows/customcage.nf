@@ -28,7 +28,7 @@ include { SAMTOOLS_SORT as SORT_FOR_FIXMATE} from '../modules/nf-core/samtools/s
 include { SAMTOOLS_INDEX } from '../modules/nf-core/samtools/index/main.nf'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_DEDUP} from '../modules/nf-core/samtools/index/main.nf'
 include { SAMTOOLS_FIXMATE } from '../modules/nf-core/samtools/fixmate/main.nf'
-include { SAMTOOLSDEDUP } from '../modules/local/samtoolsdedup.nf'
+include { SAMTOOLS_DEDUP } from '../modules/local/samtools_dedup.nf'
 include { SAMTOOLS_STATS } from '../modules/nf-core/samtools/stats/main.nf'
 include { SAMTOOLS_IDXSTATS } from '../modules/nf-core/samtools/idxstats/main.nf'
 include { SAMTOOLS_FLAGSTAT } from '../modules/nf-core/samtools/flagstat/main.nf'
@@ -164,19 +164,19 @@ workflow CUSTOMCAGE {
     ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions.first())
 
     if (params.dedup) {
-        SAMTOOLSDEDUP (
+        SAMTOOLS_DEDUP (
             SAMTOOLS_SORT.out.bam
         )
-        ch_versions = ch_versions.mix(SAMTOOLSDEDUP.out.versions.first())
+        ch_versions = ch_versions.mix(SAMTOOLS_DEDUP.out.versions.first())
 
         SAMTOOLS_INDEX_DEDUP (
-             SAMTOOLSDEDUP.out.bam
+             SAMTOOLS_DEDUP.out.bam
         )
         ch_versions = ch_versions.mix(SAMTOOLS_INDEX_DEDUP.out.versions.first())
     }
 
     if (params.dedup) {
-        ch_bam_bai = SAMTOOLSDEDUP.out.bam.join(SAMTOOLS_INDEX_DEDUP.out.bai)
+        ch_bam_bai = SAMTOOLS_DEDUP.out.bam.join(SAMTOOLS_INDEX_DEDUP.out.bai)
     } else {
         ch_bam_bai = SAMTOOLS_SORT.out.bam.join(SAMTOOLS_INDEX.out.bai)
     }
@@ -193,42 +193,46 @@ workflow CUSTOMCAGE {
     SAMTOOLS_IDXSTATS ( ch_bam_bai )
     ch_versions = ch_versions.mix(SAMTOOLS_IDXSTATS.out.versions)
 
-    // if (params.dedup) {
-    //     ch_for_cager = SAMTOOLSDEDUP.out.bam.collect()
-    // } else {
-    //     ch_for_cager = SAMTOOLS_SORT.out.bam.collect()
-    // }
+    if (params.dedup) {
+        ch_for_cager = SAMTOOLS_DEDUP.out.bam.collect()
+    } else {
+        ch_for_cager = SAMTOOLS_SORT.out.bam.collect()
+    }
 
-    // CAGER (
-    //     params.bsgenome,
-    //     ch_for_cager
-    // )
-    // ch_versions = ch_versions.mix(CAGER.out.versions.first())
+    CAGER (
+        params.bsgenome,
+        ch_for_cager
+    )
+    ch_versions = ch_versions.mix(CAGER.out.versions.first())
 
-    // CUSTOM_DUMPSOFTWAREVERSIONS (
-    //     ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    // )
+    CUSTOM_DUMPSOFTWAREVERSIONS (
+        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    )
 
-    // workflow_summary    = WorkflowCustomcage.paramsSummaryMultiqc(workflow, summary_params)
-    // ch_workflow_summary = Channel.value(workflow_summary)
+    workflow_summary    = WorkflowCustomcage.paramsSummaryMultiqc(workflow, summary_params)
+    ch_workflow_summary = Channel.value(workflow_summary)
 
-    // methods_description    = WorkflowCustomcage.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
-    // ch_methods_description = Channel.value(methods_description)
+    methods_description    = WorkflowCustomcage.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
+    ch_methods_description = Channel.value(methods_description)
 
-    // ch_multiqc_files = Channel.empty()
-    // ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    // ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-    // ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
-    // ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
-    // ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.log.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = Channel.empty()
+    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
+    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.log.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(BOWTIE2_ALIGN.out.log.collect{it[1]})
+    ch_multiqc_files = ch_multiqc_files.mix(SAMTOOLS_STATS.out.stats.collect{it[1]})
+    ch_multiqc_files = ch_multiqc_files.mix(SAMTOOLS_IDXSTATS.out.idxstats.collect{it[1]})
+    ch_multiqc_files = ch_multiqc_files.mix(SAMTOOLS_FLAGSTAT.out.flagstat.collect{it[1]})
 
-    // MULTIQC (
-    //     ch_multiqc_files.collect(),
-    //     ch_multiqc_config.toList(),
-    //     ch_multiqc_custom_config.toList(),
-    //     ch_multiqc_logo.toList()
-    // )
-    // multiqc_report = MULTIQC.out.report.toList()
+    MULTIQC (
+        ch_multiqc_files.collect(),
+        ch_multiqc_config.toList(),
+        ch_multiqc_custom_config.toList(),
+        ch_multiqc_logo.toList()
+    )
+    multiqc_report = MULTIQC.out.report.toList()
 
 }
 

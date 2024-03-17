@@ -2,14 +2,8 @@ process BOWTIE2_ALIGN {
     tag "$meta.id"
     label "process_high"
 
-    conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/mulled-v2-ac74a7f02cebcfcc07d8e8d1d750af9c83b4d45a:a0ffedb52808e102887f6ce600d092675bf3528a-0' :
-        'biocontainers/mulled-v2-ac74a7f02cebcfcc07d8e8d1d750af9c83b4d45a:a0ffedb52808e102887f6ce600d092675bf3528a-0' }"
-
     input:
     tuple val(meta) , path(reads)
-    //tuple val(meta2), path(index)
     each path(index)
     val   save_unaligned
     val   sort_bam
