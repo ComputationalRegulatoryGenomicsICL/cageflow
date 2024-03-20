@@ -13,6 +13,9 @@ ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.mu
 ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
 ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
 
+params.dedup = false
+params.dist = false
+
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { CAGER } from '../modules/local/cager.nf'
 include { DOWNLOAD_FASTA } from '../modules/local/downloadfasta.nf'
@@ -34,9 +37,6 @@ include { SAMTOOLS_IDXSTATS } from '../modules/nf-core/samtools/idxstats/main.nf
 include { SAMTOOLS_FLAGSTAT } from '../modules/nf-core/samtools/flagstat/main.nf'
 
 def multiqc_report = []
-
-params.dedup = false
-params.dist = false
 
 workflow CUSTOMCAGE {
 
@@ -82,7 +82,7 @@ workflow CUSTOMCAGE {
 
     if (params.dist) {
         if (!params.dedup) {
-            exit 1, 'The -d option can only be used with the --dedup option.'
+            exit 1, 'The --dist option can only be used with the --dedup option.'
         }
     }
 
