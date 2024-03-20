@@ -105,24 +105,24 @@ workflow CUSTOMCAGE {
         ch_fastq
     ).reads.set { ch_cat_fastq }
 
-    ch_versions = ch_versions.mix(CAT_FASTQ.out.versions.first().ifEmpty(null))
+    ch_versions = ch_versions.mix(CAT_FASTQ.out.versions) //.first().ifEmpty(null))
 
     FASTQC (
         ch_cat_fastq
     )
-    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+    ch_versions = ch_versions.mix(FASTQC.out.versions) //.first())
 
     TRIMGALORE (
         ch_cat_fastq
     )
-    ch_versions = ch_versions.mix(TRIMGALORE.out.versions.first())
+    ch_versions = ch_versions.mix(TRIMGALORE.out.versions) //.first())
 
     if (!params.index) {
         BOWTIE2_BUILD (
             ch_fasta
         )
         ch_index = BOWTIE2_BUILD.out.index
-        ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions.first())
+        ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions) //.first())
     }
 
     ch_index1 = ch_index.map { it[1] }
@@ -133,18 +133,18 @@ workflow CUSTOMCAGE {
         false,
         false
     )
-    ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions.first())
+    ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions) //.first())
 
     if (params.dedup) {
         SORT_FOR_FIXMATE (
             BOWTIE2_ALIGN.out.aligned
         )
-        ch_versions = ch_versions.mix(SORT_FOR_FIXMATE.out.versions.first())
+        ch_versions = ch_versions.mix(SORT_FOR_FIXMATE.out.versions) //.first())
 
         SAMTOOLS_FIXMATE (
             SORT_FOR_FIXMATE.out.bam
         )
-        ch_versions = ch_versions.mix(SAMTOOLS_FIXMATE.out.versions.first())
+        ch_versions = ch_versions.mix(SAMTOOLS_FIXMATE.out.versions) //.first())
     }
 
     if (params.dedup) {
@@ -156,23 +156,23 @@ workflow CUSTOMCAGE {
     SAMTOOLS_SORT (
         ch_bam_to_sort
     )
-    ch_versions = ch_versions.mix(SAMTOOLS_SORT.out.versions.first())
+    ch_versions = ch_versions.mix(SAMTOOLS_SORT.out.versions) //.first())
 
     SAMTOOLS_INDEX (
         SAMTOOLS_SORT.out.bam
     )
-    ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions.first())
+    ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions) //.first())
 
     if (params.dedup) {
         SAMTOOLS_DEDUP (
             SAMTOOLS_SORT.out.bam
         )
-        ch_versions = ch_versions.mix(SAMTOOLS_DEDUP.out.versions.first())
+        ch_versions = ch_versions.mix(SAMTOOLS_DEDUP.out.versions) //.first())
 
         SAMTOOLS_INDEX_DEDUP (
              SAMTOOLS_DEDUP.out.bam
         )
-        ch_versions = ch_versions.mix(SAMTOOLS_INDEX_DEDUP.out.versions.first())
+        ch_versions = ch_versions.mix(SAMTOOLS_INDEX_DEDUP.out.versions) //.first())
     }
 
     if (params.dedup) {
@@ -203,7 +203,7 @@ workflow CUSTOMCAGE {
         params.bsgenome,
         ch_for_cager
     )
-    ch_versions = ch_versions.mix(CAGER.out.versions.first())
+    ch_versions = ch_versions.mix(CAGER.out.versions) //.first())
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
