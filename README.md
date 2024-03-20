@@ -19,10 +19,13 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 3. Trim adapters with [`TrimGalore`](https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md) and run [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) on trimmed reads.
 4. Download the reference genome FASTA file from the UCSC server, if not provided locally, using [`BuxyBox wget`](https://boxmatrix.info/wiki/Property:wget) within a custom module [`DOWNLOAD_FASTA`](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/modules/local/downloadfasta.nf).
 5. Build the Bowtie2 index of the reference genome FASTA file with [`bowtie2-build`](https://bowtie-bio.sourceforge.net/bowtie2/manual.shtml), if the index is not provided locally.
-6. Map the trimmed reads onto the Bowtie2 index using [`bowtie2`](https://bowtie-bio.sourceforge.net/bowtie2/manual.shtml), then filter out unmapped reads and select only uniquelly mapped reads using [`samtools view`](https://www.htslib.org/doc/samtools.html) with options `-b -F 4 -q 20`.
-7. Sort the obtained BAM files with uniquelly mapped reads using [`samtools sort`](https://www.htslib.org/doc/samtools.html).
-8. Index the sorted BAM files with [`samtools index`](https://www.htslib.org/doc/samtools.html).
-9. Create a CAGEexp object and call TSSs with [`CAGEr`](https://bioconductor.org/packages/release/bioc/html/CAGEr.html) using a [BSgenome package](https://bioconductor.org/packages/release/bioc/html/BSgenome.html) for the respective genome.
+6. Map the trimmed reads onto the Bowtie2 index using [`bowtie2`](https://bowtie-bio.sourceforge.net/bowtie2/manual.shtml), then filter out unmapped reads and select only uniquelly mapped reads using [`samtools view`](https://www.htslib.org/doc/samtools-view.html) with options `-b -F 4 -q 20`.
+7. Optionally, remove PCR and optical duplicate reads with [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html).
+8. Sort the obtained BAM files with uniquely mapped reads using [`samtools sort`](https://www.htslib.org/doc/samtools-sort.html).
+9. Index the sorted BAM files with [`samtools index`](https://www.htslib.org/doc/samtools-index.html).
+10. Assess mapping quality using [`samtools stats`](https://www.htslib.org/doc/samtools-stats.html), [`samtools flagstat`](https://www.htslib.org/doc/samtools-flagstat.html) and [`samtools idxstats`](https://www.htslib.org/doc/samtools-idxstats.html).
+11. Create a CAGEexp object and call TSSs with [`CAGEr`](https://bioconductor.org/packages/release/bioc/html/CAGEr.html) using a [BSgenome package](https://bioconductor.org/packages/release/bioc/html/BSgenome.html) for the respective genome.
+12. Create a [MultiQC](https://multiqc.info/) report.
 
 ## Usage
 
@@ -81,6 +84,7 @@ Clone the repository to your machine and use the following syntax to run the pip
 nextflow run customcageq/main.nf \
     --bsgenome [/path/to/]bsgenome.package[.tar.gz] \
     [--fasta /path/to/fasta/genome.fa | --index /path/to/index/genome] \
+    [--dedup [--dist N]] \
     --input samplesheet.csv \
     -profile <institution/docker/singularity>
 ```
@@ -89,6 +93,8 @@ where
 * `--bsgenome` specifies the BSgenome R package to use. If it is a file name (which should have a full path and the `.tar.gz` extension), then the package will be taken from the specified location; otherwise, the pipeline will try to install a BSgenome R package with the name `bsgenome.package` on the fly (see examples below);
 * `--fasta` specifies a full path to a FASTA file containing the reference genome. This is an optional parameter. If it is specified, then the pipeline will take the reference genome FASTA from `/path/to/fasta/genome.fa` and use it to create the Bowtie2 index. **Remark:** This option is mutually exclusive with `--index`.
 * `--index` specifies a directory with a Bowtie2 reference genome index. This is an optional parameter. If it is specified, then the pipeline will use this index to map the input CAGE data. **Remark:** This option is mutually exclusive with `--fasta`.
+* `--dedup` switches on PCR duplicate removal.
+* `--dist N` optionally sets an optical duplicate distance to remove optical duplicates, in addition to PCR duplicates (see [`samtools markdup`, option `-d`](https://www.htslib.org/doc/samtools-markdup.html)); requires `--dedup`.
 * `--input` specifies the input CSV samplesheet.
 * `-profile` is a Nextflow option that specifies a config file to use with Nextflow on a given machine. See [`nf-core/configs`](https://github.com/nf-core/configs) for ready-to-use institutional configs, including the one for Jex (the high-performance computing cluster of the [Laboratory of Medical Sciences](https://lms.mrc.ac.uk/)). Also, see the [Jex wiki](https://hpcwiki.lms.mrc.ac.uk/docs/software/software/workflow_managers/#nextflow) on how to run Nextflow on Jex. Alternatively, this option can be used to specify the containerization technology to use.
 
@@ -123,19 +129,21 @@ nextflow run customcageq/main.nf \
     -profile docker
 ```
 
-## Fix in &beta;
+4. Same as above, but remove PCR duplicates before the mapping QC assessment and TSS calling:
 
-1. **[Done]** Support both Docker and Singulatiry for the CAGEr container. The problem is that the module cannot install a required BSgenome if run in Singularity.
-
-2. **[Done]** Describe in this README how to use the `input_reads.sh` script.
-
-3. **[Done]** Adjust default resource allocation for a generic HPC.
+```bash
+nextflow run customcageq/main.nf \
+    --bsgenome BSgenome.Scerevisiae.UCSC.sacCer1 \
+    --dedup \
+    --input customcageq/assets/samplesheet_se.csv \
+    -profile docker
+```
 
 ## To-do for version 2
 
-1. [**In progress**] Make the pipeline compatible with Nextflow v23.10.0 (or later). The problem with this version of Nextflow is that the reference genome index is not replicated in the corresponding input channel of the nf-core module bowtie2align according to the number of samples to map. Therefore, only one sample gets mapped.
+1. Implement Damir's strategy using cutadapt to remove the first `G` and STAR for splice-aware read mapping.
 
-2. Add mapping stats to the MultiQC report. For this, use nf-core modules [samtools/flagstat](https://nf-co.re/modules/samtools_flagstat) to count the number of alignments for each FLAG type, [samtools/idxstats](https://nf-co.re/modules/samtools_idxstats) to print mapping stats per chromosome and [samtools/stats](https://nf-co.re/modules/samtools_stats) to print a comprehensive mapping summary.
+2. Implement the CAGEr pipeline as a module.
 
 3. Add plotting motifs around TSSs on both strands to check if a pyrimidine-purine (initiator-like) motif is present.
 
@@ -143,45 +151,11 @@ nextflow run customcageq/main.nf \
 
 5. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
 
-6. Move the code base into a current nf-core template (so that anyone forking our repo could use nf-core tools to develop their derivative pipeline).
+6. Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
 
-7. Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
+7. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
 
-8. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
-
-9. Cite in `CITATIONS.md` all the tools that we used.
-
-## Possible future features
-
-1. Improve the `input_reads.sh` script according to Damir's comments that he left within it. 
-
-2. Use the iGenomes repository for obtaining reference genomes: we could obtain ready-made Bowtie2 indexes from there, instead of FASTA files (http://igenomes.illumina.com.s3-website-us-east-1.amazonaws.com/README.txt). But we need to make sure that for a given reference genome we download only the Bowtie2 index and not the whole bundle of files (which also includes other indexes and a genome sequence). iGenomes, in general, may be tricky to use because the genomes there may be outdated or have other problems (see the notifications in the nf-core documentation: https://nf-co.re/docs/usage/reference_genomes), so I would not prioritise the use of iGenomes, although being able to download a ready-made Bowtie2 index would be very useful!
-
-3. Implement BSgenome forging based on a seed file specified by the user. Apart from other fields, a seed file contains a path to the directory with a FASTA file or a 2bit file to forge the BSgenome (source directory). Provide for amending the path to the source directory using an optional `--sourcedir` parameter. Additionally, provide for the BSgenome forging and CAGE data preprocessing in one go with an option `--forge` and for BSgenome forging only - with an option `--forge-only`. 
-
-* Forge a BSgenome and proceed with CAGE preprocessing using the forged BSgenome and a FASTA file. The FASTA file should either be provided for the BSgenome forging and, hence, located in the `source_dir`, or be provided with the `--fasta` option:
-
-```bash
---forge \
---bsgenome mySpecies \
-[--sourcedir /path/to/source_dir] \
-[--fasta /path/to/fasta/genome.fasta] \
---seed /path/to/seed/mySpecies_seed.txt \
---input input.csv
-```
-
-A FASTA file must be specified with the `--fasta` option if it was not provided for the BSgenome forging.
-
-* Only forge a BSgenome and exit:
-
-```bash
---forge-only \
---bsgenome mySpecies \
-[--sourcedir /path/to/source_dir] \
---seed /path/to/seed/mySpecies_seed.txt
-```
-
-The forged package would be called `BSgenome.LatinName.custom.mySpecies`, where `LatinName` could be something like `Scerevisia` (taken from the seed file) and `mySpecies` could be something like `sacCer2`.
+8. Cite in `CITATIONS.md` all the tools that we used.
 
 ## Credits
 
