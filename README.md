@@ -129,7 +129,7 @@ nextflow run customcageq/main.nf \
     -profile docker
 ```
 
-4. Same as above, but remove PCR duplicates before the mapping QC assessment and TSS calling:
+4. Same as above, but remove PCR duplicates before doing mapping QC and TSS calling:
 
 ```bash
 nextflow run customcageq/main.nf \
