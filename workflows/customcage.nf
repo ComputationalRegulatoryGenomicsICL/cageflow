@@ -18,7 +18,6 @@ params.dist = false
 
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { CAGER } from '../modules/local/cager.nf'
-include { DOWNLOAD_FASTA } from '../modules/local/downloadfasta.nf'
 include { CAT_FASTQ } from '../modules/nf-core/cat/fastq/main.nf'
 include { FASTQC } from '../modules/nf-core/fastqc/main.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
@@ -54,18 +53,9 @@ workflow CUSTOMCAGE {
     }
 
     if (!params.fasta && !params.index) {
-        bsgenome_name = file(params.bsgenome).name
-        values = bsgenome_name.split('\\.')
-        if (values[2] == "UCSC") {
-            ucscid = values[3].split('_')[0]
-            DOWNLOAD_FASTA( ucscid )
-            ch_fasta = DOWNLOAD_FASTA.out.fasta
-                .map{ it -> [[id: "FASTA"], it] }
-        } else {
-            exit 1, 'Reference fasta is not specified for a custom BSgenome.'
-        }
+        exit 1, 'Reference FASTA file or genome index are not specified.'
     } else if (params.fasta && params.index) {
-        exit 1, 'either --fasta or --index should be specified.'
+        exit 1, 'Only one of the two options, --fasta or --index, should be specified.'
     } else if (params.fasta) {
         fasta = [[[id: "FASTA"], params.fasta]]
         Channel
@@ -105,24 +95,24 @@ workflow CUSTOMCAGE {
         ch_fastq
     ).reads.set { ch_cat_fastq }
 
-    ch_versions = ch_versions.mix(CAT_FASTQ.out.versions) //.first().ifEmpty(null))
+    ch_versions = ch_versions.mix(CAT_FASTQ.out.versions)
 
     FASTQC (
         ch_cat_fastq
     )
-    ch_versions = ch_versions.mix(FASTQC.out.versions) //.first())
+    ch_versions = ch_versions.mix(FASTQC.out.versions)
 
     TRIMGALORE (
         ch_cat_fastq
     )
-    ch_versions = ch_versions.mix(TRIMGALORE.out.versions) //.first())
+    ch_versions = ch_versions.mix(TRIMGALORE.out.versions)
 
     if (!params.index) {
         BOWTIE2_BUILD (
             ch_fasta
         )
         ch_index = BOWTIE2_BUILD.out.index
-        ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions) //.first())
+        ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions)
     }
 
     ch_index1 = ch_index.map { it[1] }
@@ -133,18 +123,18 @@ workflow CUSTOMCAGE {
         false,
         false
     )
-    ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions) //.first())
+    ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions)
 
     if (params.dedup) {
         SORT_FOR_FIXMATE (
             BOWTIE2_ALIGN.out.aligned
         )
-        ch_versions = ch_versions.mix(SORT_FOR_FIXMATE.out.versions) //.first())
+        ch_versions = ch_versions.mix(SORT_FOR_FIXMATE.out.versions)
 
         SAMTOOLS_FIXMATE (
             SORT_FOR_FIXMATE.out.bam
         )
-        ch_versions = ch_versions.mix(SAMTOOLS_FIXMATE.out.versions) //.first())
+        ch_versions = ch_versions.mix(SAMTOOLS_FIXMATE.out.versions)
     }
 
     if (params.dedup) {
@@ -156,23 +146,23 @@ workflow CUSTOMCAGE {
     SAMTOOLS_SORT (
         ch_bam_to_sort
     )
-    ch_versions = ch_versions.mix(SAMTOOLS_SORT.out.versions) //.first())
+    ch_versions = ch_versions.mix(SAMTOOLS_SORT.out.versions)
 
     SAMTOOLS_INDEX (
         SAMTOOLS_SORT.out.bam
     )
-    ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions) //.first())
+    ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions)
 
     if (params.dedup) {
         SAMTOOLS_DEDUP (
             SAMTOOLS_SORT.out.bam
         )
-        ch_versions = ch_versions.mix(SAMTOOLS_DEDUP.out.versions) //.first())
+        ch_versions = ch_versions.mix(SAMTOOLS_DEDUP.out.versions)
 
         SAMTOOLS_INDEX_DEDUP (
              SAMTOOLS_DEDUP.out.bam
         )
-        ch_versions = ch_versions.mix(SAMTOOLS_INDEX_DEDUP.out.versions) //.first())
+        ch_versions = ch_versions.mix(SAMTOOLS_INDEX_DEDUP.out.versions)
     }
 
     if (params.dedup) {
@@ -203,7 +193,7 @@ workflow CUSTOMCAGE {
         params.bsgenome,
         ch_for_cager
     )
-    ch_versions = ch_versions.mix(CAGER.out.versions) //.first())
+    ch_versions = ch_versions.mix(CAGER.out.versions)
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
