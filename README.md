@@ -17,15 +17,14 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 1. Merge per-lane FASTQ files with the [`nf-core/cat_fastq`](https://nf-co.re/modules/cat_fastq) module.
 2. Report raw read quality with [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).
 3. Trim adapters with [`TrimGalore`](https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md) and run [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) on trimmed reads.
-4. Download the reference genome FASTA file from the UCSC server, if not provided locally, using [`BuxyBox wget`](https://boxmatrix.info/wiki/Property:wget) within a custom module [`DOWNLOAD_FASTA`](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/modules/local/downloadfasta.nf).
-5. Build the Bowtie2 index of the reference genome FASTA file with [`bowtie2-build`](https://bowtie-bio.sourceforge.net/bowtie2/manual.shtml), if the index is not provided locally.
-6. Map the trimmed reads onto the Bowtie2 index using [`bowtie2`](https://bowtie-bio.sourceforge.net/bowtie2/manual.shtml), then filter out unmapped reads and select only uniquelly mapped reads using [`samtools view`](https://www.htslib.org/doc/samtools-view.html) with options `-b -F 4 -q 20`.
-7. Optionally, remove PCR and optical duplicate reads with [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html).
-8. Sort the obtained BAM files with uniquely mapped reads using [`samtools sort`](https://www.htslib.org/doc/samtools-sort.html).
-9. Index the sorted BAM files with [`samtools index`](https://www.htslib.org/doc/samtools-index.html).
-10. Assess mapping quality using [`samtools stats`](https://www.htslib.org/doc/samtools-stats.html), [`samtools flagstat`](https://www.htslib.org/doc/samtools-flagstat.html) and [`samtools idxstats`](https://www.htslib.org/doc/samtools-idxstats.html).
-11. Create a CAGEexp object and call TSSs with [`CAGEr`](https://bioconductor.org/packages/release/bioc/html/CAGEr.html) using a [BSgenome package](https://bioconductor.org/packages/release/bioc/html/BSgenome.html) for the respective genome.
-12. Create a [MultiQC](https://multiqc.info/) report.
+4. Build the Bowtie2 index of the reference genome FASTA file with [`bowtie2-build`](https://bowtie-bio.sourceforge.net/bowtie2/manual.shtml), if the index is not provided.
+5. Map the trimmed reads onto the Bowtie2 index using [`bowtie2`](https://bowtie-bio.sourceforge.net/bowtie2/manual.shtml), then filter out unmapped reads and select only uniquelly mapped reads using [`samtools view`](https://www.htslib.org/doc/samtools-view.html) with options `-b -F 4 -q 20`.
+6. Optionally, remove PCR and optical duplicate reads with [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html).
+7. Sort the obtained BAM files with uniquely mapped reads using [`samtools sort`](https://www.htslib.org/doc/samtools-sort.html).
+8. Index the sorted BAM files with [`samtools index`](https://www.htslib.org/doc/samtools-index.html).
+9. Assess mapping quality using [`samtools stats`](https://www.htslib.org/doc/samtools-stats.html), [`samtools flagstat`](https://www.htslib.org/doc/samtools-flagstat.html) and [`samtools idxstats`](https://www.htslib.org/doc/samtools-idxstats.html).
+10. Create a CAGEexp object and call TSSs with [`CAGEr`](https://bioconductor.org/packages/release/bioc/html/CAGEr.html) using a [BSgenome package](https://bioconductor.org/packages/release/bioc/html/BSgenome.html) for the respective genome.
+11. Create a [MultiQC](https://multiqc.info/) report.
 
 ## Usage
 
@@ -72,7 +71,7 @@ chmod +x input_reads.sh
 
 The pipeline has toy *S. cerevisiae* CAGE data stored in [assets/sacer_fq](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets/sacer_fq) for testing purposes (single-end reads in the [se](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets/sacer_fq/se) subfolder and paired-end reads in [pe](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets/sacer_fq/pe) subfolder). The single-end reads were obtained by subsampling the [ERR2495152](https://www.ebi.ac.uk/ena/browser/view/ERR2495152) dataset published by ([Börlin et al., 2018](https://academic.oup.com/femsyr/article/19/2/foy128/5257840)), while the paired-end reads were obtained by subsampling the [SRR1631657](https://www.ebi.ac.uk/ena/browser/view/SRR1631657) dataset published by ([Chabbert et al., 2015](https://www.embopress.org/doi/full/10.15252/msb.20145776)).
 
-The corresponding input spreadsheets can be found in [assets](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets): [samplesheet_se.csv](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/assets/samplesheet_se.csv) for single-end reads and [samplesheet_pe.csv](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/assets/samplesheet_pe.csv) for paired-end reads.
+The corresponding input spreadsheets can be found in [assets](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets): [samplesheet_se.csv](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/assets/samplesheet_se.csv) for single-end reads and [samplesheet_pe.csv](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/assets/samplesheet_pe.csv) for paired-end reads. However, you will need to use the `input_reads.sh` script to regenerate these spreadsheets with your paths to the test FASTQ files.
 
 On these test data, CAGEr is able to call 52 TSSs with the single-end reads and 1,245 TSSs with the paired-end reads.
 
@@ -83,7 +82,7 @@ Clone the repository to your machine and use the following syntax to run the pip
 ```bash
 nextflow run customcageq/main.nf \
     --bsgenome [/path/to/]bsgenome.package[.tar.gz] \
-    [--fasta /path/to/fasta/genome.fa | --index /path/to/index/genome] \
+    (--fasta /path/to/fasta/genome.fa | --index /path/to/index/bowtie2) \
     [--dedup [--dist N]] \
     --input samplesheet.csv \
     -profile <institution/docker/singularity>
@@ -91,8 +90,8 @@ nextflow run customcageq/main.nf \
 
 where 
 * `--bsgenome` specifies the BSgenome R package to use. If it is a file name (which should have a full path and the `.tar.gz` extension), then the package will be taken from the specified location; otherwise, the pipeline will try to install a BSgenome R package with the name `bsgenome.package` on the fly (see examples below);
-* `--fasta` specifies a full path to a FASTA file containing the reference genome. This is an optional parameter. If it is specified, then the pipeline will take the reference genome FASTA from `/path/to/fasta/genome.fa` and use it to create the Bowtie2 index. **Remark:** This option is mutually exclusive with `--index`.
-* `--index` specifies a directory with a Bowtie2 reference genome index. This is an optional parameter. If it is specified, then the pipeline will use this index to map the input CAGE data. **Remark:** This option is mutually exclusive with `--fasta`.
+* `--fasta` specifies a full path to a FASTA file containing a reference genome. This option is mandatory, unless `--index` is set. **Remark:** This option is mutually exclusive with `--index`.
+* `--index` specifies a directory `bowtie2` with a Bowtie2 reference genome index. This is a mandatory option, unless `--fasta` is set. **Remark:** This option is mutually exclusive with `--fasta`.
 * `--dedup` switches on PCR duplicate removal.
 * `--dist N` sets an optical duplicate distance `N` to remove optical duplicates, in addition to PCR duplicates (see [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html), option `-d`). **Remark:** The argument is optional and requires `--dedup`.
 * `--input` specifies the input CSV samplesheet.
@@ -120,21 +119,25 @@ nextflow run customcageq/main.nf \
     -profile docker
 ```
 
-3. Call TSSs from the test yeast single-end CAGE reads using the [sacCer1 reference FASTA file](http://hgdownload.cse.ucsc.edu/goldenPath/sacCer1/bigZips/sacCer1.fa.gz) automatically downloaded from the UCSC server and the `BSgenome.Scerevisiae.UCSC.sacCer1` R package automatically installed within the CAGEr container on the fly and used there with CAGEr. As neither `--fasta`, nor `--index`, are specified, the genome name `sacCer1` is automatically taken from the provided BSgenome package name (or the file name of the package `.tar.gz` archive stored locally, if provided) to find and download the respective reference FASTA file:
+3. Same as example 1, but remove PCR duplicates before mapping QC and TSS calling:
 
 ```bash
 nextflow run customcageq/main.nf \
     --bsgenome BSgenome.Scerevisiae.UCSC.sacCer1 \
+    --fasta /path/to/fasta/sacCer1.fasta \
+    --dedup \
     --input customcageq/assets/samplesheet_se.csv \
     -profile docker
 ```
 
-4. Same as above, but remove PCR duplicates before doing mapping QC and TSS calling:
+4. Same as above, but remove both PCR and optical duplicates (at a maximum distance 100, see [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html)) before mapping QC and TSS calling:
 
 ```bash
 nextflow run customcageq/main.nf \
     --bsgenome BSgenome.Scerevisiae.UCSC.sacCer1 \
+    --fasta /path/to/fasta/sacCer1.fasta \
     --dedup \
+    --dist 100 \
     --input customcageq/assets/samplesheet_se.csv \
     -profile docker
 ```
