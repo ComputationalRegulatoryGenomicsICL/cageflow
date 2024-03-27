@@ -15,6 +15,8 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 
 params.dedup = false
 params.dist = false
+params.hisat2 = false
+params.gtf = false
 
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { CAGER } from '../modules/local/cager.nf'
@@ -34,6 +36,8 @@ include { SAMTOOLS_DEDUP } from '../modules/local/samtools_dedup.nf'
 include { SAMTOOLS_STATS } from '../modules/nf-core/samtools/stats/main.nf'
 include { SAMTOOLS_IDXSTATS } from '../modules/nf-core/samtools/idxstats/main.nf'
 include { SAMTOOLS_FLAGSTAT } from '../modules/nf-core/samtools/flagstat/main.nf'
+include { HISAT2_BUILD } from '../modules/nf-core/hisat2/build/main'
+include { HISAT2_ALIGN } from '../modules/nf-core/hisat2/align/main'
 
 def multiqc_report = []
 
@@ -108,26 +112,56 @@ workflow CUSTOMCAGE {
     ch_versions = ch_versions.mix(TRIMGALORE.out.versions)
 
     if (!params.index) {
-        BOWTIE2_BUILD (
-            ch_fasta
-        )
-        ch_index = BOWTIE2_BUILD.out.index
-        ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions)
+        if (params.hisat2) {
+            if (params.gtf) {
+                ch_gtf = file(params.gtf, checkIfExists: true)
+                HISAT2_BUILD (
+                    ch_fasta,
+                    ch_gtf,
+                    Channel.empty()
+                )
+            } else {
+                HISAT2_BUILD (
+                    ch_fasta,
+                    Channel.empty(),
+                    Channel.empty()
+                )
+            }
+            ch_index = HISAT2_BUILD.out.index
+            ch_versions = ch_versions.mix(HISAT2_BUILD.out.versions)
+        } else {
+            BOWTIE2_BUILD (
+                ch_fasta
+            )
+            ch_index = BOWTIE2_BUILD.out.index
+            ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions)
+        }
     }
 
     ch_index1 = ch_index.map { it[1] }
-    
-    BOWTIE2_ALIGN (
-        TRIMGALORE.out.reads,
-        ch_index1,
-        false,
-        false
-    )
-    ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions)
+
+    if (params.hisat2) {
+        HISAT2_ALIGN (
+            TRIMGALORE.out.reads,
+            ch_index1,
+            Channel.empty()
+        )
+        ch_versions = ch_versions.mix(HISAT2_ALIGN.out.versions)
+        ch_aligned = HISAT2_ALIGN.out.bam
+    } else {
+        BOWTIE2_ALIGN (
+            TRIMGALORE.out.reads,
+            ch_index1,
+            false,
+            false
+        )
+       ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions)
+       ch_aligned = BOWTIE2_ALIGN.out.aligned
+    }
 
     if (params.dedup) {
         SORT_FOR_FIXMATE (
-            BOWTIE2_ALIGN.out.aligned
+            ch_aligned
         )
         ch_versions = ch_versions.mix(SORT_FOR_FIXMATE.out.versions)
 
@@ -140,7 +174,7 @@ workflow CUSTOMCAGE {
     if (params.dedup) {
         ch_bam_to_sort = SAMTOOLS_FIXMATE.out.bam
     } else {
-        ch_bam_to_sort = BOWTIE2_ALIGN.out.aligned
+        ch_bam_to_sort = ch_aligned
     }
 
     SAMTOOLS_SORT (
@@ -211,7 +245,11 @@ workflow CUSTOMCAGE {
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.log.collect{it[1]}.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(BOWTIE2_ALIGN.out.log.collect{it[1]})
+    if (params.hisat2) {
+        ch_multiqc_files = ch_multiqc_files.mix(HISAT2_ALIGN.out.summary.collect{it[1]})
+    } else {
+        ch_multiqc_files = ch_multiqc_files.mix(BOWTIE2_ALIGN.out.log.collect{it[1]})
+    }
     ch_multiqc_files = ch_multiqc_files.mix(SAMTOOLS_STATS.out.stats.collect{it[1]})
     ch_multiqc_files = ch_multiqc_files.mix(SAMTOOLS_IDXSTATS.out.idxstats.collect{it[1]})
     ch_multiqc_files = ch_multiqc_files.mix(SAMTOOLS_FLAGSTAT.out.flagstat.collect{it[1]})
