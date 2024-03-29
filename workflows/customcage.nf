@@ -13,10 +13,17 @@ ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.mu
 ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
 ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
 
+// Read deduplication parameters
 params.dedup = false
 params.dist = false
+
+// HISAT2 parameters
 params.hisat2 = false
-params.gtf = false
+params.gtf = "$projectDir/assets/NO_FILE_GTF"
+params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
+params.seq_center = false
+params.save_unaligned = false
+params.hisat2_build_memory = false
 
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { CAGER } from '../modules/local/cager.nf'
@@ -57,27 +64,31 @@ workflow CUSTOMCAGE {
     }
 
     if (!params.fasta && !params.index) {
-        exit 1, 'Reference FASTA file or genome index are not specified.'
+        exit 1, 'Reference FASTA file (--fasta) or genome index (--index) should be specified.'
     } else if (params.fasta && params.index) {
         exit 1, 'Only one of the two options, --fasta or --index, should be specified.'
     } else if (params.fasta) {
-        fasta = [[[id: "FASTA"], params.fasta]]
         Channel
-            .from( fasta )
-            .map{ row -> [ row[0], file(row[1], checkIfExists: true) ] }
-            .set{ ch_fasta }
+            .fromPath(params.fasta)
+            .set { ch_fasta }
     } else {
-        index = [[[id: "INDEX"], params.index]]
         Channel
-            .from( index )
-            .map{ row -> [ row[0], file(row[1], checkIfExists: true) ] }
-            .set{ ch_index }
+            .fromPath(params.index)
+            .set { ch_index }
     }
 
     if (params.dist) {
         if (!params.dedup) {
             exit 1, 'The --dist option can only be used with the --dedup option.'
         }
+    }
+
+    if (params.gtf != "$projectDir/assets/NO_FILE_GTF" & (!params.hisat2 || !params.fasta)) {
+        exit 1, 'The --gtf option can only be used with the combination of the --hisat2 and --fasta options.'
+    }
+
+    if (params.splicesites != "$projectDir/assets/NO_FILE_SPLICESITES" && !params.hisat2) {
+        exit 1, 'The --splicesites option can only be used with the --hisat2 option.'
     }
 
     INPUT_CHECK (
@@ -111,52 +122,41 @@ workflow CUSTOMCAGE {
     )
     ch_versions = ch_versions.mix(TRIMGALORE.out.versions)
 
-    if (!params.index) {
-        if (params.hisat2) {
-            if (params.gtf) {
-                ch_gtf = file(params.gtf, checkIfExists: true)
-                HISAT2_BUILD (
-                    ch_fasta,
-                    ch_gtf,
-                    Channel.empty()
-                )
-            } else {
-                HISAT2_BUILD (
-                    ch_fasta,
-                    Channel.empty(),
-                    Channel.empty()
-                )
-            }
+    if (params.hisat2) {            
+        splice_sites_file = file(params.splicesites, checkIfExists: true)
+        if (!params.index) {
+            gtf_file = file(params.gtf, checkIfExists: true)
+            HISAT2_BUILD (
+                ch_fasta,
+                [[id: "GTF"], gtf_file],
+                [[id: "splice_sites"], splice_sites_file]
+            )
             ch_index = HISAT2_BUILD.out.index
             ch_versions = ch_versions.mix(HISAT2_BUILD.out.versions)
-        } else {
+        }
+        HISAT2_ALIGN (
+            TRIMGALORE.out.reads,
+            ch_index,
+            splice_sites_file
+        )
+        ch_versions = ch_versions.mix(HISAT2_ALIGN.out.versions)
+        ch_aligned = HISAT2_ALIGN.out.bam
+    } else {
+        if (!params.index) {
             BOWTIE2_BUILD (
                 ch_fasta
             )
             ch_index = BOWTIE2_BUILD.out.index
             ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions)
         }
-    }
-
-    ch_index1 = ch_index.map { it[1] }
-
-    if (params.hisat2) {
-        HISAT2_ALIGN (
-            TRIMGALORE.out.reads,
-            ch_index1,
-            Channel.empty()
-        )
-        ch_versions = ch_versions.mix(HISAT2_ALIGN.out.versions)
-        ch_aligned = HISAT2_ALIGN.out.bam
-    } else {
         BOWTIE2_ALIGN (
             TRIMGALORE.out.reads,
-            ch_index1,
+            ch_index,
             false,
             false
         )
-       ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions)
-       ch_aligned = BOWTIE2_ALIGN.out.aligned
+        ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions)
+        ch_aligned = BOWTIE2_ALIGN.out.aligned
     }
 
     if (params.dedup) {
@@ -207,7 +207,7 @@ workflow CUSTOMCAGE {
 
     SAMTOOLS_STATS ( 
         ch_bam_bai, 
-        ch_fasta
+        ch_fasta.ifEmpty(file("$projectDir/assets/NO_FILE_FASTA", checkIfExists: true))
     )
     ch_versions = ch_versions.mix(SAMTOOLS_STATS.out.versions)
 

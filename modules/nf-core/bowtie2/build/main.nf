@@ -3,10 +3,10 @@ process BOWTIE2_BUILD {
     label 'process_high'
 
     input:
-    tuple val(meta), path(fasta)
+    path fasta
 
     output:
-    tuple val(meta), path('bowtie2')    , emit: index
+    path 'bowtie2'    , emit: index
     path "versions.yml"                 , emit: versions
 
     when:

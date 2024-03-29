@@ -4,7 +4,7 @@ process SAMTOOLS_STATS {
 
     input:
     tuple val(meta), path(input), path(input_index)
-    tuple val(meta2), path(fasta)
+    each path(fasta)
 
     output:
     tuple val(meta), path("*.stats"), emit: stats
@@ -15,7 +15,7 @@ process SAMTOOLS_STATS {
 
     script:
     def args = task.ext.args ?: ''
-    def reference = fasta ? "--reference ${fasta}" : ""
+    def reference = fasta != 'NO_FILE' ? "--reference ${fasta}" : ""
     """
     samtools \\
         stats \\
