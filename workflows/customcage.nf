@@ -25,6 +25,9 @@ params.seq_center = false
 params.save_unaligned = false
 params.hisat2_build_memory = false
 
+//TrimGalore! parameters
+params.params_trimgalore = ''
+
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { CAGER } from '../modules/local/cager.nf'
 include { CAT_FASTQ } from '../modules/nf-core/cat/fastq/main.nf'
