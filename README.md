@@ -4,11 +4,11 @@
 
 ### Features to implement
 
-1. G trimming with cutadapt? (With this, are we making sure that the actual TSS is mapped and is not soft-clipped? Otherwise, why not use trimming of unmapped Gs by CAGEr?)
+1. STAR module for spliced alignment (instead of HISAT2).
 
-2. STAR module for spliced alignment (instead of HISAT2).
+2. Make STAR the default aligner; allow running bowtie2 instead of STAR with a `--bowtie2` option.
 
-3. Make STAR the default aligner; allow running bowtie2 instead of STAR with a `--bowtie2` option. 
+3. G trimming with cutadapt? (With this, are we making sure that the actual TSS is mapped and is not soft-clipped? Otherwise, why not use trimming of unmapped Gs by CAGEr?)
 
 4. BAM filtering with arbitrary user-defined options (do MAPQ >= 20 by default? How to make 5-prime bedgraph/bigwig files after the filtering? bigWig by default? Bedgraph instead (or along with) bigWig with `--bedgraph`?).
 
