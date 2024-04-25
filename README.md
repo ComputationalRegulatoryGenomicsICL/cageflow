@@ -22,6 +22,8 @@
 
 9. Generate a UCSC track hub with the final data.
 
+10. Generate TC schematics using exon, intron and UTR glyphs.
+
 ### Finishing up
 
 10. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
