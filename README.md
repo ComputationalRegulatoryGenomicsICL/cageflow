@@ -1,5 +1,39 @@
 # &beta;
 
+## To-do for version 2
+
+### Features to implement
+
+1. G trimming with cutadapt? (With this, are we making sure that the actual TSS is mapped and is not soft-clipped? Otherwise, why not use trimming of unmapped Gs by CAGEr?)
+
+2. STAR module for spliced alignment (instead of HISAT2).
+
+3. Make STAR the default aligner; allow running bowtie2 instead of STAR with a `--bowtie2` option. 
+
+4. BAM filtering with arbitrary user-defined options (do MAPQ >= 20 by default? How to make 5-prime bedgraph/bigwig files after the filtering? bigWig by default? Bedgraph instead (or along with) bigWig with `--bedgraph`?).
+
+5. Move the MultiQC run before CAGEr to give the user the preprocessing QC report earlier and not to depend on CAGEr's possible fails (which would preclude MultiQC from running).
+
+6. Include FastQC after TrimGalore to the MultiQC report.
+
+7. CAGEr pipeline as a set of modules (include plotting motifs around TSSs on both strands to check if a pyrimidine-purine (initiator-like) motif is present).
+
+8. CAGEfightR (a separate module? a part of the CAGEr pipeline? which functions do we need from it?)
+
+9. Generate a UCSC track hub with the final data.
+
+### Finishing up
+
+10. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
+
+11. Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
+
+12. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
+
+13. Cite in `CITATIONS.md` all the tools that we used.
+
+14. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
+
 ## Introduction
 
 **ComputationalRegulatoryGenomicsICL/customcageq** is a Nextflow pipeline to process CAGE sequencing data from raw reads to the creation of a CAGEexp (CAGEr) object containing called TSSs. The pipeline is specifically designed to be used upstream of CAGEr.
@@ -141,24 +175,6 @@ nextflow run customcageq/main.nf \
     --input customcageq/assets/samplesheet_se.csv \
     -profile docker
 ```
-
-## To-do for version 2
-
-1. Implement Damir's strategy using cutadapt to remove the first `G` and STAR for splice-aware read mapping.
-
-2. Implement the CAGEr pipeline as a module.
-
-3. Add plotting motifs around TSSs on both strands to check if a pyrimidine-purine (initiator-like) motif is present.
-
-4. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
-
-5. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
-
-6. Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
-
-7. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
-
-8. Cite in `CITATIONS.md` all the tools that we used.
 
 ## Credits
 
