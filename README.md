@@ -4,27 +4,29 @@
 
 ### Features to implement
 
-1. STAR module for spliced alignment (instead of HISAT2).
+1. `cutadapt` module for G trimming.
 
-2. Make STAR the default aligner; allow running bowtie2 instead of STAR with a `--bowtie2` option.
+2. `STAR` module for spliced alignment (instead of `HISAT2`):
+   - Include filtering of alignments into the STAR command (check out if and how it allows to filter alignments before reporting them).
+   - Include the generation of bedgraphs (and, optionally, of bigWigs) into the STAR command, so that we have bedgraph input for CAGEr to speed it up and raw count tracks to look at in the genome browser.
 
-3. G trimming with cutadapt? (With this, are we making sure that the actual TSS is mapped and is not soft-clipped? Otherwise, why not use trimming of unmapped Gs by CAGEr?)
+3. Make STAR the default aligner; allow running `bowtie2` instead of STAR with a `--bowtie2` option.
 
-4. Investigate and ideally resolve the issue with CAGEr using only one thread when reading samples and working within the pipeline. Get in touch with Charles after a reasonable investigation.
+4. CAGEr pipeline as a set of modules. Include plotting motifs around TSSs on both strands separately to check if a pyrimidine-purine (initiator-like) motif is present on both strands. This lets a user check if TSSs are shifted (are not a per-pur pair) and/or initiator motifs are different on the two strands (neither should happen).
 
-5. BAM filtering with arbitrary user-defined options (do MAPQ >= 20 by default? How to make 5-prime bedgraph/bigwig files after the filtering? bigWig by default? Bedgraph instead (or along with) bigWig with `--bedgraph`?).
+5. CAGEfightR (for enhancer calling, with a subsequent filtering by CAGEr-generated tag clusters).
 
-6. Move the MultiQC run before CAGEr to give the user the preprocessing QC report earlier and not to depend on CAGEr's possible fails (which would preclude MultiQC from running).
+6. Generate tracks for the genome browser.
 
-7. Include FastQC after TrimGalore to the MultiQC report.
+7. Implement building a BSgenome package and its installation on the fly for species for which there is no BSgenome package on BioConductor.
 
-8. CAGEr pipeline as a set of modules (include plotting motifs around TSSs on both strands to check if a pyrimidine-purine (initiator-like) motif is present).
+8. Investigate and ideally resolve the issue with CAGEr using only one thread when reading samples and working within the pipeline. Get in touch with Charles after a reasonable investigation.
 
-9. CAGEfightR (a separate module? a part of the CAGEr pipeline? which functions do we need from it?)
+9. Move the MultiQC run before CAGEr to give the user the preprocessing QC report earlier and not to depend on CAGEr's possible fails (which would preclude MultiQC from running).
 
-10. Generate a UCSC track hub with the final data.
+10. Include FastQC after TrimGalore to the MultiQC report.
 
-11. Generate TC schematics using exon, intron and UTR glyphs.
+11. Generate tag cluster schematics using exon, intron and UTR glyphs.
 
 ### Finishing up
 
