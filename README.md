@@ -30,15 +30,15 @@
 
 ### Finishing up
 
-10. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
+12. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
 
-11. Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
+13. Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
 
-12. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
+14. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
 
-13. Cite in `CITATIONS.md` all the tools that we used.
+15. Cite in `CITATIONS.md` all the tools that we used.
 
-14. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
+16. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
 
 ## Introduction
 
