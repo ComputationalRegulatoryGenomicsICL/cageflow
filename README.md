@@ -26,7 +26,7 @@
 
 10. Include FastQC after TrimGalore to the MultiQC report.
 
-11. Generate tag cluster schematics using exon, intron and UTR glyphs.
+11. Generate tag cluster schematics for the genome browser using exon, intron and UTR glyphs.
 
 ### Finishing up
 
