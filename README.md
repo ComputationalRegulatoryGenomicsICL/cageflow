@@ -10,19 +10,21 @@
 
 3. G trimming with cutadapt? (With this, are we making sure that the actual TSS is mapped and is not soft-clipped? Otherwise, why not use trimming of unmapped Gs by CAGEr?)
 
-4. BAM filtering with arbitrary user-defined options (do MAPQ >= 20 by default? How to make 5-prime bedgraph/bigwig files after the filtering? bigWig by default? Bedgraph instead (or along with) bigWig with `--bedgraph`?).
+4. Investigate and ideally resolve the issue with CAGEr using only one thread when reading samples and working within the pipeline. Get in touch with Charles after a reasonable investigation.
 
-5. Move the MultiQC run before CAGEr to give the user the preprocessing QC report earlier and not to depend on CAGEr's possible fails (which would preclude MultiQC from running).
+5. BAM filtering with arbitrary user-defined options (do MAPQ >= 20 by default? How to make 5-prime bedgraph/bigwig files after the filtering? bigWig by default? Bedgraph instead (or along with) bigWig with `--bedgraph`?).
 
-6. Include FastQC after TrimGalore to the MultiQC report.
+6. Move the MultiQC run before CAGEr to give the user the preprocessing QC report earlier and not to depend on CAGEr's possible fails (which would preclude MultiQC from running).
 
-7. CAGEr pipeline as a set of modules (include plotting motifs around TSSs on both strands to check if a pyrimidine-purine (initiator-like) motif is present).
+7. Include FastQC after TrimGalore to the MultiQC report.
 
-8. CAGEfightR (a separate module? a part of the CAGEr pipeline? which functions do we need from it?)
+8. CAGEr pipeline as a set of modules (include plotting motifs around TSSs on both strands to check if a pyrimidine-purine (initiator-like) motif is present).
 
-9. Generate a UCSC track hub with the final data.
+9. CAGEfightR (a separate module? a part of the CAGEr pipeline? which functions do we need from it?)
 
-10. Generate TC schematics using exon, intron and UTR glyphs.
+10. Generate a UCSC track hub with the final data.
+
+11. Generate TC schematics using exon, intron and UTR glyphs.
 
 ### Finishing up
 
