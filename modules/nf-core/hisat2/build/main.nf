@@ -1,7 +1,8 @@
 process HISAT2_BUILD {
     tag "$fasta"
-    label 'process_high'
-    label 'process_high_memory'
+    label 'process_hisat2build'
+    //label 'process_high'
+    //label 'process_high_memory'
 
     // WARN: Version information not provided by tool on CLI. Please update version string below when bumping container versions.
 

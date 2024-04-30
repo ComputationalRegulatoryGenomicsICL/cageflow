@@ -57,19 +57,19 @@ workflow CUSTOMCAGE {
     ch_fasta = Channel.empty()
 
     if (!params.bsgenome) {
-        exit 1, '--bsgenome (either a genome name from UCSC or a file path to a tar.gz archive) is not specified.'
+        exit 1, 'The --bsgenome option is not specified.'
     }
 
     if (params.input) {
         input_handler = file(params.input, checkIfExists: true)
     } else {
-        exit 1, '--input (input samplesheet) is not specified.'
+        exit 1, 'The --input option (the input samplesheet) is not specified.'
     }
 
     if (!params.fasta && !params.index) {
         exit 1, 'Reference FASTA file (--fasta) or genome index (--index) should be specified.'
     } else if (params.fasta && params.index) {
-        exit 1, 'Only one of the two options, --fasta or --index, should be specified.'
+        exit 1, 'The --fasta and --index options are mutually exclusive.'
     } else if (params.fasta) {
         Channel
             .fromPath(params.fasta)
@@ -82,7 +82,7 @@ workflow CUSTOMCAGE {
 
     if (params.dist) {
         if (!params.dedup) {
-            exit 1, 'The --dist option can only be used with the --dedup option.'
+            exit 1, 'The --dist option requires the --dedup option.'
         }
     }
 
@@ -92,6 +92,14 @@ workflow CUSTOMCAGE {
 
     if (params.splicesites != "$projectDir/assets/NO_FILE_SPLICESITES" && !params.hisat2) {
         exit 1, 'The --splicesites option can only be used with the --hisat2 option.'
+    }
+
+    if ((params.seq_center || params.save_unaligned) && !params.hisat2) {
+        exit 1, 'The --seq_center or --save_unaligned option requires the --hisat2 option.'
+    }
+
+    if (params.hisat2_build_memory && (!params.hisat2 || !params.fasta)) {
+        exit 1, 'The --hisat2_build_memory option requires both the --hisat2 and --fasta options.'
     }
 
     INPUT_CHECK (
