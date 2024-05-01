@@ -6,7 +6,7 @@
 
 1. **[done]** `cutadapt` module for G trimming.
 
-2. `STAR` module for spliced alignment (instead of `HISAT2`):
+2. **[in progress]** `STAR` module for spliced alignment (instead of `HISAT2`):
    - Include filtering of alignments into the STAR command (check out if and how it allows to filter alignments before reporting them).
    - Include the generation of bedgraphs (and, optionally, of bigWigs) into the STAR command, so that we have bedgraph input for CAGEr to speed it up and raw count tracks to look at in the genome browser.
 
