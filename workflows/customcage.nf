@@ -35,6 +35,7 @@ include { FASTQC } from '../modules/nf-core/fastqc/main.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
 include { TRIMGALORE } from '../modules/nf-core/trimgalore/main.nf'
+include { CUTADAPT } from '../modules/nf-core/cutadapt/main.nf'
 include { BOWTIE2_BUILD } from '../modules/nf-core/bowtie2/build/main.nf' 
 include { BOWTIE2_ALIGN } from '../modules/nf-core/bowtie2/align/main.nf'
 include { SAMTOOLS_SORT } from '../modules/nf-core/samtools/sort/main.nf'
@@ -132,6 +133,11 @@ workflow CUSTOMCAGE {
         ch_cat_fastq
     )
     ch_versions = ch_versions.mix(TRIMGALORE.out.versions)
+
+    CUTADAPT (
+        TRIMGALORE.out.reads
+    )
+    ch_versions = ch_versions.mix(CUTADAPT.out.versions)
 
     if (params.hisat2) {            
         splice_sites_file = file(params.splicesites, checkIfExists: true)
@@ -272,7 +278,6 @@ workflow CUSTOMCAGE {
         ch_multiqc_logo.toList()
     )
     multiqc_report = MULTIQC.out.report.toList()
-
 }
 
 /*
