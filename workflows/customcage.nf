@@ -152,7 +152,7 @@ workflow CUSTOMCAGE {
                 // [[id: "splice_sites"], splice_sites_file]
             )
             ch_index = STAR_GENOMEGENERATE.out.index
-            ch_versions = ch_versions.mix(HISAT2_BUILD.out.versions)
+            ch_versions = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
         }
         STAR_ALIGN (
             TRIMGALORE.out.reads,
