@@ -4,7 +4,7 @@
 
 ### Features to implement
 
-1. `cutadapt` module for G trimming.
+1. **[done]** `cutadapt` module for G trimming.
 
 2. `STAR` module for spliced alignment (instead of `HISAT2`):
    - Include filtering of alignments into the STAR command (check out if and how it allows to filter alignments before reporting them).
