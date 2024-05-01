@@ -18,12 +18,14 @@ params.dedup = false
 params.dist = false
 
 // HISAT2 parameters
-params.hisat2 = false
-params.gtf = "$projectDir/assets/NO_FILE_GTF"
-params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
+// params.bowtie2 = false
+
+// Adapt
+// params.gtf = "$projectDir/assets/NO_FILE_GTF"
+// params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
+
 params.seq_center = false
 params.save_unaligned = false
-params.hisat2_build_memory = false
 
 //TrimGalore! parameters
 params.params_trimgalore = ''
@@ -47,8 +49,8 @@ include { SAMTOOLS_DEDUP } from '../modules/local/samtools_dedup.nf'
 include { SAMTOOLS_STATS } from '../modules/nf-core/samtools/stats/main.nf'
 include { SAMTOOLS_IDXSTATS } from '../modules/nf-core/samtools/idxstats/main.nf'
 include { SAMTOOLS_FLAGSTAT } from '../modules/nf-core/samtools/flagstat/main.nf'
-include { HISAT2_BUILD } from '../modules/nf-core/hisat2/build/main'
-include { HISAT2_ALIGN } from '../modules/nf-core/hisat2/align/main'
+include { STAR_ALIGN } from '../modules/nf-core/star/align/main.nf' 
+include { STAR_GENOMEGENERATE } from '../modules/nf-core/star/genomegenerate/main.nf' 
 
 def multiqc_report = []
 
@@ -87,21 +89,22 @@ workflow CUSTOMCAGE {
         }
     }
 
-    if (params.gtf != "$projectDir/assets/NO_FILE_GTF" & (!params.hisat2 || !params.fasta)) {
-        exit 1, 'The --gtf option can only be used with the combination of the --hisat2 and --fasta options.'
-    }
+    // Adapt
+    // if (params.gtf != "$projectDir/assets/NO_FILE_GTF" & (params.hisat2 || !params.fasta)) {
+    //     exit 1, 'The --gtf option can only be used with the combination of the --hisat2 and --fasta options.'
+    // }
 
-    if (params.splicesites != "$projectDir/assets/NO_FILE_SPLICESITES" && !params.hisat2) {
-        exit 1, 'The --splicesites option can only be used with the --hisat2 option.'
-    }
+    // if (params.splicesites != "$projectDir/assets/NO_FILE_SPLICESITES" && !params.hisat2) {
+    //     exit 1, 'The --splicesites option can only be used with the --hisat2 option.'
+    // }
 
-    if ((params.seq_center || params.save_unaligned) && !params.hisat2) {
-        exit 1, 'The --seq_center or --save_unaligned option requires the --hisat2 option.'
-    }
+    // if ((params.seq_center || params.save_unaligned) && !params.hisat2) {
+    //     exit 1, 'The --seq_center or --save_unaligned option requires the --hisat2 option.'
+    // }
 
-    if (params.hisat2_build_memory && (!params.hisat2 || !params.fasta)) {
-        exit 1, 'The --hisat2_build_memory option requires both the --hisat2 and --fasta options.'
-    }
+    // if (params.hisat2_build_memory && (!params.hisat2 || !params.fasta)) {
+    //     exit 1, 'The --hisat2_build_memory option requires both the --hisat2 and --fasta options.'
+    // }
 
     INPUT_CHECK (
         input_handler
@@ -139,42 +142,42 @@ workflow CUSTOMCAGE {
     )
     ch_versions = ch_versions.mix(CUTADAPT.out.versions)
 
-    if (params.hisat2) {            
-        splice_sites_file = file(params.splicesites, checkIfExists: true)
+    // if (params.hisat2) {            
+        // splice_sites_file = file(params.splicesites, checkIfExists: true)
         if (!params.index) {
             gtf_file = file(params.gtf, checkIfExists: true)
-            HISAT2_BUILD (
-                ch_fasta,
-                [[id: "GTF"], gtf_file],
-                [[id: "splice_sites"], splice_sites_file]
+            STAR_GENOMEGENERATE (
+                [[id: "FASTA"], ch_fasta],
+                [[id: "GTF"], gtf_file]
+                // [[id: "splice_sites"], splice_sites_file]
             )
-            ch_index = HISAT2_BUILD.out.index
+            ch_index = STAR_GENOMEGENERATE.out.index
             ch_versions = ch_versions.mix(HISAT2_BUILD.out.versions)
         }
-        HISAT2_ALIGN (
+        STAR_ALIGN (
             TRIMGALORE.out.reads,
-            ch_index,
-            splice_sites_file
+            ch_index
+            // splice_sites_file
         )
-        ch_versions = ch_versions.mix(HISAT2_ALIGN.out.versions)
-        ch_aligned = HISAT2_ALIGN.out.bam
-    } else {
-        if (!params.index) {
-            BOWTIE2_BUILD (
-                ch_fasta
-            )
-            ch_index = BOWTIE2_BUILD.out.index
-            ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions)
-        }
-        BOWTIE2_ALIGN (
-            TRIMGALORE.out.reads,
-            ch_index,
-            false,
-            false
-        )
-        ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions)
-        ch_aligned = BOWTIE2_ALIGN.out.aligned
-    }
+        ch_versions = ch_versions.mix(STAR_ALIGN.out.versions)
+        ch_aligned = STAR_ALIGN.out.bam_sorted
+    //} else {
+    //     if (!params.index) {
+    //         BOWTIE2_BUILD (
+    //             ch_fasta
+    //         )
+    //         ch_index = BOWTIE2_BUILD.out.index
+    //         ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions)
+    //     }
+    //     BOWTIE2_ALIGN (
+    //         TRIMGALORE.out.reads,
+    //         ch_index,
+    //         false,
+    //         false
+    //     )
+    //     ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions)
+    //     ch_aligned = BOWTIE2_ALIGN.out.aligned
+    // }
 
     if (params.dedup) {
         SORT_FOR_FIXMATE (
@@ -262,11 +265,11 @@ workflow CUSTOMCAGE {
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.log.collect{it[1]}.ifEmpty([]))
-    if (params.hisat2) {
-        ch_multiqc_files = ch_multiqc_files.mix(HISAT2_ALIGN.out.summary.collect{it[1]})
-    } else {
-        ch_multiqc_files = ch_multiqc_files.mix(BOWTIE2_ALIGN.out.log.collect{it[1]})
-    }
+    // if (params.hisat2) {
+        ch_multiqc_files = ch_multiqc_files.mix(STAR_ALIGN.out.summary.collect{it[1]})
+    // } else {
+    //     ch_multiqc_files = ch_multiqc_files.mix(BOWTIE2_ALIGN.out.log.collect{it[1]})
+    // }
     ch_multiqc_files = ch_multiqc_files.mix(SAMTOOLS_STATS.out.stats.collect{it[1]})
     ch_multiqc_files = ch_multiqc_files.mix(SAMTOOLS_IDXSTATS.out.idxstats.collect{it[1]})
     ch_multiqc_files = ch_multiqc_files.mix(SAMTOOLS_FLAGSTAT.out.flagstat.collect{it[1]})
