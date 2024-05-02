@@ -12,21 +12,23 @@
 
 3. Make STAR the default aligner; allow running `bowtie2` instead of STAR with a `--bowtie2` option.
 
-4. CAGEr pipeline as a set of modules. Include plotting motifs around TSSs on both strands separately to check if a pyrimidine-purine (initiator-like) motif is present on both strands. This lets a user check if TSSs are shifted (are not a per-pur pair) and/or initiator motifs are different on the two strands (neither should happen).
+4. Compare mapping statistics with `bowtie2` and `STAR`.
 
-5. CAGEfightR (for enhancer calling, with a subsequent filtering by CAGEr-generated tag clusters).
+5. CAGEr pipeline as a set of modules. Include plotting motifs around TSSs on both strands separately to check if a pyrimidine-purine (initiator-like) motif is present on both strands. This lets a user check if TSSs are shifted (are not a per-pur pair) and/or initiator motifs are different on the two strands (neither should happen).
 
-6. Generate tracks for the genome browser.
+6. CAGEfightR (for enhancer calling, with a subsequent filtering by CAGEr-generated tag clusters).
 
-7. Implement building a BSgenome package and its installation on the fly for species for which there is no BSgenome package on BioConductor.
+7. Generate tracks for the genome browser.
 
-8. Investigate and ideally resolve the issue with CAGEr using only one thread when reading samples and working within the pipeline. Get in touch with Charles after a reasonable investigation.
+8. Implement building a BSgenome package and its installation on the fly for species for which there is no BSgenome package on BioConductor.
 
-9. Move the MultiQC run before CAGEr to give the user the preprocessing QC report earlier and not to depend on CAGEr's possible fails (which would preclude MultiQC from running).
+9. Investigate and ideally resolve the issue with CAGEr using only one thread when reading samples and working within the pipeline. Get in touch with Charles after a reasonable investigation.
 
-10. Include FastQC after TrimGalore to the MultiQC report.
+10. Move the MultiQC run before CAGEr to give the user the preprocessing QC report earlier and not to depend on CAGEr's possible fails (which would preclude MultiQC from running).
 
-11. Generate tag cluster schematics for the genome browser using exon, intron and UTR glyphs.
+11. Include FastQC after TrimGalore to the MultiQC report.
+
+12. Generate tag cluster schematics for the genome browser using exon, intron and UTR glyphs.
 
 ### Finishing up
 
