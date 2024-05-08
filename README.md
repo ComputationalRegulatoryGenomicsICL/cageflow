@@ -6,13 +6,13 @@
 
 1. **[done]** `cutadapt` module for G trimming.
 
-2. **[in progress]** `STAR` module for spliced alignment (instead of `HISAT2`):
+2. **[done]** `STAR` module for spliced alignment (instead of `HISAT2`):
    - Include filtering of alignments into the STAR command (check out if and how it allows to filter alignments before reporting them).
    - Include the generation of bedgraphs (and, optionally, of bigWigs) into the STAR command, so that we have bedgraph input for CAGEr to speed it up and raw count tracks to look at in the genome browser.
 
-3. Make STAR the default aligner; allow running `bowtie2` instead of STAR with a `--bowtie2` option.
+3. **[done]** Make STAR the default aligner; allow running `bowtie2` instead of STAR with a `--bowtie2` option.
 
-4. Compare mapping statistics with `bowtie2` and `STAR`.
+4. **[in progress]** Compare mapping statistics with `bowtie2` and `STAR`.
 
 5. CAGEr pipeline as a set of modules. Include plotting motifs around TSSs on both strands separately to check if a pyrimidine-purine (initiator-like) motif is present on both strands. This lets a user check if TSSs are shifted (are not a per-pur pair) and/or initiator motifs are different on the two strands (neither should happen).
 
@@ -32,15 +32,15 @@
 
 ### Finishing up
 
-12. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
+13. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
 
-13. Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
+14. Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
 
-14. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
+15. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
 
-15. Cite in `CITATIONS.md` all the tools that we used.
+16. Cite in `CITATIONS.md` all the tools that we used.
 
-16. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
+17. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
 
 ## Introduction
 
