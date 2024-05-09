@@ -1,0 +1,14 @@
+sample,fastq_1,fastq_2,single_end
+S10,/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S10_S6_L001_R1_001.fastq.gz,/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S10_S6_L001_R2_001.fastq.gz,False
+S14,/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S14_S8_L001_R1_001.fastq.gz,/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S14_S8_L001_R2_001.fastq.gz,False
+S14,/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S14_S8_L002_R1_001.fastq.gz,/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S14_S8_L002_R2_001.fastq.gz,False
+S1,/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S1_S1_L001_R1_001.fastq.gz,,True
+S1,/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S1_S1_L002_R1_001.fastq.gz,,True
+S2,/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S2_S2_L001_R1_001.fastq.gz,,True
+S2,/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S2_S2_L002_R1_001.fastq.gz,,True
+S3,/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S3_S3_L001_R1_001.fastq.gz,,True
+S3,/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S3_S3_L002_R1_001.fastq.gz,,True
+S4,/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S4_S4_L001_R1_001.fastq.gz,,True
+S4,/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S4_S4_L002_R1_001.fastq.gz,,True
+S9,/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S9_S5_L001_R1_001.fastq.gz,,True
+S9,/Users/pavel/Desktop/PROJECTS/hooman-2/customcageq/assets/mock_fq/S9_S5_L002_R1_001.fastq.gz,,True

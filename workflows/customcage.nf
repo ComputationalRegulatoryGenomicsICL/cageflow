@@ -17,17 +17,16 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 params.dedup = false
 params.dist = false
 
-// HISAT2 parameters
-// params.bowtie2 = false
+// bowtie2 parameters
+params.bowtie2 = false
 
-// Adapt
-// params.gtf = "$projectDir/assets/NO_FILE_GTF"
+params.gtf = "$projectDir/assets/NO_FILE_GTF"
 // params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
 
-params.seq_center = false
-params.save_unaligned = false
+/* params.seq_center = false */
+/* params.save_unaligned = false */
 
-//TrimGalore! parameters
+// TrimGalore! parameters
 params.params_trimgalore = ''
 
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
@@ -40,6 +39,8 @@ include { TRIMGALORE } from '../modules/nf-core/trimgalore/main.nf'
 include { CUTADAPT } from '../modules/nf-core/cutadapt/main.nf'
 include { BOWTIE2_BUILD } from '../modules/nf-core/bowtie2/build/main.nf' 
 include { BOWTIE2_ALIGN } from '../modules/nf-core/bowtie2/align/main.nf'
+include { STAR_ALIGN } from '../modules/nf-core/star/align/main.nf' 
+include { STAR_GENOMEGENERATE } from '../modules/nf-core/star/genomegenerate/main.nf' 
 include { SAMTOOLS_SORT } from '../modules/nf-core/samtools/sort/main.nf'
 include { SAMTOOLS_SORT as SORT_FOR_FIXMATE} from '../modules/nf-core/samtools/sort/main.nf'
 include { SAMTOOLS_INDEX } from '../modules/nf-core/samtools/index/main.nf'
@@ -49,8 +50,6 @@ include { SAMTOOLS_DEDUP } from '../modules/local/samtools_dedup.nf'
 include { SAMTOOLS_STATS } from '../modules/nf-core/samtools/stats/main.nf'
 include { SAMTOOLS_IDXSTATS } from '../modules/nf-core/samtools/idxstats/main.nf'
 include { SAMTOOLS_FLAGSTAT } from '../modules/nf-core/samtools/flagstat/main.nf'
-include { STAR_ALIGN } from '../modules/nf-core/star/align/main.nf' 
-include { STAR_GENOMEGENERATE } from '../modules/nf-core/star/genomegenerate/main.nf' 
 
 def multiqc_report = []
 
@@ -89,22 +88,21 @@ workflow CUSTOMCAGE {
         }
     }
 
-    // Adapt
-    // if (params.gtf != "$projectDir/assets/NO_FILE_GTF" & (params.hisat2 || !params.fasta)) {
-    //     exit 1, 'The --gtf option can only be used with the combination of the --hisat2 and --fasta options.'
-    // }
+    if (params.gtf != "$projectDir/assets/NO_FILE_GTF" & !params.fasta) {
+        exit 1, 'The --gtf option can only be used with the --fasta option.'
+    }
+
+    if (params.gtf != "$projectDir/assets/NO_FILE_GTF" & params.bowtie2) {
+        exit 1, 'The --gtf option is mutually exclusive with the --bowtie2 option.'
+    }
 
     // if (params.splicesites != "$projectDir/assets/NO_FILE_SPLICESITES" && !params.hisat2) {
     //     exit 1, 'The --splicesites option can only be used with the --hisat2 option.'
     // }
 
-    // if ((params.seq_center || params.save_unaligned) && !params.hisat2) {
-    //     exit 1, 'The --seq_center or --save_unaligned option requires the --hisat2 option.'
-    // }
-
-    // if (params.hisat2_build_memory && (!params.hisat2 || !params.fasta)) {
-    //     exit 1, 'The --hisat2_build_memory option requires both the --hisat2 and --fasta options.'
-    // }
+    /* if ((params.seq_center || params.save_unaligned) && !params.hisat2) {
+        exit 1, 'The --seq_center or --save_unaligned option requires the --hisat2 option.'
+    } */
 
     INPUT_CHECK (
         input_handler
@@ -142,13 +140,13 @@ workflow CUSTOMCAGE {
     )
     ch_versions = ch_versions.mix(CUTADAPT.out.versions)
 
-    // if (params.hisat2) {            
+    if (!params.bowtie2) {            
         // splice_sites_file = file(params.splicesites, checkIfExists: true)
         if (!params.index) {
             gtf_file = file(params.gtf, checkIfExists: true)
             STAR_GENOMEGENERATE (
-                [[id: "FASTA"], ch_fasta],
-                [[id: "GTF"], gtf_file]
+                ch_fasta,
+                gtf_file
                 // [[id: "splice_sites"], splice_sites_file]
             )
             ch_index = STAR_GENOMEGENERATE.out.index
@@ -161,23 +159,23 @@ workflow CUSTOMCAGE {
         )
         ch_versions = ch_versions.mix(STAR_ALIGN.out.versions)
         ch_aligned = STAR_ALIGN.out.bam_sorted
-    //} else {
-    //     if (!params.index) {
-    //         BOWTIE2_BUILD (
-    //             ch_fasta
-    //         )
-    //         ch_index = BOWTIE2_BUILD.out.index
-    //         ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions)
-    //     }
-    //     BOWTIE2_ALIGN (
-    //         TRIMGALORE.out.reads,
-    //         ch_index,
-    //         false,
-    //         false
-    //     )
-    //     ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions)
-    //     ch_aligned = BOWTIE2_ALIGN.out.aligned
-    // }
+    } else {
+        if (!params.index) {
+            BOWTIE2_BUILD (
+                ch_fasta
+            )
+            ch_index = BOWTIE2_BUILD.out.index
+            ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions)
+        }
+        BOWTIE2_ALIGN (
+            TRIMGALORE.out.reads,
+            ch_index,
+            false,
+            false
+        )
+        ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions)
+        ch_aligned = BOWTIE2_ALIGN.out.aligned
+    }
 
     if (params.dedup) {
         SORT_FOR_FIXMATE (
@@ -265,8 +263,9 @@ workflow CUSTOMCAGE {
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.log.collect{it[1]}.ifEmpty([]))
-    // if (params.hisat2) {
-        ch_multiqc_files = ch_multiqc_files.mix(STAR_ALIGN.out.summary.collect{it[1]})
+    // Ready to test
+    // if (!params.bowtie2) {
+    //     ch_multiqc_files = ch_multiqc_files.mix(STAR_ALIGN.out.log_final.collect{it[1]})
     // } else {
     //     ch_multiqc_files = ch_multiqc_files.mix(BOWTIE2_ALIGN.out.log.collect{it[1]})
     // }

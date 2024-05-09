@@ -9,7 +9,7 @@ process STAR_ALIGN {
 
     input:
     tuple val(meta), path(reads, stageAs: "input*/*")
-    tuple val(meta2), path(index)
+    each path(index)
     // tuple val(meta3), path(gtf)
     // val star_ignore_sjdbgtf
     // val seq_platform
@@ -65,11 +65,10 @@ process STAR_ALIGN {
     //     mv ${prefix}.Unmapped.out.mate2 ${prefix}.unmapped_2.fastq
     //     gzip ${prefix}.unmapped_2.fastq
     // fi
-
     """
     STAR \\
         --genomeDir $index \\
-        --readFilesIn ${reads1} ${reads2} \\
+        --readFilesIn ${reads1.join(",")} ${reads2.join(",")} \\
         --runThreadN $task.cpus \\
         --outFileNamePrefix $prefix. \\
         $args
