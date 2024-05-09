@@ -30,7 +30,8 @@ params.gtf = "$projectDir/assets/NO_FILE_GTF"
 params.params_trimgalore = ''
 
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
-include { CAGER } from '../modules/local/cager.nf'
+include { CAGER as CAGER_BAM } from '../modules/local/cager.nf'
+include { CAGER as CAGER_BIGWIG } from '../modules/local/cager.nf'
 include { CAT_FASTQ } from '../modules/nf-core/cat/fastq/main.nf'
 include { FASTQC } from '../modules/nf-core/fastqc/main.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
@@ -99,10 +100,6 @@ workflow CUSTOMCAGE {
     // if (params.splicesites != "$projectDir/assets/NO_FILE_SPLICESITES" && !params.hisat2) {
     //     exit 1, 'The --splicesites option can only be used with the --hisat2 option.'
     // }
-
-    /* if ((params.seq_center || params.save_unaligned) && !params.hisat2) {
-        exit 1, 'The --seq_center or --save_unaligned option requires the --hisat2 option.'
-    } */
 
     INPUT_CHECK (
         input_handler
@@ -235,17 +232,25 @@ workflow CUSTOMCAGE {
     SAMTOOLS_IDXSTATS ( ch_bam_bai )
     ch_versions = ch_versions.mix(SAMTOOLS_IDXSTATS.out.versions)
 
-    if (params.dedup) {
-        ch_for_cager = SAMTOOLS_DEDUP.out.bam.collect()
+    if (params.bowtie2) {
+        if (params.dedup) {
+            ch_for_cager = SAMTOOLS_DEDUP.out.bam.collect()
+        } else {
+            ch_for_cager = SAMTOOLS_SORT.out.bam.collect()
+        }
+        CAGER_BAM (
+            params.bsgenome,
+            ch_for_cager
+        )
+        ch_versions = ch_versions.mix(CAGER_BAM.out.versions)
     } else {
-        ch_for_cager = SAMTOOLS_SORT.out.bam.collect()
+        // ch_for_cager = STAR_ALIGN.out.
+        CAGER_BIGWIG (
+            params.bsgenome,
+            ch_for_cager
+        )
+        ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
     }
-
-    CAGER (
-        params.bsgenome,
-        ch_for_cager
-    )
-    ch_versions = ch_versions.mix(CAGER.out.versions)
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
@@ -263,12 +268,11 @@ workflow CUSTOMCAGE {
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.log.collect{it[1]}.ifEmpty([]))
-    // Ready to test
-    // if (!params.bowtie2) {
-    //     ch_multiqc_files = ch_multiqc_files.mix(STAR_ALIGN.out.log_final.collect{it[1]})
-    // } else {
-    //     ch_multiqc_files = ch_multiqc_files.mix(BOWTIE2_ALIGN.out.log.collect{it[1]})
-    // }
+    if (!params.bowtie2) {
+        ch_multiqc_files = ch_multiqc_files.mix(STAR_ALIGN.out.log_final.collect{it[1]})
+    } else {
+        ch_multiqc_files = ch_multiqc_files.mix(BOWTIE2_ALIGN.out.log.collect{it[1]})
+    }
     ch_multiqc_files = ch_multiqc_files.mix(SAMTOOLS_STATS.out.stats.collect{it[1]})
     ch_multiqc_files = ch_multiqc_files.mix(SAMTOOLS_IDXSTATS.out.idxstats.collect{it[1]})
     ch_multiqc_files = ch_multiqc_files.mix(SAMTOOLS_FLAGSTAT.out.flagstat.collect{it[1]})
