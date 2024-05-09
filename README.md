@@ -4,41 +4,43 @@
 
 ### Features to implement
 
-1. `cutadapt` module for G trimming.
+1. **[done]** `cutadapt` module for G trimming.
 
-2. `STAR` module for spliced alignment (instead of `HISAT2`):
-   - Include filtering of alignments into the STAR command (check out if and how it allows to filter alignments before reporting them).
-   - Include the generation of bedgraphs (and, optionally, of bigWigs) into the STAR command, so that we have bedgraph input for CAGEr to speed it up and raw count tracks to look at in the genome browser.
+2. **[done]** `STAR` module for spliced alignment (instead of `HISAT2`):
+   - Include filtering of alignments into the `STAR` command (check out if and how it allows to filter alignments before reporting them).
+   - Include the generation of bedgraphs (and, optionally, of bigWigs) into the `STAR` command, so that we have bedgraph input for `CAGEr` to speed it up and raw count tracks to look at in the genome browser.
 
-3. Make STAR the default aligner; allow running `bowtie2` instead of STAR with a `--bowtie2` option.
+3. **[done]** Make `STAR` the default aligner; allow running `bowtie2` instead of `STAR` with a `--bowtie2` option.
 
-4. CAGEr pipeline as a set of modules. Include plotting motifs around TSSs on both strands separately to check if a pyrimidine-purine (initiator-like) motif is present on both strands. This lets a user check if TSSs are shifted (are not a per-pur pair) and/or initiator motifs are different on the two strands (neither should happen).
+4. Test the whole pipeline (`STAR` and `bowtie2`) with single-end reads.
 
-5. CAGEfightR (for enhancer calling, with a subsequent filtering by CAGEr-generated tag clusters).
+5. **[in progress]** `CAGEr` pipeline as a set of modules. Include plotting motifs around TSSs on both strands separately to check if a pyrimidine-purine (initiator-like) motif is present on both strands. This lets a user check if TSSs are shifted (are not a pyrimidine-purine pair) and/or initiator motifs are different on the two strands (neither should happen).
 
-6. Generate tracks for the genome browser.
+6. `CAGEfightR` (for enhancer calling, with a subsequent filtering by `CAGEr`-generated tag clusters).
 
-7. Implement building a BSgenome package and its installation on the fly for species for which there is no BSgenome package on BioConductor.
+7. Track generation for the genome browser.
 
-8. Investigate and ideally resolve the issue with CAGEr using only one thread when reading samples and working within the pipeline. Get in touch with Charles after a reasonable investigation.
+8. Building a `BSgenome` package and its installation on the fly for species for which there is no `BSgenome` package on `Bioconductor`.
 
-9. Move the MultiQC run before CAGEr to give the user the preprocessing QC report earlier and not to depend on CAGEr's possible fails (which would preclude MultiQC from running).
+9. Investigate and ideally resolve the issue with `CAGEr` using only one thread when reading samples and working within the pipeline. Get in touch with Charles Plessy after a reasonable investigation.
 
-10. Include FastQC after TrimGalore to the MultiQC report.
+10. Move the `MultiQC` run before `CAGEr` to give the user the preprocessing QC report earlier and not to depend on `CAGEr`'s possible fails (which would preclude `MultiQC` from running).
 
-11. Generate tag cluster schematics for the genome browser using exon, intron and UTR glyphs.
+11. Include `FastQC` after `TrimGalore` to the `MultiQC` report.
+
+12. Tag cluster schematics generation for the genome browser using exon, intron and UTR glyphs.
 
 ### Finishing up
 
-12. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
+13. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
 
-13. Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
+14. Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
 
-14. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
+15. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
 
-15. Cite in `CITATIONS.md` all the tools that we used.
+16. Cite in `CITATIONS.md` all the tools that we used.
 
-16. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
+17. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
 
 ## Introduction
 
@@ -53,6 +55,8 @@ Either single-end or paired-end raw CAGE reads. Only one type of reads (either s
 A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with CAGEr. The intermediate and final results are stored in the `results` directory. The final CAGEexp object is stored in an RDS file in the `results/cager` directory.
 
 ### Steps
+
+[The refreshed pipeline schematic here.]
 
 1. Merge per-lane FASTQ files with the [`nf-core/cat_fastq`](https://nf-co.re/modules/cat_fastq) module.
 2. Report raw read quality with [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).
