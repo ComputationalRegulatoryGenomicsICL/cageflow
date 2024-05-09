@@ -10,7 +10,7 @@ process UCSC_WIGTOBIGWIG {
 
     input:
     tuple val(meta), path(wig)
-    path sizes
+    each path(sizes)
 
     output:
     tuple val(meta), path("*.bw"), emit: bw

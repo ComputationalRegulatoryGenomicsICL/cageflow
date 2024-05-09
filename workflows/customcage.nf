@@ -13,6 +13,9 @@ ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.mu
 ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
 ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
 
+// TrimGalore! parameters
+params.params_trimgalore = ''
+
 // Read deduplication parameters
 params.dedup = false
 params.dist = false
@@ -20,18 +23,15 @@ params.dist = false
 // bowtie2 parameters
 params.bowtie2 = false
 
+// STAR parameters
 params.gtf = "$projectDir/assets/NO_FILE_GTF"
+params.chromsizes = "$projectDir/assets/NO_FILE_CHROMSIZES"
 // params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
 
-/* params.seq_center = false */
-/* params.save_unaligned = false */
-
-// TrimGalore! parameters
-params.params_trimgalore = ''
-
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
+// CAGER_BAM and CAGER_BIGWIG should be two differen modules
 include { CAGER as CAGER_BAM } from '../modules/local/cager.nf'
-include { CAGER as CAGER_BIGWIG } from '../modules/local/cager.nf'
+//include { CAGER as CAGER_BIGWIG } from '../modules/local/cager.nf'
 include { CAT_FASTQ } from '../modules/nf-core/cat/fastq/main.nf'
 include { FASTQC } from '../modules/nf-core/fastqc/main.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
@@ -51,6 +51,7 @@ include { SAMTOOLS_DEDUP } from '../modules/local/samtools_dedup.nf'
 include { SAMTOOLS_STATS } from '../modules/nf-core/samtools/stats/main.nf'
 include { SAMTOOLS_IDXSTATS } from '../modules/nf-core/samtools/idxstats/main.nf'
 include { SAMTOOLS_FLAGSTAT } from '../modules/nf-core/samtools/flagstat/main.nf'
+include { UCSC_WIGTOBIGWIG } from '../modules/nf-core/ucsc/wigtobigwig/main.nf' 
 
 def multiqc_report = []
 
@@ -95,6 +96,14 @@ workflow CUSTOMCAGE {
 
     if (params.gtf != "$projectDir/assets/NO_FILE_GTF" & params.bowtie2) {
         exit 1, 'The --gtf option is mutually exclusive with the --bowtie2 option.'
+    }
+
+    if (params.chromsizes != "$projectDir/assets/NO_FILE_CHROMSIZES" & params.bowtie2) {
+        exit 1, 'The --chromsizes option is mutually exclusive with the --bowtie2 option.'
+    }
+
+    if (params.chromsizes == "$projectDir/assets/NO_FILE_CHROMSIZES" & !params.bowtie2) {
+        exit 1, 'The use of the default mapper STAR requires the --chromsizes option.'
     }
 
     // if (params.splicesites != "$projectDir/assets/NO_FILE_SPLICESITES" && !params.hisat2) {
@@ -149,13 +158,27 @@ workflow CUSTOMCAGE {
             ch_index = STAR_GENOMEGENERATE.out.index
             ch_versions = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
         }
+
         STAR_ALIGN (
             TRIMGALORE.out.reads,
             ch_index
             // splice_sites_file
         )
         ch_versions = ch_versions.mix(STAR_ALIGN.out.versions)
+
         ch_aligned = STAR_ALIGN.out.bam_sorted
+
+        ch_chrom_sizes = Channel.fromPath(params.chromsizes)
+
+        // test
+        STAR_ALIGN.out.wig.view()
+        // end test
+
+        UCSC_WIGTOBIGWIG (
+            STAR_ALIGN.out.wig,
+            ch_chrom_sizes
+        )
+        ch_versions = ch_versions.mix(UCSC_WIGTOBIGWIG.out.versions)
     } else {
         if (!params.index) {
             BOWTIE2_BUILD (
@@ -243,14 +266,14 @@ workflow CUSTOMCAGE {
             ch_for_cager
         )
         ch_versions = ch_versions.mix(CAGER_BAM.out.versions)
-    } else {
+    } //else {
         // ch_for_cager = STAR_ALIGN.out.
-        CAGER_BIGWIG (
-            params.bsgenome,
-            ch_for_cager
-        )
-        ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
-    }
+        // CAGER_BIGWIG (
+        //     params.bsgenome,
+        //     ch_for_cager
+        // )
+        // ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
+    //}
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
