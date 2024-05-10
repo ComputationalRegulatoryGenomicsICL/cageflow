@@ -7,8 +7,8 @@
 1. **[done]** `cutadapt` module for G trimming.
 
 2. **[done]** `STAR` module for spliced alignment (instead of `HISAT2`):
-   - Include filtering of alignments into the `STAR` command (check out if and how it allows to filter alignments before reporting them).
-   - Include the generation of bedgraphs (and, optionally, of bigWigs) into the `STAR` command, so that we have bedgraph input for `CAGEr` to speed it up and raw count tracks to look at in the genome browser.
+   - Include filtering of alignments into the `STAR` command.
+   - Include the generation of wigs into the `STAR` command to use as CAGEr input: to be able to use the spliced alignment, to speed up input reading and to have raw count tracks to look at in the genome browser.
 
 3. **[done]** Make `STAR` the default aligner; allow running `bowtie2` instead of `STAR` with a `--bowtie2` option.
 
@@ -18,11 +18,11 @@
 
 6. `CAGEfightR` (for enhancer calling, with a subsequent filtering by `CAGEr`-generated tag clusters).
 
-7. Track generation for the genome browser.
+7. Track generation for the genome browser (normalized counts).
 
-8. Building a `BSgenome` package and its installation on the fly for species for which there is no `BSgenome` package on `Bioconductor`.
+8. Building a `BSgenome` package and its installation on the fly for species with no `BSgenome` package on `Bioconductor`.
 
-9. Investigate and ideally resolve the issue with `CAGEr` using only one thread when reading samples and working within the pipeline. Get in touch with Charles Plessy after a reasonable investigation.
+9. Investigate and ideally resolve the issue with `CAGEr` using only one thread when reading samples and working within the pipeline. Get in touch with Charles Plessy after a reasonable investigation. (Damir discovered that CAGEr uses the number of thread equal to the number of read input files, independently of the number of threads set to it; but it is still unclear why CAGEr uses only one thread for multiple input samples when run within the pipeline.)
 
 10. Move the `MultiQC` run before `CAGEr` to give the user the preprocessing QC report earlier and not to depend on `CAGEr`'s possible fails (which would preclude `MultiQC` from running).
 
@@ -36,7 +36,7 @@
 
 14. Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
 
-15. Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
+15. **[in progress]** Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
 
 16. Cite in `CITATIONS.md` all the tools that we used.
 
