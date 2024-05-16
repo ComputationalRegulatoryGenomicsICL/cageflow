@@ -21,18 +21,19 @@ process STAR_ALIGN {
     tuple val(meta), path('*Log.progress.out'), emit: log_progress
     path  "versions.yml"                      , emit: versions
 
-    tuple val(meta), path('*d.out.bam')              , optional:true, emit: bam
-    tuple val(meta), path('*sortedByCoord.out.bam')  , optional:true, emit: bam_sorted
-    tuple val(meta), path('*toTranscriptome.out.bam'), optional:true, emit: bam_transcript
-    tuple val(meta), path('*Aligned.unsort.out.bam') , optional:true, emit: bam_unsorted
-    tuple val(meta), path('*fastq.gz')               , optional:true, emit: fastq
-    tuple val(meta), path('*.tab')                   , optional:true, emit: tab
-    tuple val(meta), path('*.SJ.out.tab')            , optional:true, emit: spl_junc_tab
-    tuple val(meta), path('*.ReadsPerGene.out.tab')  , optional:true, emit: read_per_gene_tab
-    tuple val(meta), path('*.out.junction')          , optional:true, emit: junction
-    tuple val(meta), path('*.out.sam')               , optional:true, emit: sam
-    tuple val(meta), path('*.wig')                   , optional:true, emit: wig
-    tuple val(meta), path('*.bg')                    , optional:true, emit: bedgraph
+    tuple val(meta), path('*d.out.bam')                       , optional:true, emit: bam
+    tuple val(meta), path('*sortedByCoord.out.bam')           , optional:true, emit: bam_sorted
+    tuple val(meta), path('*toTranscriptome.out.bam')         , optional:true, emit: bam_transcript
+    tuple val(meta), path('*Aligned.unsort.out.bam')          , optional:true, emit: bam_unsorted
+    tuple val(meta), path('*fastq.gz')                        , optional:true, emit: fastq
+    tuple val(meta), path('*.tab')                            , optional:true, emit: tab
+    tuple val(meta), path('*.SJ.out.tab')                     , optional:true, emit: spl_junc_tab
+    tuple val(meta), path('*.ReadsPerGene.out.tab')           , optional:true, emit: read_per_gene_tab
+    tuple val(meta), path('*.out.junction')                   , optional:true, emit: junction
+    tuple val(meta), path('*.out.sam')                        , optional:true, emit: sam
+    tuple val(meta), path('*.wig')                            , optional:true, emit: wig
+    tuple val(meta), path('*.UniqueMultiple.str{1,2}.out.wig'), optional:true, emit: wigtobigwig
+    tuple val(meta), path('*.bg')                             , optional:true, emit: bedgraph
 
     when:
     task.ext.when == null || task.ext.when

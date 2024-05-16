@@ -171,7 +171,7 @@ workflow CUSTOMCAGE {
         ch_chrom_sizes = Channel.fromPath(params.chromsizes)
 
         // test
-        STAR_ALIGN.out.wig.view()
+        STAR_ALIGN.out.wigtobigwig.view()
         // end test
 
         UCSC_WIGTOBIGWIG (
