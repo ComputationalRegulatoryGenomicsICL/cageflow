@@ -45,4 +45,4 @@ ce = CAGEexp(genomeName     = ref.name,
 
 ce = getCTSS(ce, removeFirstG = T, useMulticore = T, nrCores = cpus)
 
-saveRDS(ce, paste0(ref.id, "_CAGEexp_v1_readCTSS.RDS"))
+saveRDS(ce, paste0(ref.id, "_CAGEexp_CTSS.rds"))

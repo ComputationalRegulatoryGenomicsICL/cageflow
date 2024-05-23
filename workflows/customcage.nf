@@ -29,9 +29,8 @@ params.chromsizes = "$projectDir/assets/NO_FILE_CHROMSIZES"
 // params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
 
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
-// CAGER_BAM and CAGER_BIGWIG should be two differen modules
-include { CAGER as CAGER_BAM } from '../modules/local/cager.nf'
-//include { CAGER as CAGER_BIGWIG } from '../modules/local/cager.nf'
+include { CAGER_BAM } from '../modules/local/cager_bam.nf'
+include { CAGER_BIGWIG } from '../modules/local/cager_bigwig.nf'
 include { CAT_FASTQ } from '../modules/nf-core/cat/fastq/main.nf'
 include { FASTQC } from '../modules/nf-core/fastqc/main.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
@@ -170,12 +169,8 @@ workflow CUSTOMCAGE {
 
         ch_chrom_sizes = Channel.fromPath(params.chromsizes)
 
-        // test
-        STAR_ALIGN.out.wigtobigwig.view()
-        // end test
-
         UCSC_WIGTOBIGWIG (
-            STAR_ALIGN.out.wig,
+            STAR_ALIGN.out.wigtobigwig,
             ch_chrom_sizes
         )
         ch_versions = ch_versions.mix(UCSC_WIGTOBIGWIG.out.versions)
@@ -266,14 +261,17 @@ workflow CUSTOMCAGE {
             ch_for_cager
         )
         ch_versions = ch_versions.mix(CAGER_BAM.out.versions)
-    } //else {
-        // ch_for_cager = STAR_ALIGN.out.
-        // CAGER_BIGWIG (
-        //     params.bsgenome,
-        //     ch_for_cager
-        // )
-        // ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
-    //}
+    } else {
+        ch_for_cager = UCSC_WIGTOBIGWIG.out.bw
+            .map { it[1] }
+            .collect()
+
+        CAGER_BIGWIG (
+            params.bsgenome,
+            ch_for_cager
+        )
+        ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
+    }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')

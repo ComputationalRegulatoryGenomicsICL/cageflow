@@ -14,6 +14,7 @@ process UCSC_WIGTOBIGWIG {
 
     output:
     tuple val(meta), path("*.bw"), emit: bw
+    //path "*.bw", emit: bw
     path "versions.yml"          , emit: versions
 
     when:

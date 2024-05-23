@@ -1,27 +1,17 @@
-process CAGER {
+process CAGER_BIGWIG {
     label 'process_medium'
     stageInMode 'copy'
-
-    // container 'docker://hub.docker.com/nikitinpavel/cager:0.5'
    
     input:
     val bsgenome
-    val meta_bam
+    val bigwig
 
     output:
-    path "*.RDS",        emit: rds
+    path "*.rds",        emit: rds
     path "versions.yml", emit: versions
 
     """
-    echo ${meta_bam} | \\
-        sed 's/, \\[/\\n/g' | \\
-        tr -d '[],' | \\
-        tr ' ' '\\t' | \\
-        sed 's/id://' | \\
-        sed 's/single_end://' \\
-            > sample_list.tsv
-
-    cager.R ${bsgenome} sample_list.tsv ${task.cpus}
+    cager_bigwig.R ${bsgenome} "${bigwig}" ${task.cpus}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
