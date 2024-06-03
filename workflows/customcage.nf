@@ -16,6 +16,9 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 // TrimGalore! parameters
 params.params_trimgalore = ''
 
+// cutadapt parameters
+params.nogtrim = false
+
 // Read deduplication parameters
 params.dedup = false
 params.dist = false
@@ -140,10 +143,14 @@ workflow CUSTOMCAGE {
     )
     ch_versions = ch_versions.mix(TRIMGALORE.out.versions)
 
-    CUTADAPT (
-        TRIMGALORE.out.reads
-    )
-    ch_versions = ch_versions.mix(CUTADAPT.out.versions)
+    if (!params.nogtrim) {
+        CUTADAPT (
+            TRIMGALORE.out.reads
+        )
+        ch_versions = ch_versions.mix(CUTADAPT.out.versions)
+    }
+
+    ch_reads_to_align = !params.nogtrim ? CUTADAPT.out.reads : TRIMGALORE.out.reads
 
     if (!params.bowtie2) {            
         // splice_sites_file = file(params.splicesites, checkIfExists: true)
@@ -159,7 +166,7 @@ workflow CUSTOMCAGE {
         }
 
         STAR_ALIGN (
-            TRIMGALORE.out.reads,
+            ch_reads_to_align,
             ch_index
             // splice_sites_file
         )
@@ -183,7 +190,7 @@ workflow CUSTOMCAGE {
             ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions)
         }
         BOWTIE2_ALIGN (
-            TRIMGALORE.out.reads,
+            ch_reads_to_align,
             ch_index,
             false,
             false

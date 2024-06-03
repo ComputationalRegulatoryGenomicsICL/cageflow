@@ -43,6 +43,6 @@ ce = CAGEexp(genomeName     = ref.name,
              inputFilesType = bam.type,
              sampleLabels   = sample.names)
 
-ce = getCTSS(ce, removeFirstG = T, useMulticore = T, nrCores = cpus)
+ce = getCTSS(ce, removeFirstG = F, correctSystematicG = F, useMulticore = T, nrCores = cpus)
 
 saveRDS(ce, paste0(ref.id, "_CAGEexp_CTSS.rds"))
