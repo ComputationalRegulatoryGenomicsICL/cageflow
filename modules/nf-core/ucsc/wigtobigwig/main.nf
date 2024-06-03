@@ -14,7 +14,6 @@ process UCSC_WIGTOBIGWIG {
 
     output:
     tuple val(meta), path("*.bw"), emit: bw
-    //path "*.bw", emit: bw
     path "versions.yml"          , emit: versions
 
     when:
@@ -22,7 +21,6 @@ process UCSC_WIGTOBIGWIG {
 
     script:
     def args = task.ext.args ?: ''
-    //def prefix = task.ext.prefix ?: "${meta.id}"
     def VERSION = '447' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
 
     """
@@ -47,7 +45,6 @@ process UCSC_WIGTOBIGWIG {
     """
 
     stub:
-    //def prefix = task.ext.prefix ?: "${meta.id}"
     def VERSION = '447' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     touch ${wig[0]}.bw
