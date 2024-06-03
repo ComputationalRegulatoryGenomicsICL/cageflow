@@ -8,10 +8,9 @@ process STAR_GENOMEGENERATE {
         'biocontainers/mulled-v2-1fa26d1ce03c295fe2fdcf85831a92fbcbd7e8c2:ded3841da0194af2701c780e9b3d653a85d27489-0' }"
 
     input:
-    // tuple val(meta), path(fasta)
-    // tuple val(meta2), path(gtf)
     path fasta
     path gtf
+    path splicesites
 
     output:
     path "star",         emit: index
@@ -25,6 +24,7 @@ process STAR_GENOMEGENERATE {
     def args_list   = args.tokenize()
     def memory      = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
     def gtf_option = "$gtf" != 'NO_FILE_GTF' ? "--sjdbGTFfile $gtf" : ""
+    def splicesite_option = "$splicesites" != 'NO_FILE_SPLICESITES' ? "--sjdbFileChrStartEnd $splicesites" : ""
     if (args_list.contains('--genomeSAindexNbases')) {
         """
         mkdir star
@@ -33,6 +33,7 @@ process STAR_GENOMEGENERATE {
             --genomeDir star/ \\
             --genomeFastaFiles $fasta \\
             ${gtf_option} \\
+            ${splicesite_option} \\
             --runThreadN $task.cpus \\
             $memory \\
             $args
@@ -45,7 +46,6 @@ process STAR_GENOMEGENERATE {
         END_VERSIONS
         """
     } else {
-    // NUM_BASES=`gawk '{sum = sum + \$2}END{if ((log(sum)/log(2))/2 - 1 > 14) {printf "%.0f", 14} else {printf "%.0f", (log(sum)/log(2))/2 - 1}}' ${fasta}.fai`
         """
         samtools faidx $fasta
         NUM_BASES=`gawk '{sum = sum + \$2} END {nb = int((log(sum)/log(2))/2 - 1); if (nb > 14) {printf "%.0f", 14} else {printf "%.0f", nb}}' ${fasta}.fai`
@@ -55,7 +55,8 @@ process STAR_GENOMEGENERATE {
             --runMode genomeGenerate \\
             --genomeDir star/ \\
             --genomeFastaFiles $fasta \\
-            $gtf_option \\
+            ${gtf_option} \\
+            ${splicesite_option} \\
             --runThreadN $task.cpus \\
             --genomeSAindexNbases \$NUM_BASES \\
             $memory \\

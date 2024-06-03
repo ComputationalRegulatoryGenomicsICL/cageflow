@@ -29,7 +29,7 @@ params.bowtie2 = false
 // STAR parameters
 params.gtf = "$projectDir/assets/NO_FILE_GTF"
 params.chromsizes = "$projectDir/assets/NO_FILE_CHROMSIZES"
-// params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
+params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
 
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { CAGER_BAM } from '../modules/local/cager_bam.nf'
@@ -100,6 +100,14 @@ workflow CUSTOMCAGE {
         exit 1, 'The --gtf option is mutually exclusive with the --bowtie2 option.'
     }
 
+    if (params.splicesites != "$projectDir/assets/NO_FILE_SPLICESITES" & !params.fasta) {
+        exit 1, 'The --splicesites option can only be used with the --fasta option.'
+    }
+
+    if (params.splicesites != "$projectDir/assets/NO_FILE_SPLICESITES" && params.bowtie2) {
+        exit 1, 'The --splicesites option is mutually exclusive with the --bowtie2 option.'
+    }
+
     if (params.chromsizes != "$projectDir/assets/NO_FILE_CHROMSIZES" & params.bowtie2) {
         exit 1, 'The --chromsizes option is mutually exclusive with the --bowtie2 option.'
     }
@@ -107,10 +115,6 @@ workflow CUSTOMCAGE {
     if (params.chromsizes == "$projectDir/assets/NO_FILE_CHROMSIZES" & !params.bowtie2) {
         exit 1, 'The use of the default mapper STAR requires the --chromsizes option.'
     }
-
-    // if (params.splicesites != "$projectDir/assets/NO_FILE_SPLICESITES" && !params.hisat2) {
-    //     exit 1, 'The --splicesites option can only be used with the --hisat2 option.'
-    // }
 
     INPUT_CHECK (
         input_handler
@@ -153,13 +157,13 @@ workflow CUSTOMCAGE {
     ch_reads_to_align = !params.nogtrim ? CUTADAPT.out.reads : TRIMGALORE.out.reads
 
     if (!params.bowtie2) {            
-        // splice_sites_file = file(params.splicesites, checkIfExists: true)
         if (!params.index) {
             gtf_file = file(params.gtf, checkIfExists: true)
+            splice_sites_file = file(params.splicesites, checkIfExists: true)
             STAR_GENOMEGENERATE (
                 ch_fasta,
-                gtf_file
-                // [[id: "splice_sites"], splice_sites_file]
+                gtf_file,
+                splice_sites_file
             )
             ch_index = STAR_GENOMEGENERATE.out.index
             ch_versions = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
@@ -168,7 +172,6 @@ workflow CUSTOMCAGE {
         STAR_ALIGN (
             ch_reads_to_align,
             ch_index
-            // splice_sites_file
         )
         ch_versions = ch_versions.mix(STAR_ALIGN.out.versions)
 
