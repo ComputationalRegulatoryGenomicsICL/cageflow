@@ -10,3 +10,16 @@ report_section_order:
     order: -1002
 
 export_plots: true
+
+top_modules:
+  - fastqc:
+      name: "FastQC (raw)"
+      info: "shows the quality metrics of raw reads."
+      path_filters_exclude:
+        - "*_val_*"
+  - cutadapt
+  - fastqc:
+      name: "FastQC (trimmed)"
+      info: "shows the quality metrics of trimmed reads."
+      path_filters:
+        - "*_val_*"
