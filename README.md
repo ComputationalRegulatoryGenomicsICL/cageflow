@@ -67,14 +67,16 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 1. Merge per-lane FASTQ files with the [`nf-core/cat_fastq`](https://nf-co.re/modules/cat_fastq) module.
 2. Report raw read quality with [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).
 3. Trim adapters with [`TrimGalore`](https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md) and run [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) on trimmed reads.
-4. Build the Bowtie2 index of the reference genome FASTA file with [`bowtie2-build`](https://bowtie-bio.sourceforge.net/bowtie2/manual.shtml), if the index is not provided.
-5. Map the trimmed reads onto the Bowtie2 index using [`bowtie2`](https://bowtie-bio.sourceforge.net/bowtie2/manual.shtml), then filter out unmapped reads and select only uniquelly mapped reads using [`samtools view`](https://www.htslib.org/doc/samtools-view.html) with options `-b -F 4 -q 20`.
-6. Optionally, remove PCR and optical duplicate reads with [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html).
-7. Sort the obtained BAM files with uniquely mapped reads using [`samtools sort`](https://www.htslib.org/doc/samtools-sort.html).
-8. Index the sorted BAM files with [`samtools index`](https://www.htslib.org/doc/samtools-index.html).
-9. Assess mapping quality using [`samtools stats`](https://www.htslib.org/doc/samtools-stats.html), [`samtools flagstat`](https://www.htslib.org/doc/samtools-flagstat.html) and [`samtools idxstats`](https://www.htslib.org/doc/samtools-idxstats.html).
-10. Create a CAGEexp object and call TSSs with [`CAGEr`](https://bioconductor.org/packages/release/bioc/html/CAGEr.html) using a [BSgenome package](https://bioconductor.org/packages/release/bioc/html/BSgenome.html) for the respective genome.
-11. Create a [MultiQC](https://multiqc.info/) report.
+4. Report trimmed read quality with [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).
+5. Trim the first `G` in forward reads (optional; done by default).
+6. Build the a STAR or Bowtie2 index of the reference genome FASTA file, if the index is not provided. For the STAR index, use a mandatory list of chromosome sizes and an optional annotation in the GTF format and/or an optional list of splice junctions (see below for details).
+7. Map trimmed reads onto the genome index and filter the alignments. If mapped with STAR, then retain only the reads with at most 2 alignments; if mapped with bowtie2, then retain only the reads with $MAPQ\geq 20$.
+8. Optionally, remove PCR and optical duplicate reads with [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html).
+9. Sort the obtained BAM files with uniquely mapped reads using [`samtools sort`](https://www.htslib.org/doc/samtools-sort.html).
+10. Index the sorted BAM files with [`samtools index`](https://www.htslib.org/doc/samtools-index.html).
+11. Assess mapping quality using [`samtools stats`](https://www.htslib.org/doc/samtools-stats.html), [`samtools flagstat`](https://www.htslib.org/doc/samtools-flagstat.html) and [`samtools idxstats`](https://www.htslib.org/doc/samtools-idxstats.html).
+12. Create a CAGEexp object and call TSSs with [`CAGEr`](https://bioconductor.org/packages/release/bioc/html/CAGEr.html) using a [BSgenome package](https://bioconductor.org/packages/release/bioc/html/BSgenome.html) for the respective genome.
+13. Create a [MultiQC](https://multiqc.info/) report.
 
 ## Usage
 
