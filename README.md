@@ -132,21 +132,27 @@ Clone the repository to your machine and use the following syntax to run the pip
 ```bash
 nextflow run customcageq/main.nf \
     --bsgenome [/path/to/]bsgenome.package[.tar.gz] \
-    (--fasta /path/to/fasta/genome.fa | --index /path/to/index) \
-    [--bowtie2] \
-    [--dedup [--dist N]] \
+    (--fasta /path/to/fasta/genome.fa (--chromsizes /path/to/chromsizes.tsv) | --index /path/to/index) \
     --input samplesheet.csv \
-    -profile <institution/docker/singularity>
+    [OPTIONAL_ARGUMENTS]
 ```
 
 where 
 * `--bsgenome` specifies the BSgenome R package to use. If it is a file name (which should have a full path and the `.tar.gz` extension), then the package will be taken from the specified location; otherwise, the pipeline will try to install a BSgenome R package with the name `bsgenome.package` on the fly (see examples below);
-* `--fasta` specifies a full path to a FASTA file containing a reference genome. This option is mandatory, unless `--index` is set. **Remark:** This option is mutually exclusive with `--index`.
-* `--index` specifies a directory `bowtie2` with a Bowtie2 reference genome index. This is a mandatory option, unless `--fasta` is set. **Remark:** This option is mutually exclusive with `--fasta`.
-* `--dedup` switches on PCR duplicate removal.
-* `--dist N` sets an optical duplicate distance `N` to remove optical duplicates, in addition to PCR duplicates (see [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html), option `-d`). **Remark:** The argument is optional and requires `--dedup`.
+* `--fasta` specifies a full path to a FASTA file containing a reference genome. This option is mandatory, unless `--index` is set. This option is mutually exclusive with `--index` and by default (when the `STAR` aligner is used) also requires the `--chromsizes` option. If `bowtie2` is used instead (see the `--bowtie2` option below), then the `--chromsizes` option should not be set.
+* `--chromsizes` specifies a full path to a TSV file with a list of chromosome sizes for the genome provided with the `--fasta` option. This option is mutually exclusive with `--index` and `--bowtie2` and, by default (when the `STAR` aligner is used), must accompany the `--fasta` option.
+* `--index` specifies a directory with a genome index (`bowtie2` or `STAR`). This is a mandatory option, unless `--fasta` is set. This option is mutually exclusive with `--fasta`, `--gtf`, `--splicesites` and `--chromsizes`.
 * `--input` specifies the input CSV samplesheet.
-* `-profile` is a Nextflow option that specifies a config file to use with Nextflow on a given machine. See [`nf-core/configs`](https://github.com/nf-core/configs) for ready-to-use institutional configs, including the one for Jex (the high-performance computing cluster of the [Laboratory of Medical Sciences](https://lms.mrc.ac.uk/)). Also, see the [Jex wiki](https://hpcwiki.lms.mrc.ac.uk/docs/software/software/workflow_managers/#nextflow) on how to run Nextflow on Jex. Alternatively, this option can be used to specify the containerization technology to use.
+* [OPTIONAL_ARGUMENTS]:
+    * `--bowtie2` switches the aligner from `STAR` to `bowtie2`. This option is mutually exclusive with `--gtf`, `--splicesites` and `--chromsizes`.
+    * `--gtf` specifies a full path to a GTF file with the genome annotation to use in the construction of a `STAR` genome index. This option is mutually exclusive with `--index` and `--bowtie2` and requires the `--fasta` option.
+    * `--splicesites` specifies a full path to a TSV file with a list of splice junctions (see the STAR manual, ... section, for the format). This option is mutually exclusive with `--index` and `--bowtie2` and requires the `--fasta` option.
+    * `--params-trimgalore` specifies any options that can be passed to `TrimGalore!`. Useful for any non-standard read processing (for example, for CAGEscan reads that require the removal of fixed sequences from the 5'-end of the forward and reverse read).
+    * `--nogtrim` makes the pipeline to skip the G-trimming step with `cutadapt` (executed after `TrimGalore!`). Useful for processing non-CAGE data (for example, CAGEscan reads which do not have a 5'-located `G` but instead require the removal from the 5'-end of the forward read of a fixed sequence ending with `GGG`).
+    * `--dedup` switches on PCR duplicate removal (not shown on the pipeline map and switched off by default).
+    * `--dist N` sets an optical duplicate distance `N` to remove optical duplicates, in addition to PCR duplicates (see [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html), option `-d`). This option requires `--dedup`.
+    * `-profile` is a Nextflow option that specifies a config file to use with Nextflow on a given machine. See [`nf-core/configs`](https://github.com/nf-core/configs) for ready-to-use institutional configs, including the one for Jex (the high-performance computing cluster of the [Laboratory of Medical Sciences](https://lms.mrc.ac.uk/)). Also, see the [Jex wiki](https://hpcwiki.lms.mrc.ac.uk/docs/software/software/workflow_managers/#nextflow) on how to run Nextflow on Jex. Alternatively, this option can be used to specify the containerization technology to use.
+    * `-w` sets a full path to a work directory for Nextflow.
 
 ### Examples
 
