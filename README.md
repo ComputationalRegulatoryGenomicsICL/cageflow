@@ -48,7 +48,7 @@
 
 ## Introduction
 
-**ComputationalRegulatoryGenomicsICL/customcageq** is a Nextflow pipeline to process CAGE sequencing data from raw reads to the creation of a CAGEexp (CAGEr) object containing called TSSs. The pipeline is specifically designed to be used upstream of CAGEr.
+**ComputationalRegulatoryGenomicsICL/customcageq** is a Nextflow pipeline to process CAGE sequencing data from raw reads to the creation of a CAGEexp (CAGEr) object containing called TSSs. The pipeline is specifically designed to be used upstream of CAGEr. Reads can be mapped using `STAR` (to take splacing into account and to obtain bigWig files with raw 5'-coverage; `STAR` is used by default) or `bowtie2` (see the `--bowtie2` option below). The pipeline can generate a genome index on the fly if provided with a FASTA file and, for `STAR` only, with a TSV file listing chromosome sizes. For genome generation with `STAR`, user can also provide a GTF and/or splice junction (TSV) files. Providing at least one of those files for the index generation is highly recommended ("While this is optional, and STAR can be run without annotations, using annotations is highly recommended whenever they are available" [STAR manual](https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf)). Apart from the CAGEexp object and raw 5'-coverage bigWig files (if reads were mapped with `STAR`), the pipeline produces BAM files with filtered alignments that could be used for a separate analysis and a detailed `MultiQC` report.
 
 ### Input
 
@@ -153,6 +153,7 @@ where
     * `--dist L` sets an optical duplicate distance `L` to remove optical duplicates, in addition to PCR duplicates (see [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html), option `-d`). This option requires `--dedup`.
     * `-profile` is a Nextflow option that specifies a config file to use with Nextflow on a given machine. See [`nf-core/configs`](https://github.com/nf-core/configs) for ready-to-use institutional configs, including the one for Jex (the high-performance computing cluster of the [Laboratory of Medical Sciences](https://lms.mrc.ac.uk/)). Also, see the [Jex wiki](https://hpcwiki.lms.mrc.ac.uk/docs/software/software/workflow_managers/#nextflow) on how to run Nextflow on Jex. Alternatively, this option can be used to specify the containerization technology to use.
     * `-w` is a Nextflow option that specifies a path to the Nextflow work directory.
+    * Any other Nextflow options (see [Nextflow command line interface](https://www.nextflow.io/docs/latest/cli.html)).
 
 ### Examples
 
