@@ -156,6 +156,8 @@ where
     * `-w` is a Nextflow option that specifies a path to the Nextflow work directory.
     * Any other Nextflow options (see [Nextflow command line interface](https://www.nextflow.io/docs/latest/cli.html)).
 
+All pipeline options start with a double dash (`--`), while all Nextflow options start with a single dash (`-`).
+
 ### Examples
 
 1. Call TSSs from the test yeast paired-end CAGE reads using the locally stored test STAR index and the `BSgenome.Scerevisiae.UCSC.sacCer3` R package. The package will be automatically downloaded and installed within the CAGEr container on the fly and will be used there with CAGEr. In this example, the user needs to provide full paths to the test FASTQ files in `samplesheet_sacer_pe_template.csv` and the path to a "scratch" (or any other convenient) storage space for the Nextflow work directory:
