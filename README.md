@@ -144,8 +144,8 @@ where
 * `--index` specifies a directory with a genome index (`bowtie2` or `STAR`). This is a mandatory option, unless `--fasta` is set. This option is mutually exclusive with `--fasta`, `--gtf`, `--splicesites` and `--chromsizes`.
 * `--input` specifies the input CSV samplesheet.
 * `[OPTIONAL_ARGUMENTS]` can be:
-    * `--params-trimgalore 'params'` specifies any options that can be passed to `TrimGalore!`. Useful for any non-standard read processing (for example, for CAGEscan reads that require the removal of fixed sequences from the 5'-ends of the forward and reverse reads). The parameters for `TrimGalore!` must be put in single quotes.
-    * `--nogtrim` makes the pipeline skip the G-trimming step (done with `cutadapt` and executed after `TrimGalore!`, see the map above). This option is useful for processing non-CAGE data (for example, CAGEscan reads which do not have a 5'-`G` but instead require the removal of a fixed sequence ending with `GGG` from the 5'-end of the forward read). The option can be used together with `--params-trimgalore`.
+    * `--params-trimgalore 'params'` specifies any options that can be passed to `TrimGalore!`. This option is useful for any non-standard read processing (for example, for CAGEscan reads that require the removal of a fixed number of nucleotides from the 5'-ends of the forward and reverse reads ([Bertin et al., 2017](https://www.nature.com/articles/sdata2017147))). The string with the parameters for `TrimGalore!` must be surrounded by single quotes.
+    * `--nogtrim` makes the pipeline skip the G-trimming step. This option is useful for processing non-CAGE data (for example, CAGEscan reads which do not seem to require trimming of a 5'-`G` ([Bertin et al., 2017](https://www.nature.com/articles/sdata2017147))). This option can be used together with `--params-trimgalore` (see an example below).
     * `--gtf` specifies a GTF file with the genome annotation to use in the construction of a `STAR` genome index. This option is mutually exclusive with `--index` and `--bowtie2` and requires the `--fasta` option.
     * `--splicesites` specifies a TSV file with a list of splice junctions (see the [STAR manual](https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf), section *Using a list of annotated junctions* or the description of the `--sjdbFileChrStartEnd` STAR option, for the format of the file). This option is mutually exclusive with `--index` and `--bowtie2` and requires the `--fasta` option.
     * `--bowtie2` switches the aligner from `STAR` to `bowtie2`. This option is mutually exclusive with `--gtf`, `--splicesites` and `--chromsizes` but is compatible with either `--index` or `--fasta`.
@@ -157,48 +157,60 @@ where
 
 ### Examples
 
-1. Call TSSs from the test yeast single-end CAGE reads using a locally stored reference FASTA file and the `BSgenome.Scerevisiae.UCSC.sacCer1` R package. The package is automatically installed within the CAGEr container on the fly and used there with CAGEr:
+1. Call TSSs from the test yeast paired-end CAGE reads using the locally stored test STAR index and the `BSgenome.Scerevisiae.UCSC.sacCer3` R package. The package will be automatically downloaded and installed within the CAGEr container on the fly and will be used there with CAGEr. In this example, the user needs to provide full paths to the test FASTQ files in `samplesheet_sacer_pe_template.csv` and the path to a "scratch" (or any other convenient) storage space for the Nextflow work directory:
 
 ```bash
 nextflow run customcageq/main.nf \
-    --bsgenome BSgenome.Scerevisiae.UCSC.sacCer1 \
-    --fasta /path/to/fasta/sacCer1.fasta \
-    --input customcageq/assets/samplesheet_se.csv \
-    -profile docker
+    --bsgenome BSgenome.Scerevisiae.UCSC.sacCer3 \
+    --index customcageq/assets/sacCer3_genome/sacCer3_star_index/ \
+    --input customcageq/assets/samplesheet_sacer_pe_template.csv \
+    -profile singularity \
+    -w /path/to/scratch/work
 ```
 
-2. Call TSSs from the test yeast paired-end CAGE reads using a locally stored Bowtie2 index and the locally stored `BSgenome.Scerevisiae.UCSC.sacCer1` R package. The package is automatically installed from the `.tar.gz` archive within the CAGEr container and used with CAGEr:
+This example represents a typical use case for processing CAGE data from an organism with an available, locally stored, STAR genome index and a corresponding BSgenome package available in Bioconductor. For example, this is a use case for human CAGE data processing with the hg38 or T2T-CHM13 assembly. Instead of the `singularity` profile, one may use their institution's Nextflow profile (see [publicly available institutional Nextflow profiles](https://nf-co.re/configs)).
+
+2. Call TSSs from the test yeast single-end CAGE reads using locally stored FASTA, GTF and splice junction files for `STAR` index generation on the fly and a locally stored `BSgenome.Scerevisiae.UCSC.sacCer3` R package. The package will be automatically installed from the `.tar.gz` archive within the CAGEr container and used with CAGEr. In this example, the user needs to provide full paths to the test FASTQ files in `samplesheet_sacer_se_template.csv` and a path to a locally stored `.tar.gz` archive with the BSgenome package.
 
 ```bash
 nextflow run customcageq/main.nf \
-    --bsgenome /path/to/bsgenome/BSgenome.Scerevisiae.UCSC.sacCer1_1.4.0.tar.gz \
-    --index /path/to/index/bowtie2 \
-    --input customcageq/assets/samplesheet_pe.csv \
-    -profile docker
+    --bsgenome /path/to/bsgenome/BSgenome.Scerevisiae.UCSC.sacCer3_1.4.0.tar.gz \
+    --fasta customcageq/assets/sacCer3_genome/sacCer3.fa \
+    --chromsizes customcageq/assets/sacCer3_genome/sacCer3.chrom.sizes \
+    --gtf customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf \
+    --splicesites customcageq/assets/sacCer3_genome/sacCer3_toy_splice_junctions.tsv \
+    --input customcageq/assets/samplesheet_sacer_se_template.csv \
+    -profile singularity
 ```
 
-3. Same as example 1, but remove PCR duplicates before mapping QC and TSS calling:
+This example may suit for the processing of CAGE data from a new species whose BSgenome package was built ("forged") manually by the user and is stored locally.
+
+3. Call TSSs from FANTOM5 CAGEscan libraries (see, for example, [CAGEscan datasets from human primary cells by FANTOM5](https://fantom.gsc.riken.jp/5/datafiles/latest/basic/human.primary_cell.CAGEScan/)). These libraries require trimming of 9 nt from the 5'-ends of the forward reads and of 6 nt from the 5'-ends of the reverse reads and do not seem to require separate G-trimming ([Bertin et al., 2017](https://doi.org/10.1038/sdata.2017.147)). In this example, the user needs to generate the `fantom5_cagescan_pe.csv` input table (see above) and provide a path to it and to the `STAR` index of the T2T-CHM13 v2.0 human genome assembly:
 
 ```bash
 nextflow run customcageq/main.nf \
-    --bsgenome BSgenome.Scerevisiae.UCSC.sacCer1 \
-    --fasta /path/to/fasta/sacCer1.fasta \
-    --dedup \
-    --input customcageq/assets/samplesheet_se.csv \
-    -profile docker
+    --bsgenome BSgenome.Hsapiens.NCBI.T2T.CHM13v2.0 \
+    --index /path/to/chm13_t2t_v2.0_star_index \
+    --params-trimgalore '--clip_R1 9 --clip_R2 6' \
+    --nogtrim \
+    --input /path/to/fantom5_cagescan_pe.csv \
+    -profile singularity
 ```
 
-4. Same as above, but remove both PCR and optical duplicates (at a maximum distance 100, see [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html)) before mapping QC and TSS calling:
+4. **Not recommended** Call TSSs from the test yeast paired-end CAGE reads using `bowtie2` for read mapping. Additionally, remove PCR duplicates and optical duplicates at a maximum distance 100 (see [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html)) before doing alignment QC and TSS calling:
 
 ```bash
 nextflow run customcageq/main.nf \
-    --bsgenome BSgenome.Scerevisiae.UCSC.sacCer1 \
-    --fasta /path/to/fasta/sacCer1.fasta \
+    --bsgenome BSgenome.Scerevisiae.UCSC.sacCer3 \
+    --bowtie2 \
+    --index customcageq/assets/sacCer3_genome/sacCer3_bowtie2_index \
     --dedup \
     --dist 100 \
-    --input customcageq/assets/samplesheet_se.csv \
-    -profile docker
+    --input customcageq/assets/samplesheet_sacer_pe_template.csv \
+    -profile singularity
 ```
+
+This example collects options that are **not recommended** but retained just in case. Using `bowtie2` does not allow accounting for splicing and makes CAGEr use BAM files, which slows the creation of the CAGEexp object considerably. Also, read deduplication is not recommended because CAGE reads, by design, come only from transcripts, with one read coming from the 5'-end of the transcript, which increases the probability of true duplicates, in comparison to whole-genome libraries, like ChIP-seq or ATAC-seq. The `--bowtie2` option can also be used with the `--fasta` option to build a `bowtie2` genome index on the fly, while the `--dedup` and `--dist` options can be used with the default `STAR` mapping.
 
 ## Credits
 
