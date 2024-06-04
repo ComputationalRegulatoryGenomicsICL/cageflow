@@ -119,11 +119,9 @@ chmod +x input_reads.sh
 
 ### Toy input data for testing
 
-The pipeline has toy *S. cerevisiae* CAGE data stored in [assets/sacer_fq](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets/sacer_fq) for testing purposes (single-end reads in the [se](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets/sacer_fq/se) subfolder and paired-end reads in [pe](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets/sacer_fq/pe) subfolder). The single-end reads were obtained by subsampling the [ERR2495152](https://www.ebi.ac.uk/ena/browser/view/ERR2495152) dataset published by ([Börlin et al., 2018](https://academic.oup.com/femsyr/article/19/2/foy128/5257840)), while the paired-end reads were obtained by subsampling the [SRR1631657](https://www.ebi.ac.uk/ena/browser/view/SRR1631657) dataset published by ([Chabbert et al., 2015](https://www.embopress.org/doi/full/10.15252/msb.20145776)).
+The pipeline has toy *S. cerevisiae* CAGE data stored in [assets/sacCer_fastq](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets/sacCer_fastq) for testing purposes (single-end reads in the [se](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets/sacCer_fastq/se) subfolder and paired-end reads in [pe](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets/sacCer_fastq/pe) subfolder). The single-end reads were obtained by subsampling the [ERR2495152](https://www.ebi.ac.uk/ena/browser/view/ERR2495152) dataset published by ([Börlin et al., 2018](https://academic.oup.com/femsyr/article/19/2/foy128/5257840)), while the paired-end reads were obtained by subsampling the [SRR1631657](https://www.ebi.ac.uk/ena/browser/view/SRR1631657) dataset published by ([Chabbert et al., 2015](https://www.embopress.org/doi/full/10.15252/msb.20145776)).
 
-The corresponding input spreadsheets can be found in [assets](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets): [samplesheet_se.csv](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/assets/samplesheet_se.csv) for single-end reads and [samplesheet_pe.csv](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/assets/samplesheet_pe.csv) for paired-end reads. However, you will need to use the `input_reads.sh` script to regenerate these spreadsheets with your paths to the test FASTQ files.
-
-On these test data, CAGEr is able to call 52 TSSs with the single-end reads and 1,245 TSSs with the paired-end reads.
+The corresponding *template* input spreadsheets can be found in [assets](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets): [samplesheet_sacer_se_template.csv](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/assets/samplesheet_sacer_se_template.csv) for single-end reads and [samplesheet_sacer_pe_template.csv](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/assets/samplesheet_sacer_pe_template.csv) for paired-end reads. You will need to add the absolute paths to the `customcageq` repository on your computer / HPC cluster to these templates to use them with the pipeline.
 
 ### How to run the pipeline
 
@@ -194,7 +192,7 @@ nextflow run customcageq/main.nf \
 
 ## Credits
 
-**ComputationalRegulatoryGenomicsICL/customcageq** was originally written by Pavel Nikitin ([@nikitin-p](https://github.com/nikitin-p)), Sviatoslav Sidorov ([@sidorov-si](https://github.com/sidorov-si)) and Damir Baranasic ([@da-bar](https://github.com/da-bar)).
+**ComputationalRegulatoryGenomicsICL/customcageq** has been developed by Pavel Nikitin ([@nikitin-p](https://github.com/nikitin-p)), Sviatoslav Sidorov ([@sidorov-si](https://github.com/sidorov-si)), Damir Baranasic ([@da-bar](https://github.com/da-bar)), Elena Gómez-Marín ([@ElenaGoMa](https://github.com/ElenaGoMa)).
 
 ## Citations
 
