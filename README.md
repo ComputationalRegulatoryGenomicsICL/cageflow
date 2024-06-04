@@ -132,7 +132,8 @@ Clone the repository to your machine and use the following syntax to run the pip
 ```bash
 nextflow run customcageq/main.nf \
     --bsgenome [/path/to/]bsgenome.package[.tar.gz] \
-    (--fasta /path/to/fasta/genome.fa (--chromsizes /path/to/chromsizes.tsv) | --index /path/to/index) \
+    (--fasta /path/to/fasta/genome.fa | --index /path/to/index) \
+    --chromsizes /path/to/chromsizes.tsv \
     --input samplesheet.csv \
     [OPTIONAL_ARGUMENTS]
 ```
@@ -140,7 +141,7 @@ nextflow run customcageq/main.nf \
 where 
 * `--bsgenome` specifies the BSgenome R package to use. If it is a file name (which should have a full path and the `.tar.gz` extension), then the package will be taken from the specified location; otherwise, the pipeline will try to install a BSgenome R package with the name `bsgenome.package` on the fly (see examples below);
 * `--fasta` specifies a FASTA file containing a reference genome. This option is mandatory, unless `--index` is set. This option is mutually exclusive with `--index` and by default (when the `STAR` aligner is used) also requires the `--chromsizes` option.
-* `--chromsizes` specifies a TSV file with a list of chromosome sizes for the genome provided with the `--fasta` option. This option is mutually exclusive with `--index` and `--bowtie2` and, by default (when the `STAR` aligner is used), must accompany the `--fasta` option.
+* `--chromsizes` specifies a TSV file with a list of chromosome sizes. This option is mandatory when using the default `STAR` aligner (to convert its output wig files to bigWig files) but must not be used together with an optional argument `--bowtie2` (see below).
 * `--index` specifies a directory with a genome index (`bowtie2` or `STAR`). This is a mandatory option, unless `--fasta` is set. This option is mutually exclusive with `--fasta`, `--gtf`, `--splicesites` and `--chromsizes`.
 * `--input` specifies the input CSV samplesheet.
 * `[OPTIONAL_ARGUMENTS]` can be:
@@ -163,6 +164,7 @@ where
 nextflow run customcageq/main.nf \
     --bsgenome BSgenome.Scerevisiae.UCSC.sacCer3 \
     --index customcageq/assets/sacCer3_genome/sacCer3_star_index/ \
+    --chromsizes customcageq/assets/sacCer3_genome/sacCer3.chrom.sizes \
     --input customcageq/assets/samplesheet_sacer_pe_template.csv \
     -profile singularity \
     -w /path/to/scratch/work
@@ -185,19 +187,20 @@ nextflow run customcageq/main.nf \
 
 This example may suit for the processing of CAGE data from a new species whose BSgenome package was built ("forged") manually by the user and is stored locally.
 
-3. Call TSSs from FANTOM5 CAGEscan libraries (see, for example, [CAGEscan datasets from human primary cells by FANTOM5](https://fantom.gsc.riken.jp/5/datafiles/latest/basic/human.primary_cell.CAGEScan/)). These libraries require trimming of 9 nt from the 5'-ends of the forward reads and of 6 nt from the 5'-ends of the reverse reads and do not seem to require separate G-trimming ([Bertin et al., 2017](https://doi.org/10.1038/sdata.2017.147)). In this example, the user needs to generate the `fantom5_cagescan_pe.csv` input table (see above) and provide a path to it and to the `STAR` index of the T2T-CHM13 v2.0 human genome assembly:
+3. Call TSSs from FANTOM5 CAGEscan libraries (see, for example, [CAGEscan datasets from human primary cells by FANTOM5](https://fantom.gsc.riken.jp/5/datafiles/latest/basic/human.primary_cell.CAGEScan/)). These libraries require trimming of 9 nt from the 5'-ends of the forward reads and of 6 nt from the 5'-ends of the reverse reads and do not seem to require separate G-trimming ([Bertin et al., 2017](https://doi.org/10.1038/sdata.2017.147)). In this example, the user needs to generate the `fantom5_cagescan_pe.csv` input table (see above) and provide a path to it and to the `STAR` index of the T2T-CHM13 v2.0 human genome assembly. Additionally, the user needs to provide chromosome sizes of the T2T-CHM13 assembly, as the `STAR` aligner is used here by default:
 
 ```bash
 nextflow run customcageq/main.nf \
     --bsgenome BSgenome.Hsapiens.NCBI.T2T.CHM13v2.0 \
     --index /path/to/chm13_t2t_v2.0_star_index \
+    --chromsizes /path/to/chm13_t2t_v2.0_chromsizes.tsv \
     --params-trimgalore '--clip_R1 9 --clip_R2 6' \
     --nogtrim \
     --input /path/to/fantom5_cagescan_pe.csv \
     -profile singularity
 ```
 
-4. **Not recommended** Call TSSs from the test yeast paired-end CAGE reads using `bowtie2` for read mapping. Additionally, remove PCR duplicates and optical duplicates at a maximum distance 100 (see [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html)) before doing alignment QC and TSS calling:
+4. **Not recommended.** Call TSSs from the test yeast paired-end CAGE reads using `bowtie2` for read mapping. Additionally, remove PCR duplicates and optical duplicates at a maximum distance 100 (see [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html)) before doing alignment QC and TSS calling:
 
 ```bash
 nextflow run customcageq/main.nf \
