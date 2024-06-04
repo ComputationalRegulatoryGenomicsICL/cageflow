@@ -132,7 +132,8 @@ Clone the repository to your machine and use the following syntax to run the pip
 ```bash
 nextflow run customcageq/main.nf \
     --bsgenome [/path/to/]bsgenome.package[.tar.gz] \
-    (--fasta /path/to/fasta/genome.fa | --index /path/to/index/bowtie2) \
+    (--fasta /path/to/fasta/genome.fa | --index /path/to/index) \
+    [--bowtie2] \
     [--dedup [--dist N]] \
     --input samplesheet.csv \
     -profile <institution/docker/singularity>
