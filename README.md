@@ -60,7 +60,7 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 
 ### Steps
 
-[The refreshed pipeline schematic here.]
+[Pipeline metromap](docs/images/LeanCAGE_pipeline_schematic_STAR_fastqc2.png)
 
 1. Merge per-lane FASTQ files with the [`nf-core/cat_fastq`](https://nf-co.re/modules/cat_fastq) module.
 2. Report raw read quality with [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).
