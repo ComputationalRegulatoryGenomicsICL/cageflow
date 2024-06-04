@@ -58,9 +58,11 @@ Either single-end or paired-end raw CAGE reads. Only one type of reads (either s
 
 A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with CAGEr. The intermediate and final results are stored in the `results` directory. The final CAGEexp object is stored in an RDS file in the `results/cager` directory.
 
-### Steps
+### Map
 
 ![Pipeline metromap](docs/images/LeanCAGE_pipeline_schematic_STAR_fastqc2.png)
+
+### Steps
 
 1. Merge per-lane FASTQ files with the [`nf-core/cat_fastq`](https://nf-co.re/modules/cat_fastq) module.
 2. Report raw read quality with [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).
