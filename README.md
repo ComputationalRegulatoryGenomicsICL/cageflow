@@ -69,7 +69,7 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 3. Trim adapters with [`TrimGalore`](https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md).
 4. Report trimmed read quality with [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).
 5. Trim the first `G` in forward reads (optional; done by default).
-6. Build a `STAR` or `bowtie2` index of the reference genome FASTA file, if the index is not provided. For the `STAR` index, use a mandatory list of chromosome sizes and an optional annotation in the GTF format and/or an optional list of splice junctions (see below for details).
+6. Build a [`STAR`](https://github.com/alexdobin/STAR) or [`bowtie2`](https://bowtie-bio.sourceforge.net/bowtie2/manual.shtml) index of the reference genome FASTA file, if the index is not provided. For the `STAR` index, use a mandatory list of chromosome sizes and an optional annotation in the GTF format and/or an optional list of splice junctions (see below for details).
 7. Map trimmed reads onto the genome and filter alignments. If using `STAR`, then retain only the reads with at most 2 alignments (done within the `STAR` alignment module); if using `bowtie2`, then retain only the reads with $MAPQ\geq 20$ with [`samtools view`](https://www.htslib.org/doc/samtools-view.html).
 8. Optionally, remove PCR and optical duplicate reads with [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html) (not shown; see below for details).
 9. Sort the obtained BAM files using [`samtools sort`](https://www.htslib.org/doc/samtools-sort.html).
