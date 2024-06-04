@@ -43,7 +43,8 @@ include { CUTADAPT } from '../modules/nf-core/cutadapt/main.nf'
 include { BOWTIE2_BUILD } from '../modules/nf-core/bowtie2/build/main.nf' 
 include { BOWTIE2_ALIGN } from '../modules/nf-core/bowtie2/align/main.nf'
 include { STAR_ALIGN } from '../modules/nf-core/star/align/main.nf' 
-include { STAR_GENOMEGENERATE } from '../modules/nf-core/star/genomegenerate/main.nf' 
+include { STAR_GENOMEGENERATE } from '../modules/nf-core/star/genomegenerate/main.nf'
+include { SAMTOOLS_VIEW_MAPQ } from '../modules/nf-core/samtools/view_mapq/main.nf'
 include { SAMTOOLS_SORT } from '../modules/nf-core/samtools/sort/main.nf'
 include { SAMTOOLS_SORT as SORT_FOR_FIXMATE} from '../modules/nf-core/samtools/sort/main.nf'
 include { SAMTOOLS_INDEX } from '../modules/nf-core/samtools/index/main.nf'
@@ -165,8 +166,9 @@ workflow CUSTOMCAGE {
                 gtf_file,
                 splice_sites_file
             )
-            ch_index = STAR_GENOMEGENERATE.out.index
             ch_versions = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
+            
+            ch_index = STAR_GENOMEGENERATE.out.index
         }
 
         STAR_ALIGN (
@@ -189,9 +191,11 @@ workflow CUSTOMCAGE {
             BOWTIE2_BUILD (
                 ch_fasta
             )
-            ch_index = BOWTIE2_BUILD.out.index
             ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions)
+            
+            ch_index = BOWTIE2_BUILD.out.index
         }
+
         BOWTIE2_ALIGN (
             ch_reads_to_align,
             ch_index,
@@ -199,7 +203,13 @@ workflow CUSTOMCAGE {
             false
         )
         ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions)
-        ch_aligned = BOWTIE2_ALIGN.out.aligned
+
+        SAMTOOLS_VIEW_MAPQ (
+            BOWTIE2_ALIGN.out.aligned
+        )
+        ch_versions = ch_versions.mix(SAMTOOLS_VIEW_MAPQ.out.versions)
+
+        ch_aligned = SAMTOOLS_VIEW_MAPQ.out.bam
     }
 
     if (params.dedup) {
