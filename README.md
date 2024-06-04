@@ -12,23 +12,29 @@
 
 3. **[done]** Make `STAR` the default aligner; allow running `bowtie2` instead of `STAR` with a `--bowtie2` option.
 
-4. Test the whole pipeline (`STAR` and `bowtie2`) with single-end reads.
+4. **[done]** Test the whole pipeline (`STAR` and `bowtie2`) with single-end reads.
 
-5. **[in progress]** `CAGEr` pipeline as a set of modules. Include plotting motifs around TSSs on both strands separately to check if a pyrimidine-purine (initiator-like) motif is present on both strands. This lets a user check if TSSs are shifted (are not a pyrimidine-purine pair) and/or initiator motifs are different on the two strands (neither should happen).
+5. **[done]** Implement the creation of a CAGEexp object from bigWigs, followed by TSS calling.
 
-6. `CAGEfightR` (for enhancer calling, with a subsequent filtering by `CAGEr`-generated tag clusters).
+6. **[done]** Allow the user to skip G-trimming with cutadapt.
 
-7. Track generation for the genome browser (normalized counts).
+7. **[done]** Add splice sites as an optional input for genome indexing, separate from a GTF file.
 
-8. Building a `BSgenome` package and its installation on the fly for species with no `BSgenome` package on `Bioconductor`.
+8. **[done]** Include a FastQC report made after read trimming to the overall MultiQC report.
 
-9. Investigate and ideally resolve the issue with `CAGEr` using only one thread when reading samples and working within the pipeline. Get in touch with Charles Plessy after a reasonable investigation. (Damir discovered that CAGEr uses the number of thread equal to the number of read input files, independently of the number of threads set to it; but it is still unclear why CAGEr uses only one thread for multiple input samples when run within the pipeline.)
+9. **[in progress]** `CAGEr` pipeline as a set of modules. Include plotting motifs around TSSs on both strands separately to check if a pyrimidine-purine (initiator-like) motif is present on both strands. This lets a user check if TSSs are shifted (are not a pyrimidine-purine pair) and/or initiator motifs are different on the two strands (neither should happen).
 
-10. Move the `MultiQC` run before `CAGEr` to give the user the preprocessing QC report earlier and not to depend on `CAGEr`'s possible fails (which would preclude `MultiQC` from running).
+10. `CAGEfightR` (for enhancer calling, with a subsequent filtering by `CAGEr`-generated tag clusters).
 
-11. Include `FastQC` after `TrimGalore` to the `MultiQC` report.
+11. Track generation for the genome browser (normalized counts).
 
-12. Tag cluster schematics generation for the genome browser using exon, intron and UTR glyphs.
+12. Building a `BSgenome` package and its installation on the fly for species with no `BSgenome` package on `Bioconductor`.
+
+13. Investigate and ideally resolve the issue with `CAGEr` using only one thread when reading samples and working within the pipeline. Get in touch with Charles Plessy after a reasonable investigation. (Damir discovered that CAGEr uses the number of thread equal to the number of read input files, independently of the number of threads set to it; but it is still unclear why CAGEr uses only one thread for multiple input samples when run within the pipeline.)
+
+14. **[done]** Include `FastQC` after `TrimGalore` to the `MultiQC` report.
+
+15. Tag cluster schematics generation for the genome browser using exon, intron and UTR glyphs.
 
 ### Finishing up
 
