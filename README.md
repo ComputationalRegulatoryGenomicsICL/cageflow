@@ -68,7 +68,7 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 2. Report raw read quality with [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).
 3. Trim adapters with [`TrimGalore`](https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md).
 4. Report trimmed read quality with [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).
-5. Trim the first `G` in forward reads (optional; done by default).
+5. Trim the first `G` in forward reads with [`cutadapt`](https://cutadapt.readthedocs.io/en/stable/) (optional; done by default).
 6. Build a [`STAR`](https://github.com/alexdobin/STAR) or [`bowtie2`](https://bowtie-bio.sourceforge.net/bowtie2/manual.shtml) index of the reference genome FASTA file, if the index is not provided. For the `STAR` index, use a mandatory list of chromosome sizes and an optional annotation in the GTF format and/or an optional list of splice junctions (see below for details).
 7. Map trimmed reads onto the genome and filter alignments. If using `STAR`, then retain only the reads with at most 2 alignments (done within the `STAR` alignment module); if using `bowtie2`, then retain only the reads with $MAPQ\geq 20$ with [`samtools view`](https://www.htslib.org/doc/samtools-view.html).
 8. Optionally, remove PCR and optical duplicate reads with [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html) (not shown; see below for details).
@@ -139,15 +139,15 @@ nextflow run customcageq/main.nf \
 
 where 
 * `--bsgenome` specifies the BSgenome R package to use. If it is a file name (which should have a full path and the `.tar.gz` extension), then the package will be taken from the specified location; otherwise, the pipeline will try to install a BSgenome R package with the name `bsgenome.package` on the fly (see examples below);
-* `--fasta` specifies a path to a FASTA file containing a reference genome. This option is mandatory, unless `--index` is set. This option is mutually exclusive with `--index` and by default (when the `STAR` aligner is used) also requires the `--chromsizes` option.
-* `--chromsizes` specifies a path to a TSV file with a list of chromosome sizes for the genome provided with the `--fasta` option. This option is mutually exclusive with `--index` and `--bowtie2` and, by default (when the `STAR` aligner is used), must accompany the `--fasta` option.
+* `--fasta` specifies a FASTA file containing a reference genome. This option is mandatory, unless `--index` is set. This option is mutually exclusive with `--index` and by default (when the `STAR` aligner is used) also requires the `--chromsizes` option.
+* `--chromsizes` specifies a TSV file with a list of chromosome sizes for the genome provided with the `--fasta` option. This option is mutually exclusive with `--index` and `--bowtie2` and, by default (when the `STAR` aligner is used), must accompany the `--fasta` option.
 * `--index` specifies a directory with a genome index (`bowtie2` or `STAR`). This is a mandatory option, unless `--fasta` is set. This option is mutually exclusive with `--fasta`, `--gtf`, `--splicesites` and `--chromsizes`.
 * `--input` specifies the input CSV samplesheet.
 * `[OPTIONAL_ARGUMENTS]` can be:
     * `--params-trimgalore 'params'` specifies any options that can be passed to `TrimGalore!`. Useful for any non-standard read processing (for example, for CAGEscan reads that require the removal of fixed sequences from the 5'-ends of the forward and reverse reads). The parameters for `TrimGalore!` must be put in single quotes.
     * `--nogtrim` makes the pipeline skip the G-trimming step (done with `cutadapt` and executed after `TrimGalore!`, see the map above). This option is useful for processing non-CAGE data (for example, CAGEscan reads which do not have a 5'-`G` but instead require the removal of a fixed sequence ending with `GGG` from the 5'-end of the forward read). The option can be used together with `--params-trimgalore`.
-    * `--gtf` specifies a path to a GTF file with the genome annotation to use in the construction of a `STAR` genome index. This option is mutually exclusive with `--index` and `--bowtie2` and requires the `--fasta` option.
-    * `--splicesites` specifies a path to a TSV file with a list of splice junctions (see the STAR manual, ... section, for the format). This option is mutually exclusive with `--index` and `--bowtie2` and requires the `--fasta` option.
+    * `--gtf` specifies a GTF file with the genome annotation to use in the construction of a `STAR` genome index. This option is mutually exclusive with `--index` and `--bowtie2` and requires the `--fasta` option.
+    * `--splicesites` specifies a TSV file with a list of splice junctions (see the [STAR manual](https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf), section *Using a list of annotated junctions* or the description of the `--sjdbFileChrStartEnd` STAR option, for the format of the file). This option is mutually exclusive with `--index` and `--bowtie2` and requires the `--fasta` option.
     * `--bowtie2` switches the aligner from `STAR` to `bowtie2`. This option is mutually exclusive with `--gtf`, `--splicesites` and `--chromsizes` but is compatible with either `--index` or `--fasta`.
     * `--dedup` switches on PCR duplicate removal (not shown in the pipeline map above and is switched off by default).
     * `--dist L` sets an optical duplicate distance `L` to remove optical duplicates, in addition to PCR duplicates (see [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html), option `-d`). This option requires `--dedup`.
