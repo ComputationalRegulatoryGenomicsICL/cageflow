@@ -69,13 +69,13 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 3. Trim adapters with [`TrimGalore`](https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md) and run [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) on trimmed reads.
 4. Report trimmed read quality with [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).
 5. Trim the first `G` in forward reads (optional; done by default).
-6. Build the a STAR or Bowtie2 index of the reference genome FASTA file, if the index is not provided. For the STAR index, use a mandatory list of chromosome sizes and an optional annotation in the GTF format and/or an optional list of splice junctions (see below for details).
-7. Map trimmed reads onto the genome index and filter the alignments. If mapped with STAR, then retain only the reads with at most 2 alignments; if mapped with bowtie2, then retain only the reads with $MAPQ\geq 20$.
-8. Optionally, remove PCR and optical duplicate reads with [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html).
-9. Sort the obtained BAM files with uniquely mapped reads using [`samtools sort`](https://www.htslib.org/doc/samtools-sort.html).
+6. Build the a `STAR` or `bowtie2` index of the reference genome FASTA file, if the index is not provided. For the `STAR` index, use a mandatory list of chromosome sizes and an optional annotation in the GTF format and/or an optional list of splice junctions (see below for details).
+7. Map trimmed reads onto the genome index and filter the alignments. If mapped with `STAR`, then retain only the reads with at most 2 alignments (done within the `STAR` alignment module); if mapped with `bowtie2`, then retain only the reads with $MAPQ\geq 20$ with [`samtools view`](https://www.htslib.org/doc/samtools-view.html).
+8. Optionally, remove PCR and optical duplicate reads with [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html) (not shown; see below for details).
+9. Sort the obtained BAM files using [`samtools sort`](https://www.htslib.org/doc/samtools-sort.html).
 10. Index the sorted BAM files with [`samtools index`](https://www.htslib.org/doc/samtools-index.html).
 11. Assess mapping quality using [`samtools stats`](https://www.htslib.org/doc/samtools-stats.html), [`samtools flagstat`](https://www.htslib.org/doc/samtools-flagstat.html) and [`samtools idxstats`](https://www.htslib.org/doc/samtools-idxstats.html).
-12. Create a CAGEexp object and call TSSs with [`CAGEr`](https://bioconductor.org/packages/release/bioc/html/CAGEr.html) using a [BSgenome package](https://bioconductor.org/packages/release/bioc/html/BSgenome.html) for the respective genome.
+12. Create a CAGEexp object and call TSSs with [`CAGEr`](https://bioconductor.org/packages/release/bioc/html/CAGEr.html) using a [BSgenome package](https://bioconductor.org/packages/release/bioc/html/BSgenome.html) for the respective genome. If reads were mapped with `STAR`, then convert its 5'-coverage wig files into bigWig files to use as input for `CAGEr` (the `CAGEexp-bigWig` module); if reads were mapped with `bowtie2`, then use the obtained BAM files as `CAGEr` input (the `CAGEexp-BAM` module).
 13. Create a [MultiQC](https://multiqc.info/) report.
 
 ## Usage
