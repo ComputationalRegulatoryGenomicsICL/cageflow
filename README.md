@@ -21,32 +21,30 @@
 7. **[done]** Add splice sites as an optional input for genome indexing, separate from a GTF file.
 
 8. **[done]** Include a FastQC report made after read trimming to the overall MultiQC report.
+  
+9. Building a `BSgenome` package and its installation on the fly for species with no `BSgenome` package on `Bioconductor`.
 
-9. **[in progress]** `CAGEr` pipeline as a set of modules. Include plotting motifs around TSSs on both strands separately to check if a pyrimidine-purine (initiator-like) motif is present on both strands. This lets a user check if TSSs are shifted (are not a pyrimidine-purine pair) and/or initiator motifs are different on the two strands (neither should happen).
+10. **[in progress]** `CAGEr` pipeline as a set of modules. Include plotting motifs around TSSs on both strands separately to check if a pyrimidine-purine (initiator-like) motif is present on both strands. This lets a user check if TSSs are shifted (are not a pyrimidine-purine pair) and/or initiator motifs are different on the two strands (neither should happen).
 
-10. `CAGEfightR` (for enhancer calling, with a subsequent filtering by `CAGEr`-generated tag clusters).
+11. `CAGEfightR` (for enhancer calling, with a subsequent filtering by `CAGEr`-generated tag clusters).
 
-11. Track generation for the genome browser (normalized counts).
-
-12. Building a `BSgenome` package and its installation on the fly for species with no `BSgenome` package on `Bioconductor`.
+12. Track generation for the genome browser (normalized counts).
 
 13. Investigate and ideally resolve the issue with `CAGEr` using only one thread when reading samples and working within the pipeline. Get in touch with Charles Plessy after a reasonable investigation. (Damir discovered that CAGEr uses the number of thread equal to the number of read input files, independently of the number of threads set to it; but it is still unclear why CAGEr uses only one thread for multiple input samples when run within the pipeline.)
 
-14. **[done]** Include `FastQC` after `TrimGalore` to the `MultiQC` report.
-
-15. Tag cluster schematics generation for the genome browser using exon, intron and UTR glyphs.
+14. Tag cluster schematics generation for the genome browser using exon, intron and UTR glyphs.
 
 ### Finishing up
 
-13. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
+15. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
 
-14. Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
+16. Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
 
-15. **[in progress]** Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
+17. **[in progress]** Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
 
-16. Cite in `CITATIONS.md` all the tools that we used.
+18. Cite in `CITATIONS.md` all the tools that we used.
 
-17. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
+19. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
 
 ## Introduction
 
