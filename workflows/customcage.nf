@@ -31,9 +31,14 @@ params.gtf = "$projectDir/assets/NO_FILE_GTF"
 params.chromsizes = "$projectDir/assets/NO_FILE_CHROMSIZES"
 params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
 
+// BSgenome parameters
+params.bsgenome = false
+params.seed = false
+
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { CAGER_BAM } from '../modules/local/cager_bam.nf'
 include { CAGER_BIGWIG } from '../modules/local/cager_bigwig.nf'
+include { FORGE_BSGENOME } from '../modules/local/forge_bsgenome.nf'
 include { CAT_FASTQ } from '../modules/nf-core/cat/fastq/main.nf'
 include { FASTQC } from '../modules/nf-core/fastqc/main.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
@@ -63,8 +68,10 @@ workflow CUSTOMCAGE {
     ch_versions = Channel.empty()
     ch_fasta = Channel.empty()
 
-    if (!params.bsgenome) {
-        exit 1, 'The --bsgenome option is not specified.'
+    if (!params.bsgenome && !params.bsgenome) {
+        exit 1, 'Either the --bsgenome option or the --seed option must be specified.'
+    } else if (params.bsgenome && params.bsgenome) {
+        exit 1, 'The --bsgenome option and the --seed option are mutually exclusive.'
     }
 
     if (params.input) {
@@ -270,6 +277,15 @@ workflow CUSTOMCAGE {
     SAMTOOLS_IDXSTATS ( ch_bam_bai )
     ch_versions = ch_versions.mix(SAMTOOLS_IDXSTATS.out.versions)
 
+    if (params.seed) {
+        forge_seed = file(params.seed, checkIfExists: true)
+        FORGE_BSGENOME(
+            forge_seed
+        )
+    }
+
+    ch_bsgenome = params.bsgenome ? file(params.bsgenome, checkIfExists: true) : FORGE_BSGENOME.out.bsgenome
+
     if (params.bowtie2) {
         if (params.dedup) {
             ch_for_cager = SAMTOOLS_DEDUP.out.bam.collect()
@@ -277,7 +293,7 @@ workflow CUSTOMCAGE {
             ch_for_cager = SAMTOOLS_SORT.out.bam.collect()
         }
         CAGER_BAM (
-            params.bsgenome,
+            ch_bsgenome,
             ch_for_cager
         )
         ch_versions = ch_versions.mix(CAGER_BAM.out.versions)
@@ -287,7 +303,7 @@ workflow CUSTOMCAGE {
             .collect()
 
         CAGER_BIGWIG (
-            params.bsgenome,
+            ch_bsgenome,
             ch_for_cager
         )
         ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
