@@ -35,7 +35,6 @@ params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
 params.bsgenome = false
 params.forgeseed = false
 params.sourcedir = false
-params.genomename = false
 
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { CAGER_BAM } from '../modules/local/cager_bam.nf'
@@ -70,10 +69,10 @@ workflow CUSTOMCAGE {
     ch_versions = Channel.empty()
     ch_fasta = Channel.empty()
 
-    if (!params.bsgenome && (!params.forgeseed || !params.sourcedir || !params.genomename)) {
-        exit 1, 'Either the --bsgenome option or the following three options must be specified: --forgeseed, --sourcerdir and --genomename.'
-    } else if (params.bsgenome && (params.forgeseed || params.sourcedir || params.genomename)) {
-        exit 1, 'The --bsgenome option and the follwing three options are mutually exclusive: --forgeseed, --sourcerdir and --genomename.'
+    if (!params.bsgenome && (!params.forgeseed || !params.sourcedir)) {
+        exit 1, 'Either the --bsgenome option or the following two options must be specified: --forgeseed, --sourcerdir.'
+    } else if (params.bsgenome && (params.forgeseed || params.sourcedir)) {
+        exit 1, 'The --bsgenome option and the following two options are mutually exclusive: --forgeseed, --sourcerdir.'
     }
 
     if (params.input) {
@@ -284,8 +283,7 @@ workflow CUSTOMCAGE {
         seqs_srcdir = file(params.sourcedir, checkIfExists: true)
         FORGE_BSGENOME (
             forge_seed,
-            seqs_srcdir,
-            params.genomename
+            seqs_srcdir
         )
     }
 

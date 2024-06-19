@@ -5,14 +5,13 @@ process FORGE_BSGENOME {
     input:
     path forge_seed
     path seqs_srcdir
-    val genome_name
 
     output:
-    path "BSgenome.custom.*", emit: bsgenome
-    path "versions.yml",      emit: versions
+    path "BSgenome.*",   emit: bsgenome
+    path "versions.yml", emit: versions
 
     """
-    forge_bsgenome.R ${forge_seed} ${seqs_srcdir} ${genome_name}
+    forge_bsgenome.R ${forge_seed} ${seqs_srcdir}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
