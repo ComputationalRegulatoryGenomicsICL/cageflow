@@ -33,7 +33,9 @@ params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
 
 // BSgenome parameters
 params.bsgenome = false
-params.seed = false
+params.forgeseed = false
+params.sourcedir = false
+params.genomename = false
 
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { CAGER_BAM } from '../modules/local/cager_bam.nf'
@@ -68,10 +70,10 @@ workflow CUSTOMCAGE {
     ch_versions = Channel.empty()
     ch_fasta = Channel.empty()
 
-    if (!params.bsgenome && !params.bsgenome) {
-        exit 1, 'Either the --bsgenome option or the --seed option must be specified.'
-    } else if (params.bsgenome && params.bsgenome) {
-        exit 1, 'The --bsgenome option and the --seed option are mutually exclusive.'
+    if (!params.bsgenome && (!params.forgeseed || !params.sourcedir || !params.genomename)) {
+        exit 1, 'Either the --bsgenome option or the following three options must be specified: --forgeseed, --sourcerdir and --genomename.'
+    } else if (params.bsgenome && (params.forgeseed || params.sourcedir || params.genomename)) {
+        exit 1, 'The --bsgenome option and the follwing three options are mutually exclusive: --forgeseed, --sourcerdir and --genomename.'
     }
 
     if (params.input) {
@@ -277,14 +279,17 @@ workflow CUSTOMCAGE {
     SAMTOOLS_IDXSTATS ( ch_bam_bai )
     ch_versions = ch_versions.mix(SAMTOOLS_IDXSTATS.out.versions)
 
-    if (params.seed) {
-        forge_seed = file(params.seed, checkIfExists: true)
-        FORGE_BSGENOME(
-            forge_seed
+    if (params.forgeseed) {
+        forge_seed = file(params.forgeseed, checkIfExists: true)
+        seqs_srcdir = file(params.sourcedir, checkIfExists: true)
+        FORGE_BSGENOME (
+            forge_seed,
+            seqs_srcdir,
+            params.genomename
         )
     }
 
-    ch_bsgenome = params.bsgenome ? file(params.bsgenome, checkIfExists: true) : FORGE_BSGENOME.out.bsgenome
+    /*ch_bsgenome = params.bsgenome ? file(params.bsgenome, checkIfExists: true) : FORGE_BSGENOME.out.bsgenome
 
     if (params.bowtie2) {
         if (params.dedup) {
@@ -341,7 +346,7 @@ workflow CUSTOMCAGE {
         ch_multiqc_custom_config.toList(),
         ch_multiqc_logo.toList()
     )
-    multiqc_report = MULTIQC.out.report.toList()
+    multiqc_report = MULTIQC.out.report.toList() */
 }
 
 /*
