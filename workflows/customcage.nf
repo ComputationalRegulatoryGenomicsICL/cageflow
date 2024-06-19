@@ -287,7 +287,7 @@ workflow CUSTOMCAGE {
         )
     }
 
-    /*ch_bsgenome = params.bsgenome ? file(params.bsgenome, checkIfExists: true) : FORGE_BSGENOME.out.bsgenome
+    ch_bsgenome = params.bsgenome ? file(params.bsgenome, checkIfExists: true) : FORGE_BSGENOME.out.bsgenome
 
     if (params.bowtie2) {
         if (params.dedup) {
@@ -344,7 +344,7 @@ workflow CUSTOMCAGE {
         ch_multiqc_custom_config.toList(),
         ch_multiqc_logo.toList()
     )
-    multiqc_report = MULTIQC.out.report.toList() */
+    multiqc_report = MULTIQC.out.report.toList()
 }
 
 /*

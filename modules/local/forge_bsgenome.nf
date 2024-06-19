@@ -7,11 +7,14 @@ process FORGE_BSGENOME {
     path seqs_srcdir
 
     output:
-    path "BSgenome.*",   emit: bsgenome
-    path "versions.yml", emit: versions
+    path "BSgenome.*.tar.gz", emit: bsgenome
+    path "versions.yml",      emit: versions
 
     """
     forge_bsgenome.R ${forge_seed} ${seqs_srcdir}
+    pkgname=`<${forge_seed} head -1 | cut -d" " -f2`
+    R CMD build \${pkgname}
+    R CMD check \${pkgname}*.tar.gz --no-manual
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
