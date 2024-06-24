@@ -3,15 +3,27 @@ process CAGER_BIGWIG {
     stageInMode 'copy'
    
     input:
-    val bsgenome
+    path bsgenome_file
+    val bsgenome_name
     val bigwig
 
     output:
     path "*.rds",        emit: rds
     path "versions.yml", emit: versions
 
+    // echo "bsgenome_file = ${bsgenome_file}" > a.rds
+    // echo "bsgenome_name = ${bsgenome_name}" >> a.rds
+    // echo "bsgenome = \${bsgenome}" >> a.rds
+
     """
-    cager_bigwig.R ${bsgenome} "${bigwig}" ${task.cpus}
+    if [ -z ${bsgenome_name} ]
+    then
+        bsgenome=${bsgenome_file}
+    else
+        bsgenome=${bsgenome_name}
+    fi
+
+    cager_bigwig.R \${bsgenome} "${bigwig}" ${task.cpus}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

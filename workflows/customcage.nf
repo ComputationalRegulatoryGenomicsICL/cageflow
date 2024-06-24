@@ -287,7 +287,18 @@ workflow CUSTOMCAGE {
         )
     }
 
-    ch_bsgenome = params.bsgenome ? file(params.bsgenome, checkIfExists: true) : FORGE_BSGENOME.out.bsgenome
+    if (params.bsgenome) {
+        if (params.bsgenome.endsWith('.tar.gz')) {
+            ch_bsgenome_file = file(params.bsgenome, checkIfExists: true)
+            ch_bsgenome_name = ''
+        } else {
+            ch_bsgenome_file = file("$projectDir/assets/NO_FILE_BSGENOME")
+            ch_bsgenome_name = params.bsgenome
+        }
+    } else {
+        ch_bsgenome_file = FORGE_BSGENOME.out.bsgenome
+        ch_bsgenome_name = ''
+    }
 
     if (params.bowtie2) {
         if (params.dedup) {
@@ -296,7 +307,8 @@ workflow CUSTOMCAGE {
             ch_for_cager = SAMTOOLS_SORT.out.bam.collect()
         }
         CAGER_BAM (
-            ch_bsgenome,
+            ch_bsgenome_file,
+            ch_bsgenome_name,
             ch_for_cager
         )
         ch_versions = ch_versions.mix(CAGER_BAM.out.versions)
@@ -306,7 +318,8 @@ workflow CUSTOMCAGE {
             .collect()
 
         CAGER_BIGWIG (
-            ch_bsgenome,
+            ch_bsgenome_file,
+            ch_bsgenome_name,
             ch_for_cager
         )
         ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
