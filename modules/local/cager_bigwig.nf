@@ -11,10 +11,6 @@ process CAGER_BIGWIG {
     path "*.rds",        emit: rds
     path "versions.yml", emit: versions
 
-    // echo "bsgenome_file = ${bsgenome_file}" > a.rds
-    // echo "bsgenome_name = ${bsgenome_name}" >> a.rds
-    // echo "bsgenome = \${bsgenome}" >> a.rds
-
     """
     if [ -z ${bsgenome_name} ]
     then

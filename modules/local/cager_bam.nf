@@ -3,7 +3,8 @@ process CAGER_BAM {
     stageInMode 'copy'
    
     input:
-    val bsgenome
+    path bsgenome_file
+    val bsgenome_name
     val meta_bam
 
     output:
@@ -11,6 +12,13 @@ process CAGER_BAM {
     path "versions.yml", emit: versions
 
     """
+    if [ -z ${bsgenome_name} ]
+    then
+        bsgenome=${bsgenome_file}
+    else
+        bsgenome=${bsgenome_name}
+    fi
+
     echo ${meta_bam} | \\
         sed 's/, \\[/\\n/g' | \\
         tr -d '[],' | \\
@@ -19,7 +27,7 @@ process CAGER_BAM {
         sed 's/single_end://' \\
             > sample_list.tsv
 
-    cager_bam.R ${bsgenome} sample_list.tsv ${task.cpus}
+    cager_bam.R \${bsgenome} sample_list.tsv ${task.cpus}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
