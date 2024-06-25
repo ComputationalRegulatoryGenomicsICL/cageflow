@@ -22,7 +22,7 @@
 
 8. **[done]** Include a FastQC report made after read trimming to the overall MultiQC report.
   
-9. Building a `BSgenome` package and its installation on the fly for species with no `BSgenome` package on `Bioconductor`.
+9. **[done]** Building a `BSgenome` package and its installation on the fly for species with no `BSgenome` package on `Bioconductor`.
 
 10. `CAGEr` pipeline as a set of modules. Include plotting motifs around TSSs on both strands separately to check if a pyrimidine-purine (initiator-like) motif is present on both strands. This lets a user check if TSSs are shifted (are not a pyrimidine-purine pair) and/or initiator motifs are different on the two strands (neither should happen).
 
@@ -60,7 +60,7 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 
 ### Map
 
-![Pipeline metromap](docs/images/LeanCAGE_pipeline_schematic_STAR_fastqc2.png)
+![Pipeline metromap](docs/images/LeanCAGE_pipeline_schematic_STAR.png)
 
 ### Steps
 
@@ -75,8 +75,9 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 9. Sort the obtained BAM files using [`samtools sort`](https://www.htslib.org/doc/samtools-sort.html).
 10. Index the sorted BAM files with [`samtools index`](https://www.htslib.org/doc/samtools-index.html).
 11. Assess mapping quality using [`samtools stats`](https://www.htslib.org/doc/samtools-stats.html), [`samtools flagstat`](https://www.htslib.org/doc/samtools-flagstat.html) and [`samtools idxstats`](https://www.htslib.org/doc/samtools-idxstats.html).
-12. Create a CAGEexp object and call TSSs with [`CAGEr`](https://bioconductor.org/packages/release/bioc/html/CAGEr.html) using a [BSgenome package](https://bioconductor.org/packages/release/bioc/html/BSgenome.html) for the respective genome. If reads were mapped with `STAR`, then convert its 5'-coverage wig files into bigWig files to use as input for `CAGEr` (the `CAGEexp-bigWig` module); if reads were mapped with `bowtie2`, then use MAPQ-filtered and sorted BAM files as `CAGEr` input (the `CAGEexp-BAM` module).
-13. Create a [MultiQC](https://multiqc.info/) report.
+12. Create a [BSgenome package](https://bioconductor.org/packages/release/bioc/html/BSgenome.html) for the reference genome, if the package is not available.
+13. Create a CAGEexp object and call TSSs with [`CAGEr`](https://bioconductor.org/packages/release/bioc/html/CAGEr.html) using a [BSgenome package](https://bioconductor.org/packages/release/bioc/html/BSgenome.html) for the respective genome. If reads were mapped with `STAR`, then convert its 5'-coverage wig files into bigWig files to use as input for `CAGEr` (the `CAGEexp-bigWig` module); if reads were mapped with `bowtie2`, then use MAPQ-filtered and sorted BAM files as `CAGEr` input (the `CAGEexp-BAM` module).
+14. Create a [MultiQC](https://multiqc.info/) report.
 
 ## Usage
 
@@ -131,7 +132,7 @@ Clone the repository to your machine and use the following syntax to run the pip
 
 ```bash
 nextflow run customcageq/main.nf \
-    --bsgenome [/path/to/]bsgenome.package[.tar.gz] \
+    (--bsgenome [/path/to/]bsgenome.package[.tar.gz] | --forgeseed /path/to/bsgenome_forging.seed --sourcedir /path/to/seqs_srcdir) \
     (--fasta /path/to/fasta/genome.fa | --index /path/to/index) \
     --chromsizes /path/to/chromsizes.tsv \
     --input samplesheet.csv \
@@ -139,7 +140,9 @@ nextflow run customcageq/main.nf \
 ```
 
 where 
-* `--bsgenome` specifies the BSgenome R package to use. If it is a file name (which should have a full path and the `.tar.gz` extension), then the package will be taken from the specified location; otherwise, the pipeline will try to install a BSgenome R package with the name `bsgenome.package` on the fly (see examples below);
+* `--bsgenome` specifies the BSgenome R package to use. If it is a file name (which should have a full path and the `.tar.gz` extension), then the package will be taken from the specified location; otherwise, the pipeline will try to install a BSgenome R package with the name `bsgenome.package` on the fly (see examples below). This option is mutually exclusive with `--forgeseed` and `--sourcedir`.
+* `--forgeseed` specifies a seed file for BSgenome forging (see the [Advanced BSgenomeForge usage vignette](https://bioconductor.org/packages/release/bioc/vignettes/BSgenomeForge/inst/doc/AdvancedBSgenomeForge.pdf) for details). The seed file should not contain the `seqs_srcdir` field (instead, the absolute or relative path to the source directory is set with the `--sourcedir` option, see below). This option requires `--sourcedir` and is mutually exclusive with `--bsgenome`.
+* `--sourcedir` specifies a directory containing either a set of FASTA files, one per reference chromosome, or a 2bit file for the whole reference genome. See the [Advanced BSgenomeForge usage vignette](https://bioconductor.org/packages/release/bioc/vignettes/BSgenomeForge/inst/doc/AdvancedBSgenomeForge.pdf) for details.
 * `--fasta` specifies a FASTA file containing a reference genome. This option is mandatory, unless `--index` is set. This option is mutually exclusive with `--index` and by default (when the `STAR` aligner is used) also requires the `--chromsizes` option.
 * `--chromsizes` specifies a TSV file with a list of chromosome sizes. This option is mandatory when using the default `STAR` aligner (to convert its output wig files to bigWig files) but must not be used together with an optional argument `--bowtie2` (see below).
 * `--index` specifies a directory with a genome index (`bowtie2` or `STAR`). This is a mandatory option, unless `--fasta` is set. This option is mutually exclusive with `--fasta`, `--gtf`, `--splicesites` and `--chromsizes`.
@@ -160,7 +163,7 @@ All pipeline options start with a double dash (`--`), while all Nextflow options
 
 ### Examples
 
-1. Call TSSs from the test yeast paired-end CAGE reads using the locally stored test STAR index and the `BSgenome.Scerevisiae.UCSC.sacCer3` R package. The package will be automatically downloaded and installed within the CAGEr container on the fly and will be used there with CAGEr. In this example, the user needs to provide full paths to the test FASTQ files in `samplesheet_sacer_pe_template.csv` and the path to a "scratch" (or any other convenient) storage space for the Nextflow work directory:
+1. Call TSSs from the test yeast paired-end CAGE reads using the locally stored test STAR index and the `BSgenome.Scerevisiae.UCSC.sacCer3` R package. The package will be automatically downloaded and installed within the CAGEr container on the fly and will be used there with CAGEr. To run this example, the user needs to provide full paths to the test FASTQ files in `samplesheet_sacer_pe_template.csv` and the path to a "scratch" (or any other convenient) storage space for the Nextflow work directory:
 
 ```bash
 nextflow run customcageq/main.nf \
@@ -174,11 +177,12 @@ nextflow run customcageq/main.nf \
 
 This example represents a typical use case for processing CAGE data from an organism with an available, locally stored, STAR genome index and a corresponding BSgenome package available in Bioconductor. For example, this is a use case for human CAGE data processing with the hg38 or T2T-CHM13 assembly. Instead of the `singularity` profile, one may use their institution's Nextflow profile (see [publicly available institutional Nextflow profiles](https://nf-co.re/configs)).
 
-2. Call TSSs from the test yeast single-end CAGE reads using locally stored FASTA, GTF and splice junction files for `STAR` index generation on the fly and a locally stored `BSgenome.Scerevisiae.UCSC.sacCer3` R package. The package will be automatically installed from the `.tar.gz` archive within the CAGEr container and used with CAGEr. In this example, the user needs to provide full paths to the test FASTQ files in `samplesheet_sacer_se_template.csv` and a path to a locally stored `.tar.gz` archive with the BSgenome package.
+2. Call TSSs from the test yeast single-end CAGE reads using locally stored FASTA, GTF and splice junction files for `STAR` index generation on the fly, as well as a locally stored seed file and source directory to build a BSgenome R package. The package will be automatically installed within the CAGEr container from the autogenerated `.tar.gz` archive and used with CAGEr. To run this example, the user needs to provide full paths to the test FASTQ files in `samplesheet_sacer_se_template.csv`, as well as paths to a locally stored seed file and a source directory:
 
 ```bash
 nextflow run customcageq/main.nf \
-    --bsgenome /path/to/bsgenome/BSgenome.Scerevisiae.UCSC.sacCer3_1.4.0.tar.gz \
+    --forgeseed /path/to/bsgenome_forging.seed \
+    --sourcedir /path/to/seqs_srcdir \
     --fasta customcageq/assets/sacCer3_genome/sacCer3.fa \
     --chromsizes customcageq/assets/sacCer3_genome/sacCer3.chrom.sizes \
     --gtf customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf \
@@ -187,9 +191,9 @@ nextflow run customcageq/main.nf \
     -profile singularity
 ```
 
-This example may suit for the processing of CAGE data from a new species whose BSgenome package was built ("forged") manually by the user and is stored locally.
+This example may suit for the processing of CAGE data from a new species for which the user has to build ("forge") a BSgenome package by themselves. After forging the BSgenome once, the user can copy the resulting `.tar.gz` file from `results/bsgenome` and reuse it in subsequent runs of the pipeline by setting the `--bsgenome` option, for example: `--bsgenome /path/to/bsgenome/BSgenome.Scerevisiae.UCSC.sacCer3_1.4.0.tar.gz`.
 
-3. Call TSSs from FANTOM5 CAGEscan libraries (see, for example, [CAGEscan datasets from human primary cells by FANTOM5](https://fantom.gsc.riken.jp/5/datafiles/latest/basic/human.primary_cell.CAGEScan/)). These libraries require trimming of 9 nt from the 5'-ends of the forward reads and of 6 nt from the 5'-ends of the reverse reads and do not seem to require separate G-trimming ([Bertin et al., 2017](https://doi.org/10.1038/sdata.2017.147)). In this example, the user needs to generate the `fantom5_cagescan_pe.csv` input table (see above) and provide a path to it and to the `STAR` index of the T2T-CHM13 v2.0 human genome assembly. Additionally, the user needs to provide chromosome sizes of the T2T-CHM13 assembly, as the `STAR` aligner is used here by default:
+3. Call TSSs from FANTOM5 CAGEscan libraries (see, for example, [CAGEscan datasets from human primary cells by FANTOM5](https://fantom.gsc.riken.jp/5/datafiles/latest/basic/human.primary_cell.CAGEScan/)). These libraries require trimming of 9 nt from the 5'-ends of the forward reads and of 6 nt from the 5'-ends of the reverse reads and do not seem to require separate G-trimming ([Bertin et al., 2017](https://doi.org/10.1038/sdata.2017.147)). To run this example, the user needs to generate the `fantom5_cagescan_pe.csv` input table (see above) and provide a path to it and to the `STAR` index of the T2T-CHM13 v2.0 human genome assembly. Additionally, the user needs to provide chromosome sizes of the T2T-CHM13 assembly, as the `STAR` aligner is used here by default:
 
 ```bash
 nextflow run customcageq/main.nf \
