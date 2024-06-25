@@ -60,7 +60,7 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 
 ### Map
 
-![Pipeline metromap](docs/images/LeanCAGE_pipeline_schematic_STAR.png)
+![Pipeline metromap](docs/images/LeanCAGE_pipeline_schematic.png)
 
 ### Steps
 
