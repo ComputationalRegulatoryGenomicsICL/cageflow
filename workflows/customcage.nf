@@ -36,7 +36,7 @@ params.bsgenome = false
 params.forgeseed = false
 params.sourcedir = false
 
-include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { INPUT_CHECK } from '../subworkflows/local/input_check.nf'
 include { CAGER_BAM } from '../modules/local/cager_bam.nf'
 include { CAGER_BIGWIG } from '../modules/local/cager_bigwig.nf'
 include { FORGE_BSGENOME } from '../modules/local/forge_bsgenome.nf'
