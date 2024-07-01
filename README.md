@@ -38,7 +38,8 @@
 
 15. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
 
-16. Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
+16. **[done]** Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
+Actually, instead created an alternative input option. Either a samplesheet is given, OR an input path and a flag whether the data is single end or paired end (only one is accepted per run). When input path is given, no need to run the input checks and the creation of channels from the samplesheet file.
 
 17. **[in progress]** Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
 
@@ -52,7 +53,7 @@
 
 ### Input
 
-Either single-end or paired-end raw CAGE reads. Only one type of reads (either single- or paired-end) can be used in one run of the pipeline.
+Either single-end (SE) or paired-end (PE) raw CAGE reads. Only one type of reads (either single- or paired-end) can be used in one run of the pipeline. The files of the reads can be listed in a samplesheet or a file path can be provided and the flag whether the input is SE or PE.
 
 ### Output
 
@@ -104,21 +105,7 @@ where
 
 For paired-end reads, `fastq_2` should contain the full path to reverse reads, while `single_end` should be set to `False`.
 
-You can generate the input CSV table automatically using the [`input_reads.sh`](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/bin/input_reads.sh) script. It takes two positional arguments:
-
-```bash
-input_reads.sh /path/to/fastq_dir /path/to/samplesheet.csv
-```
-
-where
-* `/path/to/fastq_dir` is a full path to a directory with raw FASTQ files;
-* `/path/to/samplesheet.csv` is a file name, with a full path, of a CSV file to create.
-
-To run the script as a standalone executable (that is, without the need to write `bash` before its name), add execution permissions to the script after cloning the repository:
-
-```bash
-chmod +x input_reads.sh
-```
+Alternatively, you may start by providing a path and a flag indicating if the reads are single-end or paired-end.
 
 ### Toy input data for testing
 
@@ -135,7 +122,7 @@ nextflow run customcageq/main.nf \
     (--bsgenome [/path/to/]bsgenome.package[.tar.gz] | --forgeseed /path/to/bsgenome_forging.seed --sourcedir /path/to/seqs_srcdir) \
     (--fasta /path/to/fasta/genome.fa | --index /path/to/index) \
     --chromsizes /path/to/chromsizes.tsv \
-    --input samplesheet.csv \
+    (--samplesheet /path/to/samplesheet.csv | --infolder /path/to/fastq --singleEnd [true | false]) \
     [OPTIONAL_ARGUMENTS]
 ```
 
@@ -146,7 +133,10 @@ where
 * `--fasta` specifies a FASTA file containing a reference genome. This option is mandatory, unless `--index` is set. This option is mutually exclusive with `--index` and by default (when the `STAR` aligner is used) also requires the `--chromsizes` option.
 * `--chromsizes` specifies a TSV file with a list of chromosome sizes. This option is mandatory when using the default `STAR` aligner (to convert its output wig files to bigWig files) but must not be used together with an optional argument `--bowtie2` (see below).
 * `--index` specifies a directory with a genome index (`bowtie2` or `STAR`). This is a mandatory option, unless `--fasta` is set. This option is mutually exclusive with `--fasta`, `--gtf`, `--splicesites` and `--chromsizes`.
-* `--input` specifies the input CSV samplesheet.
+* `--samplesheet` specifies the input CSV samplesheet. This option is mutually exclusive with `--infolder` and `--singleEnd`.
+* `--infolder` specifies the folder within which the fastq files are. The files are searched in the subfolders too. The files are expected to be defined as <sample_identifier>_R{1,2}\*fastq.gz, where \* denotes any set of characters, and sample_identifier will be used in the downstream processes.
+ This option is mutually exclusive with `--samplesheet`.
+* `--singleEnd` flag defining whether the input data is single-end (true) or paired-end (false). This option is mutually exclusive with `--samplesheet`.
 * `[OPTIONAL_ARGUMENTS]` can be:
     * `--params-trimgalore 'params'` specifies any options that can be passed to `TrimGalore!`. This option is useful for any non-standard read processing (for example, for CAGEscan reads that require the removal of a fixed number of nucleotides from the 5'-ends of the forward and reverse reads ([Bertin et al., 2017](https://www.nature.com/articles/sdata2017147))). The string with the parameters for `TrimGalore!` must be surrounded by single quotes.
     * `--nogtrim` makes the pipeline skip the G-trimming step. This option is useful for processing non-CAGE data (for example, CAGEscan reads which do not seem to require trimming of a 5'-`G` ([Bertin et al., 2017](https://www.nature.com/articles/sdata2017147))). This option can be used together with `--params-trimgalore` (see an example below).

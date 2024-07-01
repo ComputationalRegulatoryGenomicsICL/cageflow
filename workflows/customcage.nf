@@ -77,7 +77,7 @@ workflow CUSTOMCAGE {
     }
 
     if (params.samplesheet) {
-        input_handler = file(params.input, checkIfExists: true)
+        input_handler = file(params.samplesheet, checkIfExists: true)
         INPUT_CHECK (
             input_handler
         )
@@ -93,8 +93,16 @@ workflow CUSTOMCAGE {
 
         ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
     } else if (params.infolder) {
-        ch_fastq = channel.fromFilePairs(
-            "$params.infolder/**_R{1,2}*", size: params.singleEnd ? 1 : 2)
+        ch_fastq = channel
+            .fromFilePairs(
+                "$params.infolder/**_R{1,2}*fastq.gz",
+                size: params.singleEnd ? 1 : 2)
+            .map{
+                old_meta, fastq -> 
+                    def meta = [:]
+                    meta.id = old_meta
+                    meta.single_end = params.singleEnd
+                    [meta, fastq ] }
     } else {
         exit 1, 'Provide input by using the --samplesheet or the --infolder options.'
     }
