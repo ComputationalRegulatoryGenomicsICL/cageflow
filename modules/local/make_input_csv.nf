@@ -7,10 +7,10 @@ process MAKE_INPUT_CSV {
     
     output:
     stdout
-    // path "results/samplesheet.csv"
+    // path "samplesheet.csv"
 
     exec:
-    outpath = "results/samplesheet.csv"
+    outpath = "samplesheet.csv"
     outfile = file(outpath)
     if (! outfile.exists()){
             header = "sample,fastq_1,fastq_2,single_end\n"
@@ -29,7 +29,7 @@ process MAKE_INPUT_CSV {
         sampleName = baseName.minus(~/_R1.*$/)
         outfile.append(sampleName + ',' + inFile + ',,True\n')
     }
-    
+
     return outpath
 
 }
@@ -42,5 +42,5 @@ workflow {
         myPath = channel.fromPath("$params.folder/**_R1*")
         MAKE_INPUT_CSV(myPath)
     }
-        
+
 }

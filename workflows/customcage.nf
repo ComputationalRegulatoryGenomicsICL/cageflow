@@ -36,6 +36,7 @@ params.bsgenome = false
 params.forgeseed = false
 params.sourcedir = false
 
+include { MAKE_INPUT_CSV } from '../modules/local/make_input_csv.nf'
 include { INPUT_CHECK } from '../subworkflows/local/input_check.nf'
 include { CAGER_BAM } from '../modules/local/cager_bam.nf'
 include { CAGER_BIGWIG } from '../modules/local/cager_bigwig.nf'
@@ -75,10 +76,27 @@ workflow CUSTOMCAGE {
         exit 1, 'The --bsgenome option and the following two options are mutually exclusive: --forgeseed, --sourcerdir.'
     }
 
-    if (params.input) {
+    if (params.samplesheet) {
         input_handler = file(params.input, checkIfExists: true)
+        INPUT_CHECK (
+            input_handler
+        )
+
+        INPUT_CHECK.out.reads
+            .map {
+                meta, fastq ->
+                    meta.id = meta.id.split('_')[0..-2].join('_')
+                    [ meta, fastq ] }
+            .groupTuple(by: [0])
+            .map{ meta, fastq -> [ meta, fastq.flatten() ] }
+            .set { ch_fastq }
+
+        ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+    } else if (params.infolder) {
+        ch_fastq = channel.fromFilePairs(
+            "$params.infolder/**_R{1,2}*", size: params.singleEnd ? 1 : 2)
     } else {
-        exit 1, 'The --input option (the input samplesheet) is not specified.'
+        exit 1, 'Provide input by using the --samplesheet or the --infolder options.'
     }
 
     if (!params.fasta && !params.index) {
@@ -124,21 +142,6 @@ workflow CUSTOMCAGE {
     if (params.chromsizes == "$projectDir/assets/NO_FILE_CHROMSIZES" & !params.bowtie2) {
         exit 1, 'The use of the default mapper STAR requires the --chromsizes option.'
     }
-
-    INPUT_CHECK (
-        input_handler
-    )
-    
-    INPUT_CHECK.out.reads
-        .map {
-            meta, fastq ->
-                meta.id = meta.id.split('_')[0..-2].join('_')
-                [ meta, fastq ] }
-        .groupTuple(by: [0])
-        .map{ meta, fastq -> [ meta, fastq.flatten() ] }
-        .set { ch_fastq }
-
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     CAT_FASTQ (
         ch_fastq
