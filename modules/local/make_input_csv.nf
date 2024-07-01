@@ -17,15 +17,13 @@ process MAKE_INPUT_CSV {
             outfile.text = header
         }
     if (params.paired) {
-        println("hello")
         inFile1 = inFile[1][0]
         inFile2 = inFile[1][1]
         inFile1File = file(inFile1)
         baseName = inFile1File.getSimpleName()
-        sampleName = baseName.minus(~/_R\d.*$/)
+        sampleName = baseName.minus(~/_R1.*$/)
         outfile.append(sampleName + ',' + inFile1 + ',' + inFile2 +',False\n')
     }else {
-        println("hi")
         inFileFile = file(inFile)
         baseName = inFileFile.getSimpleName()
         sampleName = baseName.minus(~/_R1.*$/)
