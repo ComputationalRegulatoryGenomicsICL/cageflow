@@ -3,46 +3,46 @@ process MAKE_INPUT_CSV {
     label 'prepare_sample_sheet'
 
     input:
-    path(in_files)
-    val(pairedness)
+    val(inFile)
     
     output:
-    path "samplesheet.csv"
+    stdout
+    // path "results/samplesheet.csv"
 
-    """
-    // set SE or PE value
-    def pairednessStr = "paired_end"
-    def pairednessFlag = "False"
-
-    if ($pairedness) {
-        pairednessStr = "single_end"
-        pairednessFlag = "True"
+    exec:
+    outpath = "results/samplesheet.csv"
+    outfile = file(outpath)
+    if (! outfile.exists()){
+            header = "sample,fastq_1,fastq_2,single_end\n"
+            outfile.text = header
+        }
+    if (params.paired) {
+        println("hello")
+        inFile1 = inFile[1][0]
+        inFile2 = inFile[1][1]
+        inFile1File = file(inFile1)
+        baseName = inFile1File.getSimpleName()
+        sampleName = baseName.minus(~/_R\d.*$/)
+        outfile.append(sampleName + ',' + inFile1 + ',' + inFile2 +',False\n')
+    }else {
+        println("hi")
+        inFileFile = file(inFile)
+        baseName = inFileFile.getSimpleName()
+        sampleName = baseName.minus(~/_R1.*$/)
+        outfile.append(sampleName + ',' + inFile + ',,True\n')
     }
-
-    // write header
-    // def outfile = new File("samplesheet.csv")
-    // outfile.append("sample,fastq_1,fastq_2,$pairednessStr\n")
-
-    // get sample names
-    // def getR2SampleNames = { it.getSimpleName() }
-    // def r2Files = listOfR2Files.collect(getR2SampleNames)
-
-    // write content
-    // for (r2File : r2Files) {
-    //     def r1File = r2File.replaceAll(/_R2/, "_R1")
-    //     def sampleName = r2File.split('_')[0]
-    //     outfile.append("$sampleName,$r1File,$r2File,$pairednessFlag\n")
-    // }
-
-    println("CSV file created at: $outfile")
-
-    return $in_files
-    """
+    
+    return outpath
 
 }
 
 workflow {
-    fasta_files = channel.fromFilePairs(params.folder + '*_R{1,2}*')
-    pairedness_flag = channel.of('False')
-    MAKE_INPUT_CSV(fasta_files, pairedness_flag) | view { it }
+    if (params.paired) {
+        myPath = channel.fromFilePairs("$params.folder/**_R{1,2}*")
+        MAKE_INPUT_CSV(myPath)
+    }else{
+        myPath = channel.fromPath("$params.folder/**_R1*")
+        MAKE_INPUT_CSV(myPath)
+    }
+        
 }
