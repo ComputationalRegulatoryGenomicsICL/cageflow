@@ -2,6 +2,8 @@ process SAMTOOLS_STATS {
     tag "$meta.id"
     label 'process_single'
 
+    container 'quay.io/biocontainers/samtools:1.19.2--h50ea8bc_0'
+
     input:
     tuple val(meta), path(input), path(input_index)
     each path(fasta)

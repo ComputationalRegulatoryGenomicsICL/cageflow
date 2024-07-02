@@ -1,6 +1,8 @@
 process MULTIQC {
     label 'process_single'
 
+    container 'quay.io/biocontainers/multiqc:1.14--pyhdfd78af_0'
+
     input:
     path  multiqc_files, stageAs: "?/*"
     path(multiqc_config)

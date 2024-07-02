@@ -2,6 +2,8 @@ process CAT_FASTQ {
     tag "$meta.id"
     label 'process_single'
 
+    container 'quay.io/nf-core/ubuntu:20.04'
+
     input:
     tuple val(meta), path(reads, stageAs: "input*/*")
 

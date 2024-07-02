@@ -1,7 +1,9 @@
 process FORGE_BSGENOME {
     label 'process_medium'
     stageInMode 'copy'
-   
+
+    container 'nikitinpavel/cager:0.6'
+
     input:
     path forge_seed
     path seqs_srcdir

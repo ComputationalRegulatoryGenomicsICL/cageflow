@@ -2,6 +2,8 @@ process SAMPLESHEET_CHECK {
     tag "$samplesheet"
     label 'process_single'
 
+    container 'quay.io/biocontainers/python:3.8.3'
+
     input:
     path samplesheet
 

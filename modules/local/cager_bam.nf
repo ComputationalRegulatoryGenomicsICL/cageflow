@@ -1,7 +1,9 @@
 process CAGER_BAM {
     label 'process_medium'
     stageInMode 'copy'
-   
+
+    container 'nikitinpavel/cager:0.6'
+
     input:
     path bsgenome_file
     val bsgenome_name

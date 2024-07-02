@@ -1,6 +1,8 @@
 process CUSTOM_DUMPSOFTWAREVERSIONS {
     label 'process_single'
 
+    container 'quay.io/biocontainers/multiqc:1.14--pyhdfd78af_0'
+
     input:
     path versions
 
