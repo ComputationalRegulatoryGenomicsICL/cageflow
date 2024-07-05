@@ -1,6 +1,5 @@
-samplesheet:
-infolder: "assets/sacCer_fastq/pe/"
-singleEnd: False
+samplesheet: "assets/samplesheet_sacer_pe_template.csv"
+infolder:
 bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
 forgeseed:
 sourcedir:
