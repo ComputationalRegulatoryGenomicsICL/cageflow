@@ -100,9 +100,16 @@ workflow CUSTOMCAGE {
             .map{
                 old_meta, fastq -> 
                     def meta = [:]
-                    meta.id = old_meta
+                    meta.id = old_meta.split('_')[0..-2].join('_')
                     meta.single_end = params.singleEnd
+                    fastq = tuple((fastq.name =~ /L00\d/)[0], fastq)
                     [meta, fastq ] }
+            .groupTuple()
+            .map{
+                meta, lane_n_fastq ->
+                    meta = meta
+                    fastq = lane_n_fastq*.getAt(1).flatten()
+                    [meta, fastq] }
     } else {
         exit 1, 'Provide input by using the --samplesheet or the --infolder options.'
     }
@@ -150,6 +157,8 @@ workflow CUSTOMCAGE {
     if (params.chromsizes == "$projectDir/assets/NO_FILE_CHROMSIZES" & !params.bowtie2) {
         exit 1, 'The use of the default mapper STAR requires the --chromsizes option.'
     }
+
+    ch_fastq.view()
 
     CAT_FASTQ (
         ch_fastq
