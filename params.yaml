@@ -1,0 +1,9 @@
+samplesheet:
+infolder: "assets/sacCer_fastq/pe/"
+singleEnd: False
+bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
+forgeseed:
+sourcedir:
+fasta:
+index: "assets/sacCer3_genome/sacCer3_star_index/"
+chromsizes: "assets/sacCer3_genome/sacCer3.chrom.sizes"
