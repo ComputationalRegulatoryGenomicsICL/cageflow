@@ -4,7 +4,7 @@
 
 include { SAMPLESHEET_CHECK } from '../../modules/local/samplesheet_check.nf'
 
-workflow INPUT_CHECK {
+workflow INPUT_FROM_SAMPLESHEET {
     take:
     samplesheet // file: /path/to/samplesheet.csv
 

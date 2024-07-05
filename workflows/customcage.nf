@@ -36,7 +36,8 @@ params.bsgenome = false
 params.forgeseed = false
 params.sourcedir = false
 
-include { INPUT_CHECK } from '../subworkflows/local/input_check.nf'
+include { INPUT_FROM_FOLDER } from '../subworkflows/local/input_from_folder.nf'
+include { INPUT_FROM_SAMPLESHEET } from '../subworkflows/local/input_from_samplesheet.nf'
 include { CAGER_BAM } from '../modules/local/cager_bam.nf'
 include { CAGER_BIGWIG } from '../modules/local/cager_bigwig.nf'
 include { FORGE_BSGENOME } from '../modules/local/forge_bsgenome.nf'
@@ -77,11 +78,11 @@ workflow CUSTOMCAGE {
 
     if (params.samplesheet) {
         input_handler = file(params.samplesheet, checkIfExists: true)
-        INPUT_CHECK (
+        INPUT_FROM_SAMPLESHEET (
             input_handler
         )
 
-        INPUT_CHECK.out.reads
+        INPUT_FROM_SAMPLESHEET.out.reads
             .map {
                 meta, fastq ->
                     meta.id = meta.id.split('_')[0..-2].join('_')
@@ -90,32 +91,11 @@ workflow CUSTOMCAGE {
             .map{ meta, fastq -> [ meta, fastq.flatten() ] }
             .set { ch_fastq }
 
-        ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+        ch_versions = ch_versions.mix(INPUT_FROM_SAMPLESHEET.out.versions)
     } else if (params.infolder) {
-        // check here if singleEndness is correct
-        any_R2_file = file("$params.infolder/**_R2*fastq.gz")
-        singleEnd = true
-        if (any_R2_file.size() > 0){
-            singleEnd = false
-        }
-
-        ch_fastq = channel
-            .fromFilePairs(
-                "$params.infolder/**_R{1,2}*fastq.gz",
-                size: singleEnd ? 1 : 2)
-            .map{
-                old_meta, fastq -> 
-                    def meta = [:]
-                    meta.id = old_meta.split('_')[0..-2].join('_')
-                    meta.single_end = singleEnd
-                    fastq = tuple((fastq.name =~ /L00\d/)[0], fastq)
-                    [meta, fastq ] }
-            .groupTuple()
-            .map{
-                meta, lane_n_fastq ->
-                    meta = meta
-                    fastq = lane_n_fastq*.getAt(1).flatten()
-                    [meta, fastq] }
+        ch_fastq = INPUT_FROM_FOLDER(
+            params.infolder
+        )
     } else {
         exit 1, 'Provide input by using the --samplesheet or the --infolder options.'
     }
