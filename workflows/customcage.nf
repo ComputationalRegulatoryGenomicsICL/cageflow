@@ -36,7 +36,6 @@ params.bsgenome = false
 params.forgeseed = false
 params.sourcedir = false
 
-include { MAKE_INPUT_CSV } from '../modules/local/make_input_csv.nf'
 include { INPUT_CHECK } from '../subworkflows/local/input_check.nf'
 include { CAGER_BAM } from '../modules/local/cager_bam.nf'
 include { CAGER_BIGWIG } from '../modules/local/cager_bigwig.nf'
@@ -93,15 +92,22 @@ workflow CUSTOMCAGE {
 
         ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
     } else if (params.infolder) {
+        // check here if singleEndness is correct
+        any_R2_file = file("$params.infolder/**_R2*fastq.gz")
+        singleEnd = true
+        if (any_R2_file.size() > 0){
+            singleEnd = false
+        }
+
         ch_fastq = channel
             .fromFilePairs(
                 "$params.infolder/**_R{1,2}*fastq.gz",
-                size: params.singleEnd ? 1 : 2)
+                size: singleEnd ? 1 : 2)
             .map{
                 old_meta, fastq -> 
                     def meta = [:]
                     meta.id = old_meta.split('_')[0..-2].join('_')
-                    meta.single_end = params.singleEnd
+                    meta.single_end = singleEnd
                     fastq = tuple((fastq.name =~ /L00\d/)[0], fastq)
                     [meta, fastq ] }
             .groupTuple()
@@ -157,8 +163,6 @@ workflow CUSTOMCAGE {
     if (params.chromsizes == "$projectDir/assets/NO_FILE_CHROMSIZES" & !params.bowtie2) {
         exit 1, 'The use of the default mapper STAR requires the --chromsizes option.'
     }
-
-    ch_fastq.view()
 
     CAT_FASTQ (
         ch_fastq
