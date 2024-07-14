@@ -15,14 +15,14 @@ workflow INPUT_FROM_FOLDER {
         singleEnd = false
     }
 
-    channel
+    ch_fastq = channel
         .fromFilePairs(
             "$infolder/**_R{1,2}*fastq.gz",
             size: singleEnd ? 1 : 2)
         .map{
             old_meta, fastq -> 
                 def meta = [:]
-                meta.id = old_meta.split('_')[0..-2].join('_')
+                meta.id = old_meta.split('_')[0..-3].join('_')
                 meta.single_end = singleEnd
                 fastq = tuple((fastq.name =~ /L00\d/)[0], fastq)
                 [meta, fastq ] }
@@ -32,7 +32,6 @@ workflow INPUT_FROM_FOLDER {
                 meta = meta
                 fastq = lane_n_fastq*.getAt(1).flatten()
                 [meta, fastq] }
-        .set { ch_fastq }
 
     emit:
     ch_fastq
