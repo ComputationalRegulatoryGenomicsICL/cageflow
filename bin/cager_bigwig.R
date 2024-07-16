@@ -1,33 +1,10 @@
-#!/usr/bin/env Rscript
 
-library(CAGEr)
-library(BSgenome)
-library(dplyr)
-library(purrr)
-library(magrittr)
-library(stringr)
-library(tidyr)
 
 args = commandArgs()
 bsgenome    = args[6]
 bigwig_str  = args[7]
 cpus        = args[8]
 
-dir.create(file.path("./r_packages"))
-
-.libPaths(c("./r_packages", .libPaths()))
-
-if (endsWith(bsgenome, ".tar.gz")) {
-    install.packages(bsgenome, repos = NULL, type = "source")
-    ref.name = unlist(strsplit(basename(bsgenome), "_"))[1]
-} else {
-    BiocManager::install(bsgenome)
-    ref.name = bsgenome
-}
-
-ref.id = unlist(strsplit(ref.name, "\\."))[4]
-
-library(ref.name, character.only = TRUE)
 
 bigwigs = unlist(stringr::str_split(stringr::str_remove_all(bigwig_str, "[\\[\\],]"), fixed(" ")))
 
@@ -89,7 +66,8 @@ ctss.obj = as(ctss.obj, "CAGEexp")
 
 ctss.obj$genomeName = ref.name
 
-rowRanges(ctss.obj@ExperimentList$tagCountMatrix) = as(rowRanges(ctss.obj@ExperimentList$tagCountMatrix), 
-                                                       Class = "CTSS")
+rowRanges(ctss.obj@ExperimentList$tagCountMatrix) = as(
+  rowRanges(ctss.obj@ExperimentList$tagCountMatrix),
+  Class = "CTSS")
 
-saveRDS(ctss.obj, paste0(ref.id, "_CAGEexp_CTSS.rds"))
+

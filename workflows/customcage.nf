@@ -38,30 +38,8 @@ params.sourcedir = false
 
 include { INPUT_FROM_FOLDER } from '../subworkflows/local/input_from_folder.nf'
 include { INPUT_FROM_SAMPLESHEET } from '../subworkflows/local/input_from_samplesheet.nf'
-include { CAGER_BAM } from '../modules/local/cager_bam.nf'
-include { CAGER_BIGWIG } from '../modules/local/cager_bigwig.nf'
-include { FORGE_BSGENOME } from '../modules/local/forge_bsgenome.nf'
-include { CAT_FASTQ } from '../modules/nf-core/cat/fastq/main.nf'
-include { FASTQC } from '../modules/nf-core/fastqc/main.nf'
+
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
-include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
-include { TRIMGALORE } from '../modules/nf-core/trimgalore/main.nf'
-include { CUTADAPT } from '../modules/nf-core/cutadapt/main.nf'
-include { BOWTIE2_BUILD } from '../modules/nf-core/bowtie2/build/main.nf' 
-include { BOWTIE2_ALIGN } from '../modules/nf-core/bowtie2/align/main.nf'
-include { STAR_ALIGN } from '../modules/nf-core/star/align/main.nf' 
-include { STAR_GENOMEGENERATE } from '../modules/nf-core/star/genomegenerate/main.nf'
-include { SAMTOOLS_VIEW_MAPQ } from '../modules/nf-core/samtools/view_mapq/main.nf'
-include { SAMTOOLS_SORT } from '../modules/nf-core/samtools/sort/main.nf'
-include { SAMTOOLS_SORT as SORT_FOR_FIXMATE} from '../modules/nf-core/samtools/sort/main.nf'
-include { SAMTOOLS_INDEX } from '../modules/nf-core/samtools/index/main.nf'
-include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_DEDUP} from '../modules/nf-core/samtools/index/main.nf'
-include { SAMTOOLS_FIXMATE } from '../modules/nf-core/samtools/fixmate/main.nf'
-include { SAMTOOLS_DEDUP } from '../modules/local/samtools_dedup.nf'
-include { SAMTOOLS_STATS } from '../modules/nf-core/samtools/stats/main.nf'
-include { SAMTOOLS_IDXSTATS } from '../modules/nf-core/samtools/idxstats/main.nf'
-include { SAMTOOLS_FLAGSTAT } from '../modules/nf-core/samtools/flagstat/main.nf'
-include { UCSC_WIGTOBIGWIG } from '../modules/nf-core/ucsc/wigtobigwig/main.nf' 
 
 def multiqc_report = []
 
