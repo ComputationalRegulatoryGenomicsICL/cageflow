@@ -11,7 +11,7 @@ include { SAMTOOLS_FLAGSTAT } from '../modules/nf-core/samtools/flagstat/main.nf
 
 workflow SAMTOOLS_PROCESSING {
     take:
-        ch_fasta
+        ch_aligned
         ch_versions
 
     main:

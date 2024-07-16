@@ -45,7 +45,6 @@ include { STAR_PROCESSING } from '../subworkflows/local/star_processing.nf'
 include { BOWTIE2_PROCESSING } from '../subworkflows/local/bowtie2_processing.nf'
 include { DEDUP } from '../subworkflows/local/deduplication.nf'
 include { SAMTOOLS_PROCESSING } from '../subworkflows/local/samtools_processing.nf'
-
 include { SUMMARY_STAT } from '../subworkflows/local/summary_statistics.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
@@ -85,6 +84,7 @@ workflow CUSTOMCAGE {
         ch_aligned = BOWTIE2_PROCESSING.out.ch_aligned
         ch_multiqc_files = BOWTIE2_PROCESSING.out.ch_multiqc_files
         ch_versions = BOWTIE2_PROCESSING.out.ch_versions
+
     } else {
         STAR_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_versions)
 
@@ -101,7 +101,7 @@ workflow CUSTOMCAGE {
         ch_bam_bai = DEDUP.out.ch_bam_bai
         ch_versions = DEDUP.out.ch_versions
     } else {
-        SAMTOOLS_PROCESSING(ch_bam_bai, ch_fasta, ch_versions)
+        SAMTOOLS_PROCESSING(ch_aligned, ch_versions)
 
         ch_for_cager = SAMTOOLS_PROCESSING.out.ch_for_cager
         ch_bam_bai = SAMTOOLS_PROCESSING.out.ch_bam_bai
