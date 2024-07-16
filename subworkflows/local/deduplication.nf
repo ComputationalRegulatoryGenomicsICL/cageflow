@@ -2,13 +2,13 @@
 // Subworkflow for deduplication tasks
 // 
 
-include { SAMTOOLS_SORT as SORT_FOR_FIXMATE} from '../modules/nf-core/samtools/sort/main.nf'
-include { SAMTOOLS_FIXMATE } from '../modules/nf-core/samtools/fixmate/main.nf'
-include { SAMTOOLS_SORT as SORT_AFTER_FIXMATE} from '../modules/nf-core/samtools/sort/main.nf'
-include { SAMTOOLS_INDEX as INDEX_AFTER_FIXMATE} from '../modules/nf-core/samtools/index/main.nf'
+include { SAMTOOLS_SORT as SORT_FOR_FIXMATE} from '../../modules/nf-core/samtools/sort/main.nf'
+include { SAMTOOLS_FIXMATE } from '../../modules/nf-core/samtools/fixmate/main.nf'
+include { SAMTOOLS_SORT as SORT_AFTER_FIXMATE} from '../../modules/nf-core/samtools/sort/main.nf'
+include { SAMTOOLS_INDEX as INDEX_AFTER_FIXMATE} from '../../modules/nf-core/samtools/index/main.nf'
 
-include { SAMTOOLS_DEDUP } from '../modules/local/samtools_dedup.nf'
-include { SAMTOOLS_INDEX as INDEX_DEDUP} from '../modules/nf-core/samtools/index/main.nf'
+include { SAMTOOLS_DEDUP } from '../../modules/local/samtools_dedup.nf'
+include { SAMTOOLS_INDEX as INDEX_DEDUP} from '../../modules/nf-core/samtools/index/main.nf'
 
 workflow DEDUP {
     take:

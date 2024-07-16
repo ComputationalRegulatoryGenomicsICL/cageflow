@@ -2,7 +2,7 @@
 // Subworkflow to get the BSgenome via forging or loading
 // 
 
-include { FORGE_BSGENOME } from '../modules/local/forge_bsgenome.nf'
+include { FORGE_BSGENOME } from '../../modules/local/forge_bsgenome.nf'
 
 workflow GET_BSGENOME {
 
