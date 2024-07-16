@@ -46,8 +46,8 @@ include { SAMTOOLS_PROCESSING } from '../subworkflows/local/samtools_processing.
 include { SUMMARY_STAT } from '../subworkflows/local/summary_statistics.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
-include { CAGER_BAM } from '../../modules/local/cager_bam.nf'
-include { CAGER_BIGWIG } from '../../modules/local/cager_bigwig.nf'
+include { CAGER_BAM } from '../modules/local/cager_bam.nf'
+include { CAGER_BIGWIG } from '../modules/local/cager_bigwig.nf'
 
 def multiqc_report = []
 
