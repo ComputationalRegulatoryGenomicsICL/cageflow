@@ -36,8 +36,6 @@ params.bsgenome = false
 params.forgeseed = false
 params.sourcedir = false
 
-include { INPUT_FROM_FOLDER } from '../subworkflows/local/input_from_folder.nf'
-include { INPUT_FROM_SAMPLESHEET } from '../subworkflows/local/input_from_samplesheet.nf'
 include { PARAMETER_CHECKS } from '../subworkflows/local/input_param_checks.nf'
 include { PREPROCESSING } from '../subworkflows/local/preprocessing.nf'
 include { GET_BSGENOME } from '../subworkflows/local/get_bsgenome.nf'
