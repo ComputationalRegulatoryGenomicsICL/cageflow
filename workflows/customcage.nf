@@ -77,14 +77,14 @@ workflow CUSTOMCAGE {
 
 
     if (params.bowtie2) {            
-        BOWTIE2_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_versions)
+        BOWTIE2_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_multiqc_files, ch_versions)
         
         ch_aligned = BOWTIE2_PROCESSING.out.ch_aligned
         ch_multiqc_files = BOWTIE2_PROCESSING.out.ch_multiqc_files
         ch_versions = BOWTIE2_PROCESSING.out.ch_versions
 
     } else {
-        STAR_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_versions)
+        STAR_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_multiqc_files, ch_versions)
 
         bigwig_ch_for_cager = STAR_PROCESSING.out.bigwig_ch_for_cager
         ch_aligned = STAR_PROCESSING.out.ch_aligned

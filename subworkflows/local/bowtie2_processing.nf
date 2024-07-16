@@ -13,6 +13,7 @@ workflow BOWTIE2_PROCESSING {
         ch_reads_to_align
         ch_fasta
         ch_index
+        ch_multiqc_files
         ch_versions
 
     main:
