@@ -19,7 +19,10 @@ process CAGER_BIGWIG {
         bsgenome=${bsgenome_name}
     fi
 
-    cager_bigwig.R \${bsgenome} "${bigwig}" ${task.cpus}
+    cager_processing.R \
+        -b \${bsgenome} \
+        -w "${bigwig}" \
+        -c ${task.cpus}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

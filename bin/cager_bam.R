@@ -1,6 +1,6 @@
 #' Read in Bam files to CAGEexp object
 #'
-#' @param reference_name the name of the reference genome (bsgenome)
+#' @param bsgenome_name the name of the reference genome (bsgenome)
 #' @param input_files list of input bam files with full path
 #' @param bam_type whether it is single or Paired end
 #' @param sample_names list of sample names
@@ -9,14 +9,14 @@
 #' @examples
 #' read_in_bam(
 #'  bsgenome_name=hsapiens,
-#'  input_files=[path/to/file1, path/to/file2],
-#'  bam_pairedness=bam,
+#'  input_files=[path/to/file1.bam, path/to/file2.bam],
+#'  bam_pairedness="bam",
 #'  sample_names=[S1, S2],
 #'  cpus=1)
 #' read_in_bam(
 #'  bsgenome_name=hsapiens,
-#'  input_files=[path/to/file1_r1, path/to/file1_r2],
-#'  bam_pairedness=bamPairedEnd,
+#'  input_files=[path/to/file1_r1.bam, path/to/file1_r2.bam],
+#'  bam_pairedness="bamPairedEnd",
 #'  sample_names=[S1],
 #'  cpus=10)
 

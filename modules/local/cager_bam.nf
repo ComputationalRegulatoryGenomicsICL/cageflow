@@ -27,7 +27,10 @@ process CAGER_BAM {
         sed 's/single_end://' \\
             > sample_list.tsv
 
-    cager_bam.R \${bsgenome} sample_list.tsv ${task.cpus}
+    cager_processing.R \
+        -b \${bsgenome} \
+        -s sample_list.tsv \
+        -c ${task.cpus}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

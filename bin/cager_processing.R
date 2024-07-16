@@ -29,7 +29,7 @@ option_list = list(
         default = NULL,
         help = "Name of the BSgenome version to be used (Mandatory)"),
     make_option(
-        c("-w", "--bigwig_str"),
+        c("-w", "--bigwig_list"),
         type = "complex",
         default = NULL,
         help = " List of bigwig files (Optional)"),
@@ -51,8 +51,9 @@ opt = optparse::parse_args(opt_parser)
 
 # set variable names
 bsgenome    <- opt$bsgenome
+bigwig_list <- opt$bigwig_list
 sample_list <- opt$sample_list
-num_core        <- opt$num_core
+num_core    <- opt$num_core
 
 # import functions
 source("install_bsgenome.R")
@@ -61,14 +62,13 @@ source("cager_bam.R")
 source("cager_bigwig.R")
 
 reference_name <- install_bsgenome(bsgenome)
-reference_id = unlist(strsplit(reference_name, "\\."))[4]
+reference_id <- unlist(strsplit(reference_name, "\\."))[4]
 
-sample_table <- parse_input(sample_list)
+if (length(sample_list) > 0) {
+    sample_table <- parse_input(sample_list)
 
-if (bam) {
-    # NOTE: is it only a problem for bam processing?
     if (length(unique(sample_table$single_end)) == 1) {
-        bam_type = ifelse(single_end_uniq == "true",
+        bam_type <- ifelse(single_end_uniq == "true",
                         "bam", "bamPairedEnd")
     } else {
         stop("Sample table contains both single-end and paired-end reads.")
@@ -80,10 +80,14 @@ if (bam) {
         sample_names=sample_table$id,
         cpus=num_core
     )
-}else if(bigwig) {
-    ce <- read_in_bigwig()
+}else if(length(bigwig_list) > 0) {
+    ce <- read_in_bigwig(
+        bsgenome_name=reference_name,
+        bigwig_str=bigwig_list,
+        cpus=num_core
+    )
 } else {
-    stop("Either BAM or BIGWIG should be the input format")
+    stop("Either bigwig or bam files should be provided")
 }
 
 saveRDS(ce, paste0(reference_id, "_CAGEexp_CTSS.rds"))
