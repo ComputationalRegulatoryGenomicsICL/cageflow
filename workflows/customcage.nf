@@ -83,6 +83,10 @@ workflow CUSTOMCAGE {
         )
 
         INPUT_FROM_SAMPLESHEET.out.reads
+            .map {
+                meta, fastq ->
+                    meta.id = meta.id.split('_')[0..-2].join('_')
+                    [ meta, fastq ] }
             .groupTuple(by: [0])
             .map{ meta, fastq -> [ meta, fastq.flatten() ] }
             .set { ch_fastq }
