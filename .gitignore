@@ -7,3 +7,7 @@ scratch/
 testing/
 testing*
 *.pyc
+scratch/
+test/
+.nf-test/
+.nf-test.log
