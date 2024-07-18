@@ -97,7 +97,7 @@ workflow CUSTOMCAGE {
             params.infolder
         )
     } else {
-        exit 1, 'Provide input by using the --samplesheet or the --infolder options.'
+        exit 1, 'Provide input with the --samplesheet or the --infolder option.'
     }
 
     if (!params.fasta && !params.index) {
