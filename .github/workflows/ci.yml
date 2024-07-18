@@ -26,6 +26,14 @@ jobs:
         NXF_VER:
           - "23.04.0"
           - "latest-everything"
+        testdata:
+          - params_pe.yaml
+          - params_se.yaml
+          - params_infolder_se.yaml
+          - params_infolder_pe.yaml
+          - params_infolder_pe_subfolder.yaml
+          - params_infolder_se_subfolder.yaml
+
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v3
@@ -40,5 +48,4 @@ jobs:
         # For example: adding multiple test runs with different parameters
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results -params-file params_pe.yaml
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results -params-file params_se.yaml
+          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results -params-file ${{ matrix.testdata }}
