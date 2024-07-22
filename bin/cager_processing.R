@@ -62,10 +62,16 @@ num_core    <- opt$num_core
 project_dir <- opt$project_dir
 
 # import functions
+# installing BSgenome
 source(file.path(project_dir, "bin/install_bsgenome.R"))
+# reading in bam / bigwig data
 source(file.path(project_dir, "bin/parse_input.R"))
 source(file.path(project_dir, "bin/cager_bam.R"))
 source(file.path(project_dir, "bin/cager_bigwig.R"))
+# for quality control
+source(file.path(project_dir, "bin/annotation_helper.R"))
+source(file.path(project_dir, "bin/updated_plots.R"))
+source(file.path(project_dir, "bin/cager_qc.R"))
 
 reference_name <- install_bsgenome(bsgenome)
 reference_id <- unlist(strsplit(reference_name, "\\."))[4]

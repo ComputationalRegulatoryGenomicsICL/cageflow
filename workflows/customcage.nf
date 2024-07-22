@@ -123,6 +123,8 @@ workflow CUSTOMCAGE {
             ch_bsgenome_name,
             ch_for_cager
         )
+
+        cager_rds = CAGER_BAM.out.rds
         ch_versions = ch_versions.mix(CAGER_BAM.out.versions)
     } else {
         CAGER_BIGWIG (
@@ -130,8 +132,12 @@ workflow CUSTOMCAGE {
             ch_bsgenome_name,
             bigwig_ch_for_cager
         )
+
+        cager_rds = CAGER_BIGWIG.out.rds
         ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
     }
+
+    // CAGEr analysis steps
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
