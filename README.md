@@ -53,11 +53,11 @@ Actually, instead created an alternative input option. Either a samplesheet is g
 
 ### Input
 
-Either single-end (SE) or paired-end (PE) raw CAGE reads. Only one type of reads (either single- or paired-end) can be used in one run of the pipeline. The files of the reads can be listed in a samplesheet or a file path can be provided and the flag whether the input is SE or PE.
+Either single-end (SE) or paired-end (PE) raw CAGE reads. Only one type of reads (either single- or paired-end) can be used in one run of the pipeline. The user can list read files in a samplesheet or provide a path to a directory containing the files (stored all together or in per-sample subdirectories).
 
 ### Output
 
-A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with CAGEr. The intermediate and final results are stored in the `results` directory. The final CAGEexp object is stored in an RDS file in the `results/cager` directory.
+A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with CAGEr. The intermediate and final results are stored in the `results` directory.
 
 ### Map
 
@@ -84,11 +84,13 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 
 ### Prepare for your first run
 
-Currently, pipeline works with Nextflow v23.04. Make sure that you have the latest version of Docker (if running the pipeline on a laptop / PC) or Singularity (if running on a high-performance cluster).
+Currently, pipeline works with Nextflow v23.04 and v23.10. Make sure that you have the latest version of Docker (if running the pipeline on a laptop / PC) or Singularity (if running on a high-performance cluster).
 
 ### Prepare your input data
 
-Prepare the sample sheet with the description of input samples. In case of single-end reads, it should look like this:
+The FASTQ file names should have a form `<sampleID>_<field1>_<field2>_<field3>_<field4>.fastq.gz`, where `<field1>..<field4>` are any substrings between underscores (with one field denoting the number of the read, `R1` or `R2`) and `sampleID` is a sample identifier that will be used in the downstream processing.
+
+You can prepare a samplesheet with the description of input samples. In case of single-end reads, it should look like this:
 
 ```csv
 sample,fastq_1,fastq_2,single_end
@@ -105,7 +107,7 @@ where
 
 For paired-end reads, `fastq_2` should contain the full path to reverse reads, while `single_end` should be set to `False`.
 
-Alternatively, you may start by providing a path `/path/to/fastq/` to the folder containing the fastq files. The files will be automatically detected.  These can be paired-end or single-end, and can be located in a subfolder as illustrated below.
+Alternatively, you can provide a path to a directory containing FASTQ files. Read files for all samples can be stored together or in per-sample subdirectories (the latter case is illustrated below). The files and the type of reads (single-end or paired-end) will be detected automatically.
 
 ```
 /path/to/fastq/S1/S1_S1_L001_R1_001.fastq.gz
@@ -113,7 +115,6 @@ Alternatively, you may start by providing a path `/path/to/fastq/` to the folder
 /path/to/fastq/S2/S2_S2_L001_R1_001.fastq.gz
 /path/to/fastq/S2/S2_S2_L002_R1_001.fastq.gz
 ```
-
 
 ### Toy input data for testing
 
@@ -142,8 +143,7 @@ where
 * `--chromsizes` specifies a TSV file with a list of chromosome sizes. This option is mandatory when using the default `STAR` aligner (to convert its output wig files to bigWig files) but must not be used together with an optional argument `--bowtie2` (see below).
 * `--index` specifies a directory with a genome index (`bowtie2` or `STAR`). This is a mandatory option, unless `--fasta` is set. This option is mutually exclusive with `--fasta`, `--gtf`, `--splicesites` and `--chromsizes`.
 * `--samplesheet` specifies the input CSV samplesheet. This option is mutually exclusive with `--infolder`.
-* `--infolder` specifies the folder within which the fastq files are. The files are searched in the subfolders too. The files are expected to be defined as <sample_identifier>_R{1,2}\*fastq.gz, where \* denotes any set of characters, and sample_identifier will be used in the downstream processes.
- This option is mutually exclusive with `--samplesheet`.
+* `--infolder` specifies the input directory with FASTQ files (stored together for all samples or located in per-sample subdirectories). This option is mutually exclusive with `--samplesheet`.
 * `[OPTIONAL_ARGUMENTS]` can be:
     * `--params-trimgalore 'params'` specifies any options that can be passed to `TrimGalore!`. This option is useful for any non-standard read processing (for example, for CAGEscan reads that require the removal of a fixed number of nucleotides from the 5'-ends of the forward and reverse reads ([Bertin et al., 2017](https://www.nature.com/articles/sdata2017147))). The string with the parameters for `TrimGalore!` must be surrounded by single quotes.
     * `--nogtrim` makes the pipeline skip the G-trimming step. This option is useful for processing non-CAGE data (for example, CAGEscan reads which do not seem to require trimming of a 5'-`G` ([Bertin et al., 2017](https://www.nature.com/articles/sdata2017147))). This option can be used together with `--params-trimgalore` (see an example below).
@@ -158,6 +158,25 @@ where
 
 All pipeline options start with a double dash (`--`), while all Nextflow options start with a single dash (`-`).
 
+As an alternative to setting pipeline options in the command line, you can use the `params.yaml` file. The fields that are not needed should remain empty. For instance:
+
+```
+samplesheet: "customcageq/assets/samplesheet_sacer_pe_template.csv"
+infolder:
+bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
+forgeseed:
+sourcedir:
+fasta:
+index: "customcageq/assets/sacCer3_genome/sacCer3_star_index/"
+chromsizes: "customcageq/assets/sacCer3_genome/sacCer3.chrom.sizes"
+```
+
+When running the pipeline, you need to define the location of the `params.yaml` file with the `-params-file` flag and add Nextflow parameters as required. For example:
+
+```
+nextflow run customcageq/main.nf -params-file customcageseq/params.yaml -profile singularity -w /path/to/scratch/work
+```
+
 ### Examples
 
 #### Paired-end reads with locally stored STAR index and BSgenome
@@ -169,7 +188,7 @@ nextflow run customcageq/main.nf \
     --bsgenome BSgenome.Scerevisiae.UCSC.sacCer3 \
     --index customcageq/assets/sacCer3_genome/sacCer3_star_index/ \
     --chromsizes customcageq/assets/sacCer3_genome/sacCer3.chrom.sizes \
-    --input customcageq/assets/samplesheet_sacer_pe_template.csv \
+    --samplesheet customcageq/assets/samplesheet_sacer_pe_template.csv \
     -profile singularity \
     -w /path/to/scratch/work
 ```
@@ -178,7 +197,7 @@ This example represents a typical use case for processing CAGE data from an orga
 
 #### Single-end reads with locally stored FASTA and GTF files
 
-Call TSSs from the test yeast single-end CAGE reads using locally stored FASTA and GTF files (and an optional file with splice junctions) for `STAR` index generation on the fly, as well as a locally stored seed file and a source directory to build a BSgenome R package. The package will be automatically installed within the CAGEr container from the autogenerated `.tar.gz` archive and used with CAGEr. To run this example, the user needs to provide full paths to the test FASTQ files in `samplesheet_sacer_se_template.csv`, as well as paths to a locally stored seed file and a source directory:
+Call TSSs from the test yeast single-end CAGE reads (stored in per-sample subdirectories of an input directory) using locally stored FASTA and GTF files (and an optional file with splice junctions) for `STAR` index generation on the fly, as well as a locally stored seed file and a source directory to build a BSgenome R package. The package will be automatically installed within the CAGEr container from the autogenerated `.tar.gz` archive and used with CAGEr. To run this example, the user needs to provide full paths to the test FASTQ files in `samplesheet_sacer_se_template.csv`, as well as paths to a locally stored seed file and a source directory:
 
 ```bash
 nextflow run customcageq/main.nf \
@@ -188,8 +207,22 @@ nextflow run customcageq/main.nf \
     --chromsizes customcageq/assets/sacCer3_genome/sacCer3.chrom.sizes \
     --gtf customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf \
     --splicesites customcageq/assets/sacCer3_genome/sacCer3_toy_splice_junctions.tsv \
-    --input customcageq/assets/samplesheet_sacer_se_template.csv \
+    --infolder customcageq/assets/sacCer_fastq/pe_per_sample/ \
     -profile singularity
+```
+
+where the `pe_per_sample` input directory has the following structure:
+
+```bash
+customcageq/assets/sacCer_fastq/pe_per_sample/
+├── S10
+│   ├── S10_S6_L001_R1_001.fastq.gz
+│   └── S10_S6_L001_R2_001.fastq.gz
+└── S14
+    ├── S14_S8_L001_R1_001.fastq.gz
+    ├── S14_S8_L001_R2_001.fastq.gz
+    ├── S14_S8_L002_R1_001.fastq.gz
+    └── S14_S8_L002_R2_001.fastq.gz
 ```
 
 This example may suit for the processing of CAGE data from a new species for which the user has to build ("forge") a BSgenome package by themselves. After forging the BSgenome once, the user can copy the resulting `.tar.gz` file from `results/bsgenome` and reuse it in subsequent runs of the pipeline by setting the `--bsgenome` option, for example: `--bsgenome /path/to/bsgenome/BSgenome.Scerevisiae.UCSC.sacCer3_1.4.0.tar.gz`.
@@ -205,11 +238,11 @@ nextflow run customcageq/main.nf \
     --chromsizes /path/to/chm13_t2t_v2.0_chromsizes.tsv \
     --params-trimgalore '--clip_R1 9 --clip_R2 6' \
     --nogtrim \
-    --input /path/to/fantom5_cagescan_pe.csv \
+    --samplesheet /path/to/fantom5_cagescan_pe.csv \
     -profile singularity
 ```
 
-#### **Not recommended.**Paired-end with bowtie2 and duplicate removal
+#### **Not recommended.** Paired-end reads with bowtie2 and duplicate removal
 
 Call TSSs from the test yeast paired-end CAGE reads using `bowtie2` for read mapping. Additionally, remove PCR duplicates and optical duplicates at a maximum distance 100 (see [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html)) before doing alignment QC and TSS calling:
 
@@ -220,37 +253,15 @@ nextflow run customcageq/main.nf \
     --index customcageq/assets/sacCer3_genome/sacCer3_bowtie2_index \
     --dedup \
     --dist 100 \
-    --input customcageq/assets/samplesheet_sacer_pe_template.csv \
+    --samplesheet customcageq/assets/samplesheet_sacer_pe_template.csv \
     -profile singularity
 ```
 
 This example collects options that are **not recommended** but retained just in case. Using `bowtie2` does not allow accounting for splicing and makes CAGEr use BAM files, which slows the creation of the CAGEexp object considerably. Also, read deduplication is not recommended because CAGE reads, by design, come only from transcripts, with one read coming from the 5'-end of the transcript, which increases the probability of true duplicates, in comparison to whole-genome libraries, like ChIP-seq or ATAC-seq. The `--bowtie2` option can also be used with the `--fasta` option to build a `bowtie2` genome index on the fly, while the `--dedup` and `--dist` options can be used with the default `STAR` mapping.
 
-#### Starting from params file
-
-You can add your pipeline parameters to the `params.yaml` file too. The fields that are not needed should remain empty.
-
-```
-samplesheet: "customcageq/assets/samplesheet_sacer_pe_template.csv"
-infolder:
-bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
-forgeseed:
-sourcedir:
-fasta:
-index: "customcageq/assets/sacCer3_genome/sacCer3_star_index/"
-chromsizes: "customcageq/assets/sacCer3_genome/sacCer3.chrom.sizes"
-```
-
-When running the pipeline you need to define the location of the `params.yaml` file with the flag `-params-file` and add the nextflow parameters as required.
-
-```
-nextflow run customcageq/main.nf -params-file customcageseq/params.yaml -profile singularity -w /path/to/scratch/work
-```
-
 ## Credits
 
-**ComputationalRegulatoryGenomicsICL/customcageq** has been developed by Pavel Nikitin ([@nikitin-p](https://github.com/nikitin-p)), Sviatoslav Sidorov ([@sidorov-si](https://github.com/sidorov-si)), Damir Baranasic ([@da-bar](https://github.com/da-bar)), Elena Gómez-Marín ([@ElenaGoMa](https://github.com/ElenaGoMa)),
-Katalin Ferenc ([@ferenckata](https://github.com/ferenckata)).
+**ComputationalRegulatoryGenomicsICL/customcageq** has been developed by Pavel Nikitin ([@nikitin-p](https://github.com/nikitin-p)), Sviatoslav Sidorov ([@sidorov-si](https://github.com/sidorov-si)), Damir Baranasic ([@da-bar](https://github.com/da-bar)), Elena Gómez-Marín ([@ElenaGoMa](https://github.com/ElenaGoMa)), Katalin Ferenc ([@ferenckata](https://github.com/ferenckata)).
 
 ## Citations
 
