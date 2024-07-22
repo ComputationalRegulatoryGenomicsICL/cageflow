@@ -2,7 +2,12 @@
 work/
 data/
 results/
+scratch/
 .DS_Store
 testing/
 testing*
 *.pyc
+scratch/
+test/
+.nf-test/
+.nf-test.log

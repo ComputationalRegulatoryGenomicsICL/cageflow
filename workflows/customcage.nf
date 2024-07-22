@@ -13,6 +13,9 @@ ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.mu
 ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
 ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
 
+// input parameters
+params.samplesheet = false
+
 // TrimGalore! parameters
 params.params_trimgalore = ''
 
@@ -36,7 +39,8 @@ params.bsgenome = false
 params.forgeseed = false
 params.sourcedir = false
 
-include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { INPUT_FROM_FOLDER } from '../subworkflows/local/input_from_folder.nf'
+include { INPUT_FROM_SAMPLESHEET } from '../subworkflows/local/input_from_samplesheet.nf'
 include { CAGER_BAM } from '../modules/local/cager_bam.nf'
 include { CAGER_BIGWIG } from '../modules/local/cager_bigwig.nf'
 include { FORGE_BSGENOME } from '../modules/local/forge_bsgenome.nf'
@@ -75,10 +79,28 @@ workflow CUSTOMCAGE {
         exit 1, 'The --bsgenome option and the following two options are mutually exclusive: --forgeseed, --sourcerdir.'
     }
 
-    if (params.input) {
-        input_handler = file(params.input, checkIfExists: true)
+    if (params.samplesheet) {
+        input_handler = file(params.samplesheet, checkIfExists: true)
+        INPUT_FROM_SAMPLESHEET (
+            input_handler
+        )
+
+        INPUT_FROM_SAMPLESHEET.out.reads
+            .map {
+                meta, fastq ->
+                    meta.id = meta.id.split('_')[0..-2].join('_')
+                    [ meta, fastq ] }
+            .groupTuple(by: [0])
+            .map{ meta, fastq -> [ meta, fastq.flatten() ] }
+            .set { ch_fastq }
+
+        ch_versions = ch_versions.mix(INPUT_FROM_SAMPLESHEET.out.versions)
+    } else if (params.infolder) {
+        ch_fastq = INPUT_FROM_FOLDER(
+            params.infolder
+        )
     } else {
-        exit 1, 'The --input option (the input samplesheet) is not specified.'
+        exit 1, 'Provide input with the --samplesheet or the --infolder option.'
     }
 
     if (!params.fasta && !params.index) {
@@ -124,21 +146,6 @@ workflow CUSTOMCAGE {
     if (params.chromsizes == "$projectDir/assets/NO_FILE_CHROMSIZES" & !params.bowtie2) {
         exit 1, 'The use of the default mapper STAR requires the --chromsizes option.'
     }
-
-    INPUT_CHECK (
-        input_handler
-    )
-    
-    INPUT_CHECK.out.reads
-        .map {
-            meta, fastq ->
-                meta.id = meta.id.split('_')[0..-2].join('_')
-                [ meta, fastq ] }
-        .groupTuple(by: [0])
-        .map{ meta, fastq -> [ meta, fastq.flatten() ] }
-        .set { ch_fastq }
-
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     CAT_FASTQ (
         ch_fastq

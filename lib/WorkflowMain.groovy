@@ -45,9 +45,9 @@ class WorkflowMain {
         NfcoreTemplate.awsBatch(workflow, params)
 
         // Check input has been provided
-        if (!params.input) {
-            Nextflow.error("Please provide an input samplesheet to the pipeline e.g. '--input samplesheet.csv'")
-        }
+        if (!params.samplesheet || !params.infolder) {
+            Nextflow.error("Please provide an input samplesheet or fastq path to the pipeline e.g. '--samplesheet samplesheet.csv'")
+        } 
     }
     //
     // Get attribute from genome config file e.g. fasta
