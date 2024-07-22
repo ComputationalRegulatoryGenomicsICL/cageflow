@@ -42,7 +42,12 @@ option_list = list(
         c("-c", "--num_core"),
         type = "integer",
         default = 0,
-        help = "Number of cores to use (Optional), defaults to 0 (no parallelization)")
+        help = "Number of cores to use (Optional), defaults to 0 (no parallelization)"),
+    make_option(
+        c("-p", "--project_dir"),
+        type = "character",
+        default = 0,
+        help = "Project directory, from which the analysis is run.")
 )
 
 message("; Reading arguments from command line.")
@@ -54,20 +59,21 @@ bsgenome    <- opt$bsgenome
 bigwig_list <- opt$bigwig_list
 sample_list <- opt$sample_list
 num_core    <- opt$num_core
+project_dir <- opt$project_dir
 
 # import functions
-source("install_bsgenome.R")
-source("parse_input.R")
-source("cager_bam.R")
-source("cager_bigwig.R")
+source(file.path(project_dir, "bin/install_bsgenome.R"))
+source(file.path(project_dir, "bin/parse_input.R"))
+source(file.path(project_dir, "bin/cager_bam.R"))
+source(file.path(project_dir, "bin/cager_bigwig.R"))
 
 reference_name <- install_bsgenome(bsgenome)
 reference_id <- unlist(strsplit(reference_name, "\\."))[4]
 
 if (length(sample_list) > 0) {
     sample_table <- parse_input(sample_list)
-
-    if (length(unique(sample_table$single_end)) == 1) {
+    single_end_uniq <- unique(sample_table$single_end)
+    if (length(single_end_uniq) == 1) {
         bam_type <- ifelse(single_end_uniq == "true",
                         "bam", "bamPairedEnd")
     } else {

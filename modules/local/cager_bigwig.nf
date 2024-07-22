@@ -22,7 +22,8 @@ process CAGER_BIGWIG {
     cager_processing.R \
         -b \${bsgenome} \
         -w "${bigwig}" \
-        -c ${task.cpus}
+        -c ${task.cpus} \
+        -p ${projectDir}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

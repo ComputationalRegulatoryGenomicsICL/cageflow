@@ -9,7 +9,7 @@
 #'  bsgenome_name=hsapiens,
 #'  bigwig_str=[path/to/file1.bw, path/to/file2.bw])
 
-read_in_bigwig <- funciton(
+read_in_bigwig <- function(
     bsgenome_name,
     bigwig_str,
     cpus){
