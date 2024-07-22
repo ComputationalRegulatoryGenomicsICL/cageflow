@@ -31,14 +31,14 @@ def create_fastq_channel(LinkedHashMap row) {
     def fastq_meta = []
 
     if ((file(row.fastq_1) == []) || (!file(row.fastq_1).exists())) {
-        exit 1, "Please check input samplesheet: Read 1 FastQ file does not exist!\nRead 1 FastQ file: ${row.fastq_1}"
+        throw new Exception("Please check input samplesheet: Read 1 FastQ file does not exist!\nRead 1 FastQ file: ${row.fastq_1}")
     }
 
     if (meta.single_end) {
         fastq_meta = [ meta, [ file(row.fastq_1) ] ]
     } else {
         if ((file(row.fastq_2) == []) || (!file(row.fastq_2).exists())) {
-            exit 1, "Please check input samplesheet: Read 2 FastQ file does not exist!\nRead 2 FastQ file: ${row.fastq_2}"
+            throw new Exception("Please check input samplesheet: Read 2 FastQ file does not exist!\nRead 2 FastQ file: ${row.fastq_2}")
         }
 
         fastq_meta = [ meta, [ file(row.fastq_1), file(row.fastq_2) ] ]
