@@ -115,8 +115,8 @@ workflow CUSTOMCAGE {
 
     ch_multiqc_files = SUMMARY_STAT.out.ch_multiqc_files
     ch_versions = SUMMARY_STAT.out.ch_versions
-   
 
+    // CAGEr analysis steps
     if (params.bowtie2) {
         CAGER_BAM (
             ch_bsgenome_file,
@@ -136,8 +136,6 @@ workflow CUSTOMCAGE {
         cager_rds = CAGER_BIGWIG.out.rds
         ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
     }
-
-    // CAGEr analysis steps
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')

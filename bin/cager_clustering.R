@@ -43,7 +43,7 @@ cager_clustering <- function(
     qLow, qUp,
     tpmThreshold,
     plot_lim,
-    numCore,
+    num_core,
     cagerFolder
 ){
     multicore <- TRUE
@@ -106,6 +106,8 @@ cager_clustering <- function(
         yaxistitle="Number of TSS clusters",
         mytitle="CTSS per sample",
         myfilename="ctss_counts_plots.pdf")
+
+    # annotate tag clusters
 
     return(ce)
 }

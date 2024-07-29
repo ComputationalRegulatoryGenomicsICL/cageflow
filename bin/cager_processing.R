@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
 # 
-# File to process data with CAGEr
+# Script to process data with CAGEr
 # 
 
 # Load libraries
@@ -141,12 +141,13 @@ if (length(sample_list) > 0) {
 
 saveRDS(ce, paste0(reference_id, "_CAGEexp_CTSS.rds"))
 
-
+# Quality controls and preliminary analyses
 cager_qc(
     ce=ce,
     tx_annotation=tx_annotation,
     cager_folder=cager_folder)
 
+# Merging of replicates and Normalization
 ce <- cager_normalization(
     ce=ce,
     rangeMin=range_min,
@@ -155,4 +156,33 @@ ce <- cager_normalization(
     total_tag_num=total_tag_num,
     cager_folder=cager_folder)
 
+# CTSS clustering
+# ce <- cager_clustering(
+#     ce=ce,
+#     threshold=threshold,
+#     thresholdIsTpm=thresholdIsTpm,
+#     nrPassThreshold=nrPassThreshold,
+#     method=method,
+#     maxDist=maxDist,
+#     removeSingletons=removeSingletons,
+#     keepSingletonsAbove=keepSingletonsAbove,
+#     qLow=qLow, qUp=qUp,
+#     tpmThreshold=tpmThreshold,
+#     plot_lim=plot_lim,
+#     num_core=num_core,
+#     cagerFolder=cager_folder
+# )
 
+# QC 2: Nucleotide and dinucleotide composition and Promoter width
+
+# Creating consensus promoters across samples
+
+# Track export for genome browsers
+
+# Expression profiling and Differential expression analysis
+
+# Shifting promoters
+
+# Enhancers
+
+#  Unibind enrichment?

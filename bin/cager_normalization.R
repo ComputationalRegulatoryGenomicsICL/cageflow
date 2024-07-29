@@ -1,4 +1,4 @@
-#' Normzalization
+#' Normalization
 #'
 #' @param ce annotated CAGEexp object
 #' @param rangeMin range min within which the slope is calculated
