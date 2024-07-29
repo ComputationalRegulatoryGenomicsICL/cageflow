@@ -41,50 +41,25 @@ txdb2annot <- function(ranges, annot) {
 }
 
 # additional helper functions
-annotate_gene_regions <- function(brcage, annot_data, debugMode){
+annotate_gene_regions <- function(ce, annot_data, debugMode){
     annot_genes <- genes(annot_data)
     annot_genes$gene_name <- annot_genes$gene_id
-    annotateCTSS(brcage, annot_genes)
-    CTSScoordinatesGR(brcage)$genes      <- ranges2genes(CTSScoordinatesGR(brcage), annot_genes)
-    CTSScoordinatesGR(brcage)$annotation <- txdb2annot(CTSScoordinatesGR(brcage), annot_data)
+    annotateCTSS(ce, annot_genes)
+    CTSScoordinatesGR(ce)$genes      <- ranges2genes(CTSScoordinatesGR(ce), annot_genes)
+    CTSScoordinatesGR(ce)$annotation <- txdb2annot(CTSScoordinatesGR(ce), annot_data)
     annot <- sapply(
-        CTSStagCountDF(brcage),
+        CTSStagCountDF(ce),
         function(X) tapply(
             X,
-            CTSScoordinatesGR(brcage)$annotation,
+            CTSScoordinatesGR(ce)$annotation,
             sum
             )
         )
-    colData(brcage)[levels(CTSScoordinatesGR(brcage)$annotation)] <- DataFrame(t(annot))
+    colData(ce)[levels(CTSScoordinatesGR(ce)$annotation)] <- DataFrame(t(annot))
 
     if (debugMode){
-        print(validObject(brcage))
-        print(colData(brcage)[,c("librarySizes", "promoter", "exon", "intron", "unknown")])
+        print(validObject(ce))
+        print(colData(ce)[,c("librarySizes", "promoter", "exon", "intron", "unknown")])
     }
-    return(brcage)
+    return(ce)
 }
-
-# workaround so that txdb annotation works with consensus
-setMethod("annotateConsensusClusters", c("CAGEexp", "TxDb"), function (object, ranges){
-  if(is.null(experiments(object)$tagCountMatrix))
-    stop("Input does not contain CTSS expressiond data, see ", dQuote("getCTSS()"), ".")
-  consensusClustersGR(object)$annotation <- txdb2annot(consensusClustersGR(object), ranges)
-  consensusClustersGR(object)$genes    <- ranges2genes(consensusClustersGR(object), ranges)
-  validObject(object)
-  object
-})
-
-setMethod("annotateCTSS", c("CAGEexp", "TxDb"), function (object, ranges){
-  g <- genes(ranges)
-  g$gene_name <- g$gene_id
-  annotateCTSS(object, g)
-  CTSScoordinatesGR(object)$genes      <- ranges2genes(CTSScoordinatesGR(object), g)
-  CTSScoordinatesGR(object)$annotation <- txdb2annot(CTSScoordinatesGR(object), ranges)
-
-  annot <- sapply( CTSStagCountDF(object)
-                   , function(X) tapply(X, CTSScoordinatesGR(object)$annotation, sum))
-  colData(object)[levels(CTSScoordinatesGR(object)$annotation)] <- DataFrame(t(annot))
-
-  validObject(object)
-  object
-})

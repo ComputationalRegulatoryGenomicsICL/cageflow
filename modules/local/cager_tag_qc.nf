@@ -1,36 +1,29 @@
-process CAGER_BIGWIG {
+// 
+// Quality Control steps of CAGEr
+// 
+
+process CAGER_TAG_QC {
     label 'process_medium'
     stageInMode 'copy'
-   
+
     input:
-    path bsgenome_file
-    val bsgenome_name
-    val bigwig
+    path cager_obj
 
     output:
     path "*.rds",        emit: rds
     path "versions.yml", emit: versions
 
     """
-    if [ -z ${bsgenome_name} ]
-    then
-        bsgenome=${bsgenome_file}
-    else
-        bsgenome=${bsgenome_name}
-    fi
-
-    cager_read_in.R \
-        -b \${bsgenome} \
-        -w "${bigwig}" \
-        -p ${projectDir} \
-        -c ${task.cpus}
+    cager_tag_qc.R  \
+        -i ${cager_obj} \
+        -a ${params.annotation} \
+        -p ${projectDir}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         Bash: \$(echo "\$BASH_VERSION")
         R: \$(R --version | head -1 | awk '{print \$3}')
         R_CAGEr: \$(Rscript -e 'packageVersion("CAGEr")' | awk '{print \$2}' | tr -d "‘’")
-        R_BSgenome: \$(Rscript -e 'packageVersion("BSgenome")' | awk '{print \$2}' | tr -d "‘’")
         R_packages: \$(Rscript -e 'sessionInfo(package = NULL)')
     END_VERSIONS
     """

@@ -38,7 +38,7 @@ save_plot <- function(filename, plot_out){
         limitsize = FALSE)
 }
 
-plot_number_of_ctss <- function(sample_ctss_count, cagerFolder, yaxistitle, mytitle, myfilename) {
+plot_number_of_ctss <- function(sample_ctss_count, yaxistitle, mytitle, myfilename) {
   sample_ctss_count_table <- tibble::enframe(
     sample_ctss_count,
     name = "Sample",
@@ -51,7 +51,7 @@ plot_number_of_ctss <- function(sample_ctss_count, cagerFolder, yaxistitle, myti
       y_label = yaxistitle,
       title = mytitle)
   save_plot(
-    file.path(cagerFolder, myfilename),
+    myfilename,
     ctss_plot)
   return("feature counts plotted")
 }
