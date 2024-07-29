@@ -52,9 +52,6 @@ source(file.path(project_dir, "bin/updated_plots.R"))
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
 
-# Note: this assumes that txdb is already installed
-library(tx_annotation)
-
 ce <- annotate_gene_regions(ce, tx_annotation)
 
 pdf("tag_region_annotation.pdf")
