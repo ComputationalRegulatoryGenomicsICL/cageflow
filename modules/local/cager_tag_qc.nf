@@ -10,7 +10,6 @@ process CAGER_TAG_QC {
     path cager_obj
 
     output:
-    path "*.rds",        emit: rds
     path "versions.yml", emit: versions
 
     """

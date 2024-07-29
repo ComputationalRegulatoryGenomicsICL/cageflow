@@ -13,7 +13,8 @@ required.libraries <- c(
     "stringr",
     "purrr",
     "dplyr",
-    "tidyr"
+    "tidyr",
+    "magrittr"
 )
 
 for (lib in required.libraries) {
@@ -53,6 +54,10 @@ option_list = list(
         default = 0,
         help = "Number of cores to use (Optional), defaults to 0 (no parallelization)")
 )
+
+message("; Reading arguments from command line.")
+opt_parser = optparse::OptionParser(option_list = option_list)
+opt = optparse::parse_args(opt_parser)
 
 # set variable names
 analysis_title  <- opt$analysis_title

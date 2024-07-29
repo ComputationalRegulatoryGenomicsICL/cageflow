@@ -22,7 +22,6 @@ for (lib in required.libraries) {
   suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
 }
 
-
 # parse options
 option_list = list(
     make_option(

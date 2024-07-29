@@ -14,7 +14,8 @@ required.libraries <- c(
     "magrittr",
     "stringr",
     "tidyr",
-    "tibble"
+    "tibble",
+    "data.table"
     )
 
 for (lib in required.libraries) {
@@ -79,6 +80,7 @@ num_core        <- opt$num_core
 # for analysis
 source(file.path(project_dir, "bin/cager_normalization.R"))
 source(file.path(project_dir, "bin/plot_settings.R"))
+source(file.path(project_dir, "bin/updated_plots.R"))
 source(file.path(project_dir, "bin/cager_clustering.R"))
 
 # Read in CAGEexp object

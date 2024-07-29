@@ -51,6 +51,9 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
 include { CAGER_BAM } from '../modules/local/cager_bam.nf'
 include { CAGER_BIGWIG } from '../modules/local/cager_bigwig.nf'
+include { CAGER_TAG_QC } from '../modules/local/cager_tag_qc.nf'
+include { CAGER_PREPROCESSING } from '../modules/local/cager_preprocessing.nf'
+include { CAGER_TAGCLUSTER_QC } from '../modules/local/cager_tagcluster_qc.nf'
 
 def multiqc_report = []
 
@@ -136,6 +139,16 @@ workflow CUSTOMCAGE {
         cager_rds = CAGER_BIGWIG.out.rds
         ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
     }
+
+    CAGER_TAG_QC(cager_rds)
+    ch_versions = ch_versions.mix(CAGER_TAG_QC.out.versions)
+
+    CAGER_PREPROCESSING(cager_rds)
+    clustered_cager_rds = CAGER_PREPROCESSING.out.rds
+    ch_versions = ch_versions.mix(CAGER_PREPROCESSING.out.versions)
+
+    CAGER_TAGCLUSTER_QC(clustered_cager_rds)
+    ch_versions = ch_versions.mix(CAGER_TAGCLUSTER_QC.out.versions)
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')

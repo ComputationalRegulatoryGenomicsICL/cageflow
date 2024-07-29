@@ -9,13 +9,13 @@
 required.libraries <- c(
     "optparse",
     "CAGEr",
-    "gplots"
+    "gplots",
+    "ggplot2"
     )
 
 for (lib in required.libraries) {
   suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
 }
-
 
 # parse options
 option_list = list(
@@ -51,6 +51,9 @@ source(file.path(project_dir, "bin/updated_plots.R"))
 
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
+
+# Note: this assumes that txdb is already installed
+library(tx_annotation)
 
 ce <- annotate_gene_regions(ce, tx_annotation)
 
