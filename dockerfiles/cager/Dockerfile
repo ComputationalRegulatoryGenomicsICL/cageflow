@@ -21,3 +21,4 @@ RUN apt-get update && \
 # Install R dependencies
 COPY requirements.R /opt/software/requirements.R
 RUN Rscript requirements.R
+ENV R_LIBS=${R_LIBS}:/opt/software

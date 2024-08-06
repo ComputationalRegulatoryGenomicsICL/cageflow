@@ -1,6 +1,8 @@
 samplesheet: "assets/samplesheet_sacer_pe_template.csv"
 infolder:
 bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
+gene_annotation: "TxDb.Scerevisiae.UCSC.sacCer3.sgdGene"
+genome_annotation: "org.Sc.sgd.db"
 forgeseed:
 sourcedir:
 fasta:
