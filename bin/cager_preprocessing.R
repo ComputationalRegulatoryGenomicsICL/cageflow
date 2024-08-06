@@ -79,14 +79,15 @@ num_core        <- opt$num_core
 
 # for analysis
 source(file.path(project_dir, "bin/cager_normalization.R"))
-source(file.path(project_dir, "bin/plot_settings.R"))
-source(file.path(project_dir, "bin/updated_plots.R"))
+source(file.path(project_dir, "bin/plot_number_of_ctss.R"))
+source(file.path(project_dir, "bin/cager_modified_plots.R"))
 source(file.path(project_dir, "bin/cager_clustering.R"))
 
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
 
 # Merging of replicates and Normalization
+# uses functions from cager_modified_plots.R
 ce <- cager_normalization(
     ce=ce,
     rangeMin=range_min,
@@ -96,6 +97,7 @@ ce <- cager_normalization(
     cager_folder=cager_folder)
 
 # CTSS clustering
+# uses functions from cager_modified_plots.R
 ce <- cager_clustering(
     ce=ce,
     iqw_plot_lim=c(0, 150),

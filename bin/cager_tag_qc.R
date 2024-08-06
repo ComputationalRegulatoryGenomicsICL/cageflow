@@ -46,8 +46,8 @@ tx_annotation   <- opt$annotation
 project_dir     <- opt$project_dir
 
 # import functions for quality control
-source(file.path(project_dir, "bin/annotation_helper.R"))
-source(file.path(project_dir, "bin/updated_plots.R"))
+source(file.path(project_dir, "bin/annotation_from_txdb_functions.R"))
+source(file.path(project_dir, "bin/cager_modified_plots.R"))
 
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
@@ -59,6 +59,7 @@ annotations <- CAGEr::plotAnnot(ce, "counts")
 print(annotations)
 dev.off()
 
+# uses function from cager_modified_plots.R
 corr_m <- plotCorrelation2_local(
     CTSStagCountDF(ce),
     samples = "all",

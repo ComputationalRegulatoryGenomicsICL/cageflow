@@ -79,7 +79,7 @@ pdfWidth      <- opt$pdf_width
 pdfHeight     <- opt$pdf_height
 
 # import functions for second quality control
-source(file.path(project_dir, "bin/cager_nucleotide_helper.R"))
+source(file.path(project_dir, "bin/cager_nucleotide_composition_functions.R"))
 
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
