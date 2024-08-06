@@ -13,6 +13,9 @@ ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.mu
 ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
 ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
 
+// input parameters
+params.samplesheet = false
+
 // TrimGalore! parameters
 params.params_trimgalore = ''
 
@@ -48,6 +51,9 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
 include { CAGER_BAM } from '../modules/local/cager_bam.nf'
 include { CAGER_BIGWIG } from '../modules/local/cager_bigwig.nf'
+include { CAGER_TAG_QC } from '../modules/local/cager_tag_qc.nf'
+include { CAGER_PREPROCESSING } from '../modules/local/cager_preprocessing.nf'
+include { CAGER_TAGCLUSTER_QC } from '../modules/local/cager_tagcluster_qc.nf'
 
 def multiqc_report = []
 
@@ -112,14 +118,16 @@ workflow CUSTOMCAGE {
 
     ch_multiqc_files = SUMMARY_STAT.out.ch_multiqc_files
     ch_versions = SUMMARY_STAT.out.ch_versions
-   
 
+    // CAGEr analysis steps
     if (params.bowtie2) {
         CAGER_BAM (
             ch_bsgenome_file,
             ch_bsgenome_name,
             ch_for_cager
         )
+
+        cager_rds = CAGER_BAM.out.rds
         ch_versions = ch_versions.mix(CAGER_BAM.out.versions)
     } else {
         CAGER_BIGWIG (
@@ -127,8 +135,20 @@ workflow CUSTOMCAGE {
             ch_bsgenome_name,
             bigwig_ch_for_cager
         )
+
+        cager_rds = CAGER_BIGWIG.out.rds
         ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
     }
+
+    CAGER_TAG_QC(cager_rds)
+    ch_versions = ch_versions.mix(CAGER_TAG_QC.out.versions)
+
+    CAGER_PREPROCESSING(cager_rds)
+    clustered_cager_rds = CAGER_PREPROCESSING.out.rds
+    ch_versions = ch_versions.mix(CAGER_PREPROCESSING.out.versions)
+
+    CAGER_TAGCLUSTER_QC(clustered_cager_rds)
+    ch_versions = ch_versions.mix(CAGER_TAGCLUSTER_QC.out.versions)
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')

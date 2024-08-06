@@ -1,7 +1,7 @@
 process CAGER_BAM {
     label 'process_medium'
     stageInMode 'copy'
-   
+
     input:
     path bsgenome_file
     val bsgenome_name
@@ -27,9 +27,10 @@ process CAGER_BAM {
         sed 's/single_end://' \\
             > sample_list.tsv
 
-    cager_processing.R \
+    cager_read_in.R \
         -b \${bsgenome} \
         -s sample_list.tsv \
+        -p ${projectDir} \
         -c ${task.cpus}
 
     cat <<-END_VERSIONS > versions.yml
@@ -38,6 +39,7 @@ process CAGER_BAM {
         R: \$(R --version | head -1 | awk '{print \$3}')
         R_CAGEr: \$(Rscript -e 'packageVersion("CAGEr")' | awk '{print \$2}' | tr -d "‘’")
         R_BSgenome: \$(Rscript -e 'packageVersion("BSgenome")' | awk '{print \$2}' | tr -d "‘’")
+        R_packages: \$(Rscript -e 'sessionInfo(package = NULL)')
     END_VERSIONS
     """
 }

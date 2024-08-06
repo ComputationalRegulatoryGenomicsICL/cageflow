@@ -8,7 +8,6 @@ workflow INPUT_FROM_FOLDER {
     infolder
 
     main:
-    // check here if singleEndness is correct
     any_R2_file = file("$infolder/**_R2*fastq.gz")
     singleEnd = true
     if (any_R2_file.size() > 0){
@@ -25,7 +24,7 @@ workflow INPUT_FROM_FOLDER {
                 meta.id = old_meta.split('_')[0..-3].join('_')
                 meta.single_end = singleEnd
                 fastq = tuple((fastq.name =~ /L00\d/)[0], fastq)
-                [meta, fastq ] }
+                [meta, fastq] }
         .groupTuple()
         .map{
             meta, lane_n_fastq ->

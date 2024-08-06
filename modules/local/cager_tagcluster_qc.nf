@@ -1,36 +1,32 @@
-process CAGER_BIGWIG {
+// 
+// Quality Control steps of CAGEr after clustering of CTSS
+// 
+
+process CAGER_TAGCLUSTER_QC {
     label 'process_medium'
     stageInMode 'copy'
-   
+
     input:
-    path bsgenome_file
-    val bsgenome_name
-    val bigwig
+    path cager_obj
 
     output:
-    path "*.rds",        emit: rds
     path "versions.yml", emit: versions
 
     """
-    if [ -z ${bsgenome_name} ]
-    then
-        bsgenome=${bsgenome_file}
-    else
-        bsgenome=${bsgenome_name}
-    fi
-
-    cager_read_in.R \
-        -b \${bsgenome} \
-        -w "${bigwig}" \
+    cager_tagcluster_qc.R  \
+        -i ${cager_obj} \
+        -a ${params.annotation} \
+        -d ${params.annot_db} \
         -p ${projectDir} \
-        -c ${task.cpus}
+        -t ${params.tpm_threshold} \
+        -e ${params.tagcluster_qc_pdf_height} \
+        -w ${params.tagcluster_qc_pdf_width}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         Bash: \$(echo "\$BASH_VERSION")
         R: \$(R --version | head -1 | awk '{print \$3}')
         R_CAGEr: \$(Rscript -e 'packageVersion("CAGEr")' | awk '{print \$2}' | tr -d "‘’")
-        R_BSgenome: \$(Rscript -e 'packageVersion("BSgenome")' | awk '{print \$2}' | tr -d "‘’")
         R_packages: \$(Rscript -e 'sessionInfo(package = NULL)')
     END_VERSIONS
     """

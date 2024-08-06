@@ -28,7 +28,7 @@ workflow DEDUP {
         ch_bam_to_sort = SAMTOOLS_FIXMATE.out.bam
 
         SORT_AFTER_FIXMATE(ch_bam_to_sort)
-        ch_versions = ch_versions.mix(SAMTOOLS_SORT.out.versions)
+        ch_versions = ch_versions.mix(SORT_AFTER_FIXMATE.out.versions)
 
         INDEX_AFTER_FIXMATE(SORT_AFTER_FIXMATE.out.bam)
         ch_versions = ch_versions.mix(

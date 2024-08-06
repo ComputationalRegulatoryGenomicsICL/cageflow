@@ -1,21 +1,21 @@
 #!/usr/bin/env Rscript
 
+
 # 
-# File to process data with CAGEr
+# Script to read in data to CAGEr from BAM or BigWig format
 # 
 
 # Load libraries
 required.libraries <- c(
     "optparse",
-    "rlang",
-    "CAGEr",
     "BSgenome",
-    "dplyr",
-    "purrr",
-    "magrittr",
+    "CAGEr",
     "stringr",
-    "tidyr"
-    )
+    "purrr",
+    "dplyr",
+    "tidyr",
+    "magrittr"
+)
 
 for (lib in required.libraries) {
   suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
@@ -23,6 +23,11 @@ for (lib in required.libraries) {
 
 # parse options
 option_list = list(
+    make_option(
+        c("-t", "--analysis_title"),
+        type = "character",
+        default = NULL,
+        help = "Title of the analysis, used for naming the CAGEexp object (Mandatory)"),
     make_option(
         c("-b", "--bsgenome"),
         type = "character",
@@ -39,6 +44,11 @@ option_list = list(
         default = NULL,
         help = "Tsv file with information from the input channel with [id, pairedness, path] (Optional)"),
     make_option(
+        c("-p", "--project_dir"),
+        type = "character",
+        default = 0,
+        help = "Project directory, from which the analysis is run."),
+    make_option(
         c("-c", "--num_core"),
         type = "integer",
         default = 0,
@@ -50,24 +60,29 @@ opt_parser = optparse::OptionParser(option_list = option_list)
 opt = optparse::parse_args(opt_parser)
 
 # set variable names
-bsgenome    <- opt$bsgenome
-bigwig_list <- opt$bigwig_list
-sample_list <- opt$sample_list
-num_core    <- opt$num_core
+analysis_title  <- opt$analysis_title
+bsgenome        <- opt$bsgenome
+bigwig_list     <- opt$bigwig_list
+sample_list     <- opt$sample_list
+project_dir     <- opt$project_dir
+num_core        <- opt$num_core
 
 # import functions
-source("install_bsgenome.R")
-source("parse_input.R")
-source("cager_bam.R")
-source("cager_bigwig.R")
+
+# installing BSgenome
+source(file.path(project_dir, "bin/install_bsgenome.R"))
+# reading in bam / bigwig data
+source(file.path(project_dir, "bin/parse_input.R"))
+source(file.path(project_dir, "bin/cager_bam.R"))
+source(file.path(project_dir, "bin/cager_bigwig.R"))
+
 
 reference_name <- install_bsgenome(bsgenome)
-reference_id <- unlist(strsplit(reference_name, "\\."))[4]
 
 if (length(sample_list) > 0) {
     sample_table <- parse_input(sample_list)
-
-    if (length(unique(sample_table$single_end)) == 1) {
+    single_end_uniq <- unique(sample_table$single_end)
+    if (length(single_end_uniq) == 1) {
         bam_type <- ifelse(single_end_uniq == "true",
                         "bam", "bamPairedEnd")
     } else {
@@ -90,7 +105,5 @@ if (length(sample_list) > 0) {
     stop("Either bigwig or bam files should be provided")
 }
 
-saveRDS(ce, paste0(reference_id, "_CAGEexp_CTSS.rds"))
-
-
-
+# save intermediate file
+saveRDS(ce, paste0(analysis_title, "_CAGEexp_0.rds"))
