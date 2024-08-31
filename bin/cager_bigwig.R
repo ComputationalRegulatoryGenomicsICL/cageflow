@@ -5,9 +5,10 @@
 #' @param cpus number of cores to use
 #' @return a CAGEexp object
 #' @examples
-#' read_in_bam(
+#' read_in_bigwig(
 #'  bsgenome_name=hsapiens,
-#'  bigwig_str=[path/to/file1.bw, path/to/file2.bw])
+#'  bigwig_str=[path/to/file1.bw, path/to/file2.bw],
+#'  cpus=4)
 
 read_in_bigwig <- function(
     bsgenome_name,

@@ -8,14 +8,17 @@ process CAGER_TAG_QC {
 
     input:
     path cager_obj
+    path txdb
 
     output:
     path "versions.yml", emit: versions
 
+   // ${params.annotation} \
+
     """
     cager_tag_qc.R  \
         -i ${cager_obj} \
-        -a ${params.annotation} \
+        -a ${txdb} \
         -p ${projectDir}
 
     cat <<-END_VERSIONS > versions.yml

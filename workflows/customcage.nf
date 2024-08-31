@@ -22,15 +22,17 @@ params.params_trimgalore = ''
 // cutadapt parameters
 params.nogtrim = false
 
-// Read deduplication parameters
+// read deduplication parameters
 params.dedup = false
 params.dist = false
+
+// genome annotation in GTF
+params.gtf = "$projectDir/assets/NO_FILE_GTF"
 
 // bowtie2 parameters
 params.bowtie2 = false
 
 // STAR parameters
-params.gtf = "$projectDir/assets/NO_FILE_GTF"
 params.chromsizes = "$projectDir/assets/NO_FILE_CHROMSIZES"
 params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
 
@@ -49,6 +51,7 @@ include { SAMTOOLS_PROCESSING } from '../subworkflows/local/samtools_processing.
 include { SUMMARY_STAT } from '../subworkflows/local/summary_statistics.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
+include { GTF_TO_TXDB } from '../modules/nf-core/gtf_to_txdb/main.nf'
 include { CAGER_BAM } from '../modules/local/cager_bam.nf'
 include { CAGER_BIGWIG } from '../modules/local/cager_bigwig.nf'
 include { CAGER_TAG_QC } from '../modules/local/cager_tag_qc.nf'
@@ -64,12 +67,14 @@ workflow CUSTOMCAGE {
     ch_index = Channel.empty()
     ch_multiqc_files = Channel.empty()
     ch_bam_bai = Channel.empty()
+    ch_gtf = Channel.empty()
 
-    PARAMETER_CHECKS(ch_fasta, ch_index, ch_versions)
+    PARAMETER_CHECKS(ch_fasta, ch_index, ch_gtf, ch_versions)
 
     ch_fasta = PARAMETER_CHECKS.out.ch_fasta
     ch_index = PARAMETER_CHECKS.out.ch_index
     ch_fastq = PARAMETER_CHECKS.out.ch_fastq
+    ch_gtf = PARAMETER_CHECKS.out.ch_gtf
     ch_versions = PARAMETER_CHECKS.out.ch_versions
 
     PREPROCESSING(ch_fastq, ch_versions, ch_multiqc_files)
@@ -140,7 +145,9 @@ workflow CUSTOMCAGE {
         ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
     }
 
-    CAGER_TAG_QC(cager_rds)
+    ch_txdb = GTF_TO_TXDB(ch_gtf)
+
+    CAGER_TAG_QC(cager_rds, ch_txdb)
     ch_versions = ch_versions.mix(CAGER_TAG_QC.out.versions)
 
     CAGER_PREPROCESSING(cager_rds)

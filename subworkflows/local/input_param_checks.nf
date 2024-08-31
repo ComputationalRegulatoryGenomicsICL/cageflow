@@ -10,6 +10,7 @@ workflow PARAMETER_CHECKS {
     take:
         ch_fasta
         ch_index
+        ch_gtf
         ch_versions
 
     main:
@@ -39,13 +40,19 @@ workflow PARAMETER_CHECKS {
             }
         }
 
-        if (params.gtf != "$projectDir/assets/NO_FILE_GTF" & !params.fasta) {
-            exit 1, 'The --gtf option can only be used with the --fasta option.'
+        if (params.gtf) {
+            Channel
+                .fromPath(params.gtf)
+                .set { ch_gtf }
         }
 
-        if (params.gtf != "$projectDir/assets/NO_FILE_GTF" & params.bowtie2) {
-            exit 1, 'The --gtf option is mutually exclusive with the --bowtie2 option.'
-        }
+        // if (params.gtf != "$projectDir/assets/NO_FILE_GTF" & !params.fasta) {
+        //     exit 1, 'The --gtf option can only be used with the --fasta option.'
+        // }
+
+        // if (params.gtf != "$projectDir/assets/NO_FILE_GTF" & params.bowtie2) {
+        //     exit 1, 'The --gtf option is mutually exclusive with the --bowtie2 option.'
+        // }
 
         if (params.splicesites != "$projectDir/assets/NO_FILE_SPLICESITES" & !params.fasta) {
             exit 1, 'The --splicesites option can only be used with the --fasta option.'
