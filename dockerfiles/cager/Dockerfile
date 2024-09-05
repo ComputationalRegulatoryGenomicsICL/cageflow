@@ -1,8 +1,8 @@
 # Use the official R base image
-FROM r-base:4.3.3
+FROM r-base:4.4.1
 
 # Maintainer label
-LABEL maintainer="nikipavel14@gmail.com"
+LABEL maintainer="katalitf@uio.no"
 
 # Set up folder structure
 WORKDIR /opt/software

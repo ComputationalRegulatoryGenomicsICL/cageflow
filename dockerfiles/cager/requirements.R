@@ -35,7 +35,8 @@ required_packages_bioconductor <- c(
   "CAGEr",
   "BSgenome",
   "ChIPseeker",
-  "rtracklayer")
+  "rtracklayer",
+  "txdbmaker")
 
 message(
   "; Installing these R Bioconductor packages: ",
