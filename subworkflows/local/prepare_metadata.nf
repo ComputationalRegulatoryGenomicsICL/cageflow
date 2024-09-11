@@ -48,6 +48,9 @@ workflow PREPARE_METADATA {
                     size_file
                 }
             versions = CUSTOM_GETCHROMSIZES.out.versions
+        } else {
+            ch_chrom_sizes = Channel.fromPath(params.chromsizes)
+            versions = Channel.empty()
         }
         
 
