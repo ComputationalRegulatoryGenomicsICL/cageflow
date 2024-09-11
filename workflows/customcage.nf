@@ -43,7 +43,7 @@ params.sourcedir = false
 
 include { PARAMETER_CHECKS } from '../subworkflows/local/input_param_checks.nf'
 include { PREPROCESSING } from '../subworkflows/local/preprocessing.nf'
-include { GET_BSGENOME } from '../subworkflows/local/get_bsgenome.nf'
+include { PREPARE_METADATA } from '../subworkflows/local/prepare_metadata.nf'
 include { STAR_PROCESSING } from '../subworkflows/local/star_processing.nf'
 include { BOWTIE2_PROCESSING } from '../subworkflows/local/bowtie2_processing.nf'
 include { DEDUP } from '../subworkflows/local/deduplication.nf'
@@ -83,10 +83,12 @@ workflow CUSTOMCAGE {
     ch_multiqc_files = PREPROCESSING.out.ch_multiqc_files
     ch_versions = PREPROCESSING.out.ch_versions
     
-    GET_BSGENOME()
+    PREPARE_METADATA()
 
-    ch_bsgenome_file = GET_BSGENOME.out.ch_bsgenome_file
-    ch_bsgenome_name = GET_BSGENOME.out.ch_bsgenome_name
+    ch_bsgenome_file = PREPARE_METADATA.out.ch_bsgenome_file
+    ch_bsgenome_name = PREPARE_METADATA.out.ch_bsgenome_name
+    chromsizes = PREPARE_METADATA.out.chromsizes
+    ch_versions = ch_versions.mix(PREPARE_METADATA.out.versions)
 
 
     if (params.bowtie2) {            

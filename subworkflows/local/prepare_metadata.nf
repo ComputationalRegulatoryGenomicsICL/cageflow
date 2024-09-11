@@ -3,10 +3,12 @@
 // 
 
 include { FORGE_BSGENOME } from '../../modules/local/forge_bsgenome.nf'
+include { CUSTOM_GETCHROMSIZES } from '../../modules/nf-core/custom/getchromsizes/main.nf'
 
-workflow GET_BSGENOME {
+workflow PREPARE_METADATA {
 
     main:
+        // prepare or fetch bsgenome 
         if (params.forgeseed) {
             forge_seed = file(params.forgeseed, checkIfExists: true)
             seqs_srcdir = file(params.sourcedir, checkIfExists: true)
@@ -32,8 +34,21 @@ workflow GET_BSGENOME {
             ch_bsgenome_name = ''
         }
 
+        if (!params.chromsizes){
+            // prepare chromosome sizes
+            CUSTOM_GETCHROMSIZES(
+                params.chrom_name,
+                params.fasta
+            )
+
+            ch_chrom_sizes = Channel.fromPath(CUSTOM_GETCHROMSIZES.out.sizes)
+            versions = CUSTOM_GETCHROMSIZES.out.versions
+        }
+        
+
     emit:
         ch_bsgenome_file
         ch_bsgenome_name
-
+        ch_chrom_sizes
+        versions
 }

@@ -12,6 +12,7 @@ workflow STAR_PROCESSING {
         ch_reads_to_align
         ch_fasta
         ch_index
+        ch_chrom_sizes
         ch_multiqc_files
         ch_versions
 
@@ -38,8 +39,6 @@ workflow STAR_PROCESSING {
         ch_aligned = STAR_ALIGN.out.bam_sorted
 
         ch_multiqc_files = ch_multiqc_files.mix(STAR_ALIGN.out.log_final.collect{it[1]})
-
-        ch_chrom_sizes = Channel.fromPath(params.chromsizes)
 
         UCSC_WIGTOBIGWIG (
             STAR_ALIGN.out.wigtobigwig,
