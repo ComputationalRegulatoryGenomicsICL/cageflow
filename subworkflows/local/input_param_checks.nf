@@ -93,6 +93,7 @@ workflow PARAMETER_CHECKS {
         ch_fasta
         ch_index
         ch_fastq
+        ch_gtf
         ch_versions
 
 }

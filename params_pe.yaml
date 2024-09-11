@@ -3,6 +3,6 @@ infolder:
 bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
 forgeseed:
 sourcedir:
-fasta:
+fasta: "assets/sacCer3_genome/sacCer3.fa"
 index: "assets/sacCer3_genome/sacCer3_star_index/"
-chromsizes: "assets/sacCer3_genome/sacCer3.chrom.sizes"
+chromsizes:
