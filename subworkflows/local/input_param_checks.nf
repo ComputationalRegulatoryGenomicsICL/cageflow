@@ -23,6 +23,8 @@ workflow PARAMETER_CHECKS {
         // if index is specified, it is used as input
         if (!params.fasta && !params.index) {
             exit 1, 'Reference FASTA file (--fasta) or genome index (--index) should be specified.'
+        } else if (params.fasta && params.index) {
+            exit 1, 'Only one of the two options, --fasta or --index, can be provided.'
         } else if (params.index) {
             Channel
                 .fromPath(params.index)
@@ -35,9 +37,9 @@ workflow PARAMETER_CHECKS {
 
         // either fasta or chromsizes file is required
         // Note: we do not check if the same fasta file is used to calculate the chromsizes and the index
-        if (!params.fasta && !params.chromsizes) {
-            exit 1, 'Reference FASTA file (--fasta) or genome chromosome sizes (--chromsizes) should be specified.'
-        }
+        // if (!params.fasta && !params.chromsizes) {
+        //     exit 1, 'Reference FASTA file (--fasta) or genome chromosome sizes (--chromsizes) should be specified.'
+        // }
 
         if (params.dist) {
             if (!params.dedup) {
