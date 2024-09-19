@@ -33,7 +33,7 @@ params.gtf = "$projectDir/assets/NO_FILE_GTF"
 params.bowtie2 = false
 
 // STAR parameters
-params.chromsizes = "$projectDir/assets/NO_FILE_CHROMSIZES"
+params.chromsizes = null // "$projectDir/assets/NO_FILE_CHROMSIZES"
 params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
 
 // BSgenome parameters
@@ -147,7 +147,7 @@ workflow CUSTOMCAGE {
         ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
     }
 
-    GTF_TO_TXDB(ch_gtf)
+    /*GTF_TO_TXDB(ch_gtf)
     ch_txdb = GTF_TO_TXDB.out.txdb
     ch_versions = ch_versions.mix(GTF_TO_TXDB.out.versions)
 
@@ -181,7 +181,7 @@ workflow CUSTOMCAGE {
         ch_multiqc_custom_config.toList(),
         ch_multiqc_logo.toList()
     )
-    multiqc_report = MULTIQC.out.report.toList()
+    multiqc_report = MULTIQC.out.report.toList()*/
 }
 
 /*

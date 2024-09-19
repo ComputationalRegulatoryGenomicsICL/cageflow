@@ -8,13 +8,13 @@ process CUSTOM_GETCHROMSIZES {
         'biocontainers/samtools:1.20--h50ea8bc_0' }"
 
     input:
-    tuple val(meta), path(fasta)
+    tuple path(fasta)
 
     output:
-    tuple val(meta), path ("*.sizes"), emit: sizes
-    tuple val(meta), path ("*.fai")  , emit: fai
-    tuple val(meta), path ("*.gzi")  , emit: gzi, optional: true
-    path  "versions.yml"             , emit: versions
+    tuple path ("*.sizes"), emit: sizes
+    tuple path ("*.fai")  , emit: fai
+    tuple path ("*.gzi")  , emit: gzi, optional: true
+    path  "versions.yml"  , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

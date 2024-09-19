@@ -36,17 +36,11 @@ workflow PREPARE_METADATA {
 
         if (!params.chromsizes){
             // prepare chromosome sizes
-            chrom_name_ch = Channel.of(params.chrom_name)
             chrom_ch = Channel.fromPath(params.fasta)
-            chromsize_ch = chrom_name_ch.combine(chrom_ch)
 
-            CUSTOM_GETCHROMSIZES( chromsize_ch )
-
+            CUSTOM_GETCHROMSIZES( chrom_ch )
             ch_chrom_sizes = CUSTOM_GETCHROMSIZES.out.sizes
-                .map{
-                    name, size_file ->
-                    size_file
-                }
+
             versions = CUSTOM_GETCHROMSIZES.out.versions
         } else {
             ch_chrom_sizes = Channel.fromPath(params.chromsizes)

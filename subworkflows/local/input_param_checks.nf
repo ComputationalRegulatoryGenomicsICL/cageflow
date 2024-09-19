@@ -34,7 +34,7 @@ workflow PARAMETER_CHECKS {
         }
 
         // either fasta or chromsizes file is required
-        // Note: it is not checked that the same fasta file used to calculate the chromsizes as the index is
+        // Note: we do not check if the same fasta file is used to calculate the chromsizes and the index
         if (!params.fasta && !params.chromsizes) {
             exit 1, 'Reference FASTA file (--fasta) or genome chromosome sizes (--chromsizes) should be specified.'
         }
@@ -71,9 +71,9 @@ workflow PARAMETER_CHECKS {
             exit 1, 'The --chromsizes option is mutually exclusive with the --bowtie2 option.'
         }
 
-        if (params.chromsizes == "$projectDir/assets/NO_FILE_CHROMSIZES" & !params.bowtie2) {
-            exit 1, 'The use of the default mapper STAR requires the --chromsizes option.'
-        }
+        // if (params.chromsizes == "$projectDir/assets/NO_FILE_CHROMSIZES" & !params.bowtie2) {
+        //     exit 1, 'The use of the default mapper STAR requires the --chromsizes option.'
+        // }
 
         if (params.samplesheet) {
             INPUT_FROM_SAMPLESHEET (
