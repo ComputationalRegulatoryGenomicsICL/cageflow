@@ -146,10 +146,13 @@ workflow CUSTOMCAGE {
         ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
     }
 
-    /*GTF_TO_TXDB(ch_gtf)
+    GTF_TO_TXDB(ch_gtf)
     ch_txdb = GTF_TO_TXDB.out.txdb
     ch_versions = ch_versions.mix(GTF_TO_TXDB.out.versions)
 
+    ch_txdb.view()
+
+    /*
     CAGER_TAG_QC(cager_rds, ch_txdb)
     ch_versions = ch_versions.mix(CAGER_TAG_QC.out.versions)
 
