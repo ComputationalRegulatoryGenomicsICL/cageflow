@@ -11,6 +11,8 @@ process CAGER_BAM {
     path "*.rds",        emit: rds
     path "versions.yml", emit: versions
 
+    // R_packages: \$(Rscript -e 'sessionInfo(package = NULL)')
+
     """
     if [ -z ${bsgenome_name} ]
     then
@@ -39,7 +41,6 @@ process CAGER_BAM {
         R: \$(R --version | head -1 | awk '{print \$3}')
         R_CAGEr: \$(Rscript -e 'packageVersion("CAGEr")' | awk '{print \$2}' | tr -d "‘’")
         R_BSgenome: \$(Rscript -e 'packageVersion("BSgenome")' | awk '{print \$2}' | tr -d "‘’")
-        R_packages: \$(Rscript -e 'sessionInfo(package = NULL)')
     END_VERSIONS
     """
 }

@@ -33,7 +33,7 @@ params.gtf = "$projectDir/assets/NO_FILE_GTF"
 params.bowtie2 = false
 
 // STAR parameters
-params.chromsizes = null // "$projectDir/assets/NO_FILE_CHROMSIZES"
+params.chromsizes = null 
 params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
 
 // BSgenome parameters
@@ -75,13 +75,13 @@ workflow CUSTOMCAGE {
     ch_index = PARAMETER_CHECKS.out.ch_index
     ch_fastq = PARAMETER_CHECKS.out.ch_fastq
     ch_gtf = PARAMETER_CHECKS.out.ch_gtf
-    ch_versions = ch_versions.mix(PARAMETER_CHECKS.out.ch_versions)
+    ch_versions = PARAMETER_CHECKS.out.ch_versions
 
     PREPROCESSING(ch_fastq, ch_versions, ch_multiqc_files)
 
     ch_reads_to_align = PREPROCESSING.out.ch_reads_to_align
     ch_multiqc_files = PREPROCESSING.out.ch_multiqc_files
-    ch_versions = ch_versions.mix(PREPROCESSING.out.ch_versions)
+    ch_versions = PREPROCESSING.out.ch_versions
     
     PREPARE_METADATA()
 
@@ -90,13 +90,12 @@ workflow CUSTOMCAGE {
     ch_chrom_sizes = PREPARE_METADATA.out.ch_chrom_sizes
     ch_versions = ch_versions.mix(PREPARE_METADATA.out.versions)
 
-
     if (params.bowtie2) {            
         BOWTIE2_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_multiqc_files, ch_versions)
         
         ch_aligned = BOWTIE2_PROCESSING.out.ch_aligned
         ch_multiqc_files = BOWTIE2_PROCESSING.out.ch_multiqc_files
-        ch_versions = ch_versions.mix(BOWTIE2_PROCESSING.out.ch_versions0
+        ch_versions = BOWTIE2_PROCESSING.out.ch_versions
 
     } else {
         STAR_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_chrom_sizes, ch_multiqc_files, ch_versions)
@@ -104,7 +103,7 @@ workflow CUSTOMCAGE {
         bigwig_ch_for_cager = STAR_PROCESSING.out.bigwig_ch_for_cager
         ch_aligned = STAR_PROCESSING.out.ch_aligned
         ch_multiqc_files = STAR_PROCESSING.out.ch_multiqc_files
-        ch_versions = ch_versions.mix(STAR_PROCESSING.out.ch_versions)
+        ch_versions = STAR_PROCESSING.out.ch_versions
     }
 
     if (params.dedup) {
@@ -112,19 +111,19 @@ workflow CUSTOMCAGE {
 
         ch_for_cager = DEDUP.out.ch_for_cager
         ch_bam_bai = DEDUP.out.ch_bam_bai
-        ch_versions = ch_versions.mix(DEDUP.out.ch_versions)
+        ch_versions = DEDUP.out.ch_versions
     } else {
         SAMTOOLS_PROCESSING(ch_aligned, ch_versions)
 
         ch_for_cager = SAMTOOLS_PROCESSING.out.ch_for_cager
         ch_bam_bai = SAMTOOLS_PROCESSING.out.ch_bam_bai
-        ch_versions = ch_versions.mix(SAMTOOLS_PROCESSING.out.ch_versions)
+        ch_versions = SAMTOOLS_PROCESSING.out.ch_versions
     }
 
     SUMMARY_STAT(ch_bam_bai, ch_fasta, ch_multiqc_files, ch_versions)
 
     ch_multiqc_files = SUMMARY_STAT.out.ch_multiqc_files
-    ch_versions = ch_versions.mix(SUMMARY_STAT.out.ch_versions)
+    ch_versions = SUMMARY_STAT.out.ch_versions
 
     // CAGEr analysis steps
     if (params.bowtie2) {
@@ -144,7 +143,7 @@ workflow CUSTOMCAGE {
         )
 
         cager_rds = CAGER_BIGWIG.out.rds
-        ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
+        //ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
     }
 
     /*GTF_TO_TXDB(ch_gtf)
@@ -160,6 +159,7 @@ workflow CUSTOMCAGE {
 
     CAGER_TAGCLUSTER_QC(clustered_cager_rds)
     ch_versions = ch_versions.mix(CAGER_TAGCLUSTER_QC.out.versions)
+    */
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
@@ -181,7 +181,7 @@ workflow CUSTOMCAGE {
         ch_multiqc_custom_config.toList(),
         ch_multiqc_logo.toList()
     )
-    multiqc_report = MULTIQC.out.report.toList()*/
+    multiqc_report = MULTIQC.out.report.toList()
 }
 
 /*
