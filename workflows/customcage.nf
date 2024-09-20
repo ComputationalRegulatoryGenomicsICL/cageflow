@@ -150,7 +150,6 @@ workflow CUSTOMCAGE {
     ch_txdb = GTF_TO_TXDB.out.txdb
     ch_versions = ch_versions.mix(GTF_TO_TXDB.out.versions)
 
-    /*
     CAGER_TAG_QC(cager_rds, ch_txdb)
     ch_versions = ch_versions.mix(CAGER_TAG_QC.out.versions)
 
@@ -160,7 +159,6 @@ workflow CUSTOMCAGE {
 
     CAGER_TAGCLUSTER_QC(clustered_cager_rds)
     ch_versions = ch_versions.mix(CAGER_TAGCLUSTER_QC.out.versions)
-    */
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')

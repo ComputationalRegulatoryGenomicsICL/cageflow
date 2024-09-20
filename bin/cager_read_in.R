@@ -24,11 +24,6 @@ for (lib in required.libraries) {
 # parse options
 option_list = list(
     make_option(
-        c("-t", "--analysis_title"),
-        type = "character",
-        default = NULL,
-        help = "Title of the analysis, used for naming the CAGEexp object (Mandatory)"),
-    make_option(
         c("-b", "--bsgenome"),
         type = "character",
         default = NULL,
@@ -60,7 +55,6 @@ opt_parser = optparse::OptionParser(option_list = option_list)
 opt = optparse::parse_args(opt_parser)
 
 # set variable names
-analysis_title  <- opt$analysis_title
 bsgenome        <- opt$bsgenome
 bigwig_list     <- opt$bigwig_list
 sample_list     <- opt$sample_list
@@ -105,5 +99,5 @@ if (length(sample_list) > 0) {
     stop("Either bigwig or bam files should be provided")
 }
 
-# save intermediate file
-saveRDS(ce, paste0(analysis_title, "_CAGEexp_0.rds"))
+# save the initial CAGEexp object
+saveRDS(ce, "CAGEexp_initial.rds")
