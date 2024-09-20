@@ -143,7 +143,7 @@ workflow CUSTOMCAGE {
         )
 
         cager_rds = CAGER_BIGWIG.out.rds
-        //ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
+        ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
     }
 
     /*GTF_TO_TXDB(ch_gtf)

@@ -11,8 +11,6 @@ process CAGER_BIGWIG {
     path "*.rds",        emit: rds
     path "versions.yml", emit: versions
 
-    // R_packages: \$(Rscript -e 'sessionInfo(package = NULL)')
-
     """
     if [ -z ${bsgenome_name} ]
     then
