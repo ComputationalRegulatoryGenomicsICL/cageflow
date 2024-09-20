@@ -4,6 +4,6 @@ bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
 gtf: "customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf"
 forgeseed:
 sourcedir:
-chromsizes: "customcageq/assets/sacCer3_genome/sacCer3.chrom.sizes"
-# fasta: "customcageq/assets/sacCer3_genome/sacCer3.fa"
+# chromsizes: "customcageq/assets/sacCer3_genome/sacCer3.chrom.sizes"
+fasta: "customcageq/assets/sacCer3_genome/sacCer3.fa"
 index: "customcageq/assets/sacCer3_genome/sacCer3_star_index/"

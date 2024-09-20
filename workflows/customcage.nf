@@ -75,13 +75,13 @@ workflow CUSTOMCAGE {
     ch_index = PARAMETER_CHECKS.out.ch_index
     ch_fastq = PARAMETER_CHECKS.out.ch_fastq
     ch_gtf = PARAMETER_CHECKS.out.ch_gtf
-    ch_versions = PARAMETER_CHECKS.out.ch_versions
+    ch_versions = ch_versions.mix(PARAMETER_CHECKS.out.ch_versions)
 
     PREPROCESSING(ch_fastq, ch_versions, ch_multiqc_files)
 
     ch_reads_to_align = PREPROCESSING.out.ch_reads_to_align
     ch_multiqc_files = PREPROCESSING.out.ch_multiqc_files
-    ch_versions = PREPROCESSING.out.ch_versions
+    ch_versions = ch_versions.mix(PREPROCESSING.out.ch_versions)
     
     PREPARE_METADATA()
 
@@ -96,7 +96,7 @@ workflow CUSTOMCAGE {
         
         ch_aligned = BOWTIE2_PROCESSING.out.ch_aligned
         ch_multiqc_files = BOWTIE2_PROCESSING.out.ch_multiqc_files
-        ch_versions = BOWTIE2_PROCESSING.out.ch_versions
+        ch_versions = ch_versions.mix(BOWTIE2_PROCESSING.out.ch_versions0
 
     } else {
         STAR_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_chrom_sizes, ch_multiqc_files, ch_versions)
@@ -104,7 +104,7 @@ workflow CUSTOMCAGE {
         bigwig_ch_for_cager = STAR_PROCESSING.out.bigwig_ch_for_cager
         ch_aligned = STAR_PROCESSING.out.ch_aligned
         ch_multiqc_files = STAR_PROCESSING.out.ch_multiqc_files
-        ch_versions = STAR_PROCESSING.out.ch_versions
+        ch_versions = ch_versions.mix(STAR_PROCESSING.out.ch_versions)
     }
 
     if (params.dedup) {
@@ -112,19 +112,19 @@ workflow CUSTOMCAGE {
 
         ch_for_cager = DEDUP.out.ch_for_cager
         ch_bam_bai = DEDUP.out.ch_bam_bai
-        ch_versions = DEDUP.out.ch_versions
+        ch_versions = ch_versions.mix(DEDUP.out.ch_versions)
     } else {
         SAMTOOLS_PROCESSING(ch_aligned, ch_versions)
 
         ch_for_cager = SAMTOOLS_PROCESSING.out.ch_for_cager
         ch_bam_bai = SAMTOOLS_PROCESSING.out.ch_bam_bai
-        ch_versions = SAMTOOLS_PROCESSING.out.ch_versions
+        ch_versions = ch_versions.mix(SAMTOOLS_PROCESSING.out.ch_versions)
     }
 
     SUMMARY_STAT(ch_bam_bai, ch_fasta, ch_multiqc_files, ch_versions)
 
     ch_multiqc_files = SUMMARY_STAT.out.ch_multiqc_files
-    ch_versions = SUMMARY_STAT.out.ch_versions
+    ch_versions = ch_versions.mix(SUMMARY_STAT.out.ch_versions)
 
     // CAGEr analysis steps
     if (params.bowtie2) {
