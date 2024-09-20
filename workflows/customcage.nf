@@ -83,12 +83,12 @@ workflow CUSTOMCAGE {
     ch_multiqc_files = PREPROCESSING.out.ch_multiqc_files
     ch_versions = PREPROCESSING.out.ch_versions
     
-    PREPARE_METADATA()
+    PREPARE_METADATA( ch_versions )
 
     ch_bsgenome_file = PREPARE_METADATA.out.ch_bsgenome_file
     ch_bsgenome_name = PREPARE_METADATA.out.ch_bsgenome_name
     ch_chrom_sizes = PREPARE_METADATA.out.ch_chrom_sizes
-    ch_versions = ch_versions.mix(PREPARE_METADATA.out.versions)
+    ch_versions = PREPARE_METADATA.out.ch_versions
 
     if (params.bowtie2) {            
         BOWTIE2_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_multiqc_files, ch_versions)
@@ -149,8 +149,6 @@ workflow CUSTOMCAGE {
     GTF_TO_TXDB(ch_gtf)
     ch_txdb = GTF_TO_TXDB.out.txdb
     ch_versions = ch_versions.mix(GTF_TO_TXDB.out.versions)
-
-    ch_txdb.view()
 
     /*
     CAGER_TAG_QC(cager_rds, ch_txdb)

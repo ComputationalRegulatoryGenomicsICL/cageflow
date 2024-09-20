@@ -7,8 +7,10 @@ include { CUSTOM_GETCHROMSIZES } from '../../modules/nf-core/custom/getchromsize
 
 workflow PREPARE_METADATA {
 
+    take:
+        ch_versions
+
     main:
-        versions = Channel.empty()
 
         // prepare or fetch bsgenome 
         if (params.forgeseed) {
@@ -18,7 +20,7 @@ workflow PREPARE_METADATA {
                 forge_seed,
                 seqs_srcdir
             )
-            versions = versions.mix(FORGE_BSGENOME.out.versions)
+            ch_versions = ch_versions.mix(FORGE_BSGENOME.out.versions)
         }
 
         if (params.bsgenome) {
@@ -45,7 +47,7 @@ workflow PREPARE_METADATA {
                 CUSTOM_GETCHROMSIZES( chrom_ch )
                 ch_chrom_sizes = CUSTOM_GETCHROMSIZES.out.sizes
 
-                versions = versions.mix(CUSTOM_GETCHROMSIZES.out.versions)
+                ch_versions = ch_versions.mix(CUSTOM_GETCHROMSIZES.out.versions)
             } else { // a genome index was provided instead
                 ch_chrom_sizes = Channel.fromPath(params.index + '/chrNameLength.txt')
             }
@@ -57,5 +59,5 @@ workflow PREPARE_METADATA {
         ch_bsgenome_file
         ch_bsgenome_name
         ch_chrom_sizes
-        versions
+        ch_versions
 }
