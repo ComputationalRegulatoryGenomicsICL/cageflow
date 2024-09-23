@@ -1,0 +1,8 @@
+samplesheet:
+infolder: "/storage/scratch2/TCGA/BRCAGE/sequencing_data/231116_A01447.A.Project_Aronsen-Libs12--2023-11-02/Sample_1-s2t1p3sq2"
+bsgenome: "BSgenome.Hsapiens.UCSC.hg38"
+forgeseed:
+sourcedir:
+fasta:
+index: "/storage/mathelierarea/raw/GENCODE/Gencode_human/release_46/star_index/star_genomegenerate/star"
+chromsizes: "/storage/mathelierarea/raw/GENCODE/Gencode_human/release_46/size.genome"

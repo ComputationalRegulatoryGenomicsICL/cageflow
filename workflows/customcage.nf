@@ -147,19 +147,21 @@ workflow CUSTOMCAGE {
         exit 1, 'The use of the default mapper STAR requires the --chromsizes option.'
     }
 
-    CAT_FASTQ (
-        ch_fastq
-    ).reads.set { ch_cat_fastq }
+    // CAT_FASTQ (
+    //     ch_fastq
+    // ).reads.set { ch_cat_fastq }
 
-    ch_versions = ch_versions.mix(CAT_FASTQ.out.versions)
+    // ch_versions = ch_versions.mix(CAT_FASTQ.out.versions)
 
     FASTQC (
-        ch_cat_fastq
+        ch_fastq
+        // ch_cat_fastq
     )
     ch_versions = ch_versions.mix(FASTQC.out.versions)
 
     TRIMGALORE (
-        ch_cat_fastq
+        ch_fastq
+        // ch_cat_fastq
     )
     ch_versions = ch_versions.mix(TRIMGALORE.out.versions)
 
@@ -307,30 +309,30 @@ workflow CUSTOMCAGE {
         ch_bsgenome_name = ''
     }
 
-    if (params.bowtie2) {
-        if (params.dedup) {
-            ch_for_cager = SAMTOOLS_DEDUP.out.bam.collect()
-        } else {
-            ch_for_cager = SAMTOOLS_SORT.out.bam.collect()
-        }
-        CAGER_BAM (
-            ch_bsgenome_file,
-            ch_bsgenome_name,
-            ch_for_cager
-        )
-        ch_versions = ch_versions.mix(CAGER_BAM.out.versions)
-    } else {
-        ch_for_cager = UCSC_WIGTOBIGWIG.out.bw
-            .map { it[1] }
-            .collect()
+    // if (params.bowtie2) {
+    //     if (params.dedup) {
+    //         ch_for_cager = SAMTOOLS_DEDUP.out.bam.collect()
+    //     } else {
+    //         ch_for_cager = SAMTOOLS_SORT.out.bam.collect()
+    //     }
+    //     CAGER_BAM (
+    //         ch_bsgenome_file,
+    //         ch_bsgenome_name,
+    //         ch_for_cager
+    //     )
+    //     ch_versions = ch_versions.mix(CAGER_BAM.out.versions)
+    // } else {
+    //     ch_for_cager = UCSC_WIGTOBIGWIG.out.bw
+    //         .map { it[1] }
+    //         .collect()
 
-        CAGER_BIGWIG (
-            ch_bsgenome_file,
-            ch_bsgenome_name,
-            ch_for_cager
-        )
-        ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
-    }
+    //     CAGER_BIGWIG (
+    //         ch_bsgenome_file,
+    //         ch_bsgenome_name,
+    //         ch_for_cager
+    //     )
+    //     ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
+    // }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')

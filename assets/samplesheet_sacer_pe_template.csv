@@ -1,4 +1,0 @@
-sample,fastq_1,fastq_2,single_end
-S10,[full_path]/customcageq/assets/sacCer_fastq/pe/S10_S6_L001_R1_001.fastq.gz,[full_path]/customcageq/assets/sacCer_fastq/pe/S10_S6_L001_R2_001.fastq.gz,False
-S14,[full_path]/customcageq/assets/sacCer_fastq/pe/S14_S8_L001_R1_001.fastq.gz,[full_path]/customcageq/assets/sacCer_fastq/pe/S14_S8_L001_R2_001.fastq.gz,False
-S14,[full_path]/customcageq/assets/sacCer_fastq/pe/S14_S8_L002_R1_001.fastq.gz,[full_path]/customcageq/assets/sacCer_fastq/pe/S14_S8_L002_R2_001.fastq.gz,False
