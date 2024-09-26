@@ -67,14 +67,12 @@ workflow CUSTOMCAGE {
     ch_index = Channel.empty()
     ch_multiqc_files = Channel.empty()
     ch_bam_bai = Channel.empty()
-    ch_gtf = Channel.empty()
 
-    PARAMETER_CHECKS(ch_fasta, ch_index, ch_gtf, ch_versions)
+    PARAMETER_CHECKS(ch_fasta, ch_index, ch_versions)
 
     ch_fasta = PARAMETER_CHECKS.out.ch_fasta
     ch_index = PARAMETER_CHECKS.out.ch_index
     ch_fastq = PARAMETER_CHECKS.out.ch_fastq
-    ch_gtf = PARAMETER_CHECKS.out.ch_gtf
     ch_versions = PARAMETER_CHECKS.out.ch_versions
 
     PREPROCESSING(ch_fastq, ch_versions, ch_multiqc_files)
@@ -87,6 +85,8 @@ workflow CUSTOMCAGE {
 
     ch_bsgenome_file = PREPARE_METADATA.out.ch_bsgenome_file
     ch_bsgenome_name = PREPARE_METADATA.out.ch_bsgenome_name
+    ch_txdb_file = PREPARE_METADATA.out.ch_txdb_file
+    ch_txdb_name = PREPARE_METADATA.out.ch_txdb_name
     ch_chrom_sizes = PREPARE_METADATA.out.ch_chrom_sizes
     ch_versions = PREPARE_METADATA.out.ch_versions
 
@@ -146,18 +146,14 @@ workflow CUSTOMCAGE {
         ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
     }
 
-    GTF_TO_TXDB(ch_gtf)
-    ch_txdb = GTF_TO_TXDB.out.txdb
-    ch_versions = ch_versions.mix(GTF_TO_TXDB.out.versions)
-
-    CAGER_TAG_QC(cager_rds, ch_txdb)
+    CAGER_TAG_QC(cager_rds, ch_txdb_file, ch_txdb_name)
     ch_versions = ch_versions.mix(CAGER_TAG_QC.out.versions)
 
     CAGER_PREPROCESSING(cager_rds)
     clustered_cager_rds = CAGER_PREPROCESSING.out.rds
     ch_versions = ch_versions.mix(CAGER_PREPROCESSING.out.versions)
 
-    CAGER_TAGCLUSTER_QC(clustered_cager_rds)
+    CAGER_TAGCLUSTER_QC(clustered_cager_rds, ch_txdb_file, ch_txdb_name)
     ch_versions = ch_versions.mix(CAGER_TAGCLUSTER_QC.out.versions)
 
     CUSTOM_DUMPSOFTWAREVERSIONS (

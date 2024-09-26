@@ -11,6 +11,7 @@ workflow PARAMETER_CHECKS {
         ch_fasta
         ch_index
         ch_gtf
+        ch_txdb
         ch_versions
 
     main:
@@ -26,6 +27,9 @@ workflow PARAMETER_CHECKS {
         } else if (params.fasta && params.index) {
             exit 1, 'Only one of the two options, --fasta or --index, can be provided.'
         } else if (params.index) {
+            if (params.gtf && params.txdb) {
+                exit 1, 'When using STAR index as input, either --gtf or --txdb can be provided for CAGEr, but not both at the same time.'
+            }
             Channel
                 .fromPath(params.index)
                 .set { ch_index }

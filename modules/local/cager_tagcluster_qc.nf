@@ -15,8 +15,8 @@ process CAGER_TAGCLUSTER_QC {
     """
     cager_tagcluster_qc.R  \
         -i ${cager_obj} \
-        -a ${params.annotation} \
-        -d ${params.annot_db} \
+        -a ${params.txdb} \
+        -d ${params.orgdb} \
         -p ${projectDir} \
         -t ${params.tpm_threshold} \
         -e ${params.tagcluster_qc_pdf_height} \

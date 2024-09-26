@@ -12,7 +12,7 @@ workflow PREPARE_METADATA {
 
     main:
 
-        // prepare or fetch bsgenome 
+        // prepare or fetch BSgenome 
         if (params.forgeseed) {
             forge_seed = file(params.forgeseed, checkIfExists: true)
             seqs_srcdir = file(params.sourcedir, checkIfExists: true)
@@ -39,6 +39,29 @@ workflow PREPARE_METADATA {
             ch_bsgenome_name = ''
         }
 
+        // prepare or fetch TxDb
+        if (params.gtf && !params.txdb) {
+            gtf_file = file(params.gtf, checkIfExists: true)
+            GTF_TO_TXDB(gtf_file)
+            ch_versions = ch_versions.mix(GTF_TO_TXDB.out.versions)
+        }
+
+        if (params.txdb) {
+            if (params.txdb.endsWith('.sqlite')) {
+                ch_txdb_file = file(
+                    params.txdb,
+                    checkIfExists: true)
+                ch_txdb_name = ''
+            } else {
+                ch_bsgenome_file = file(
+                    "$projectDir/assets/NO_FILE_TXDB")
+                ch_bsgenome_name = params.txdb
+            }
+        } else {
+            ch_txdb_file = GTF_TO_TXDB.out.txdb
+            ch_txdb_name = ''
+        }
+
         // prepare chromosome sizes
         if (!params.chromsizes){
             if (params.fasta) {
@@ -58,6 +81,8 @@ workflow PREPARE_METADATA {
     emit:
         ch_bsgenome_file
         ch_bsgenome_name
+        ch_txdb_file
+        ch_txdb_name
         ch_chrom_sizes
         ch_versions
 }
