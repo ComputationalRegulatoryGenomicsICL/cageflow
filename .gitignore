@@ -3,6 +3,7 @@ work/
 data/
 results/
 scratch/
+example_data/
 .DS_Store
 testing/
 testing*
