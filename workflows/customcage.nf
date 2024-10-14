@@ -27,7 +27,7 @@ params.dedup = false
 params.dist = false
 
 // genome annotation in GTF
-params.gtf = "$projectDir/assets/NO_FILE_GTF"
+params.gtf = null // "$projectDir/assets/NO_FILE_GTF"
 
 // bowtie2 parameters
 params.bowtie2 = false
@@ -51,7 +51,6 @@ include { SAMTOOLS_PROCESSING } from '../subworkflows/local/samtools_processing.
 include { SUMMARY_STAT } from '../subworkflows/local/summary_statistics.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
-include { GTF_TO_TXDB } from '../modules/local/gtf_to_txdb.nf'
 include { CAGER_BAM } from '../modules/local/cager_bam.nf'
 include { CAGER_BIGWIG } from '../modules/local/cager_bigwig.nf'
 include { CAGER_TAG_QC } from '../modules/local/cager_tag_qc.nf'
@@ -86,7 +85,7 @@ workflow CUSTOMCAGE {
     ch_bsgenome_file = PREPARE_METADATA.out.ch_bsgenome_file
     ch_bsgenome_name = PREPARE_METADATA.out.ch_bsgenome_name
     ch_txdb_file = PREPARE_METADATA.out.ch_txdb_file
-    ch_txdb_name = PREPARE_METADATA.out.ch_txdb_name
+    // ch_txdb_name = PREPARE_METADATA.out.ch_txdb_name
     ch_chrom_sizes = PREPARE_METADATA.out.ch_chrom_sizes
     ch_versions = PREPARE_METADATA.out.ch_versions
 
@@ -146,14 +145,16 @@ workflow CUSTOMCAGE {
         ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
     }
 
-    CAGER_TAG_QC(cager_rds, ch_txdb_file, ch_txdb_name)
+    // CAGER_TAG_QC(cager_rds, ch_txdb_file, ch_txdb_name)
+    CAGER_TAG_QC(cager_rds, ch_txdb_file)
     ch_versions = ch_versions.mix(CAGER_TAG_QC.out.versions)
 
     CAGER_PREPROCESSING(cager_rds)
     clustered_cager_rds = CAGER_PREPROCESSING.out.rds
     ch_versions = ch_versions.mix(CAGER_PREPROCESSING.out.versions)
 
-    CAGER_TAGCLUSTER_QC(clustered_cager_rds, ch_txdb_file, ch_txdb_name)
+    // CAGER_TAGCLUSTER_QC(clustered_cager_rds, ch_txdb_file, ch_txdb_name)
+    CAGER_TAGCLUSTER_QC(clustered_cager_rds, ch_txdb_file)
     ch_versions = ch_versions.mix(CAGER_TAGCLUSTER_QC.out.versions)
 
     CUSTOM_DUMPSOFTWAREVERSIONS (

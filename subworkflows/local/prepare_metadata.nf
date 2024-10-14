@@ -2,6 +2,7 @@
 // Subworkflow to get the BSgenome via forging or loading
 // 
 
+include { GTF_TO_TXDB } from '../modules/local/gtf_to_txdb.nf'
 include { FORGE_BSGENOME } from '../../modules/local/forge_bsgenome.nf'
 include { CUSTOM_GETCHROMSIZES } from '../../modules/nf-core/custom/getchromsizes/main.nf'
 
@@ -40,27 +41,32 @@ workflow PREPARE_METADATA {
         }
 
         // prepare or fetch TxDb
-        if (params.gtf && !params.txdb) {
-            gtf_file = file(params.gtf, checkIfExists: true)
-            GTF_TO_TXDB(gtf_file)
-            ch_versions = ch_versions.mix(GTF_TO_TXDB.out.versions)
-        }
+        // if (params.gtf && !params.txdb) {
+        //     gtf_file = file(params.gtf, checkIfExists: true)
+        //     GTF_TO_TXDB(gtf_file)
+        //     ch_versions = ch_versions.mix(GTF_TO_TXDB.out.versions)
+        // }
 
-        if (params.txdb) {
-            if (params.txdb.endsWith('.sqlite')) {
-                ch_txdb_file = file(
-                    params.txdb,
-                    checkIfExists: true)
-                ch_txdb_name = ''
-            } else {
-                ch_bsgenome_file = file(
-                    "$projectDir/assets/NO_FILE_TXDB")
-                ch_bsgenome_name = params.txdb
-            }
-        } else {
-            ch_txdb_file = GTF_TO_TXDB.out.txdb
-            ch_txdb_name = ''
-        }
+        gtf_file = file(params.gtf, checkIfExists: true)
+        GTF_TO_TXDB(gtf_file)
+        ch_txdb_file = GTF_TO_TXDB.out.txdb
+        ch_versions = ch_versions.mix(GTF_TO_TXDB.out.versions)
+
+        // if (params.txdb) {
+        //     if (params.txdb.endsWith('.sqlite')) {
+        //         ch_txdb_file = file(
+        //             params.txdb,
+        //             checkIfExists: true)
+        //         ch_txdb_name = ''
+        //     } else {
+        //         ch_bsgenome_file = file(
+        //             "$projectDir/assets/NO_FILE_TXDB")
+        //         ch_bsgenome_name = params.txdb
+        //     }
+        // } else {
+        //     ch_txdb_file = GTF_TO_TXDB.out.txdb
+        //     ch_txdb_name = ''
+        // }
 
         // prepare chromosome sizes
         if (!params.chromsizes){
@@ -82,7 +88,7 @@ workflow PREPARE_METADATA {
         ch_bsgenome_file
         ch_bsgenome_name
         ch_txdb_file
-        ch_txdb_name
+        // ch_txdb_name
         ch_chrom_sizes
         ch_versions
 }
