@@ -2,7 +2,7 @@
 // Subworkflow to get the BSgenome via forging or loading
 // 
 
-include { GTF_TO_TXDB } from '../modules/local/gtf_to_txdb.nf'
+include { GTF_TO_TXDB } from '../../modules/local/gtf_to_txdb.nf'
 include { FORGE_BSGENOME } from '../../modules/local/forge_bsgenome.nf'
 include { CUSTOM_GETCHROMSIZES } from '../../modules/nf-core/custom/getchromsizes/main.nf'
 

@@ -11,7 +11,7 @@ workflow PARAMETER_CHECKS {
         ch_fasta
         ch_index
         ch_gtf
-        ch_txdb
+        // ch_txdb
         ch_versions
 
     main:

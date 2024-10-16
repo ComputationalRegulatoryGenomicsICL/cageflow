@@ -255,7 +255,7 @@ plotReverseCumulatives_local <- function(
     scale_x_continuous(trans='log10') +
     scale_y_continuous(trans='log10') +
     labs(title="Reference distribution:",
-         subtitle = paste0("alpha= ", sprintf("%.2f", -1*slope), " T= ", library.size),
+         subtitle = paste0("alpha= ", sprintf("%.2f", -1*slope), " T= ", library_size), # library.size
          x =xlab, y = ylab) +
     ggplot2::geom_text(data = tag_count_df,
        mapping= aes(

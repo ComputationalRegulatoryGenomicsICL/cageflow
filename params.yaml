@@ -10,7 +10,7 @@ gtf: "customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf"
 index: "customcageq/assets/sacCer3_genome/sacCer3_star_index/"
 # chromsizes: "assets/sacCer3_genome/sacCer3.chrom.sizes"
 # CAGEr parameters
-txdb: "TxDb.Scerevisiae.UCSC.sacCer3.sgdGene"
+# txdb: "TxDb.Scerevisiae.UCSC.sacCer3.sgdGene"
 orgdb: "org.Hs.eg.db"
 # annotation: "TxDb.Hsapiens.UCSC.hg38.knownGene"
 # annot_db: "org.Hs.eg.db"

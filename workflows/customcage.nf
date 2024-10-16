@@ -61,13 +61,14 @@ def multiqc_report = []
 
 workflow CUSTOMCAGE {
 
-    ch_versions = Channel.empty()
     ch_fasta = Channel.empty()
     ch_index = Channel.empty()
+    ch_gtf = Channel.empty()
     ch_multiqc_files = Channel.empty()
     ch_bam_bai = Channel.empty()
+    ch_versions = Channel.empty()
 
-    PARAMETER_CHECKS(ch_fasta, ch_index, ch_versions)
+    PARAMETER_CHECKS(ch_fasta, ch_index, ch_gtf, ch_versions)
 
     ch_fasta = PARAMETER_CHECKS.out.ch_fasta
     ch_index = PARAMETER_CHECKS.out.ch_index

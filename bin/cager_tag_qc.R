@@ -9,6 +9,7 @@
 required.libraries <- c(
     "optparse",
     "CAGEr",
+    "GenomicFeatures",
     "gplots",
     "ggplot2"
     )
@@ -28,7 +29,8 @@ option_list = list(
         c("-a", "--annotation"),
         type = "character",
         default = NULL,
-        help = "Genome annotation package, eg TxDb.Hsapiens.UCSC.hg38.knownGene (Mandatory)"),
+        #help = "Genome annotation package, eg TxDb.Hsapiens.UCSC.hg38.knownGene (Mandatory)"),
+        help = "SQLite file with a TxDb genome annotation package (Mandatory)"),
     make_option(
         c("-p", "--project_dir"),
         type = "character",
@@ -52,7 +54,10 @@ source(file.path(project_dir, "bin/cager_modified_plots.R"))
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
 
-ce <- annotate_gene_regions(ce, tx_annotation)
+# Read in TxDb object
+tx_annotation_obj <- loadDb(tx_annotation)
+
+ce <- annotate_gene_regions(ce, tx_annotation_obj) # tx_annotation
 
 pdf("tag_region_annotation.pdf")
 annotations <- CAGEr::plotAnnot(ce, "counts")
