@@ -1,48 +1,44 @@
-#!/usr/bin/env Rscript
+#' Read in Bam files to CAGEexp object
+#'
+#' @param bsgenome_name the name of the reference genome (bsgenome)
+#' @param input_files list of input bam files with full path
+#' @param bam_type whether it is single or Paired end
+#' @param sample_names list of sample names
+#' @param cpus number of cores to use
+#' @return a CAGEexp object
+#' @examples
+#' read_in_bam(
+#'  bsgenome_name=hsapiens,
+#'  input_files=[path/to/file1.bam, path/to/file2.bam],
+#'  bam_pairedness="bam",
+#'  sample_names=[S1, S2],
+#'  cpus=1)
+#' read_in_bam(
+#'  bsgenome_name=hsapiens,
+#'  input_files=[path/to/file1_r1.bam, path/to/file1_r2.bam],
+#'  bam_pairedness="bamPairedEnd",
+#'  sample_names=[S1],
+#'  cpus=10)
 
-library(CAGEr)
-library(BSgenome)
+read_in_bam <- function(
+        bsgenome_name,
+        input_files,
+        bam_pairedness,
+        sample_names,
+        cpus){
 
-args = commandArgs()
-bsgenome    = args[6]
-sample.list = args[7]
-cpus        = args[8]
+    ce = CAGEexp(genomeName     = bsgenome_name,
+             inputFiles     = input_files,
+             inputFilesType = bam_pairedness,
+             sampleLabels   = sample_names)
 
-dir.create(file.path("./r_packages"))
+    ce = getCTSS(
+        ce,
+        removeFirstG = F,
+        correctSystematicG = F,
+        useMulticore = T,
+        nrCores = cpus)
 
-.libPaths(c("./r_packages", .libPaths()))
-
-if (endsWith(bsgenome, ".tar.gz")) {
-    install.packages(bsgenome, repos = NULL, type = "source")
-    ref.name = unlist(strsplit(basename(bsgenome), "_"))[1]
-} else {
-    BiocManager::install(bsgenome)
-    ref.name = bsgenome
+    return(ce)
 }
 
-ref.id = unlist(strsplit(ref.name, "\\."))[4]
-
-library(ref.name, character.only = TRUE)
-
-sample.table = read.delim(sample.list, header = FALSE, sep = "\t")
-names(sample.table) = c("id", "single_end", "path")
-
-sample.names = sample.table$id
-single_end_uniq = unique(sample.table$single_end)
-if (length(single_end_uniq) == 1) {
-    bam.type = ifelse(single_end_uniq == "true",
-                      "bam", "bamPairedEnd")
-} else {
-    stop("Sample table contains both single-end and paired-end reads.")
-}
-
-input.files = sample.table$path
-
-ce = CAGEexp(genomeName     = ref.name,
-             inputFiles     = input.files,
-             inputFilesType = bam.type,
-             sampleLabels   = sample.names)
-
-ce = getCTSS(ce, removeFirstG = F, correctSystematicG = F, useMulticore = T, nrCores = cpus)
-
-saveRDS(ce, paste0(ref.id, "_CAGEexp_CTSS.rds"))
