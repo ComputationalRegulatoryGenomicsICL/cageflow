@@ -13,6 +13,7 @@
 read_in_bigwig <- function(
     bsgenome_name,
     bigwig_str,
+    sample_name,
     cpus){
   
   bigwigs = unlist(
@@ -24,7 +25,7 @@ read_in_bigwig <- function(
     bigwigs,
     function(x) rtracklayer::import(x))
 
-  names(signals) = basename(bigwigs)
+  names(signals) = sample_name
 
   signalsSplit = split(
     signals,
