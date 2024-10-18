@@ -13,10 +13,16 @@ workflow INPUT_FROM_FOLDER {
     if (any_R2_file.size() > 0){
         singleEnd = false
     }
+    if (singleEnd){
+        any_2_file = file("$infolder/**_2*fastq.gz")
+        if (any_2_file.size() > 0){
+            singleEnd = false
+        }
+    }
 
     ch_fastq = channel
         .fromFilePairs(
-            "$infolder/**_R{1,2}*fastq.gz",
+            ["$infolder/**_R{1,2}*fastq.gz", "$infolder/**_{1,2}*fastq.gz"],
             size: singleEnd ? 1 : 2)
         .map{
             old_meta, fastq -> 
