@@ -1,5 +1,6 @@
 samplesheet:
-infolder: "assets/sacCer_fastq/se"
+infolder: "assets/sacCer_fastq/se_3_fields"
+sample_name_fields: 3
 bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
 forgeseed:
 sourcedir:

@@ -21,16 +21,22 @@ workflow INPUT_FROM_FOLDER {
         .map{
             old_meta, fastq -> 
                 def meta = [:]
-                meta.id = old_meta.split('_')[0..-3].join('_')
+                num_fields_of_interest = "$params.sample_name_fields".toInteger()
+                split_field_num = old_meta.split('_').size()
+                num_fields_to_cut = split_field_num - num_fields_of_interest
+                num_fields_to_cut = num_fields_to_cut == 0 ? 2 : num_fields_to_cut + 1
+                meta.id = old_meta.split('_')[0..-num_fields_to_cut].join('_')
                 meta.single_end = singleEnd
-                fastq = tuple((fastq.name =~ /L00\d/)[0], fastq)
-                [meta, fastq] }
+                lane_n_fastq = tuple((fastq.name =~ /L00\d/)[0], fastq)
+                [meta, lane_n_fastq] }
         .groupTuple()
         .map{
             meta, lane_n_fastq ->
                 meta = meta
                 fastq = lane_n_fastq*.getAt(1).flatten()
                 [meta, fastq] }
+
+    ch_fastq.view()
 
     emit:
     ch_fastq
