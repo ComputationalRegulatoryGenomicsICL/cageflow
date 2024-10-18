@@ -25,7 +25,8 @@ workflow INPUT_FROM_FOLDER {
                 split_field_num = old_meta.split('_').size()
                 num_fields_to_cut = split_field_num - num_fields_of_interest
                 num_fields_to_cut = num_fields_to_cut == 0 ? 2 : num_fields_to_cut + 1
-                meta.id = old_meta.split('_')[0..-num_fields_to_cut].join('_')
+                sample_name = old_meta.split('_')[0..-num_fields_to_cut].join('_')
+                meta.id = sample_name.replaceAll('-','_')
                 meta.single_end = singleEnd
                 lane_n_fastq = tuple((fastq.name =~ /L00\d/)[0], fastq)
                 [meta, lane_n_fastq] }
@@ -35,8 +36,6 @@ workflow INPUT_FROM_FOLDER {
                 meta = meta
                 fastq = lane_n_fastq*.getAt(1).flatten()
                 [meta, fastq] }
-
-    ch_fastq.view()
 
     emit:
     ch_fastq
