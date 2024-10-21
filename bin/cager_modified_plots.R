@@ -228,13 +228,17 @@ calculateReverseCumulative <- function(
     }
     tag_count_df <- prepare_counts(tag.count)
 
-    return(list(tag_count_df, reference.slope, reference.library.size, reference.intercept))
+    # return(list(tag_count_df, reference.slope, reference.library.size, reference.intercept))
+    return(list(tag_count_df, reference.slope, reference.library.size, reference.intercept, fit.slopes))
+
 }
 
 plotReverseCumulatives_local <- function(
     tag_count_df,
-    slope, intercept,
+    slope, 
+    intercept,
     library_size,
+    fit.slopes,
     fitInRange = c(10, 1000),
     main = NULL, legend = TRUE,
     xlab = "number of CAGE tags", ylab = "number of CTSSs (>= nr tags)",

@@ -57,7 +57,7 @@ ce <- readRDS(ce_path)
 # Read in TxDb object
 tx_annotation_obj <- loadDb(tx_annotation)
 
-ce <- annotate_gene_regions(ce, tx_annotation_obj) # tx_annotation
+ce <- annotate_gene_regions(ce, tx_annotation_obj, debugMode = F) # tx_annotation
 
 pdf("tag_region_annotation.pdf")
 annotations <- CAGEr::plotAnnot(ce, "counts")
