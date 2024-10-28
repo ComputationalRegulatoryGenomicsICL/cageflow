@@ -61,7 +61,8 @@ cager_clustering <- function(ce, iqw_plot_lim, num_core){
     }
 
     sink("sample_ctss_count.txt")
-    print(data_out)
+    # print(data_out)
+    print(sample_ctss_count)
     sink()
 
     plot_number_of_ctss(

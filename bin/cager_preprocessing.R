@@ -105,6 +105,7 @@ ce <- cager_clustering(
 
 # save output
 # RDS
+saveRDS(ce, file = "cage_exp.rds")
 # CTSS count matrix
 # consensus cluster count matrix
 
