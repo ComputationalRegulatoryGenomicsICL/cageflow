@@ -4,48 +4,28 @@
 
 ### Features to implement
 
-1. **[done]** `cutadapt` module for G trimming.
+1. `CAGEr` pipeline as a set of modules. Include plotting motifs around TSSs on both strands separately to check if a pyrimidine-purine (initiator-like) motif is present on both strands. This lets a user check if TSSs are shifted (are not a pyrimidine-purine pair) and/or initiator motifs are different on the two strands (neither should happen).
 
-2. **[done]** `STAR` module for spliced alignment (instead of `HISAT2`):
-   - Include filtering of alignments into the `STAR` command.
-   - Include the generation of wigs into the `STAR` command to use as CAGEr input: to be able to use the spliced alignment, to speed up input reading and to have raw count tracks to look at in the genome browser.
+2. `CAGEfightR` (for enhancer calling, with a subsequent filtering by `CAGEr`-generated tag clusters).
 
-3. **[done]** Make `STAR` the default aligner; allow running `bowtie2` instead of `STAR` with a `--bowtie2` option.
+3. Track generation for the genome browser (normalized counts).
 
-4. **[done]** Test the whole pipeline (`STAR` and `bowtie2`) with single-end reads.
+4. Investigate and ideally resolve the issue with `CAGEr` using only one thread when reading samples and working within the pipeline. Get in touch with Charles Plessy after a reasonable investigation. (Damir discovered that CAGEr uses the number of thread equal to the number of read input files, independently of the number of threads set to it; but it is still unclear why CAGEr uses only one thread for multiple input samples when run within the pipeline.)
 
-5. **[done]** Implement the creation of a CAGEexp object from bigWigs, followed by TSS calling.
-
-6. **[done]** Allow the user to skip G-trimming with cutadapt.
-
-7. **[done]** Add splice sites as an optional input for genome indexing, separate from a GTF file.
-
-8. **[done]** Include a FastQC report made after read trimming to the overall MultiQC report.
-  
-9. **[done]** Building a `BSgenome` package and its installation on the fly for species with no `BSgenome` package on `Bioconductor`.
-
-10. `CAGEr` pipeline as a set of modules. Include plotting motifs around TSSs on both strands separately to check if a pyrimidine-purine (initiator-like) motif is present on both strands. This lets a user check if TSSs are shifted (are not a pyrimidine-purine pair) and/or initiator motifs are different on the two strands (neither should happen).
-
-11. `CAGEfightR` (for enhancer calling, with a subsequent filtering by `CAGEr`-generated tag clusters).
-
-12. Track generation for the genome browser (normalized counts).
-
-13. Investigate and ideally resolve the issue with `CAGEr` using only one thread when reading samples and working within the pipeline. Get in touch with Charles Plessy after a reasonable investigation. (Damir discovered that CAGEr uses the number of thread equal to the number of read input files, independently of the number of threads set to it; but it is still unclear why CAGEr uses only one thread for multiple input samples when run within the pipeline.)
-
-14. Tag cluster schematics generation for the genome browser using exon, intron and UTR glyphs.
+5. Tag cluster schematics generation for the genome browser using exon, intron and UTR glyphs.
 
 ### Finishing up
 
-15. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
+6. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
 
-16. **[done]** Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
+7. **[done]** Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
 Actually, instead created an alternative input option. Either a samplesheet is given, OR an input path and a flag whether the data is single end or paired end (only one is accepted per run). When input path is given, no need to run the input checks and the creation of channels from the samplesheet file.
 
-17. **[in progress]** Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
+8. **[in progress]** Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
 
-18. Cite in `CITATIONS.md` all the tools that we used.
+9. Cite in `CITATIONS.md` all the tools that we used.
 
-19. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
+10. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
 
 ## Introduction
 
