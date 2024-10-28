@@ -79,9 +79,9 @@ workflow PARAMETER_CHECKS {
             exit 1, 'The --splicesites option is mutually exclusive with the --bowtie2 option.'
         }
 
-        if (params.chromsizes != "$projectDir/assets/NO_FILE_CHROMSIZES" & params.bowtie2) {
-            exit 1, 'The --chromsizes option is mutually exclusive with the --bowtie2 option.'
-        }
+        // if (params.chromsizes != "$projectDir/assets/NO_FILE_CHROMSIZES" & params.bowtie2) {
+        //     exit 1, 'The --chromsizes option is mutually exclusive with the --bowtie2 option.'
+        // }
 
         // if (params.chromsizes == "$projectDir/assets/NO_FILE_CHROMSIZES" & !params.bowtie2) {
         //     exit 1, 'The use of the default mapper STAR requires the --chromsizes option.'

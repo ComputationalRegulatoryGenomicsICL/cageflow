@@ -69,20 +69,20 @@ workflow PREPARE_METADATA {
         // }
 
         // prepare chromosome sizes
-        if (!params.chromsizes){
-            if (params.fasta) {
-                chrom_ch = Channel.fromPath(params.fasta)
+        // if (!params.chromsizes){
+        if (params.fasta) {
+            chrom_ch = Channel.fromPath(params.fasta)
 
-                CUSTOM_GETCHROMSIZES( chrom_ch )
-                ch_chrom_sizes = CUSTOM_GETCHROMSIZES.out.sizes
+            CUSTOM_GETCHROMSIZES( chrom_ch )
+            ch_chrom_sizes = CUSTOM_GETCHROMSIZES.out.sizes
 
-                ch_versions = ch_versions.mix(CUSTOM_GETCHROMSIZES.out.versions)
-            } else { // a genome index was provided instead
-                ch_chrom_sizes = Channel.fromPath(params.index + '/chrNameLength.txt')
-            }
-        } else {
-            ch_chrom_sizes = Channel.fromPath(params.chromsizes)
+            ch_versions = ch_versions.mix(CUSTOM_GETCHROMSIZES.out.versions)
+        } else { // a genome index was provided instead
+            ch_chrom_sizes = Channel.fromPath(params.index + '/chrNameLength.txt')
         }
+        // } else {
+        //     ch_chrom_sizes = Channel.fromPath(params.chromsizes)
+        // }
 
     emit:
         ch_bsgenome_file

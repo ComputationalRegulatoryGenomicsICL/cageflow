@@ -33,7 +33,7 @@ params.gtf = null // "$projectDir/assets/NO_FILE_GTF"
 params.bowtie2 = false
 
 // STAR parameters
-params.chromsizes = null 
+//params.chromsizes = null 
 params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
 
 // BSgenome parameters

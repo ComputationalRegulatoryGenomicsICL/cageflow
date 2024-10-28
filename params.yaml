@@ -5,9 +5,9 @@ bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
 # genome_annotation: "org.Sc.sgd.db"
 forgeseed:
 sourcedir:
-fasta:
 gtf: "customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf"
-index: "customcageq/assets/sacCer3_genome/sacCer3_star_index/"
+# index: "customcageq/assets/sacCer3_genome/sacCer3_star_index/"
+fasta: "customcageq/assets/sacCer3_genome/sacCer3.fa" 
 # chromsizes: "assets/sacCer3_genome/sacCer3.chrom.sizes"
 # CAGEr parameters
 # txdb: "TxDb.Scerevisiae.UCSC.sacCer3.sgdGene"

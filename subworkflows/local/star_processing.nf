@@ -55,6 +55,4 @@ workflow STAR_PROCESSING {
         ch_aligned
         ch_multiqc_files
         ch_versions
-
-
 }
