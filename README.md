@@ -84,7 +84,7 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 
 ### Prepare for your first run
 
-Currently, pipeline works with Nextflow v23.04. Make sure that you have the latest version of Docker (if running the pipeline on a laptop / PC) or Singularity (if running on a high-performance cluster).
+Currently, pipeline works with Nextflow v23.04. Make sure that you have the latest version of Docker (if running the pipeline on a laptop / PC) or Singularity (if running on a high-performance cluster). Also, you can change the maximum number of instances of the same process that can run in parallel (by default, the maximum number of instances of the same process equals 2). To do this, change the value of the `maxForks` parameter in `conf/base.config`. Limiting this number makes sure that the pipeline does not try to obtain all available resources.
 
 ### Prepare your input data
 
@@ -161,8 +161,6 @@ All pipeline options start with a double dash (`--`), while all Nextflow options
 The pipeline will produce a directory with results (by default, called `results`) and a directory for intermediate files (by default, called `work`) in the directory where it is launched from. If running the pipeline sequentially on different sets of raw data (for example, on two different species) that you plan to process and analyse separately, make sure to name the results directories differently (using the `-o` option available from Nextflow v24.10). Alternatively, you can run the pipeline from two different directories. Otherwise, the results of the second run will replace the results of the first run. However, if you plan to run two or more instances of the pipeline in parallel, using the same storage, then, apart from naming the results directories differently (or running from different directories), you must provide two different names for work directories using the `-w` option. 
 
 Since Nextflow work directories can quickly become very large and do not need to be backed-up (but removed after a successful run, instead!), a good practice is to create work directories in a dedicated storage space that gets cleaned once in a while and is usually called a "scratch" space. Make sure to check the documentation of your cluster/server or to ask your system administrator on where you should create Nextflow work directories.
-
-...
 
 ### Examples
 
