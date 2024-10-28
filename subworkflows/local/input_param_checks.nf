@@ -10,7 +10,7 @@ workflow PARAMETER_CHECKS {
     take:
         ch_fasta
         ch_index
-        ch_gtf
+        // ch_gtf
         // ch_txdb
         ch_versions
 
@@ -51,11 +51,15 @@ workflow PARAMETER_CHECKS {
             }
         }
 
-        if (params.gtf) {
+        /*if (params.gtf) {
             Channel
                 .fromPath(params.gtf)
                 .set { ch_gtf }
         } else {
+            exit 1, "The --gtf argument is mandatory."
+        }*/
+
+        if (!params.gtf) {
             exit 1, "The --gtf argument is mandatory."
         }
 
@@ -101,7 +105,7 @@ workflow PARAMETER_CHECKS {
         ch_fasta
         ch_index
         ch_fastq
-        ch_gtf
+        //ch_gtf
         ch_versions
 
 }
