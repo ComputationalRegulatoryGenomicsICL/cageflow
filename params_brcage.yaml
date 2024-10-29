@@ -5,6 +5,6 @@ forgeseed:
 sourcedir:
 fasta:
 index: "/storage/mathelierarea/raw/GENCODE/Gencode_human/release_46/star_index/star_genomegenerate/star"
-human_bowtie_index: "/storage/mathelierarea/raw/UCSC/bowtie_index_files/hg19/"
-ecoli_bowtie_index: "/storage/mathelierarea/raw/UCSC/Ecoli_BE104_2019_bowtie_index"
+human_bowtie_index: "/storage/mathelierarea/raw/UCSC/hg38/Sequence/Bowtie2Index/genome.fa"
+ecoli_bowtie_index: "/storage/mathelierarea/raw/UCSC/Ecoli_BE104_2019_bowtie2_index/GCF_005890115.1.fa"
 chromsizes: "/storage/mathelierarea/raw/GENCODE/Gencode_human/release_46/size.genome"

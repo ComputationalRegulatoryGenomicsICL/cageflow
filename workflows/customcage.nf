@@ -46,8 +46,8 @@ include { CAGER_BIGWIG } from '../modules/local/cager_bigwig.nf'
 include { FORGE_BSGENOME } from '../modules/local/forge_bsgenome.nf'
 include { CAT_FASTQ } from '../modules/nf-core/cat/fastq/main.nf'
 include { FASTQC } from '../modules/nf-core/fastqc/main.nf'
-include { FASTQSCREEN_BUILDFROMINDEX } from '../modules/nf-core/fastqcscreen/buildfromindex/main.nf'
-include { FASTQSCREEN_FASTQSCREEN } from '../modules/nf-core/fastqcscreen/fastqcscreen/main.nf'
+include { FASTQSCREEN_BUILDFROMINDEX } from '../modules/nf-core/fastqscreen/buildfromindex/main.nf'
+include { FASTQSCREEN_FASTQSCREEN } from '../modules/nf-core/fastqscreen/fastqscreen/main.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
 include { TRIMGALORE } from '../modules/nf-core/trimgalore/main.nf'
@@ -176,10 +176,11 @@ workflow CUSTOMCAGE {
 
     ch_reads_to_align = !params.nogtrim ? CUTADAPT.out.reads : TRIMGALORE.out.reads
 
-    ch_fastqscreen_genomenames = Channel.of('Human', 'E.coli')
-    ch_fastqscreen_genomeidx = Channel.of(params.human_bowtie_index, params.ecoli_bowtie_index)
+    ch_fastqscreen_genomenames = Channel.of(["Human", "E.coli"])
+    ch_fastqscreen_genomeidx = Channel.of([params.human_bowtie_index, params.ecoli_bowtie_index])
 
-    fastqscreen_database = FASTQSCREEN_BUILDFROMINDEX(ch_fastqscreen_genomenames, ch_fastqscreen_genomeidx)
+    fastqscreen_database = FASTQSCREEN_BUILDFROMINDEX(ch_fastqscreen_genomenames, ch_fastqscreen_genomeidx).database
+    fastqscreen_database.view()
     FASTQSCREEN_FASTQSCREEN(ch_reads_to_align, fastqscreen_database)
 
     if (!params.bowtie2) {            
@@ -357,7 +358,7 @@ workflow CUSTOMCAGE {
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQSCREEN_FASTQSCREEN.out.zip.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQSCREEN_FASTQSCREEN.out.txt.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.log.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.zip.collect{it[1]}.ifEmpty([]))
     if (!params.bowtie2) {
