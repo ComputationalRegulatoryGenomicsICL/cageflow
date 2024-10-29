@@ -28,7 +28,8 @@ process STAR_ALIGN {
     tuple val(meta), path('*.out.junction')                   , optional:true, emit: junction
     tuple val(meta), path('*.out.sam')                        , optional:true, emit: sam
     tuple val(meta), path('*.wig')                            , optional:true, emit: wig
-    tuple val(meta), path('*.UniqueMultiple.str{1,2}.out.wig'), optional:true, emit: wigtobigwig
+    tuple val(meta), path('*.Unique.str{1,2}.out.wig')        , optional:true, emit: wigtobigwig
+    tuple val(meta), path('*.UniqueMultiple.str{1,2}.out.wig'), optional:true, emit: multiwigtobigwig
     tuple val(meta), path('*.bg')                             , optional:true, emit: bedgraph
 
     when:

@@ -1,8 +1,10 @@
 samplesheet:
-infolder: "example_data_2"
+infolder: "../sequencing_data/230929_A01447.A.Project_Aronsen-Libs11-2023-09-21/"
 bsgenome: "BSgenome.Hsapiens.UCSC.hg38"
 forgeseed:
 sourcedir:
 fasta:
 index: "/storage/mathelierarea/raw/GENCODE/Gencode_human/release_46/star_index/star_genomegenerate/star"
+human_bowtie_index: "/storage/mathelierarea/raw/UCSC/bowtie_index_files/hg19/"
+ecoli_bowtie_index: "/storage/mathelierarea/raw/UCSC/Ecoli_BE104_2019_bowtie_index"
 chromsizes: "/storage/mathelierarea/raw/GENCODE/Gencode_human/release_46/size.genome"
