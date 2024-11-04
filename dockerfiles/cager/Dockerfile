@@ -13,6 +13,7 @@ RUN apt-get update && \
     libcurl4-openssl-dev \
     libssl-dev \
     libxml2-dev \
+    libfontconfig1-dev \
     procps \
     g++ && \
     apt-get clean && \

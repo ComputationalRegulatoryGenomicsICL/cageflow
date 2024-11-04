@@ -32,7 +32,7 @@ install.packages(
 
 ## Bioconductor packages:
 required_packages_bioconductor <- c(
-  "CAGEr",
+  "Bioconductor/BiocArchive",
   "BSgenome",
   "ChIPseeker",
   "rtracklayer",
@@ -43,4 +43,9 @@ message(
   required_packages_bioconductor)
 BiocManager::install(
   required_packages_bioconductor,
+  lib="/opt/software")
+
+BiocManager::install(
+  "CAGEr",
+  version="3.20",
   lib="/opt/software")
