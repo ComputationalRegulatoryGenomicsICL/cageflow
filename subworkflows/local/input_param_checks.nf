@@ -25,9 +25,10 @@ workflow PARAMETER_CHECKS {
         } else if (params.fasta && params.index) {
             exit 1, 'Only one of the two options, --fasta or --index, can be provided.'
         } else if (params.index) {
-            Channel
-                .fromPath(params.index)
-                .set { ch_index }
+            // TODO: better id name?
+            ch_index = Channel.of([
+                        [ id:'index' ],
+                        [file(params.index)]])
         } else {
             Channel
                 .fromPath(params.fasta)
@@ -41,9 +42,10 @@ workflow PARAMETER_CHECKS {
         }
 
         if (params.gtf) {
-            Channel
-                .fromPath(params.gtf)
-                .set { ch_gtf }
+            // TODO: better id name?
+            ch_gtf = Channel.of([
+                    [ id:'gtf' ],
+                    file(params.gtf, checkIfExists: true)])
         } else {
             exit 1, "The --gtf argument is mandatory."
         }

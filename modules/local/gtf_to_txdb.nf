@@ -3,14 +3,14 @@ process GTF_TO_TXDB {
     stageInMode 'copy'
    
     input:
-    path gtf_file
+    tuple val(meta), path(gtf)
 
     output:
     path "*.sqlite",     emit: txdb
     path "versions.yml", emit: versions
 
     """
-    gtf_to_txdb.R -g ${gtf_file}
+    gtf_to_txdb.R -g ${gtf}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
