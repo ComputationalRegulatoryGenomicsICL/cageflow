@@ -87,6 +87,7 @@ workflow PARAMETER_CHECKS {
     emit:
         ch_fasta
         ch_index
+        ch_gtf
         ch_fastq
         ch_versions
 

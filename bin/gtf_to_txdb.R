@@ -6,7 +6,8 @@
 
 # Load libraries
 required.libraries <- c(
-    "txdbmaker"
+    "txdbmaker",
+    "optparse"
 )
 
 for (lib in required.libraries) {
