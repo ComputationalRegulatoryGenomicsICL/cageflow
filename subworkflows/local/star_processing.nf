@@ -41,9 +41,13 @@ workflow STAR_PROCESSING {
 
         ch_multiqc_files = ch_multiqc_files.mix(STAR_ALIGN.out.log_final.collect{it[1]})
 
+        ch_chrom_sizes_for_wig = ch_chrom_sizes.map{meta, sizes ->
+            sizes = sizes
+            sizes}
+
         UCSC_WIGTOBIGWIG (
             STAR_ALIGN.out.wig,
-            ch_chrom_sizes
+            ch_chrom_sizes_for_wig
         )
         ch_versions = ch_versions.mix(UCSC_WIGTOBIGWIG.out.versions)
 

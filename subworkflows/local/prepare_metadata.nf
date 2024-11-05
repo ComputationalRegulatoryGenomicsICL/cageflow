@@ -55,7 +55,7 @@ workflow PREPARE_METADATA {
             ch_versions = ch_versions.mix(CUSTOM_GETCHROMSIZES.out.versions)
         } else { // a genome index was provided instead
             ch_chrom_sizes = Channel.of([
-                [id:"fasta"],
+                [id:"sizes"],
                 [file( params.index + '/chrNameLength.txt' )]
             ])
         }

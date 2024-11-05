@@ -27,7 +27,7 @@ jobs:
           - "23.04.0"
           - "latest-everything"
         testdata:
-          - params_pe_nochromsizes.yaml
+          - params_pe_index.yaml
           - params_infolder_se_subfolder.yaml
 
     steps:
