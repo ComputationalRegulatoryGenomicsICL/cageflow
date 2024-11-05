@@ -27,7 +27,7 @@
                     },
                     "custom/getchromsizes": {
                         "branch": "master",
-                        "git_sha": "06c8865e36741e05ad32ef70ab3fac127486af48",
+                        "git_sha": "49f4e50534fe4b64101e62ea41d5dc43b1324358",
                         "installed_by": ["modules"]
                     },
                     "cutadapt": {
@@ -82,12 +82,12 @@
                     },
                     "star/align": {
                         "branch": "master",
-                        "git_sha": "a21faa6a3481af92a343a10926f59c189a2c16c9",
+                        "git_sha": "a5ad53288c79fa52c5ae708c317e09ec2dd149ab",
                         "installed_by": ["modules"]
                     },
                     "star/genomegenerate": {
                         "branch": "master",
-                        "git_sha": "a21faa6a3481af92a343a10926f59c189a2c16c9",
+                        "git_sha": "a5ad53288c79fa52c5ae708c317e09ec2dd149ab",
                         "installed_by": ["modules"]
                     },
                     "trimgalore": {
