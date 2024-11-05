@@ -1,12 +1,14 @@
+# preprocessing parameters
 samplesheet: "customcageq/assets/samplesheet_sacer_pe_template_for_GA.csv"
 infolder:
+sample_name_fields:
 bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
 forgeseed:
 sourcedir:
-gtf: "customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf"
+fasta: "customcageq/assets/sacCer3_genome/sacCer3.fa"
 index: "customcageq/assets/sacCer3_genome/sacCer3_star_index/"
-# fasta: "customcageq/assets/sacCer3_genome/sacCer3.fa" 
-# chromsizes: "assets/sacCer3_genome/sacCer3.chrom.sizes"
+gtf: "customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf"
+
 # CAGEr parameters
 tpm_threshold: 1
 tagcluster_qc_pdf_height: 5
