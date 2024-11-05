@@ -51,6 +51,7 @@ include { SAMTOOLS_PROCESSING } from '../subworkflows/local/samtools_processing.
 include { SUMMARY_STAT } from '../subworkflows/local/summary_statistics.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
+include { GTF_TO_TXDB } from '../modules/local/gtf_to_txdb.nf'
 include { CAGER_BAM } from '../modules/local/cager_bam.nf'
 include { CAGER_BIGWIG } from '../modules/local/cager_bigwig.nf'
 include { CAGER_TAG_QC } from '../modules/local/cager_tag_qc.nf'
@@ -147,17 +148,17 @@ workflow CUSTOMCAGE {
         ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
     }
 
-    // CAGER_TAG_QC(cager_rds, ch_txdb_file, ch_txdb_name)
-    CAGER_TAG_QC(cager_rds, ch_txdb_file)
-    ch_versions = ch_versions.mix(CAGER_TAG_QC.out.versions)
+    ch_txdb = GTF_TO_TXDB(ch_gtf)
 
-    CAGER_PREPROCESSING(cager_rds)
-    clustered_cager_rds = CAGER_PREPROCESSING.out.rds
-    ch_versions = ch_versions.mix(CAGER_PREPROCESSING.out.versions)
+    // CAGER_TAG_QC(cager_rds, ch_txdb)
+    // ch_versions = ch_versions.mix(CAGER_TAG_QC.out.versions)
 
-    // CAGER_TAGCLUSTER_QC(clustered_cager_rds, ch_txdb_file, ch_txdb_name)
-    CAGER_TAGCLUSTER_QC(clustered_cager_rds, ch_txdb_file)
-    ch_versions = ch_versions.mix(CAGER_TAGCLUSTER_QC.out.versions)
+    // CAGER_PREPROCESSING(cager_rds)
+    // clustered_cager_rds = CAGER_PREPROCESSING.out.rds
+    // ch_versions = ch_versions.mix(CAGER_PREPROCESSING.out.versions)
+
+    // CAGER_TAGCLUSTER_QC(clustered_cager_rds)
+    // ch_versions = ch_versions.mix(CAGER_TAGCLUSTER_QC.out.versions)
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
