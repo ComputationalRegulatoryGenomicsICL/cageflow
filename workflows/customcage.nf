@@ -71,6 +71,7 @@ workflow CUSTOMCAGE {
 
     ch_fasta = PARAMETER_CHECKS.out.ch_fasta
     ch_index = PARAMETER_CHECKS.out.ch_index
+    ch_gtf = PARAMETER_CHECKS.out.ch_gtf
     ch_fastq = PARAMETER_CHECKS.out.ch_fastq
     ch_versions = PARAMETER_CHECKS.out.ch_versions
 
