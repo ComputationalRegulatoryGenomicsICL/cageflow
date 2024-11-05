@@ -18,7 +18,14 @@ plotInterquantileWidth_local <- function(object, clusters, tpmThreshold, qLow, q
   iqwidths$sampleName <- factor(iqwidths$sampleName, levels = sampleLabels(object))
   iqwidths <- iqwidths[iqwidths$iq_width >= xlim[1] & iqwidths$iq_width <= xlim[2],]
   
-	binsize <- round(max(iqwidths$iq_width)/2)
+	# binsize <- round(max(iqwidths$iq_width)/2)
+  binsize <- ceiling(max(iqwidths$iq_width)/2)
+
+  # debug
+  # cat("nrow(iqwidths) = ", nrow(iqwidths), "\n")
+  # cat("max(iqwidths$iq_width) = ", max(iqwidths$iq_width), "\n")
+  # cat("binsize = ", binsize, "\n")
+  # end_debug
 	
 	iqwidth_plot <- ggplot2::ggplot(iqwidths) +
 	  ggplot2::aes_string(x = "iq_width") +
@@ -228,13 +235,17 @@ calculateReverseCumulative <- function(
     }
     tag_count_df <- prepare_counts(tag.count)
 
-    return(list(tag_count_df, reference.slope, reference.library.size, reference.intercept))
+    # return(list(tag_count_df, reference.slope, reference.library.size, reference.intercept))
+    return(list(tag_count_df, reference.slope, reference.library.size, reference.intercept, fit.slopes))
+
 }
 
 plotReverseCumulatives_local <- function(
     tag_count_df,
-    slope, intercept,
+    slope, 
+    intercept,
     library_size,
+    fit.slopes,
     fitInRange = c(10, 1000),
     main = NULL, legend = TRUE,
     xlab = "number of CAGE tags", ylab = "number of CTSSs (>= nr tags)",
@@ -255,7 +266,7 @@ plotReverseCumulatives_local <- function(
     scale_x_continuous(trans='log10') +
     scale_y_continuous(trans='log10') +
     labs(title="Reference distribution:",
-         subtitle = paste0("alpha= ", sprintf("%.2f", -1*slope), " T= ", library.size),
+         subtitle = paste0("alpha= ", sprintf("%.2f", -1*slope), " T= ", library_size), # library.size
          x =xlab, y = ylab) +
     ggplot2::geom_text(data = tag_count_df,
        mapping= aes(

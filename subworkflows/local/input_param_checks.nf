@@ -10,7 +10,6 @@ workflow PARAMETER_CHECKS {
     take:
         ch_fasta
         ch_index
-        ch_gtf
         ch_versions
 
     main:
@@ -20,18 +19,21 @@ workflow PARAMETER_CHECKS {
             exit 1, 'The --bsgenome option and the following two options are mutually exclusive: --forgeseed, --sourcerdir.'
         }
 
+        // if index is specified, it is used as input
         if (!params.fasta && !params.index) {
             exit 1, 'Reference FASTA file (--fasta) or genome index (--index) should be specified.'
         } else if (params.fasta && params.index) {
-            exit 1, 'The --fasta and --index options are mutually exclusive.'
-        } else if (params.fasta) {
-            Channel
-                .fromPath(params.fasta)
-                .set { ch_fasta }
+            exit 1, 'Only one of the two options, --fasta or --index, can be provided.'
+        } else if (params.index) {
+            // TODO: better id name?
+            ch_index = Channel.of([
+                        [ id:'index' ],
+                        [file(params.index)]])
         } else {
-            Channel
-                .fromPath(params.index)
-                .set { ch_index }
+            // TODO: better id name?
+            ch_fasta = Channel.of([
+                        [ id:'genome' ],
+                        [file(params.fasta)]])
         }
 
         if (params.dist) {
@@ -41,18 +43,13 @@ workflow PARAMETER_CHECKS {
         }
 
         if (params.gtf) {
-            Channel
-                .fromPath(params.gtf)
-                .set { ch_gtf }
+            // TODO: better id name?
+            ch_gtf = Channel.of([
+                    [ id:'gtf' ],
+                    file(params.gtf, checkIfExists: true)])
+        } else {
+            exit 1, "The --gtf argument is mandatory."
         }
-
-        // if (params.gtf != "$projectDir/assets/NO_FILE_GTF" & !params.fasta) {
-        //     exit 1, 'The --gtf option can only be used with the --fasta option.'
-        // }
-
-        // if (params.gtf != "$projectDir/assets/NO_FILE_GTF" & params.bowtie2) {
-        //     exit 1, 'The --gtf option is mutually exclusive with the --bowtie2 option.'
-        // }
 
         if (params.splicesites != "$projectDir/assets/NO_FILE_SPLICESITES" & !params.fasta) {
             exit 1, 'The --splicesites option can only be used with the --fasta option.'
@@ -60,14 +57,6 @@ workflow PARAMETER_CHECKS {
 
         if (params.splicesites != "$projectDir/assets/NO_FILE_SPLICESITES" && params.bowtie2) {
             exit 1, 'The --splicesites option is mutually exclusive with the --bowtie2 option.'
-        }
-
-        if (params.chromsizes != "$projectDir/assets/NO_FILE_CHROMSIZES" & params.bowtie2) {
-            exit 1, 'The --chromsizes option is mutually exclusive with the --bowtie2 option.'
-        }
-
-        if (params.chromsizes == "$projectDir/assets/NO_FILE_CHROMSIZES" & !params.bowtie2) {
-            exit 1, 'The use of the default mapper STAR requires the --chromsizes option.'
         }
 
         if (params.samplesheet) {

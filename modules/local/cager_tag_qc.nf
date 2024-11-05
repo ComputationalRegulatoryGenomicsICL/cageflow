@@ -13,8 +13,6 @@ process CAGER_TAG_QC {
     output:
     path "versions.yml", emit: versions
 
-   // ${params.annotation} \
-
     """
     cager_tag_qc.R  \
         -i ${cager_obj} \

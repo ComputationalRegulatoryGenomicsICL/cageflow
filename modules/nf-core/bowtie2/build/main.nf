@@ -3,7 +3,7 @@ process BOWTIE2_BUILD {
     label 'process_high'
 
     input:
-    path fasta
+    tuple val(meta), path(fasta)
 
     output:
     path 'bowtie2'    , emit: index

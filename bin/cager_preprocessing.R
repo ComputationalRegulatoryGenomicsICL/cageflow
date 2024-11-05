@@ -94,7 +94,7 @@ ce <- cager_normalization(
     rangeMax=range_max,
     method=method,
     total_tag_num=total_tag_num,
-    cager_folder=cager_folder)
+    cager_folder="cager_results") # = cager_folder
 
 # CTSS clustering
 # uses functions from cager_modified_plots.R
@@ -105,6 +105,7 @@ ce <- cager_clustering(
 
 # save output
 # RDS
+saveRDS(ce, file = "cage_exp.rds")
 # CTSS count matrix
 # consensus cluster count matrix
 
