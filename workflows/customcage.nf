@@ -64,12 +64,9 @@ workflow CUSTOMCAGE {
 
     ch_fasta = Channel.empty()
     ch_index = Channel.empty()
-    //ch_gtf = Channel.empty()
     ch_multiqc_files = Channel.empty()
-    //ch_bam_bai = Channel.empty()
     ch_versions = Channel.empty()
 
-    // PARAMETER_CHECKS(ch_fasta, ch_index, ch_gtf, ch_versions)
     PARAMETER_CHECKS(ch_fasta, ch_index, ch_versions)
 
     ch_fasta = PARAMETER_CHECKS.out.ch_fasta
@@ -88,7 +85,6 @@ workflow CUSTOMCAGE {
     ch_bsgenome_file = PREPARE_METADATA.out.ch_bsgenome_file
     ch_bsgenome_name = PREPARE_METADATA.out.ch_bsgenome_name
     ch_txdb_file = PREPARE_METADATA.out.ch_txdb_file
-    // ch_txdb_name = PREPARE_METADATA.out.ch_txdb_name
     ch_chrom_sizes = PREPARE_METADATA.out.ch_chrom_sizes
     ch_versions = PREPARE_METADATA.out.ch_versions
 

@@ -10,8 +10,6 @@ workflow PARAMETER_CHECKS {
     take:
         ch_fasta
         ch_index
-        // ch_gtf
-        // ch_txdb
         ch_versions
 
     main:
@@ -27,9 +25,6 @@ workflow PARAMETER_CHECKS {
         } else if (params.fasta && params.index) {
             exit 1, 'Only one of the two options, --fasta or --index, can be provided.'
         } else if (params.index) {
-            // if (params.gtf && params.txdb) {
-            //     exit 1, 'When using STAR index as input, either --gtf or --txdb can be provided for CAGEr, but not both at the same time.'
-            // }
             Channel
                 .fromPath(params.index)
                 .set { ch_index }
@@ -39,37 +34,19 @@ workflow PARAMETER_CHECKS {
                 .set { ch_fasta }
         }
 
-        // either fasta or chromsizes file is required
-        // Note: we do not check if the same fasta file is used to calculate the chromsizes and the index
-        // if (!params.fasta && !params.chromsizes) {
-        //     exit 1, 'Reference FASTA file (--fasta) or genome chromosome sizes (--chromsizes) should be specified.'
-        // }
-
         if (params.dist) {
             if (!params.dedup) {
                 exit 1, 'The --dist option requires the --dedup option.'
             }
         }
 
-        /*if (params.gtf) {
+        if (params.gtf) {
             Channel
                 .fromPath(params.gtf)
                 .set { ch_gtf }
         } else {
             exit 1, "The --gtf argument is mandatory."
-        }*/
-
-        if (!params.gtf) {
-            exit 1, "The --gtf argument is mandatory."
         }
-
-        // if (params.gtf != "$projectDir/assets/NO_FILE_GTF" & !params.fasta) {
-        //     exit 1, 'The --gtf option can only be used with the --fasta option.'
-        // }
-
-        // if (params.gtf != "$projectDir/assets/NO_FILE_GTF" & params.bowtie2) {
-        //     exit 1, 'The --gtf option is mutually exclusive with the --bowtie2 option.'
-        // }
 
         if (params.splicesites != "$projectDir/assets/NO_FILE_SPLICESITES" & !params.fasta) {
             exit 1, 'The --splicesites option can only be used with the --fasta option.'
@@ -78,14 +55,6 @@ workflow PARAMETER_CHECKS {
         if (params.splicesites != "$projectDir/assets/NO_FILE_SPLICESITES" && params.bowtie2) {
             exit 1, 'The --splicesites option is mutually exclusive with the --bowtie2 option.'
         }
-
-        // if (params.chromsizes != "$projectDir/assets/NO_FILE_CHROMSIZES" & params.bowtie2) {
-        //     exit 1, 'The --chromsizes option is mutually exclusive with the --bowtie2 option.'
-        // }
-
-        // if (params.chromsizes == "$projectDir/assets/NO_FILE_CHROMSIZES" & !params.bowtie2) {
-        //     exit 1, 'The use of the default mapper STAR requires the --chromsizes option.'
-        // }
 
         if (params.samplesheet) {
             INPUT_FROM_SAMPLESHEET (
@@ -106,7 +75,6 @@ workflow PARAMETER_CHECKS {
         ch_index
         ch_gtf
         ch_fastq
-        //ch_gtf
         ch_versions
 
 }
