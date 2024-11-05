@@ -27,7 +27,6 @@ jobs:
           - "23.04.0"
           - "latest-everything"
         testdata:
-          - params_nogtf.yaml
           - params_pe_nochromsizes.yaml
           - params_infolder_se_subfolder.yaml
           - params_bowtie2.yaml

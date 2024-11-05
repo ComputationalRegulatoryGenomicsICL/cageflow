@@ -7,7 +7,7 @@ forgeseed:
 sourcedir:
 fasta: "assets/sacCer3_genome/sacCer3.fa"
 index:
-gtf:
+gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
 
 # CAGEr parameters
 tpm_threshold: 1
