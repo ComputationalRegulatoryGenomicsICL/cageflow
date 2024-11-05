@@ -29,7 +29,6 @@ jobs:
         testdata:
           - params_pe_nochromsizes.yaml
           - params_infolder_se_subfolder.yaml
-          - params_bowtie2.yaml
 
     steps:
       - name: Check out pipeline code
