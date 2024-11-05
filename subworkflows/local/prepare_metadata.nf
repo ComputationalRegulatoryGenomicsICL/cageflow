@@ -9,6 +9,7 @@ include { CUSTOM_GETCHROMSIZES } from '../../modules/nf-core/custom/getchromsize
 workflow PREPARE_METADATA {
 
     take:
+        ch_fasta
         ch_gtf
         ch_versions
 
@@ -47,14 +48,16 @@ workflow PREPARE_METADATA {
 
         // prepare chromosome sizes
         if (params.fasta) {
-            chrom_ch = Channel.fromPath(params.fasta)
 
-            CUSTOM_GETCHROMSIZES( chrom_ch )
+            CUSTOM_GETCHROMSIZES( ch_fasta )
             ch_chrom_sizes = CUSTOM_GETCHROMSIZES.out.sizes
 
             ch_versions = ch_versions.mix(CUSTOM_GETCHROMSIZES.out.versions)
         } else { // a genome index was provided instead
-            ch_chrom_sizes = Channel.fromPath(params.index + '/chrNameLength.txt')
+            ch_chrom_sizes = Channel.of[
+                ["fasta"],
+                [file( params.index + '/chrNameLength.txt' )]
+            ]
         }
 
     emit:

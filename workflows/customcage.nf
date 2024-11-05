@@ -81,7 +81,7 @@ workflow CUSTOMCAGE {
     ch_multiqc_files = PREPROCESSING.out.ch_multiqc_files
     ch_versions = PREPROCESSING.out.ch_versions
     
-    PREPARE_METADATA( ch_gtf, ch_versions )
+    PREPARE_METADATA( ch_fasta, ch_gtf, ch_versions )
 
     ch_bsgenome_file = PREPARE_METADATA.out.ch_bsgenome_file
     ch_bsgenome_name = PREPARE_METADATA.out.ch_bsgenome_name
