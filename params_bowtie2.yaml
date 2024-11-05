@@ -8,6 +8,9 @@ sourcedir:
 fasta:
 index: "assets/sacCer3_genome/sacCer3_bowtie2_index/"
 gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
+star_ignore_sjdbgtf: false
+seq_platform: "illumina"
+seq_center: false
 
 # CAGEr parameters
 tpm_threshold: 1
