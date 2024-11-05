@@ -30,9 +30,10 @@ workflow PARAMETER_CHECKS {
                         [ id:'index' ],
                         [file(params.index)]])
         } else {
-            Channel
-                .fromPath(params.fasta)
-                .set { ch_fasta }
+            // TODO: better id name?
+            ch_fasta = Channel.of([
+                        [ id:'genome' ],
+                        [file(params.fasta)]])
         }
 
         if (params.dist) {
