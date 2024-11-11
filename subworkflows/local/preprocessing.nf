@@ -18,7 +18,6 @@ workflow PREPROCESSING {
         CAT_FASTQ (
             ch_fastq
         ).reads.set { ch_cat_fastq }
-
         ch_versions = ch_versions.mix(CAT_FASTQ.out.versions)
 
         FASTQC (

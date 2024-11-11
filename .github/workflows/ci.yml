@@ -27,8 +27,8 @@ jobs:
           - "23.04.0"
           - "latest-everything"
         testdata:
-          - params_se.yaml
-          - params_infolder_pe_subfolder.yaml
+          - params_pe_index.yaml
+          - params_infolder_se_subfolder.yaml
 
     steps:
       - name: Check out pipeline code

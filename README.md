@@ -4,60 +4,40 @@
 
 ### Features to implement
 
-1. **[done]** `cutadapt` module for G trimming.
+1. `CAGEr` pipeline as a set of modules. Include plotting motifs around TSSs on both strands separately to check if a pyrimidine-purine (initiator-like) motif is present on both strands. This lets a user check if TSSs are shifted (are not a pyrimidine-purine pair) and/or initiator motifs are different on the two strands (neither should happen).
 
-2. **[done]** `STAR` module for spliced alignment (instead of `HISAT2`):
-   - Include filtering of alignments into the `STAR` command.
-   - Include the generation of wigs into the `STAR` command to use as CAGEr input: to be able to use the spliced alignment, to speed up input reading and to have raw count tracks to look at in the genome browser.
+2. `CAGEfightR` (for enhancer calling, with a subsequent filtering by `CAGEr`-generated tag clusters).
 
-3. **[done]** Make `STAR` the default aligner; allow running `bowtie2` instead of `STAR` with a `--bowtie2` option.
+3. Track generation for the genome browser (normalized counts).
 
-4. **[done]** Test the whole pipeline (`STAR` and `bowtie2`) with single-end reads.
+4. Investigate and ideally resolve the issue with `CAGEr` using only one thread when reading samples and working within the pipeline. Get in touch with Charles Plessy after a reasonable investigation. (Damir discovered that CAGEr uses the number of thread equal to the number of read input files, independently of the number of threads set to it; but it is still unclear why CAGEr uses only one thread for multiple input samples when run within the pipeline.)
 
-5. **[done]** Implement the creation of a CAGEexp object from bigWigs, followed by TSS calling.
-
-6. **[done]** Allow the user to skip G-trimming with cutadapt.
-
-7. **[done]** Add splice sites as an optional input for genome indexing, separate from a GTF file.
-
-8. **[done]** Include a FastQC report made after read trimming to the overall MultiQC report.
-  
-9. **[done]** Building a `BSgenome` package and its installation on the fly for species with no `BSgenome` package on `Bioconductor`.
-
-10. `CAGEr` pipeline as a set of modules. Include plotting motifs around TSSs on both strands separately to check if a pyrimidine-purine (initiator-like) motif is present on both strands. This lets a user check if TSSs are shifted (are not a pyrimidine-purine pair) and/or initiator motifs are different on the two strands (neither should happen).
-
-11. `CAGEfightR` (for enhancer calling, with a subsequent filtering by `CAGEr`-generated tag clusters).
-
-12. Track generation for the genome browser (normalized counts).
-
-13. Investigate and ideally resolve the issue with `CAGEr` using only one thread when reading samples and working within the pipeline. Get in touch with Charles Plessy after a reasonable investigation. (Damir discovered that CAGEr uses the number of thread equal to the number of read input files, independently of the number of threads set to it; but it is still unclear why CAGEr uses only one thread for multiple input samples when run within the pipeline.)
-
-14. Tag cluster schematics generation for the genome browser using exon, intron and UTR glyphs.
+5. Tag cluster schematics generation for the genome browser using exon, intron and UTR glyphs.
 
 ### Finishing up
 
-15. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
+6. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
 
-16. **[done]** Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
+7. **[done]** Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
 Actually, instead created an alternative input option. Either a samplesheet is given, OR an input path and a flag whether the data is single end or paired end (only one is accepted per run). When input path is given, no need to run the input checks and the creation of channels from the samplesheet file.
 
-17. **[in progress]** Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
+8. **[in progress]** Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
 
-18. Cite in `CITATIONS.md` all the tools that we used.
+9. Cite in `CITATIONS.md` all the tools that we used.
 
-19. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
+10. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
 
 ## Introduction
 
-**ComputationalRegulatoryGenomicsICL/customcageq** is a Nextflow pipeline to process CAGE sequencing data from raw reads to the creation of a CAGEexp (CAGEr) object containing called TSSs. The pipeline is specifically designed to be used upstream of CAGEr. Reads can be mapped using `STAR` (to take splacing into account and to obtain bigWig files with raw 5'-coverage; `STAR` is used by default) or `bowtie2` (see the `--bowtie2` option below). The pipeline can generate a genome index on the fly if provided with a FASTA file and, for `STAR` only, with a TSV file listing chromosome sizes. For genome generation with `STAR`, user can also provide a GTF and/or splice junction (TSV) files. Providing at least one of those files for the index generation is highly recommended ("While this is optional, and STAR can be run without annotations, using annotations is highly recommended whenever they are available" [STAR manual](https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf)). Apart from the CAGEexp object and raw 5'-coverage bigWig files (if reads were mapped with `STAR`), the pipeline produces BAM files with filtered alignments that could be used for a separate analysis and a detailed `MultiQC` report.
+**ComputationalRegulatoryGenomicsICL/customcageq** is a Nextflow pipeline to process CAGE sequencing data from raw reads to the creation of a CAGEexp (CAGEr) object containing called TSSs. The pipeline is specifically designed to be used upstream of CAGEr. Reads can be mapped using `STAR` (to take splacing into account and to obtain bigWig files with raw 5'-coverage; `STAR` is used by default) or `bowtie2` (see the `--bowtie2` option below). The pipeline can generate a genome index on the fly if provided with a FASTA file. For genome generation with `STAR`, user can also provide a GTF and/or splice junction (TSV) files. Providing at least one of those files for the index generation is highly recommended ("While this is optional, and STAR can be run without annotations, using annotations is highly recommended whenever they are available" [STAR manual](https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf)). Apart from the CAGEexp object and raw 5'-coverage bigWig files (if reads were mapped with `STAR`), the pipeline produces BAM files with filtered alignments that could be used for a separate analysis and a detailed `MultiQC` report.
 
 ### Input
 
-Either single-end (SE) or paired-end (PE) raw CAGE reads. Only one type of reads (either single- or paired-end) can be used in one run of the pipeline. The files of the reads can be listed in a samplesheet or a file path can be provided and the flag whether the input is SE or PE.
+Either single-end (SE) or paired-end (PE) raw CAGE reads. Only one type of reads (either single- or paired-end) can be used in one run of the pipeline. The user can list read files in a samplesheet or provide a path to a directory containing the files (stored all together or in per-sample subdirectories).
 
 ### Output
 
-A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with CAGEr. The intermediate and final results are stored in the `results` directory. The final CAGEexp object is stored in an RDS file in the `results/cager` directory.
+A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with CAGEr. The intermediate and final results are stored in the `results` directory.
 
 ### Map
 
@@ -70,7 +50,7 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 3. Trim adapters with [`TrimGalore`](https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md).
 4. Report trimmed read quality with [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).
 5. Trim the first `G` in forward reads with [`cutadapt`](https://cutadapt.readthedocs.io/en/stable/) (optional; done by default).
-6. Build a [`STAR`](https://github.com/alexdobin/STAR) or [`bowtie2`](https://bowtie-bio.sourceforge.net/bowtie2/manual.shtml) index of the reference genome FASTA file, if the index is not provided. For the `STAR` index, use a mandatory list of chromosome sizes and an optional annotation in the GTF format and/or an optional list of splice junctions (see below for details).
+6. Build a [`STAR`](https://github.com/alexdobin/STAR) or [`bowtie2`](https://bowtie-bio.sourceforge.net/bowtie2/manual.shtml) index of the reference genome FASTA file, if the index is not provided. For the `STAR` index, use a mandatory genome annotation in a GTF format and/or an optional list of splice junctions (see below for details).
 7. Map trimmed reads onto the genome and filter alignments. If using `STAR`, then retain only the reads with at most 2 alignments (done within the `STAR` alignment module); if using `bowtie2`, then retain only the reads with $MAPQ\geq 20$ with [`samtools view`](https://www.htslib.org/doc/samtools-view.html).
 8. Optionally, remove PCR and optical duplicate reads with [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html) (not shown; see below for details).
 9. Sort the obtained BAM files using [`samtools sort`](https://www.htslib.org/doc/samtools-sort.html).
@@ -84,11 +64,13 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 
 ### Prepare for your first run
 
-Currently, pipeline works with Nextflow v23.04. Make sure that you have the latest version of Docker (if running the pipeline on a laptop / PC) or Singularity (if running on a high-performance cluster).
+Currently, pipeline works with Nextflow v23.04. Make sure that you have the latest version of Docker (if running the pipeline on a laptop / PC) or Singularity (if running on a high-performance cluster). Also, you can change the maximum number of instances of the same process that can run in parallel (by default, the maximum number of instances of the same process equals 2). To do this, change the value of the `maxForks` parameter in `conf/base.config`. Limiting this number makes sure that the pipeline does not try to obtain all available resources.
 
 ### Prepare your input data
 
-Prepare the sample sheet with the description of input samples. In case of single-end reads, it should look like this:
+The FASTQ file names should have a form `<sampleID>_<field1>_<field2>_<field3>_<field4>.fastq.gz`, where `<field1>..<field4>` are any substrings between underscores (with one field denoting the number of the read, `R1` or `R2`) and `sampleID` is a sample identifier that will be used in the downstream processing.
+
+You can prepare a samplesheet with the description of input samples. In case of single-end reads, it should look like this:
 
 ```csv
 sample,fastq_1,fastq_2,single_end
@@ -105,7 +87,7 @@ where
 
 For paired-end reads, `fastq_2` should contain the full path to reverse reads, while `single_end` should be set to `False`.
 
-Alternatively, you may start by providing a path `/path/to/fastq/` to the folder containing the fastq files. The files will be automatically detected.  These can be paired-end or single-end, and can be located in a subfolder as illustrated below.
+Alternatively, you can provide a path to a directory containing FASTQ files. Read files for all samples can be stored together or in per-sample subdirectories (the latter case is illustrated below). The files and the type of reads (single-end or paired-end) will be detected automatically.
 
 ```
 /path/to/fastq/S1/S1_S1_L001_R1_001.fastq.gz
@@ -113,7 +95,6 @@ Alternatively, you may start by providing a path `/path/to/fastq/` to the folder
 /path/to/fastq/S2/S2_S2_L001_R1_001.fastq.gz
 /path/to/fastq/S2/S2_S2_L002_R1_001.fastq.gz
 ```
-
 
 ### Toy input data for testing
 
@@ -129,7 +110,7 @@ Clone the repository to your machine and use the following syntax to run the pip
 nextflow run customcageq/main.nf \
     (--bsgenome [/path/to/]bsgenome.package[.tar.gz] | --forgeseed /path/to/bsgenome_forging.seed --sourcedir /path/to/seqs_srcdir) \
     (--fasta /path/to/fasta/genome.fa | --index /path/to/index) \
-    --chromsizes /path/to/chromsizes.tsv \
+    --gtf /path/to/annotation.gtf \
     (--samplesheet /path/to/samplesheet.csv | --infolder /path/to/fastq) \
     [OPTIONAL_ARGUMENTS]
 ```
@@ -138,18 +119,16 @@ where
 * `--bsgenome` specifies the BSgenome R package to use. If it is a file name (which should have a full path and the `.tar.gz` extension), then the package will be taken from the specified location; otherwise, the pipeline will try to install a BSgenome R package with the name `bsgenome.package` on the fly (see examples below). This option is mutually exclusive with `--forgeseed` and `--sourcedir`.
 * `--forgeseed` specifies a seed file for BSgenome forging (see the [Advanced BSgenomeForge usage vignette](https://bioconductor.org/packages/release/bioc/vignettes/BSgenomeForge/inst/doc/AdvancedBSgenomeForge.pdf) for details). The seed file should not contain the `seqs_srcdir` field (instead, the absolute or relative path to the source directory is set with the `--sourcedir` option, see below). This option requires `--sourcedir` and is mutually exclusive with `--bsgenome`.
 * `--sourcedir` specifies a directory containing either a set of FASTA files, one per reference chromosome, or a 2bit file for the whole reference genome. See the [Advanced BSgenomeForge usage vignette](https://bioconductor.org/packages/release/bioc/vignettes/BSgenomeForge/inst/doc/AdvancedBSgenomeForge.pdf) for details. The seed file should be written according to the contents of this directory. This option requires `--forgeseed` and is mutually exclusive with `--bsgenome`.
-* `--fasta` specifies a FASTA file containing a reference genome. This option is mandatory, unless `--index` is set. This option is mutually exclusive with `--index` and by default (when the `STAR` aligner is used) also requires the `--chromsizes` option.
-* `--chromsizes` specifies a TSV file with a list of chromosome sizes. This option is mandatory when using the default `STAR` aligner (to convert its output wig files to bigWig files) but must not be used together with an optional argument `--bowtie2` (see below).
-* `--index` specifies a directory with a genome index (`bowtie2` or `STAR`). This is a mandatory option, unless `--fasta` is set. This option is mutually exclusive with `--fasta`, `--gtf`, `--splicesites` and `--chromsizes`.
+* `--fasta` specifies a FASTA file containing a reference genome. This option is mandatory, unless `--index` is set. This option is mutually exclusive with `--index`.
+* `--gtf` specifies a GTF file with a whole-genome annotation to create a STAR index (if a FASTA file is provided) and/or to automatically create a TxDb annotation object to annotate tag clusters.
+* `--index` specifies a directory with a genome index (`bowtie2` or `STAR`). This is a mandatory option, unless `--fasta` is set. This option is mutually exclusive with `--fasta` and `--splicesites`.
 * `--samplesheet` specifies the input CSV samplesheet. This option is mutually exclusive with `--infolder`.
-* `--infolder` specifies the folder within which the fastq files are. The files are searched in the subfolders too. The files are expected to be defined as <sample_identifier>_R{1,2}\*fastq.gz, where \* denotes any set of characters, and sample_identifier will be used in the downstream processes.
- This option is mutually exclusive with `--samplesheet`.
+* `--infolder` specifies the input directory with FASTQ files (stored together for all samples or located in per-sample subdirectories). This option is mutually exclusive with `--samplesheet`.
 * `[OPTIONAL_ARGUMENTS]` can be:
     * `--params-trimgalore 'params'` specifies any options that can be passed to `TrimGalore!`. This option is useful for any non-standard read processing (for example, for CAGEscan reads that require the removal of a fixed number of nucleotides from the 5'-ends of the forward and reverse reads ([Bertin et al., 2017](https://www.nature.com/articles/sdata2017147))). The string with the parameters for `TrimGalore!` must be surrounded by single quotes.
     * `--nogtrim` makes the pipeline skip the G-trimming step. This option is useful for processing non-CAGE data (for example, CAGEscan reads which do not seem to require trimming of a 5'-`G` ([Bertin et al., 2017](https://www.nature.com/articles/sdata2017147))). This option can be used together with `--params-trimgalore` (see an example below).
-    * `--gtf` specifies a GTF file with the genome annotation to use in the construction of a `STAR` genome index. This option is mutually exclusive with `--index` and `--bowtie2` and requires the `--fasta` option.
     * `--splicesites` specifies a TSV file with a list of splice junctions (see the [STAR manual](https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf), section *Using a list of annotated junctions* or the description of the `--sjdbFileChrStartEnd` STAR option, for the format of the file). This option is mutually exclusive with `--index` and `--bowtie2` and requires the `--fasta` option.
-    * `--bowtie2` switches the aligner from `STAR` to `bowtie2`. This option is mutually exclusive with `--gtf`, `--splicesites` and `--chromsizes` but is compatible with either `--index` or `--fasta`.
+    * `--bowtie2` switches the aligner from `STAR` to `bowtie2`. This option is mutually exclusive with `--splicesites` but is compatible with either `--index` or `--fasta`.
     * `--dedup` switches on PCR duplicate removal (not shown in the pipeline map above and is switched off by default).
     * `--dist L` sets an optical duplicate distance `L` to remove optical duplicates, in addition to PCR duplicates (see [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html), option `-d`). This option requires `--dedup`.
     * `-profile` is a Nextflow option that specifies a config file to use with Nextflow on a given machine. See [`nf-core/configs`](https://github.com/nf-core/configs) for ready-to-use institutional configs, including the one for Jex (the high-performance computing cluster of the [Laboratory of Medical Sciences](https://lms.mrc.ac.uk/)). Also, see the [Jex wiki](https://hpcwiki.lms.mrc.ac.uk/docs/software/software/workflow_managers/#nextflow) on how to run Nextflow on Jex. Alternatively, this option can be used to specify the containerization technology to use.
@@ -157,6 +136,10 @@ where
     * Any other Nextflow options (see [Nextflow command line interface](https://www.nextflow.io/docs/latest/cli.html)).
 
 All pipeline options start with a double dash (`--`), while all Nextflow options start with a single dash (`-`).
+
+The pipeline will produce a directory with results (by default, called `results`) and a directory for intermediate files (by default, called `work`) in the directory where it is launched. If running the pipeline sequentially on different raw datasets (for example, on data from different species), make sure to launch each run from a different directory, so that the next run does not overwrite the results of the previous run. However, if you plan to run two or more instances of the pipeline in parallel, using the same storage, then, apart from running them from different directories, you also must provide a different name for each work directory using the `-w` option. 
+
+Since Nextflow work directories can quickly become very large and do not need to be backed-up (but removed after a successful run, instead!), a good practice is to create work directories in a dedicated storage space that gets cleaned once in a while and is usually called a "scratch" space. Make sure to check the documentation of your cluster/server or to ask your system administrator on where you should create Nextflow work directories.
 
 ### Examples
 
@@ -167,9 +150,9 @@ Call TSSs from the test yeast paired-end CAGE reads using the locally stored tes
 ```bash
 nextflow run customcageq/main.nf \
     --bsgenome BSgenome.Scerevisiae.UCSC.sacCer3 \
+    --gtf customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf \
     --index customcageq/assets/sacCer3_genome/sacCer3_star_index/ \
-    --chromsizes customcageq/assets/sacCer3_genome/sacCer3.chrom.sizes \
-    --input customcageq/assets/samplesheet_sacer_pe_template.csv \
+    --samplesheet customcageq/assets/samplesheet_sacer_pe_template.csv \
     -profile singularity \
     -w /path/to/scratch/work
 ```
@@ -178,49 +161,64 @@ This example represents a typical use case for processing CAGE data from an orga
 
 #### Single-end reads with locally stored FASTA and GTF files
 
-Call TSSs from the test yeast single-end CAGE reads using locally stored FASTA and GTF files (and an optional file with splice junctions) for `STAR` index generation on the fly, as well as a locally stored seed file and a source directory to build a BSgenome R package. The package will be automatically installed within the CAGEr container from the autogenerated `.tar.gz` archive and used with CAGEr. To run this example, the user needs to provide full paths to the test FASTQ files in `samplesheet_sacer_se_template.csv`, as well as paths to a locally stored seed file and a source directory:
+Call TSSs from the test yeast single-end CAGE reads (stored in per-sample subdirectories of an input directory) using locally stored FASTA and GTF files (and an optional file with splice junctions) for `STAR` index generation on the fly, as well as a locally stored seed file and a source directory to build a BSgenome R package. The package will be automatically installed within the CAGEr container from the autogenerated `.tar.gz` archive and used with CAGEr. To run this example, the user needs to provide full paths to the test FASTQ files in `samplesheet_sacer_se_template.csv`, as well as paths to a locally stored seed file and a source directory:
 
 ```bash
 nextflow run customcageq/main.nf \
     --forgeseed /path/to/bsgenome_forging.seed \
     --sourcedir /path/to/seqs_srcdir \
+    --gtf customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf \
     --fasta customcageq/assets/sacCer3_genome/sacCer3.fa \
-    --chromsizes customcageq/assets/sacCer3_genome/sacCer3.chrom.sizes \
     --gtf customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf \
     --splicesites customcageq/assets/sacCer3_genome/sacCer3_toy_splice_junctions.tsv \
-    --input customcageq/assets/samplesheet_sacer_se_template.csv \
+    --infolder customcageq/assets/sacCer_fastq/pe_per_sample/ \
     -profile singularity
+```
+
+where the `pe_per_sample` input directory has the following structure:
+
+```bash
+customcageq/assets/sacCer_fastq/pe_per_sample/
+├── S10
+│   ├── S10_S6_L001_R1_001.fastq.gz
+│   └── S10_S6_L001_R2_001.fastq.gz
+└── S14
+    ├── S14_S8_L001_R1_001.fastq.gz
+    ├── S14_S8_L001_R2_001.fastq.gz
+    ├── S14_S8_L002_R1_001.fastq.gz
+    └── S14_S8_L002_R2_001.fastq.gz
 ```
 
 This example may suit for the processing of CAGE data from a new species for which the user has to build ("forge") a BSgenome package by themselves. After forging the BSgenome once, the user can copy the resulting `.tar.gz` file from `results/bsgenome` and reuse it in subsequent runs of the pipeline by setting the `--bsgenome` option, for example: `--bsgenome /path/to/bsgenome/BSgenome.Scerevisiae.UCSC.sacCer3_1.4.0.tar.gz`.
 
 #### CAGEscan libraries
 
-Call TSSs from FANTOM5 CAGEscan libraries (see, for example, [CAGEscan datasets from human primary cells by FANTOM5](https://fantom.gsc.riken.jp/5/datafiles/latest/basic/human.primary_cell.CAGEScan/)). These libraries require trimming of 9 nt from the 5'-ends of the forward reads and of 6 nt from the 5'-ends of the reverse reads and do not seem to require separate G-trimming ([Bertin et al., 2017](https://doi.org/10.1038/sdata.2017.147)). To run this example, the user needs to generate the `fantom5_cagescan_pe.csv` input table (see above) and provide a path to it and to the `STAR` index of the T2T-CHM13 v2.0 human genome assembly. Additionally, the user needs to provide chromosome sizes of the T2T-CHM13 assembly, as the `STAR` aligner is used here by default:
+Call TSSs from FANTOM5 CAGEscan libraries (see, for example, [CAGEscan datasets from human primary cells by FANTOM5](https://fantom.gsc.riken.jp/5/datafiles/latest/basic/human.primary_cell.CAGEScan/)). These libraries require trimming of 9 nt from the 5'-ends of the forward reads and of 6 nt from the 5'-ends of the reverse reads and do not seem to require separate G-trimming ([Bertin et al., 2017](https://doi.org/10.1038/sdata.2017.147)). To run this example, the user needs to generate the `fantom5_cagescan_pe.csv` input table (see above) and provide a path to it and to the `STAR` index of the T2T-CHM13 v2.0 human genome assembly:
 
 ```bash
 nextflow run customcageq/main.nf \
     --bsgenome BSgenome.Hsapiens.NCBI.T2T.CHM13v2.0 \
+    --gtf /path/to/chm13_t2t.gtf \
     --index /path/to/chm13_t2t_v2.0_star_index \
-    --chromsizes /path/to/chm13_t2t_v2.0_chromsizes.tsv \
     --params-trimgalore '--clip_R1 9 --clip_R2 6' \
     --nogtrim \
-    --input /path/to/fantom5_cagescan_pe.csv \
+    --samplesheet /path/to/fantom5_cagescan_pe.csv \
     -profile singularity
 ```
 
-#### **Not recommended.**Paired-end with bowtie2 and duplicate removal
+#### **Not recommended.** Paired-end reads with bowtie2 and duplicate removal
 
 Call TSSs from the test yeast paired-end CAGE reads using `bowtie2` for read mapping. Additionally, remove PCR duplicates and optical duplicates at a maximum distance 100 (see [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html)) before doing alignment QC and TSS calling:
 
 ```bash
 nextflow run customcageq/main.nf \
     --bsgenome BSgenome.Scerevisiae.UCSC.sacCer3 \
+    --gtf customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf \
     --bowtie2 \
     --index customcageq/assets/sacCer3_genome/sacCer3_bowtie2_index \
     --dedup \
     --dist 100 \
-    --input customcageq/assets/samplesheet_sacer_pe_template.csv \
+    --samplesheet customcageq/assets/samplesheet_sacer_pe_template.csv \
     -profile singularity
 ```
 
@@ -234,11 +232,11 @@ You can add your pipeline parameters to the `params.yaml` file too. The fields t
 samplesheet: "customcageq/assets/samplesheet_sacer_pe_template.csv"
 infolder:
 bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
+gtf: "customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf"
 forgeseed:
 sourcedir:
 fasta:
 index: "customcageq/assets/sacCer3_genome/sacCer3_star_index/"
-chromsizes: "customcageq/assets/sacCer3_genome/sacCer3.chrom.sizes"
 ```
 
 When running the pipeline you need to define the location of the `params.yaml` file with the flag `-params-file` and add the nextflow parameters as required.
@@ -249,8 +247,7 @@ nextflow run customcageq/main.nf -params-file customcageseq/params.yaml -profile
 
 ## Credits
 
-**ComputationalRegulatoryGenomicsICL/customcageq** has been developed by Pavel Nikitin ([@nikitin-p](https://github.com/nikitin-p)), Sviatoslav Sidorov ([@sidorov-si](https://github.com/sidorov-si)), Damir Baranasic ([@da-bar](https://github.com/da-bar)), Elena Gómez-Marín ([@ElenaGoMa](https://github.com/ElenaGoMa)),
-Katalin Ferenc ([@ferenckata](https://github.com/ferenckata)).
+**ComputationalRegulatoryGenomicsICL/customcageq** has been developed by Pavel Nikitin ([@nikitin-p](https://github.com/nikitin-p)), Sviatoslav Sidorov ([@sidorov-si](https://github.com/sidorov-si)), Damir Baranasic ([@da-bar](https://github.com/da-bar)), Elena Gómez-Marín ([@ElenaGoMa](https://github.com/ElenaGoMa)), Katalin Ferenc ([@ferenckata](https://github.com/ferenckata)).
 
 ## Citations
 

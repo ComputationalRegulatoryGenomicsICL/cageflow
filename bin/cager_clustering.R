@@ -50,7 +50,7 @@ cager_clustering <- function(ce, iqw_plot_lim, num_core){
         tpmThreshold = 3,
         qLow = 0.1,
         qUp = 0.9,
-        xlim = plot_lim)
+        xlim = iqw_plot_lim) # plot_lim
     print(my_plot)
     dev.off()
 
@@ -61,7 +61,8 @@ cager_clustering <- function(ce, iqw_plot_lim, num_core){
     }
 
     sink("sample_ctss_count.txt")
-    print(data_out)
+    # print(data_out)
+    print(sample_ctss_count)
     sink()
 
     plot_number_of_ctss(

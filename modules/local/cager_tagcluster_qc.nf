@@ -8,15 +8,18 @@ process CAGER_TAGCLUSTER_QC {
 
     input:
     path cager_obj
+    path txdb
 
     output:
     path "versions.yml", emit: versions
 
+    // -a ${params.txdb} \
+
     """
     cager_tagcluster_qc.R  \
         -i ${cager_obj} \
-        -a ${params.annotation} \
-        -d ${params.annot_db} \
+        -a ${txdb} \
+        -d ${params.orgdb} \
         -p ${projectDir} \
         -t ${params.tpm_threshold} \
         -e ${params.tagcluster_qc_pdf_height} \

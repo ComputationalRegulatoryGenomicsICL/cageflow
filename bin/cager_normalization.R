@@ -39,13 +39,19 @@ cager_normalization <- function(
     slope <- outlist[[2]]
     library_size <- outlist[[3]]
     intercept <- outlist[[4]]
+    fit.slopes <- outlist[[5]]
 
     plots <- plotReverseCumulatives_local(
         tag_count_df=tag_count_df,
         slope=slope,
         intercept=intercept,
         library_size=library_size,
+        fit.slopes = fit.slopes,
         fitInRange = c(range_min, range_max))
+    
+    if (!dir.exists(file.path(cager_folder))) {
+        dir.create(file.path(cager_folder))
+    }
     # TODO: pdf if not too many samples
     png(file.path(cager_folder, "reverse_cumulative.png"))
     print(plots)

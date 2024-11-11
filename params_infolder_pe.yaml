@@ -1,9 +1,0 @@
-samplesheet:
-infolder: "customcageq/assets/sacCer_fastq/pe"
-bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
-forgeseed:
-sourcedir:
-fasta:
-gtf: "customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf"
-index: "customcageq/assets/sacCer3_genome/sacCer3_star_index/"
-chromsizes: "customcageq/assets/sacCer3_genome/sacCer3.chrom.sizes"

@@ -1,16 +1,18 @@
+# preprocessing parameters
 samplesheet: "assets/samplesheet_sacer_pe_template_for_GA.csv"
 infolder:
+sample_name_fields:
 bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
-gene_annotation: "TxDb.Scerevisiae.UCSC.sacCer3.sgdGene"
-genome_annotation: "org.Sc.sgd.db"
 forgeseed:
 sourcedir:
 fasta:
 index: "assets/sacCer3_genome/sacCer3_star_index/"
-chromsizes: "assets/sacCer3_genome/sacCer3.chrom.sizes"
+gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
+star_ignore_sjdbgtf: false
+seq_platform: "illumina"
+seq_center: false
+
 # CAGEr parameters
-annotation: "TxDb.Hsapiens.UCSC.hg38.knownGene"
-annot_db: "org.Hs.eg.db"
 tpm_threshold: 1
 tagcluster_qc_pdf_height: 5
 tagcluster_qc_pdf_width: 4
