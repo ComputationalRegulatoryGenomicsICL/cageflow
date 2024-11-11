@@ -7,7 +7,7 @@ process CAGER_READIN {
     input:
     path bsgenome_file
     val bsgenome_name
-    val data_in
+    path sample_file
     val data_type
 
     output:
@@ -22,18 +22,10 @@ process CAGER_READIN {
         bsgenome=${bsgenome_name}
     fi
 
-    echo ${data_in} | \\
-        sed 's/, \\[/\\n/g' | \\
-        tr -d '[],' | \\
-        tr ' ' '\\t' | \\
-        sed 's/id://' | \\
-        sed 's/single_end://' \\
-            > sample_list.tsv
-
     cager_readin.R \
         -t "${data_type}" \
         -b \${bsgenome} \
-        -d ${data_in} \
+        -s ${sample_file} \
         -p ${projectDir} \
         -c ${task.cpus}
 

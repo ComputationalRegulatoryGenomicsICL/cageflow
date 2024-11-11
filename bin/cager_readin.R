@@ -29,10 +29,10 @@ option_list = list(
         default = NULL,
         help = "Whether BAM (bam) or BigWig (bigwig) is provided (Mandatory)"),
     make_option(
-        c("-d", "--data_in"),
+        c("-s", "--sample_file"),
         type = "complex",
         default = NULL,
-        help = "List of lists with information from the input channel with [id, pairedness, bigwig or bam path] (Mandatory)"),
+        help = "Csv with information from the input channel with [id, pairedness, bigwig or bam path] (Mandatory)"),
     make_option(
         c("-b", "--bsgenome"),
         type = "character",
@@ -56,7 +56,7 @@ opt = optparse::parse_args(opt_parser)
 
 # set variable names
 data_type       <- opt$data_type
-data_in         <- opt$data_in
+sample_file     <- opt$sample_file
 bsgenome        <- opt$bsgenome
 project_dir     <- opt$project_dir
 num_core        <- opt$num_core
@@ -73,7 +73,7 @@ source(file.path(project_dir, "bin/cager_bigwig.R"))
 
 reference_name <- install_bsgenome(bsgenome)
 
-sample_table <- parse_input(data_in)
+sample_table <- parse_input(sample_file)
 single_end_uniq <- unique(sample_table$single_end)
 if (length(single_end_uniq) == 1) {
     bam_type <- ifelse(single_end_uniq == "true",

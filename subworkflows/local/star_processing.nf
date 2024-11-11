@@ -51,9 +51,14 @@ workflow STAR_PROCESSING {
         )
         ch_versions = ch_versions.mix(UCSC_WIGTOBIGWIG.out.versions)
 
-        UCSC_WIGTOBIGWIG.out.bw.view()
         bigwig_ch_for_cager = UCSC_WIGTOBIGWIG.out.bw
-            .collectFile(name: "sample_list.tsv",  newLine: true)
+            .map{ meta, wigs ->
+                id = meta.id
+                single_end = meta.single_end
+                pos_wig = wigs[0]
+                neg_wig = wigs[1]
+                [id, single_end, pos_wig, neg_wig]
+            }
 
     emit:
         bigwig_ch_for_cager

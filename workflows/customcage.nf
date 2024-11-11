@@ -51,11 +51,7 @@ include { SAMTOOLS_PROCESSING } from '../subworkflows/local/samtools_processing.
 include { SUMMARY_STAT } from '../subworkflows/local/summary_statistics.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
-include { GTF_TO_TXDB } from '../modules/local/gtf_to_txdb.nf'
-include { CAGER_READIN } from '../modules/local/cager_readin.nf'
-include { CAGER_TAG_QC } from '../modules/local/cager_tag_qc.nf'
-include { CAGER_PREPROCESSING } from '../modules/local/cager_preprocessing.nf'
-include { CAGER_TAGCLUSTER_QC } from '../modules/local/cager_tagcluster_qc.nf'
+include { CAGER } from '../subworkflows/local/cager_analysis.nf'
 
 def multiqc_report = []
 
@@ -124,37 +120,13 @@ workflow CUSTOMCAGE {
     ch_multiqc_files = SUMMARY_STAT.out.ch_multiqc_files
     ch_versions = SUMMARY_STAT.out.ch_versions
 
-    // CAGEr analysis steps
-    if (params.bowtie2) {
-        ch_data_type = Channel.of("bam")
-        ch_data_in = ch_for_cager
-    } else {
-        ch_data_type = Channel.of("bigwig")
-        ch_data_in = bigwig_ch_for_cager
-    }
-    ch_data_in.view()
-    // ch_data_in.collectFile(name: "sample_list.tsv",  newLine: true)
-
-    CAGER_READIN (
+    CAGER(
         ch_bsgenome_file,
         ch_bsgenome_name,
-        ch_data_in,
-        ch_data_type
+        ch_for_cager,
+        bigwig_ch_for_cager,
+        ch_versions
     )
-
-    cager_rds = CAGER_READIN.out.rds
-    ch_versions = ch_versions.mix(CAGER_READIN.out.versions)
-
-
-    // CAGER_TAG_QC(cager_rds, ch_txdb)
-    // ch_versions = ch_versions.mix(CAGER_TAG_QC.out.versions)
-
-    // CAGER_PREPROCESSING(cager_rds)
-    // clustered_cager_rds = CAGER_PREPROCESSING.out.rds
-    // ch_versions = ch_versions.mix(CAGER_PREPROCESSING.out.versions)
-
-    // CAGER_TAGCLUSTER_QC(clustered_cager_rds)
-    // ch_versions = ch_versions.mix(CAGER_TAGCLUSTER_QC.out.versions)
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
