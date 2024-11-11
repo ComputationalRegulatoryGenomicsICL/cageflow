@@ -25,8 +25,6 @@ workflow BOWTIE2_PROCESSING {
             ch_index = BOWTIE2_BUILD.out.index
         }
 
-        ch_fasta.view()
-
         BOWTIE2_ALIGN (
             ch_reads_to_align,
             ch_index,

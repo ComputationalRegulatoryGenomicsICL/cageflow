@@ -133,6 +133,7 @@ workflow CUSTOMCAGE {
         ch_data_in = bigwig_ch_for_cager
     }
     ch_data_in.view()
+    // ch_data_in.collectFile(name: "sample_list.tsv",  newLine: true)
 
     CAGER_READIN (
         ch_bsgenome_file,

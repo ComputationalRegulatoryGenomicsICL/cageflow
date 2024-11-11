@@ -33,7 +33,7 @@ process CAGER_READIN {
     cager_readin.R \
         -t "${data_type}" \
         -b \${bsgenome} \
-        -s sample_list.tsv \
+        -d ${data_in} \
         -p ${projectDir} \
         -c ${task.cpus}
 

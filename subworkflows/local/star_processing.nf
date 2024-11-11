@@ -51,8 +51,9 @@ workflow STAR_PROCESSING {
         )
         ch_versions = ch_versions.mix(UCSC_WIGTOBIGWIG.out.versions)
 
+        UCSC_WIGTOBIGWIG.out.bw.view()
         bigwig_ch_for_cager = UCSC_WIGTOBIGWIG.out.bw
-            .collect()
+            .collectFile(name: "sample_list.tsv",  newLine: true)
 
     emit:
         bigwig_ch_for_cager
