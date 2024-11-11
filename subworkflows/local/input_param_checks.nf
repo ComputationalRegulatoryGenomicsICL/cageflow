@@ -19,36 +19,10 @@ workflow PARAMETER_CHECKS {
             exit 1, 'The --bsgenome option and the following two options are mutually exclusive: --forgeseed, --sourcerdir.'
         }
 
-        // if index is specified, it is used as input
-        if (!params.fasta && !params.index) {
-            exit 1, 'Reference FASTA file (--fasta) or genome index (--index) should be specified.'
-        } else if (params.fasta && params.index) {
-            exit 1, 'Only one of the two options, --fasta or --index, can be provided.'
-        } else if (params.index) {
-            // TODO: better id name?
-            ch_index = Channel.of([
-                        [ id:'index' ],
-                        [file(params.index)]])
-        } else {
-            // TODO: better id name?
-            ch_fasta = Channel.of([
-                        [ id:'genome' ],
-                        [file(params.fasta)]])
-        }
-
         if (params.dist) {
             if (!params.dedup) {
                 exit 1, 'The --dist option requires the --dedup option.'
             }
-        }
-
-        if (params.gtf) {
-            // TODO: better id name?
-            ch_gtf = Channel.of([
-                    [ id:'gtf' ],
-                    file(params.gtf, checkIfExists: true)])
-        } else {
-            exit 1, "The --gtf argument is mandatory."
         }
 
         if (params.splicesites != "$projectDir/assets/NO_FILE_SPLICESITES" & !params.fasta) {
@@ -71,6 +45,28 @@ workflow PARAMETER_CHECKS {
             )
         } else {
             exit 1, 'Provide input by using the --samplesheet or the --infolder options.'
+        }
+
+        sample_meta = ch_fastq.map{ meta, fastq ->
+            meta = meta
+            [meta]}
+
+        // fasta is mandatory, index is created if missing
+        if (!params.fasta) {
+            exit 1, 'Reference FASTA file (--fasta) should be specified.'
+        } else if (params.index) {
+            ch_pre_idx = Channel.fromPath(params.index)
+            ch_index = sample_meta.combine(ch_pre_idx)
+        }
+
+        ch_pre_fa = Channel.fromPath(params.fasta)
+        ch_fasta = sample_meta.combine(ch_pre_fa)
+
+        if (params.gtf) {
+            ch_pre_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
+            ch_gtf = sample_meta.combine(ch_pre_gtf)
+        } else {
+            exit 1, "The --gtf argument is mandatory."
         }
 
     emit:

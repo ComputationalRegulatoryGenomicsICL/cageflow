@@ -86,6 +86,7 @@ workflow CUSTOMCAGE {
     ch_bsgenome_name = PREPARE_METADATA.out.ch_bsgenome_name
     ch_txdb_file = PREPARE_METADATA.out.ch_txdb_file
     ch_chrom_sizes = PREPARE_METADATA.out.ch_chrom_sizes
+    ch_fasta = PREPARE_METADATA.out.ch_fasta
     ch_versions = PREPARE_METADATA.out.ch_versions
 
     if (params.bowtie2) {            

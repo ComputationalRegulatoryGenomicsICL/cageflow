@@ -65,5 +65,6 @@ workflow PREPARE_METADATA {
         ch_bsgenome_name
         ch_txdb_file
         ch_chrom_sizes
+        ch_fasta
         ch_versions
 }
