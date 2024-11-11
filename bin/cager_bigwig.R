@@ -1,31 +1,33 @@
 #' Read in BigWig files to CAGEexp object
 #'
 #' @param bsgenome_name the name of the reference genome (bsgenome)
-#' @param bigwig_str list of input bigwig files with full path
+#' @param bigwig_paths list of input bigwig files with full path
+#' @param sample_names list of sample names
 #' @param cpus number of cores to use
 #' @return a CAGEexp object
 #' @examples
 #' read_in_bigwig(
 #'  bsgenome_name=hsapiens,
-#'  bigwig_str=[path/to/file1.bw, path/to/file2.bw],
+#'  bigwig_paths=["path/to/file1.bw", "path/to/file2.bw"],
+#'  sample_names=["S1"],
 #'  cpus=4)
 
 read_in_bigwig <- function(
     bsgenome_name,
-    bigwig_str,
-    sample_name,
+    bigwig_paths,
+    sample_names,
     cpus){
   
   bigwigs = unlist(
     stringr::str_split(
       stringr::str_remove_all(
-        bigwig_str, "[\\[\\],]"),
+        bigwig_paths, "[\\[\\],]"),
       fixed(" ")))
   signals = lapply(
     bigwigs,
     function(x) rtracklayer::import(x))
 
-  names(signals) = sample_name
+  names(signals) = sample_names
 
   signalsSplit = split(
     signals,

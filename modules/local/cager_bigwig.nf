@@ -19,7 +19,7 @@ process CAGER_BIGWIG {
         bsgenome=${bsgenome_name}
     fi
 
-    cager_read_in.R \
+    cager_readin.R \
         -b \${bsgenome} \
         -w "${bigwig}" \
         -p ${projectDir} \

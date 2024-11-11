@@ -52,8 +52,7 @@ include { SUMMARY_STAT } from '../subworkflows/local/summary_statistics.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
 include { GTF_TO_TXDB } from '../modules/local/gtf_to_txdb.nf'
-include { CAGER_BAM } from '../modules/local/cager_bam.nf'
-include { CAGER_BIGWIG } from '../modules/local/cager_bigwig.nf'
+include { CAGER_READIN } from '../modules/local/cager_readin.nf'
 include { CAGER_TAG_QC } from '../modules/local/cager_tag_qc.nf'
 include { CAGER_PREPROCESSING } from '../modules/local/cager_preprocessing.nf'
 include { CAGER_TAGCLUSTER_QC } from '../modules/local/cager_tagcluster_qc.nf'
@@ -126,24 +125,24 @@ workflow CUSTOMCAGE {
 
     // CAGEr analysis steps
     if (params.bowtie2) {
-        CAGER_BAM (
-            ch_bsgenome_file,
-            ch_bsgenome_name,
-            ch_for_cager
-        )
-
-        cager_rds = CAGER_BAM.out.rds
-        ch_versions = ch_versions.mix(CAGER_BAM.out.versions)
+        ch_data_type = Channel.of("bam")
+        ch_data_in = ch_for_cager
     } else {
-        CAGER_BIGWIG (
-            ch_bsgenome_file,
-            ch_bsgenome_name,
-            bigwig_ch_for_cager
-        )
-
-        cager_rds = CAGER_BIGWIG.out.rds
-        ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
+        ch_data_type = Channel.of("bigwig")
+        ch_data_in = bigwig_ch_for_cager
     }
+    ch_data_in.view()
+
+    CAGER_READIN (
+        ch_bsgenome_file,
+        ch_bsgenome_name,
+        ch_data_in,
+        ch_data_type
+    )
+
+    cager_rds = CAGER_READIN.out.rds
+    ch_versions = ch_versions.mix(CAGER_READIN.out.versions)
+
 
     // CAGER_TAG_QC(cager_rds, ch_txdb)
     // ch_versions = ch_versions.mix(CAGER_TAG_QC.out.versions)

@@ -52,7 +52,6 @@ workflow STAR_PROCESSING {
         ch_versions = ch_versions.mix(UCSC_WIGTOBIGWIG.out.versions)
 
         bigwig_ch_for_cager = UCSC_WIGTOBIGWIG.out.bw
-            .map { it[1] }
             .collect()
 
     emit:

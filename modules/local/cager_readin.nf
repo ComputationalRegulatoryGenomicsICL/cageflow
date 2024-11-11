@@ -1,11 +1,14 @@
-process CAGER_BAM {
+// Read in to CAGEr in bigwig or bam format
+
+process CAGER_READIN {
     label 'process_medium'
     stageInMode 'copy'
-
+   
     input:
     path bsgenome_file
     val bsgenome_name
-    val meta_bam
+    val data_in
+    val data_type
 
     output:
     path "*.rds",        emit: rds
@@ -19,7 +22,7 @@ process CAGER_BAM {
         bsgenome=${bsgenome_name}
     fi
 
-    echo ${meta_bam} | \\
+    echo ${data_in} | \\
         sed 's/, \\[/\\n/g' | \\
         tr -d '[],' | \\
         tr ' ' '\\t' | \\
@@ -28,6 +31,7 @@ process CAGER_BAM {
             > sample_list.tsv
 
     cager_readin.R \
+        -t "${data_type}" \
         -b \${bsgenome} \
         -s sample_list.tsv \
         -p ${projectDir} \
