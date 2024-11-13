@@ -8,6 +8,7 @@ sourcedir:
 fasta:
 index: "customcageq/assets/sacCer3_genome/sacCer3_star_index/"
 gtf: "customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf"
+params_trimgalore: "--clip_R1 9 --clip_R2 6"
 star_ignore_sjdbgtf: false
 seq_platform: "illumina"
 seq_center: false

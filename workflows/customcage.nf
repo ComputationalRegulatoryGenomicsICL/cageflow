@@ -125,7 +125,7 @@ workflow CUSTOMCAGE {
     ch_versions = SUMMARY_STAT.out.ch_versions
 
     // CAGEr analysis steps
-    if (params.bowtie2) {
+    /*if (params.bowtie2) {
         CAGER_BAM (
             ch_bsgenome_file,
             ch_bsgenome_name,
@@ -143,7 +143,7 @@ workflow CUSTOMCAGE {
 
         cager_rds = CAGER_BIGWIG.out.rds
         ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
-    }
+    }*/
 
     // CAGER_TAG_QC(cager_rds, ch_txdb)
     // ch_versions = ch_versions.mix(CAGER_TAG_QC.out.versions)
