@@ -49,7 +49,13 @@ workflow PREPARE_METADATA {
         // prepare chromosome sizes
         if (params.fasta) {
 
-            CUSTOM_GETCHROMSIZES( ch_fasta )
+            chrom_size_fa = ch_fasta.map{ meta, fasta ->
+                def new_meta = [:]
+                new_meta.id = "sizes"
+                fasta = fasta
+                [new_meta, fasta]
+            }.unique()
+            CUSTOM_GETCHROMSIZES( chrom_size_fa )
             ch_chrom_sizes = CUSTOM_GETCHROMSIZES.out.sizes
 
             ch_versions = ch_versions.mix(CUSTOM_GETCHROMSIZES.out.versions)

@@ -14,6 +14,7 @@ workflow DEDUP {
     take:
         ch_aligned
         ch_versions
+        ch_for_cager
 
     main:
         SORT_FOR_FIXMATE (
@@ -43,8 +44,6 @@ workflow DEDUP {
 
         if (params.bowtie2) {
             ch_for_cager = SAMTOOLS_DEDUP.out.bam
-        } else {
-            ch_for_cager = Channel.empty()
         }
 
     emit:

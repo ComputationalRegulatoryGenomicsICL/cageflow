@@ -12,8 +12,7 @@ workflow CAGER {
     take:
         ch_bsgenome_file
         ch_bsgenome_name
-        ch_for_cager
-        bigwig_ch_for_cager
+        ch_sample_file
         ch_versions
     
     main:
@@ -21,13 +20,9 @@ workflow CAGER {
         // CAGEr analysis steps
         if (params.bowtie2) {
             ch_data_type = Channel.of("bam")
-            ch_data_in = ch_for_cager
         } else {
             ch_data_type = Channel.of("bigwig")
-            ch_data_in = bigwig_ch_for_cager
         }
-
-        ch_sample_file = WRITE_SAMPLE_LIST(ch_data_in)
 
         CAGER_READIN (
             ch_bsgenome_file,

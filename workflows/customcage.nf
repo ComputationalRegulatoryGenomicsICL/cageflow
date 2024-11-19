@@ -51,6 +51,7 @@ include { SAMTOOLS_PROCESSING } from '../subworkflows/local/samtools_processing.
 include { SUMMARY_STAT } from '../subworkflows/local/summary_statistics.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
+include { WRITE_SAMPLE_LIST } from '../modules/local/write_sample_list.nf'
 include { CAGER } from '../subworkflows/local/cager_analysis.nf'
 
 def multiqc_report = []
@@ -91,6 +92,9 @@ workflow CUSTOMCAGE {
         ch_aligned = BOWTIE2_PROCESSING.out.ch_aligned
         ch_multiqc_files = BOWTIE2_PROCESSING.out.ch_multiqc_files
         ch_versions = BOWTIE2_PROCESSING.out.ch_versions
+        // NOTE: placeholder so that the channel is not empty
+        // it will be replaced in SAMTOOLS_PROCESSING
+        ch_for_cager = ch_aligned
 
     } else {
         STAR_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_gtf, ch_chrom_sizes, ch_multiqc_files, ch_versions)
@@ -102,29 +106,41 @@ workflow CUSTOMCAGE {
     }
 
     if (params.dedup) {
-        DEDUP(ch_aligned, ch_versions)
+        DEDUP(ch_aligned, ch_versions, ch_for_cager)
 
         ch_for_cager = DEDUP.out.ch_for_cager
         ch_bam_bai = DEDUP.out.ch_bam_bai
         ch_versions = DEDUP.out.ch_versions
     } else {
-        SAMTOOLS_PROCESSING(ch_aligned, ch_versions)
+        SAMTOOLS_PROCESSING(ch_aligned, ch_versions, ch_for_cager)
 
         ch_for_cager = SAMTOOLS_PROCESSING.out.ch_for_cager
         ch_bam_bai = SAMTOOLS_PROCESSING.out.ch_bam_bai
         ch_versions = SAMTOOLS_PROCESSING.out.ch_versions
     }
-    ch_for_cager.view()
 
     SUMMARY_STAT(ch_bam_bai, ch_fasta, ch_multiqc_files, ch_versions)
 
     ch_multiqc_files = SUMMARY_STAT.out.ch_multiqc_files
     ch_versions = SUMMARY_STAT.out.ch_versions
 
+    // NOTE: this writes to file in random order
+    ch_sample_files = WRITE_SAMPLE_LIST(ch_for_cager)
+
+    def header = "id,single_end,path"
+
+    ch_collected = ch_sample_files
+      .reduce( header ) { acc, table_line ->
+        acc + '\n' + table_line.readLines()[0]}
+
+    merged_sample_file = ch_collected.collectFile(
+        name: "$projectDir/$params.outdir/sample_list.csv",
+        newLine: true)
+
     // CAGER(
     //     ch_bsgenome_file,
     //     ch_bsgenome_name,
-    //     ch_for_cager,
+    //     merged_sample_file,
     //     ch_versions
     // )
 

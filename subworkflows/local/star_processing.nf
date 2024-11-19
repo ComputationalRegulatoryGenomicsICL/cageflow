@@ -45,17 +45,28 @@ workflow STAR_PROCESSING {
             sizes = sizes
             sizes}
 
-        // NOTE: it currently converts Signal.Unique.str1/2
-        // to take Signal.UniqueMultiple.str1/2 the input should be filtered
+        wigs = STAR_ALIGN.out.wig
+        if (params.unique_only){
+            wigs_for_conversion = wigs.map{ meta, wigs ->
+                meta = meta
+                wigs_to_use = [wigs[0], wigs[1]]
+                [meta, wigs_to_use]
+            }
+        } else {
+            wigs_for_conversion = wigs.map{ meta, wigs ->
+                meta = meta
+                wigs_to_use = [wigs[2], wigs[3]]
+                [meta, wigs_to_use]
+            }
+        }
+
         UCSC_WIGTOBIGWIG (
-            STAR_ALIGN.out.wig,
+            wigs_for_conversion,
             ch_chrom_sizes_for_wig
         )
         ch_versions = ch_versions.mix(UCSC_WIGTOBIGWIG.out.versions)
 
         bigwig_ch_for_cager = UCSC_WIGTOBIGWIG.out.bw
-        bigwig_ch_for_cager.view()
-        ch_aligned.view()
 
     emit:
         bigwig_ch_for_cager
