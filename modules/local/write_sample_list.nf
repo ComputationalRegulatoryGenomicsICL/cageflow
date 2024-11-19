@@ -8,12 +8,18 @@ process WRITE_SAMPLE_LIST {
     tuple val(meta), path(bw_or_bam)
 
     output:
-    tuple path("sample_list.tsv")
+    path("sample_list.tsv")
 
-    shell:
-    '''
-    line="!{meta.id},!{meta.single_end},[${PWD}/!{bw_or_bam[0]} ${PWD}/!{bw_or_bam[1]}]"
-    echo $line > sample_list.tsv
-    '''
+    script:
+    if ( bw_or_bam[1] != null )
+        """
+        line="${meta.id},${meta.single_end},[${PWD}/${bw_or_bam[0]} ${PWD}/${bw_or_bam[1]}]" 
+        echo \$line > sample_list.tsv
+        """
+    else
+        """
+        line="${meta.id},${meta.single_end},[${PWD}/${bw_or_bam[0]}]"
+        echo \$line > sample_list.tsv
+        """
 
 }
