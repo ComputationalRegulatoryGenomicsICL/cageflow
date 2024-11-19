@@ -37,7 +37,7 @@ workflow STAR_PROCESSING {
         )
         ch_versions = ch_versions.mix(STAR_ALIGN.out.versions)
 
-        ch_aligned = STAR_ALIGN.out.bam_sorted
+        ch_aligned = STAR_ALIGN.out.bam_sorted_aligned
 
         ch_multiqc_files = ch_multiqc_files.mix(STAR_ALIGN.out.log_final.collect{it[1]})
 
@@ -45,6 +45,8 @@ workflow STAR_PROCESSING {
             sizes = sizes
             sizes}
 
+        // NOTE: it currently converts Signal.Unique.str1/2
+        // to take Signal.UniqueMultiple.str1/2 the input should be filtered
         UCSC_WIGTOBIGWIG (
             STAR_ALIGN.out.wig,
             ch_chrom_sizes_for_wig
@@ -52,13 +54,8 @@ workflow STAR_PROCESSING {
         ch_versions = ch_versions.mix(UCSC_WIGTOBIGWIG.out.versions)
 
         bigwig_ch_for_cager = UCSC_WIGTOBIGWIG.out.bw
-            .map{ meta, wigs ->
-                id = meta.id
-                single_end = meta.single_end
-                pos_wig = wigs[0]
-                neg_wig = wigs[1]
-                [id, single_end, pos_wig, neg_wig]
-            }
+        bigwig_ch_for_cager.view()
+        ch_aligned.view()
 
     emit:
         bigwig_ch_for_cager

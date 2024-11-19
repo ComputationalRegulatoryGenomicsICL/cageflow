@@ -45,10 +45,10 @@ read_in_bigwig <- function(
 
   plus.sample.names = stringr::str_remove_all(
     names(plus),
-    ".Signal.UniqueMultiple.str1.out.wig.bw")
+    c(".Signal.UniqueMultiple.str1.out.wig.bw" | ".Signal.Unique.str1.out.wig.bw"))
   minus.sample.names = stringr::str_remove_all(
     names(minus),
-    ".Signal.UniqueMultiple.str2.out.wig.bw")
+    c(".Signal.UniqueMultiple.str2.out.wig.bw" | ".Signal.Unique.str2.out.wig.bw"))
 
   if (!all(plus.sample.names == minus.sample.names)) {
     if (setequal(plus.sample.names, minus.sample.names)) {

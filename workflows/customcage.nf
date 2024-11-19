@@ -95,7 +95,7 @@ workflow CUSTOMCAGE {
     } else {
         STAR_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_gtf, ch_chrom_sizes, ch_multiqc_files, ch_versions)
 
-        bigwig_ch_for_cager = STAR_PROCESSING.out.bigwig_ch_for_cager
+        ch_for_cager = STAR_PROCESSING.out.bigwig_ch_for_cager
         ch_aligned = STAR_PROCESSING.out.ch_aligned
         ch_multiqc_files = STAR_PROCESSING.out.ch_multiqc_files
         ch_versions = STAR_PROCESSING.out.ch_versions
@@ -114,19 +114,19 @@ workflow CUSTOMCAGE {
         ch_bam_bai = SAMTOOLS_PROCESSING.out.ch_bam_bai
         ch_versions = SAMTOOLS_PROCESSING.out.ch_versions
     }
+    ch_for_cager.view()
 
     SUMMARY_STAT(ch_bam_bai, ch_fasta, ch_multiqc_files, ch_versions)
 
     ch_multiqc_files = SUMMARY_STAT.out.ch_multiqc_files
     ch_versions = SUMMARY_STAT.out.ch_versions
 
-    CAGER(
-        ch_bsgenome_file,
-        ch_bsgenome_name,
-        ch_for_cager,
-        bigwig_ch_for_cager,
-        ch_versions
-    )
+    // CAGER(
+    //     ch_bsgenome_file,
+    //     ch_bsgenome_name,
+    //     ch_for_cager,
+    //     ch_versions
+    // )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')

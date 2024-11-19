@@ -42,7 +42,7 @@ workflow DEDUP {
         ch_bam_bai = SAMTOOLS_DEDUP.out.bam.join(INDEX_DEDUP.out.bai)
 
         if (params.bowtie2) {
-            ch_for_cager = SAMTOOLS_DEDUP.out.bam.collect()
+            ch_for_cager = SAMTOOLS_DEDUP.out.bam
         } else {
             ch_for_cager = Channel.empty()
         }

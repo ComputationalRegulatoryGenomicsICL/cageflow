@@ -21,7 +21,7 @@ workflow SAMTOOLS_PROCESSING {
         ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions)
         ch_bam_bai = SAMTOOLS_SORT.out.bam.join(SAMTOOLS_INDEX.out.bai)
         if (params.bowtie2) {
-            ch_for_cager = SAMTOOLS_SORT.out.bam.collect()
+            ch_for_cager = SAMTOOLS_SORT.out.bam
         } else {
             ch_for_cager = Channel.empty()
         }

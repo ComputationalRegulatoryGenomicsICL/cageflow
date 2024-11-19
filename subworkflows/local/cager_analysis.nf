@@ -18,11 +18,6 @@ workflow CAGER {
     
     main:
 
-        def test_file = new File( "sample_list.csv" )
-        def write_value = { value ->
-            test_file << value[0] + ", " + value[1] + ", " + value[2] + ", " + value[3] + "\n"
-        }
-
         // CAGEr analysis steps
         if (params.bowtie2) {
             ch_data_type = Channel.of("bam")
@@ -31,11 +26,8 @@ workflow CAGER {
             ch_data_type = Channel.of("bigwig")
             ch_data_in = bigwig_ch_for_cager
         }
-        
-        ch_data_in.subscribe { write_value(it) }
 
-        ch_sample_file = Channel.fromPath( "sample_list.tsv" )
-        ch_sample_file.view()
+        ch_sample_file = WRITE_SAMPLE_LIST(ch_data_in)
 
         CAGER_READIN (
             ch_bsgenome_file,
