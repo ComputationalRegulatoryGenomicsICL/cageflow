@@ -9,25 +9,24 @@
 #' read_in_bigwig(
 #'  bsgenome_name=hsapiens,
 #'  bigwig_paths=["path/to/file1.bw", "path/to/file2.bw"],
-#'  sample_names=["S1"],
 #'  cpus=4)
 
 read_in_bigwig <- function(
     bsgenome_name,
     bigwig_paths,
-    sample_names,
     cpus){
-  
+
   bigwigs = unlist(
     stringr::str_split(
       stringr::str_remove_all(
         bigwig_paths, "[\\[\\],]"),
       fixed(" ")))
+
   signals = lapply(
     bigwigs,
     function(x) rtracklayer::import(x))
 
-  names(signals) = sample_names
+  names(signals) = basename(bigwigs)
 
   signalsSplit = split(
     signals,
@@ -43,16 +42,25 @@ read_in_bigwig <- function(
     return(x)
   })
 
-  plus.sample.names = stringr::str_remove_all(
-    names(plus),
-    c(".Signal.UniqueMultiple.str1.out.wig.bw" | ".Signal.Unique.str1.out.wig.bw"))
-  minus.sample.names = stringr::str_remove_all(
-    names(minus),
-    c(".Signal.UniqueMultiple.str2.out.wig.bw" | ".Signal.Unique.str2.out.wig.bw"))
+  if (grepl( ".Signal.UniqueMultiple.str1.out.wig.bw", names(plus)[1], fixed = TRUE)){
+    plus_sample_names = stringr::str_remove_all(
+      names(plus),
+      ".Signal.UniqueMultiple.str1.out.wig.bw")
+    minus_sample_names = stringr::str_remove_all(
+      names(minus),
+      ".Signal.UniqueMultiple.str2.out.wig.bw" )
+  } else if (grepl( ".Signal.Unique.str1.out.wig.bw", names(plus)[1], fixed = TRUE)) {
+    plus_sample_names = stringr::str_remove_all(
+      names(plus),
+      ".Signal.Unique.str1.out.wig.bw")
+    minus_sample_names = stringr::str_remove_all(
+      names(minus),
+      ".Signal.Unique.str2.out.wig.bw")
+  }
 
-  if (!all(plus.sample.names == minus.sample.names)) {
-    if (setequal(plus.sample.names, minus.sample.names)) {
-      minus = minus[match(plus.sample.names, minus.sample.names)]
+  if (!all(plus_sample_names == minus_sample_names)) {
+    if (setequal(plus_sample_names, minus_sample_names)) {
+      minus = minus[match(plus_sample_names, minus_sample_names)]
     } else {
       stop("Error: Some basenames of minus- and plus-strand bigWigs are different! Are these bigWigs from different sets of samples? Exit.")
     }

@@ -94,7 +94,6 @@ if (tolower(data_type) == "bam"){
     ce <- read_in_bigwig(
         bsgenome_name=reference_name,
         bigwig_paths=sample_table$path,
-        sample_names=sample_table$id,
         cpus=num_core
     )
 } else {
