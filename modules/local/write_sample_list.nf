@@ -18,7 +18,7 @@ process WRITE_SAMPLE_LIST {
         """
     else
         """
-        line="${meta.id},${meta.single_end},[${PWD}/${params.outdir}/bigwig/${bw_or_bam[0]}]"
+        line="${meta.id},${meta.single_end},${PWD}/${params.outdir}/samtools_sort/${bw_or_bam[0]}"
         echo \$line > sample_list.csv
         """
 

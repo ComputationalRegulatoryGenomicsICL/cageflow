@@ -141,6 +141,7 @@ workflow CUSTOMCAGE {
         ch_bsgenome_file,
         ch_bsgenome_name,
         merged_sample_file,
+        ch_txdb_file,
         ch_versions
     )
 
