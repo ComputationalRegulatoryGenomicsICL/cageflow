@@ -8,18 +8,18 @@ process WRITE_SAMPLE_LIST {
     tuple val(meta), path(bw_or_bam)
 
     output:
-    path("sample_list.tsv")
+    path("sample_list.csv")
 
     script:
     if ( bw_or_bam[1] != null )
         """
-        line="${meta.id},${meta.single_end},[${PWD}/${bw_or_bam[0]} ${PWD}/${bw_or_bam[1]}]" 
-        echo \$line > sample_list.tsv
+        line="${meta.id},${meta.single_end},[${PWD}/${params.outdir}/bigwig/${bw_or_bam[0]} ${PWD}/${params.outdir}/bigwig/${bw_or_bam[1]}]" 
+        echo \$line > sample_list.csv
         """
     else
         """
-        line="${meta.id},${meta.single_end},[${PWD}/${bw_or_bam[0]}]"
-        echo \$line > sample_list.tsv
+        line="${meta.id},${meta.single_end},[${PWD}/${params.outdir}/bigwig/${bw_or_bam[0]}]"
+        echo \$line > sample_list.csv
         """
 
 }

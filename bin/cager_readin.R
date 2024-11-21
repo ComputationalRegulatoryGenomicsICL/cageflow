@@ -30,7 +30,7 @@ option_list = list(
         help = "Whether BAM (bam) or BigWig (bigwig) is provided (Mandatory)"),
     make_option(
         c("-s", "--sample_file"),
-        type = "complex",
+        type = "character",
         default = NULL,
         help = "Csv with information from the input channel with [id, pairedness, bigwig or bam path] (Mandatory)"),
     make_option(

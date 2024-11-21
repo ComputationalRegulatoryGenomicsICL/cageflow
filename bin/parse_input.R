@@ -5,9 +5,8 @@
 parse_input <- function(sample_info){
     sample_table = read.delim(
         sample_info,
-        header = FALSE,
+        header = TRUE,
         sep = ",")
-    names(sample_table) = c("id", "single_end", "path")
 
     return(sample_table)
 }

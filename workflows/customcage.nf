@@ -137,12 +137,12 @@ workflow CUSTOMCAGE {
         name: "$projectDir/$params.outdir/sample_list.csv",
         newLine: true)
 
-    // CAGER(
-    //     ch_bsgenome_file,
-    //     ch_bsgenome_name,
-    //     merged_sample_file,
-    //     ch_versions
-    // )
+    CAGER(
+        ch_bsgenome_file,
+        ch_bsgenome_name,
+        merged_sample_file,
+        ch_versions
+    )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
