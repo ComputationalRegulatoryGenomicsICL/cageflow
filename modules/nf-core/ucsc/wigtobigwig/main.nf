@@ -38,6 +38,20 @@ process UCSC_WIGTOBIGWIG {
         $sizes \\
         ${wig[1]}.bw
 
+    # Make a bigWig from the third wig
+    wigToBigWig \\
+        $args \\
+        ${wig[2]} \\
+        $sizes \\
+        ${wig[2]}.bw
+
+    # Make a bigWig from the fourth wig
+    wigToBigWig \\
+        $args \\
+        ${wig[3]} \\
+        $sizes \\
+        ${wig[3]}.bw
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         ucsc: $VERSION

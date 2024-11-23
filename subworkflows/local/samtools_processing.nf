@@ -15,14 +15,20 @@ workflow SAMTOOLS_PROCESSING {
         ch_versions
 
     main:
-        SAMTOOLS_SORT(ch_aligned)
-        ch_versions = ch_versions.mix(SAMTOOLS_SORT.out.versions)
-        SAMTOOLS_INDEX (SAMTOOLS_SORT.out.bam)
-        ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions)
-        ch_bam_bai = SAMTOOLS_SORT.out.bam.join(SAMTOOLS_INDEX.out.bai)
         if (params.bowtie2) {
+            SAMTOOLS_SORT (ch_aligned)
+            ch_versions = ch_versions.mix(SAMTOOLS_SORT.out.versions)
+
+            SAMTOOLS_INDEX (SAMTOOLS_SORT.out.bam)
+            ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions)
+
+            ch_bam_bai = SAMTOOLS_SORT.out.bam.join(SAMTOOLS_INDEX.out.bai)
             ch_for_cager = SAMTOOLS_SORT.out.bam.collect()
         } else {
+            SAMTOOLS_INDEX (ch_aligned)
+            ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions)
+
+            ch_bam_bai = ch_aligned.join(SAMTOOLS_INDEX.out.bai)
             ch_for_cager = Channel.empty()
         }
 

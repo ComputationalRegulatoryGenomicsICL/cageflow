@@ -9,10 +9,12 @@ process STAR_GENOMEGENERATE {
 
     input:
     tuple val(meta), path(fasta)
-    tuple val(meta2), path(gtf)
+    // tuple val(meta2), path(gtf)
+    path gtf
 
     output:
-    tuple val(meta), path("star")  , emit: index
+    // tuple val(meta), path("star")  , emit: index
+    path "star", emit: index
     path "versions.yml"            , emit: versions
 
     when:

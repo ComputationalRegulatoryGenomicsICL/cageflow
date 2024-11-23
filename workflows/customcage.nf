@@ -27,7 +27,7 @@ params.dedup = false
 params.dist = false
 
 // genome annotation in GTF
-params.gtf = null // "$projectDir/assets/NO_FILE_GTF"
+params.gtf = null // "$projectDir/assets/NO_FILE_GTF" 
 
 // bowtie2 parameters
 params.bowtie2 = false
@@ -45,6 +45,9 @@ include { PARAMETER_CHECKS } from '../subworkflows/local/input_param_checks.nf'
 include { PREPROCESSING } from '../subworkflows/local/preprocessing.nf'
 include { PREPARE_METADATA } from '../subworkflows/local/prepare_metadata.nf'
 include { STAR_PROCESSING } from '../subworkflows/local/star_processing.nf'
+include { STAR_ALIGN } from '../modules/nf-core/star/align/main.nf'
+include { STAR_GENOMEGENERATE } from '../modules/nf-core/star/genomegenerate/main.nf'
+include { UCSC_WIGTOBIGWIG } from '../modules/nf-core/ucsc/wigtobigwig/main.nf'
 include { BOWTIE2_PROCESSING } from '../subworkflows/local/bowtie2_processing.nf'
 include { DEDUP } from '../subworkflows/local/deduplication.nf'
 include { SAMTOOLS_PROCESSING } from '../subworkflows/local/samtools_processing.nf'
@@ -95,7 +98,6 @@ workflow CUSTOMCAGE {
         ch_aligned = BOWTIE2_PROCESSING.out.ch_aligned
         ch_multiqc_files = BOWTIE2_PROCESSING.out.ch_multiqc_files
         ch_versions = BOWTIE2_PROCESSING.out.ch_versions
-
     } else {
         STAR_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_gtf, ch_chrom_sizes, ch_multiqc_files, ch_versions)
 

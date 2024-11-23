@@ -37,7 +37,9 @@ workflow STAR_PROCESSING {
         )
         ch_versions = ch_versions.mix(STAR_ALIGN.out.versions)
 
-        ch_aligned = STAR_ALIGN.out.bam_sorted
+        //ch_aligned = STAR_ALIGN.out.bam_sorted
+
+        ch_aligned = STAR_ALIGN.out.bam_sorted_aligned
 
         ch_multiqc_files = ch_multiqc_files.mix(STAR_ALIGN.out.log_final.collect{it[1]})
 
