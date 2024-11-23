@@ -20,7 +20,7 @@ read_in_bigwig <- function(
     stringr::str_split(
       stringr::str_remove_all(
         bigwig_paths, "[\\[\\],]"),
-      fixed(" ")))
+      stringr::fixed(" ")))
 
   signals = lapply(
     bigwigs,
@@ -58,6 +58,9 @@ read_in_bigwig <- function(
       ".Signal.Unique.str2.out.wig.bw")
   }
 
+  names(plus) <- plus_sample_names
+  names(minus) <- minus_sample_names
+
   if (!all(plus_sample_names == minus_sample_names)) {
     if (setequal(plus_sample_names, minus_sample_names)) {
       minus = minus[match(plus_sample_names, minus_sample_names)]
@@ -71,7 +74,7 @@ read_in_bigwig <- function(
   ctss.obj = purrr::reduce(
     merged,
     function(x, y) {
-      full_join(
+      dplyr::full_join(
         as.data.frame(x),
         as.data.frame(y),
         by = c("seqnames", "start", "strand")) %>%
@@ -90,14 +93,10 @@ read_in_bigwig <- function(
   names(ctss.obj) = c("chr", "pos", "strand", names(merged))
 
   ctss.obj %<>%
-    mutate(across(contains(".bw"), as.integer))
-
+    dplyr::mutate(across(all_of(plus_sample_names), as.integer))
   ctss.obj$chr = as.character(ctss.obj$chr)
-
   ctss.obj$strand = as.character(ctss.obj$strand)
-
   ctss.obj = as(ctss.obj, "CAGEexp")
-
   ctss.obj$genomeName = bsgenome_name
 
   rowRanges(ctss.obj@ExperimentList$tagCountMatrix) = as(
