@@ -23,14 +23,6 @@ cager_normalization <- function(
     total_tag_num,
     cager_folder){
 
-    # merge replicates - automatic extraction of replicate counts
-    # only if they follow some pattern
-    # ce <- CAGEr::mergeSamples(
-    #     ce,
-    #     mergeIndex = new_indeces,
-    #     mergedSampleLabels = sample_names
-    # )
-
     outlist <- calculateReverseCumulative(
         object = ce,
         values = "raw",

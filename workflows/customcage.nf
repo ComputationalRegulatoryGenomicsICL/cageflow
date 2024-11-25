@@ -133,9 +133,11 @@ workflow CUSTOMCAGE {
       .reduce( header ) { acc, table_line ->
         acc + '\n' + table_line.readLines()[0]}
 
+    // sorting samples alphabetically
     merged_sample_file = ch_collected.collectFile(
         name: "$projectDir/$params.outdir/sample_list.csv",
-        newLine: true)
+        newLine: true,
+        sort: { file -> file.text })
 
     CAGER(
         ch_bsgenome_file,

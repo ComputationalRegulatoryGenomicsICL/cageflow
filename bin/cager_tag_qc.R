@@ -56,7 +56,6 @@ ce <- readRDS(ce_path)
 
 # Read in TxDb object
 tx_annotation_obj <- loadDb(tx_annotation)
-
 ce <- annotate_gene_regions(ce, tx_annotation_obj, debugMode = F) # tx_annotation
 
 pdf("tag_region_annotation.pdf")
@@ -80,4 +79,11 @@ saveRDS(corr_m, "corr_m.rds")
 # plot correlations in heatmap format
 pdf("correlations_heatmap.pdf")
 gplots::heatmap.2(corr_m, trace="none", margins=c(12, 12),cexRow=0.2)
+dev.off()
+
+# Plot sequence distribution at the TSS
+pdf("TSSLogos.pdf")
+CAGEr::TSSlogo(
+    CAGEr::CTSScoordinatesGR(ce) |> subset(annotation == "promoter"),
+    upstream = 35)
 dev.off()
