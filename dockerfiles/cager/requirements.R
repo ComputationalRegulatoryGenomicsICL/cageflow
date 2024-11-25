@@ -15,7 +15,8 @@ required_packages_cran = c(
   "magrittr",         ## Code formatting
   "viridis",          ## Plotting
   "ggplot2",          ## Plotting
-  "gplots")           ## Plotting
+  "gplots",           ## Plotting
+  "ggseqlogo")        ## Plotting
 
 message(
   "; Installing these R packages from CRAN repository: ",
@@ -36,8 +37,7 @@ required_packages_bioconductor <- c(
   "BSgenome",
   "ChIPseeker",
   "rtracklayer",
-  "txdbmaker",
-  "ggseqlogo")
+  "txdbmaker")
 
 message(
   "; Installing these R Bioconductor packages: ",
