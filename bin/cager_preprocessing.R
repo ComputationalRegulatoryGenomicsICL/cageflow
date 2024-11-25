@@ -50,6 +50,16 @@ option_list = list(
         default = 1*10^6,
         help = "Total number of tags. Setting it to 1 million (default) results in normalized tags per million (tpm) values (Optional)"),
     make_option(
+        c("-s", "--sample_num_thr"),
+        type = "integer",
+        default = 1,
+        help = "Number of samples in which the CTSS Tpm threshold (ctss_thr) should be passed (Default = 1)"),
+    make_option(
+        c("-r", "--ctss_thr"),
+        type = "integer",
+        default = 1,
+        help = "CTSS Tpm threshold which should be passed in sample_num_thr number of samples (Default = 1)"),
+    make_option(
         c("-p", "--project_dir"),
         type = "character",
         default = 0,
@@ -72,6 +82,8 @@ range_min       <- opt$range_min
 range_max       <- opt$range_max
 method          <- opt$method
 total_tag_num   <-opt$total_tag_num
+sample_num_thr  <- opt$sample_num_thr
+ctss_thr        <- opt$ctss_thr
 project_dir     <- opt$project_dir
 num_core        <- opt$num_core
 
@@ -87,8 +99,8 @@ source(file.path(project_dir, "bin/cager_clustering.R"))
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
 
-# Merging of replicates
-
+# Merging of replicates if _repX is present in their name
+ce <- merge_replicates(ce)
 
 # Normalization
 # uses functions from cager_modified_plots.R
@@ -105,6 +117,8 @@ ce <- cager_normalization(
 ce <- cager_clustering(
     ce=ce,
     iqw_plot_lim=c(0, 150),
+    sample_num_thr=sample_num_thr,
+    ctss_thr=ctss_thr,
     num_core=num_core)
 
 # save output

@@ -20,6 +20,8 @@ process CAGER_PREPROCESSING {
         -m ${params.norm_range_max} \
         -e ${params.norm_method} \
         -t ${params.total_tag_num} \
+        -s ${params.sample_num_thr} \
+        -r ${params.ctss_thr} \
         -p ${projectDir} \
         -c ${task.cpus}
 

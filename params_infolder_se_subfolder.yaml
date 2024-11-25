@@ -1,7 +1,7 @@
 # preprocessing parameters
 samplesheet:
 infolder: "assets/sacCer_fastq/sese_2_fields_hyphen"
-sample_name_fields: 2
+sample_name_fields: 2 # including _repX if applicable
 bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
 forgeseed:
 sourcedir:
@@ -18,9 +18,11 @@ unique_only: false
 tpm_threshold: 1
 tagcluster_qc_pdf_height: 5
 tagcluster_qc_pdf_width: 4
-
 # parameters for normalization
 norm_range_min: 10
 norm_range_max: 10000
 norm_method: "powerLaw"
 total_tag_num: 1000000
+# parameters for CTSS
+sample_num_thr: 1
+ctss_thr: 1

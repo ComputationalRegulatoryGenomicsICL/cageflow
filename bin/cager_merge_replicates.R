@@ -42,9 +42,5 @@ merge_replicates <- function(ce){
         mergeIndex = new_indeces,
         mergedSampleLabels = sample_names
     )
-    if (debugMode){
-        print(sampleLabels(ce))
-        print(librarySizes(ce))
-    }
     return(ce)
 }
