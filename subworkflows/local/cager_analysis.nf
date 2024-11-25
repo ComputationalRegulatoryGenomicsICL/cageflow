@@ -45,6 +45,14 @@ workflow CAGER {
         CAGER_TAGCLUSTER_QC(clustered_cager_rds, ch_txdb)
         ch_versions = ch_versions.mix(CAGER_TAGCLUSTER_QC.out.versions)
 
+        // TODO:
+        // 1. consensus clusters
+        // 2. track exports (what kinds?)
+        // 3. expression profiling
+        // 4. differential expression analysis
+        // 5. shifting promoters
+        // 6. enhancer calling
+
     emit:
         ch_versions
 

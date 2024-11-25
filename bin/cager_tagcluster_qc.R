@@ -35,11 +35,6 @@ option_list = list(
         default = NULL,
         help = "Genome annotation package, eg TxDb.Hsapiens.UCSC.hg38.knownGene (Mandatory)"),
     make_option(
-        c("-d", "--annot_db"),
-        type = "character",
-        default = NULL,
-        help = "Genome annotation database package, eg org.Hs.eg.db (Mandatory)"),
-    make_option(
         c("-p", "--project_dir"),
         type = "character",
         default = 0,
@@ -72,7 +67,6 @@ opt = optparse::parse_args(opt_parser)
 
 ce_path         <- opt$cageexp_object
 tx_annotation   <- opt$annotation
-annot_db        <- opt$annot_db
 project_dir     <- opt$project_dir
 tpmThreshold  <- opt$tpm_threshold
 pdfWidth      <- opt$pdf_width
@@ -104,7 +98,6 @@ peakAnno_list <- lapply(
         x,
         TxDb = tx_annotation,
         tssRegion = c(-3000, 3000),
-        annoDb = annot_db, # TODO: we don't want to depend on orgdb
         sameStrand = TRUE)
 )
 pdf("chipseeker_tagCluster_annotation.pdf")

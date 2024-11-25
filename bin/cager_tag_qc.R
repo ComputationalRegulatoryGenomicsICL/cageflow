@@ -11,7 +11,8 @@ required.libraries <- c(
     "CAGEr",
     "GenomicFeatures",
     "gplots",
-    "ggplot2"
+    "ggplot2",
+    "ggseqlogo"
     )
 
 for (lib in required.libraries) {

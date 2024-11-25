@@ -2,7 +2,7 @@
 # only if they follow sampleName_repX pattern where X is ordered and starts at the same number for all samples (eg 1)
 
 merge_replicates <- function(ce){
-    if !all(grepl( "_rep", sampleLabels(ce), fixed = TRUE)){
+    if (!all(grepl( "_rep", sampleLabels(ce), fixed = TRUE))){
         print("No replicates with syntax _repX is found in all samples, no merging is performed")
         return(ce)
     }
