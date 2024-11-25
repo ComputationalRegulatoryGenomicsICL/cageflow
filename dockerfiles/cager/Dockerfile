@@ -14,6 +14,7 @@ RUN apt-get update && \
     libssl-dev \
     libxml2-dev \
     libfontconfig1-dev \
+    littler \
     procps \
     g++ && \
     apt-get clean && \
@@ -22,4 +23,4 @@ RUN apt-get update && \
 # Install R dependencies
 COPY requirements.R /opt/software/requirements.R
 RUN Rscript requirements.R
-ENV R_LIBS=${R_LIBS}:/opt/software
+CMD ["/bin/bash"]

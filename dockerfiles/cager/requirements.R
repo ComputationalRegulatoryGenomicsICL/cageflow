@@ -1,7 +1,6 @@
 #################################
 ## List of R packages required ##
 #################################
-.libPaths( c( "/opt/software" , .libPaths() ) )
 
 ## CRAN packages:
 required_packages_cran = c(
@@ -23,13 +22,11 @@ message(
   required_packages_cran)
 install.packages(
   required_packages_cran,
-  repos="https://cran.uib.no/",
-  lib="/opt/software")
+  repos="https://cran.uib.no/")
 
 install.packages(
   'BiocManager',
-  repos='https://cloud.r-project.org/',
-  lib="/opt/software")
+  repos='https://cloud.r-project.org/')
 
 ## Bioconductor packages:
 required_packages_bioconductor <- c(
@@ -43,10 +40,8 @@ message(
   "; Installing these R Bioconductor packages: ",
   required_packages_bioconductor)
 BiocManager::install(
-  required_packages_bioconductor,
-  lib="/opt/software")
+  required_packages_bioconductor)
 
 BiocManager::install(
   "CAGEr",
-  version="3.20",
-  lib="/opt/software")
+  version="3.20")
