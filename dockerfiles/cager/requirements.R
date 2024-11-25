@@ -28,6 +28,8 @@ install.packages(
   'BiocManager',
   repos='https://cloud.r-project.org/')
 
+BiocManager::install("remotes")
+
 ## Bioconductor packages:
 required_packages_bioconductor <- c(
   "Bioconductor/BiocArchive",
