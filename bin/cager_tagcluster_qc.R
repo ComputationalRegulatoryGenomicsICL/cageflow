@@ -35,6 +35,11 @@ option_list = list(
         default = NULL,
         help = "Genome annotation package, eg TxDb.Hsapiens.UCSC.hg38.knownGene (Mandatory)"),
     make_option(
+        c("-b", "--bsgenome"),
+        type = "character",
+        default = NULL,
+        help = "Name of the BSgenome version to be used (Mandatory)"),
+    make_option(
         c("-p", "--project_dir"),
         type = "character",
         default = 0,
@@ -67,13 +72,18 @@ opt = optparse::parse_args(opt_parser)
 
 ce_path         <- opt$cageexp_object
 tx_annotation   <- opt$annotation
+bsgenome        <- opt$bsgenome
 project_dir     <- opt$project_dir
 tpmThreshold  <- opt$tpm_threshold
 pdfWidth      <- opt$pdf_width
 pdfHeight     <- opt$pdf_height
 
+# installing BSgenome
+source(file.path(project_dir, "bin/install_bsgenome.R"))
 # import functions for second quality control
 source(file.path(project_dir, "bin/cager_nucleotide_composition_functions.R"))
+
+reference_name <- install_bsgenome(bsgenome)
 
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
