@@ -104,7 +104,7 @@ peakAnno_list <- lapply(
         x,
         TxDb = tx_annotation,
         tssRegion = c(-3000, 3000),
-        annoDb = annot_db,
+        annoDb = annot_db, # TODO: we don't want to depend on orgdb
         sameStrand = TRUE)
 )
 pdf("chipseeker_tagCluster_annotation.pdf")

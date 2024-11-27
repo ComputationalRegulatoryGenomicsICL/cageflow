@@ -11,11 +11,14 @@ gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
 star_ignore_sjdbgtf: false
 seq_platform: "illumina"
 seq_center: false
+# whether to take the uniquely mapped only (for STAR)
+unique_only: false
 
 # CAGEr parameters
 tpm_threshold: 1
 tagcluster_qc_pdf_height: 5
 tagcluster_qc_pdf_width: 4
+
 # parameters for normalization
 norm_range_min: 10
 norm_range_max: 10000

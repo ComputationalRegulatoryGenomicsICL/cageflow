@@ -51,12 +51,8 @@ include { SAMTOOLS_PROCESSING } from '../subworkflows/local/samtools_processing.
 include { SUMMARY_STAT } from '../subworkflows/local/summary_statistics.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
-include { GTF_TO_TXDB } from '../modules/local/gtf_to_txdb.nf'
-include { CAGER_BAM } from '../modules/local/cager_bam.nf'
-include { CAGER_BIGWIG } from '../modules/local/cager_bigwig.nf'
-include { CAGER_TAG_QC } from '../modules/local/cager_tag_qc.nf'
-include { CAGER_PREPROCESSING } from '../modules/local/cager_preprocessing.nf'
-include { CAGER_TAGCLUSTER_QC } from '../modules/local/cager_tagcluster_qc.nf'
+include { WRITE_SAMPLE_LIST } from '../modules/local/write_sample_list.nf'
+include { CAGER } from '../subworkflows/local/cager_analysis.nf'
 
 def multiqc_report = []
 
@@ -87,6 +83,7 @@ workflow CUSTOMCAGE {
     ch_bsgenome_name = PREPARE_METADATA.out.ch_bsgenome_name
     ch_txdb_file = PREPARE_METADATA.out.ch_txdb_file
     ch_chrom_sizes = PREPARE_METADATA.out.ch_chrom_sizes
+    ch_fasta = PREPARE_METADATA.out.ch_fasta
     ch_versions = PREPARE_METADATA.out.ch_versions
 
     if (params.bowtie2) {            
@@ -95,24 +92,27 @@ workflow CUSTOMCAGE {
         ch_aligned = BOWTIE2_PROCESSING.out.ch_aligned
         ch_multiqc_files = BOWTIE2_PROCESSING.out.ch_multiqc_files
         ch_versions = BOWTIE2_PROCESSING.out.ch_versions
+        // NOTE: placeholder so that the channel is not empty
+        // it will be replaced in SAMTOOLS_PROCESSING
+        ch_for_cager = ch_aligned
 
     } else {
         STAR_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_gtf, ch_chrom_sizes, ch_multiqc_files, ch_versions)
 
-        bigwig_ch_for_cager = STAR_PROCESSING.out.bigwig_ch_for_cager
+        ch_for_cager = STAR_PROCESSING.out.bigwig_ch_for_cager
         ch_aligned = STAR_PROCESSING.out.ch_aligned
         ch_multiqc_files = STAR_PROCESSING.out.ch_multiqc_files
         ch_versions = STAR_PROCESSING.out.ch_versions
     }
 
     if (params.dedup) {
-        DEDUP(ch_aligned, ch_versions)
+        DEDUP(ch_aligned, ch_versions, ch_for_cager)
 
         ch_for_cager = DEDUP.out.ch_for_cager
         ch_bam_bai = DEDUP.out.ch_bam_bai
         ch_versions = DEDUP.out.ch_versions
     } else {
-        SAMTOOLS_PROCESSING(ch_aligned, ch_versions)
+        SAMTOOLS_PROCESSING(ch_aligned, ch_versions, ch_for_cager)
 
         ch_for_cager = SAMTOOLS_PROCESSING.out.ch_for_cager
         ch_bam_bai = SAMTOOLS_PROCESSING.out.ch_bam_bai
@@ -124,36 +124,26 @@ workflow CUSTOMCAGE {
     ch_multiqc_files = SUMMARY_STAT.out.ch_multiqc_files
     ch_versions = SUMMARY_STAT.out.ch_versions
 
-    // CAGEr analysis steps
-    if (params.bowtie2) {
-        CAGER_BAM (
-            ch_bsgenome_file,
-            ch_bsgenome_name,
-            ch_for_cager
-        )
+    // NOTE: this writes to file in random order
+    ch_sample_files = WRITE_SAMPLE_LIST(ch_for_cager)
 
-        cager_rds = CAGER_BAM.out.rds
-        ch_versions = ch_versions.mix(CAGER_BAM.out.versions)
-    } else {
-        CAGER_BIGWIG (
-            ch_bsgenome_file,
-            ch_bsgenome_name,
-            bigwig_ch_for_cager
-        )
+    def header = "id,single_end,path"
 
-        cager_rds = CAGER_BIGWIG.out.rds
-        ch_versions = ch_versions.mix(CAGER_BIGWIG.out.versions)
-    }
+    ch_collected = ch_sample_files
+      .reduce( header ) { acc, table_line ->
+        acc + '\n' + table_line.readLines()[0]}
 
-    // CAGER_TAG_QC(cager_rds, ch_txdb)
-    // ch_versions = ch_versions.mix(CAGER_TAG_QC.out.versions)
+    merged_sample_file = ch_collected.collectFile(
+        name: "$projectDir/$params.outdir/sample_list.csv",
+        newLine: true)
 
-    // CAGER_PREPROCESSING(cager_rds)
-    // clustered_cager_rds = CAGER_PREPROCESSING.out.rds
-    // ch_versions = ch_versions.mix(CAGER_PREPROCESSING.out.versions)
-
-    // CAGER_TAGCLUSTER_QC(clustered_cager_rds)
-    // ch_versions = ch_versions.mix(CAGER_TAGCLUSTER_QC.out.versions)
+    CAGER(
+        ch_bsgenome_file,
+        ch_bsgenome_name,
+        merged_sample_file,
+        ch_txdb_file,
+        ch_versions
+    )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')

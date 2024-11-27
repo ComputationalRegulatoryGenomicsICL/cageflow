@@ -11,6 +11,8 @@ gtf: "customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf"
 star_ignore_sjdbgtf: false
 seq_platform: "illumina"
 seq_center: false
+# whether to take the uniquely mapped only (for STAR)
+unique_only: false
 
 # CAGEr parameters
 tpm_threshold: 1

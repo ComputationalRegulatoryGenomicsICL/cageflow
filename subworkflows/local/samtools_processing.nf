@@ -13,6 +13,7 @@ workflow SAMTOOLS_PROCESSING {
     take:
         ch_aligned
         ch_versions
+        ch_for_cager
 
     main:
         SAMTOOLS_SORT(ch_aligned)
@@ -21,9 +22,7 @@ workflow SAMTOOLS_PROCESSING {
         ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions)
         ch_bam_bai = SAMTOOLS_SORT.out.bam.join(SAMTOOLS_INDEX.out.bai)
         if (params.bowtie2) {
-            ch_for_cager = SAMTOOLS_SORT.out.bam.collect()
-        } else {
-            ch_for_cager = Channel.empty()
+            ch_for_cager = SAMTOOLS_SORT.out.bam
         }
 
     emit:

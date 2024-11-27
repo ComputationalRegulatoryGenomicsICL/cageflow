@@ -24,20 +24,20 @@ for (lib in required.libraries) {
 # parse options
 option_list = list(
     make_option(
+        c("-t", "--data_type"),
+        type = "character",
+        default = NULL,
+        help = "Whether BAM (bam) or BigWig (bigwig) is provided (Mandatory)"),
+    make_option(
+        c("-s", "--sample_file"),
+        type = "character",
+        default = NULL,
+        help = "Csv with information from the input channel with [id, pairedness, bigwig or bam path] (Mandatory)"),
+    make_option(
         c("-b", "--bsgenome"),
         type = "character",
         default = NULL,
         help = "Name of the BSgenome version to be used (Mandatory)"),
-    make_option(
-        c("-w", "--bigwig_list"),
-        type = "complex",
-        default = NULL,
-        help = " List of bigwig files (Optional)"),
-    make_option(
-        c("-s", "--sample_list"),
-        type = "complex",
-        default = NULL,
-        help = "Tsv file with information from the input channel with [id, pairedness, path] (Optional)"),
     make_option(
         c("-p", "--project_dir"),
         type = "character",
@@ -55,9 +55,9 @@ opt_parser = optparse::OptionParser(option_list = option_list)
 opt = optparse::parse_args(opt_parser)
 
 # set variable names
+data_type       <- opt$data_type
+sample_file     <- opt$sample_file
 bsgenome        <- opt$bsgenome
-bigwig_list     <- opt$bigwig_list
-sample_list     <- opt$sample_list
 project_dir     <- opt$project_dir
 num_core        <- opt$num_core
 
@@ -73,26 +73,27 @@ source(file.path(project_dir, "bin/cager_bigwig.R"))
 
 reference_name <- install_bsgenome(bsgenome)
 
-if (length(sample_list) > 0) {
-    sample_table <- parse_input(sample_list)
-    single_end_uniq <- unique(sample_table$single_end)
-    if (length(single_end_uniq) == 1) {
-        bam_type <- ifelse(single_end_uniq == "true",
-                        "bam", "bamPairedEnd")
-    } else {
-        stop("Sample table contains both single-end and paired-end reads.")
-    }
+sample_table <- parse_input(sample_file)
+single_end_uniq <- unique(sample_table$single_end)
+if (length(single_end_uniq) == 1) {
+    bam_type <- ifelse(single_end_uniq == "true",
+                    "bam", "bamPairedEnd")
+} else {
+    stop("Sample table contains both single-end and paired-end reads.")
+}
+
+if (tolower(data_type) == "bam"){
     ce <- read_in_bam(
         bsgenome_name=reference_name,
-        input_files=sample_table$path,
+        bam_paths=sample_table$path,
         bam_pairedness=bam_type,
         sample_names=sample_table$id,
         cpus=num_core
     )
-}else if(length(bigwig_list) > 0) {
+}else if(tolower(data_type) == "bigwig") {
     ce <- read_in_bigwig(
         bsgenome_name=reference_name,
-        bigwig_str=bigwig_list,
+        bigwig_paths=sample_table$path,
         cpus=num_core
     )
 } else {

@@ -28,15 +28,14 @@ workflow BOWTIE2_PROCESSING {
         BOWTIE2_ALIGN (
             ch_reads_to_align,
             ch_index,
+            ch_fasta,
             false,
             false
         )
         ch_multiqc_files = ch_multiqc_files.mix(BOWTIE2_ALIGN.out.log.collect{it[1]})
         ch_versions = ch_versions.mix(BOWTIE2_ALIGN.out.versions)
 
-        SAMTOOLS_VIEW_MAPQ (
-            BOWTIE2_ALIGN.out.aligned
-        )
+        SAMTOOLS_VIEW_MAPQ ( BOWTIE2_ALIGN.out.bam )
         ch_versions = ch_versions.mix(SAMTOOLS_VIEW_MAPQ.out.versions)
 
         ch_aligned = SAMTOOLS_VIEW_MAPQ.out.bam

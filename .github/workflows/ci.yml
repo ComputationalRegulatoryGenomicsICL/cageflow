@@ -45,3 +45,4 @@ jobs:
         # Remember that you can parallelise this by using strategy.matrix
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results -params-file ${{ matrix.testdata }}
+          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results --bowtie2 -params-file params_bowtie2.yaml

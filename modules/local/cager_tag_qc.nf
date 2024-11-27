@@ -11,6 +11,7 @@ process CAGER_TAG_QC {
     path txdb
 
     output:
+    path "*.pdf", emit: plots
     path "versions.yml", emit: versions
 
     """

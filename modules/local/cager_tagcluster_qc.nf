@@ -13,8 +13,6 @@ process CAGER_TAGCLUSTER_QC {
     output:
     path "versions.yml", emit: versions
 
-    // -a ${params.txdb} \
-
     """
     cager_tagcluster_qc.R  \
         -i ${cager_obj} \

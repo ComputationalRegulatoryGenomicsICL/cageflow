@@ -37,7 +37,7 @@ workflow STAR_PROCESSING {
         )
         ch_versions = ch_versions.mix(STAR_ALIGN.out.versions)
 
-        ch_aligned = STAR_ALIGN.out.bam_sorted
+        ch_aligned = STAR_ALIGN.out.bam_sorted_aligned
 
         ch_multiqc_files = ch_multiqc_files.mix(STAR_ALIGN.out.log_final.collect{it[1]})
 
@@ -45,15 +45,28 @@ workflow STAR_PROCESSING {
             sizes = sizes
             sizes}
 
+        wigs = STAR_ALIGN.out.wig
+        if (params.unique_only){
+            wigs_for_conversion = wigs.map{ meta, wigs ->
+                meta = meta
+                wigs_to_use = [wigs[0], wigs[1]]
+                [meta, wigs_to_use]
+            }
+        } else {
+            wigs_for_conversion = wigs.map{ meta, wigs ->
+                meta = meta
+                wigs_to_use = [wigs[2], wigs[3]]
+                [meta, wigs_to_use]
+            }
+        }
+
         UCSC_WIGTOBIGWIG (
-            STAR_ALIGN.out.wig,
+            wigs_for_conversion,
             ch_chrom_sizes_for_wig
         )
         ch_versions = ch_versions.mix(UCSC_WIGTOBIGWIG.out.versions)
 
         bigwig_ch_for_cager = UCSC_WIGTOBIGWIG.out.bw
-            .map { it[1] }
-            .collect()
 
     emit:
         bigwig_ch_for_cager
