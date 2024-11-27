@@ -13,10 +13,31 @@ workflow PARAMETER_CHECKS {
         ch_versions
 
     main:
-        if (!params.bsgenome && (!params.forgeseed || !params.sourcedir)) {
-            exit 1, 'Either the --bsgenome option or the following two options must be specified: --forgeseed, --sourcerdir.'
-        } else if (params.bsgenome && (params.forgeseed || params.sourcedir)) {
-            exit 1, 'The --bsgenome option and the following two options are mutually exclusive: --forgeseed, --sourcerdir.'
+
+        sample_meta = ch_fastq.map{ meta, fastq ->
+            meta = meta
+            [meta]}
+
+        // if index is specified, it is used as input
+        if (!params.fasta && !params.index) {
+            exit 1, 'Reference FASTA file (--fasta) or genome index (--index) should be specified.'
+        } else if (params.index) {
+            ch_pre_idx = Channel.fromPath(params.index)
+            ch_index = sample_meta.combine(ch_pre_idx)
+            // NOTE: this will mean bowtie2 does not run
+            // TODO: mock some input maybe, fasta is only needed for a specific type of output which we don't use
+            ch_fasta = Channel.empty()
+        } else {
+            ch_pre_fa = Channel.fromPath(params.fasta)
+            ch_fasta = sample_meta.combine(ch_pre_fa)
+            ch_index = Channel.empty()
+        }
+
+        if (params.gtf) {
+            ch_pre_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
+            ch_gtf = sample_meta.combine(ch_pre_gtf)
+        } else {
+            exit 1, "The --gtf argument is mandatory."
         }
 
         if (params.dist) {
@@ -33,6 +54,12 @@ workflow PARAMETER_CHECKS {
             exit 1, 'The --splicesites option is mutually exclusive with the --bowtie2 option.'
         }
 
+        if (!params.bsgenome && (!params.forgeseed || !params.sourcedir)) {
+            exit 1, 'Either the --bsgenome option or the following two options must be specified: --forgeseed, --sourcerdir.'
+        } else if (params.bsgenome && (params.forgeseed || params.sourcedir)) {
+            exit 1, 'The --bsgenome option and the following two options are mutually exclusive: --forgeseed, --sourcerdir.'
+        }
+
         if (params.samplesheet) {
             INPUT_FROM_SAMPLESHEET (
                 params.samplesheet
@@ -47,27 +74,6 @@ workflow PARAMETER_CHECKS {
             exit 1, 'Provide input by using the --samplesheet or the --infolder options.'
         }
 
-        sample_meta = ch_fastq.map{ meta, fastq ->
-            meta = meta
-            [meta]}
-
-        // fasta is mandatory, index is created if missing
-        if (!params.fasta) {
-            exit 1, 'Reference FASTA file (--fasta) should be specified.'
-        } else if (params.index) {
-            ch_pre_idx = Channel.fromPath(params.index)
-            ch_index = sample_meta.combine(ch_pre_idx)
-        }
-
-        ch_pre_fa = Channel.fromPath(params.fasta)
-        ch_fasta = sample_meta.combine(ch_pre_fa)
-
-        if (params.gtf) {
-            ch_pre_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
-            ch_gtf = sample_meta.combine(ch_pre_gtf)
-        } else {
-            exit 1, "The --gtf argument is mandatory."
-        }
 
     emit:
         ch_fasta
