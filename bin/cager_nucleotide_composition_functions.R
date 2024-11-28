@@ -11,10 +11,11 @@ extract_ctss_normalized_tmp_per_sample <- function(ce, tpm_threshold = 1) {
 }
 
 extract_ctss_sequences <- function(ctss_list, seq_data) {
+    bsgenome <- getBSgenome(seq_data)
     ctss_sequences <- lapply(
         ctss_list,
         function(x) {
-            BSgenome::getSeq(seq_data, x)
+            BSgenome::getSeq(bsgenome, x)
         }
     )
     return(ctss_sequences)
@@ -101,10 +102,11 @@ plot_nucleotide_frequency <- function(
 
 ### For dinucleotide composition
 
-expand_ctss_regions <- function(normalized_ctss_list) {
+expand_ctss_regions <- function(normalized_ctss_list, seq_data) {
+    bsgenome <- getBSgenome(seq_data)
     # this might not be necessary
     for (sample in names(normalized_ctss_list)){
-        GenomeInfoDb::seqinfo(normalized_ctss_list[[sample]]) <- GenomeInfoDb::seqinfo(seq_data)[
+        GenomeInfoDb::seqinfo(normalized_ctss_list[[sample]]) <- GenomeInfoDb::seqinfo(bsgenome)[
             GenomeInfoDb::seqlevels(normalized_ctss_list[[sample]])
         ]
     }
@@ -141,10 +143,17 @@ count_dinucleotide_frequency <- function(ctss_sequences) {
     # remove single letter long "dinucleotides"
     true_dinuc <- unlist(lapply(all_nonn_dinuc, function(x) {x[nchar(x) > 1]}))
     dinuc_values <- true_dinuc[order(true_dinuc)]
-    # ensure the lists are of the same length - remove entries with N base or single base
     ctss_dinuc_freq_filt <- lapply(
         ctss_dinuc_freq,
         function(x) {x[names(x) %in% dinuc_values]})
+    # ensure the lists are of the same length - add elements with 0 value if missing
+    for (sample_id in names(ctss_dinuc_freq_filt)){
+        for (dinuc in dinuc_values) {
+            if (is.na(ctss_dinuc_freq_filt[[sample_id]][dinuc])){
+                ctss_dinuc_freq_filt[[sample_id]][dinuc] <- 0.
+            }
+        }
+    }
     # set levels in value order based on first entry order
     dinuc_levels <- names(sort(ctss_dinuc_freq_filt[[1]]))
     # convert to dataframe

@@ -56,7 +56,6 @@ project_dir     <- opt$project_dir
 # installing BSgenome
 source(file.path(project_dir, "bin/install_bsgenome.R"))
 # import functions for quality control
-source(file.path(project_dir, "bin/annotation_from_txdb_functions.R"))
 source(file.path(project_dir, "bin/cager_modified_plots.R"))
 
 reference_name <- install_bsgenome(bsgenome)
@@ -66,7 +65,10 @@ ce <- readRDS(ce_path)
 
 # Read in TxDb object
 tx_annotation_obj <- loadDb(tx_annotation)
-ce <- annotate_gene_regions(ce, tx_annotation_obj, debugMode = F) # tx_annotation
+ce <- CAGEr::annotateCTSS(ce, tx_annotation_obj)
+
+# Save intermediate annotated object
+saveRDS(ce, "annotated_cager.rds")
 
 pdf("tag_region_annotation.pdf")
 annotations <- CAGEr::plotAnnot(ce, "counts")
@@ -93,7 +95,8 @@ dev.off()
 
 # Plot sequence distribution at the TSS
 pdf("TSSLogos.pdf")
-CAGEr::TSSlogo(
+TSSlogo_local(
     CAGEr::CTSScoordinatesGR(ce) |> subset(annotation == "promoter"),
+    genome_name=reference_name,
     upstream = 35)
 dev.off()
