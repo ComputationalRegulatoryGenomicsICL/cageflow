@@ -30,7 +30,6 @@ option_list = list(
         c("-a", "--annotation"),
         type = "character",
         default = NULL,
-        #help = "Genome annotation package, eg TxDb.Hsapiens.UCSC.hg38.knownGene (Mandatory)"),
         help = "SQLite file with a TxDb genome annotation package (Mandatory)"),
     make_option(
         c("-b", "--bsgenome"),

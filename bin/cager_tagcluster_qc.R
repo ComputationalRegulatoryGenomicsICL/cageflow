@@ -10,6 +10,7 @@ required.libraries <- c(
     "optparse",
     "rlang",
     "CAGEr",
+    "GenomicFeatures",
     "ChIPseeker",
     "Biostrings",
     "tidyr",
@@ -61,7 +62,7 @@ option_list = list(
         type = "double",
         default = 4,
         help = "Width of the plot (Optional), defaults to 4 ",
-        metavar = "double"),
+        metavar = "double")
 )
 
 message("; Reading arguments from command line.")
@@ -80,6 +81,8 @@ pdfHeight     <- opt$pdf_height
 
 # installing BSgenome
 source(file.path(project_dir, "bin/install_bsgenome.R"))
+# Read in TxDb object
+tx_annotation_obj <- loadDb(tx_annotation)
 # import functions for second quality control
 source(file.path(project_dir, "bin/cager_nucleotide_composition_functions.R"))
 
@@ -95,7 +98,6 @@ tag_clusters <- lapply(
     function (x) CAGEr::tagClustersGR(
         ce,
         sample = x,
-        returnInterquantileWidth = TRUE,
         qLow = 0.1,
         qUp = 0.9))
 
@@ -106,7 +108,7 @@ peakAnno_list <- lapply(
     tag_clusters,
     function(x) ChIPseeker::annotatePeak(
         x,
-        TxDb = tx_annotation,
+        TxDb = tx_annotation_obj,
         tssRegion = c(-3000, 3000),
         sameStrand = TRUE)
 )
@@ -116,7 +118,7 @@ dev.off()
 
 # nucleotide composition
 normalized_ctss_list <- extract_ctss_normalized_tmp_per_sample(ce, tpmThreshold)
-ctss_sequences <- extract_ctss_sequences(normalized_ctss_list, seq_data)
+ctss_sequences <- extract_ctss_sequences(normalized_ctss_list, reference_name)
 outlist <- calculate_nucleotide_frequency(ctss_sequences)
 ctss_nucl_freq_df_tidy <- outlist[[1]]
 sample_names <- outlist[[2]]
@@ -130,7 +132,7 @@ print(plot_nucleotide_frequency(
 
 # dinculeotide composition
 expanded_ctss_list <- expand_ctss_regions(normalized_ctss_list)
-ctss_sequences <- extract_ctss_sequences(expanded_ctss_list, seq_data)
+ctss_sequences <- extract_ctss_sequences(expanded_ctss_list, reference_name)
 outlist <- count_dinucleotide_frequency(ctss_sequences)
 ctss_dinuc_freq_df_tidy <- outlist[[1]]
 dinuc_levels <- outlist[[2]]

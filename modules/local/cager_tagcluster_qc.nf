@@ -27,7 +27,6 @@ process CAGER_TAGCLUSTER_QC {
         -i ${cager_obj} \
         -a ${txdb} \
         -b \${bsgenome} \
-        -d ${params.orgdb} \
         -p ${projectDir} \
         -t ${params.tpm_threshold} \
         -e ${params.tagcluster_qc_pdf_height} \
