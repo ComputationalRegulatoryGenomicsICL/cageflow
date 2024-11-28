@@ -33,6 +33,11 @@ option_list = list(
         #help = "Genome annotation package, eg TxDb.Hsapiens.UCSC.hg38.knownGene (Mandatory)"),
         help = "SQLite file with a TxDb genome annotation package (Mandatory)"),
     make_option(
+        c("-b", "--bsgenome"),
+        type = "character",
+        default = NULL,
+        help = "Name of the BSgenome version to be used (Mandatory)"),
+    make_option(
         c("-p", "--project_dir"),
         type = "character",
         default = 0,
@@ -46,11 +51,16 @@ opt = optparse::parse_args(opt_parser)
 # set variable names
 ce_path         <- opt$cageexp_object
 tx_annotation   <- opt$annotation
+bsgenome        <- opt$bsgenome
 project_dir     <- opt$project_dir
 
+# installing BSgenome
+source(file.path(project_dir, "bin/install_bsgenome.R"))
 # import functions for quality control
 source(file.path(project_dir, "bin/annotation_from_txdb_functions.R"))
 source(file.path(project_dir, "bin/cager_modified_plots.R"))
+
+reference_name <- install_bsgenome(bsgenome)
 
 # Read in CAGEexp object
 ce <- readRDS(ce_path)

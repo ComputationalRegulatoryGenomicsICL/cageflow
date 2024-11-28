@@ -9,15 +9,25 @@ process CAGER_TAG_QC {
     input:
     path cager_obj
     path txdb
+    path bsgenome_file
+    val bsgenome_name
 
     output:
     path "*.pdf", emit: plots
     path "versions.yml", emit: versions
 
     """
+    if [ -z ${bsgenome_name} ]
+    then
+        bsgenome=${bsgenome_file}
+    else
+        bsgenome=${bsgenome_name}
+    fi
+
     cager_tag_qc.R  \
         -i ${cager_obj} \
         -a ${txdb} \
+        -b \${bsgenome} \
         -p ${projectDir}
 
     cat <<-END_VERSIONS > versions.yml
