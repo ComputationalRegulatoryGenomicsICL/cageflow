@@ -147,17 +147,13 @@ count_dinucleotide_frequency <- function(ctss_sequences) {
         ctss_dinuc_freq,
         function(x) {x[names(x) %in% dinuc_values]})
     # ensure the lists are of the same length - add elements with 0 value if missing
-    for (sample_id in names(ctss_dinuc_freq_filt)){
-        for (dinuc in dinuc_values) {
-            if (is.na(ctss_dinuc_freq_filt[[sample_id]][dinuc])){
-                ctss_dinuc_freq_filt[[sample_id]][dinuc] <- 0.
-            }
-        }
-    }
+    # convert to dataframe
+    cdf_intermediate <- lapply(ctss_dinuc_freq, as.data.frame)
+    cdf_almost_good <- dplyr::bind_rows(cdf_intermediate, .id="Name")
+    ctss_dinuc_freq_df <- reshape(cdf_almost_good, idvar="Var1", timevar="Name",direction="wide")
+    # TODO: fix names, fill in 0 instead of NA and order    
     # set levels in value order based on first entry order
     dinuc_levels <- names(sort(ctss_dinuc_freq_filt[[1]]))
-    # convert to dataframe
-    ctss_dinuc_freq_df <- as.data.frame(ctss_dinuc_freq_filt)
     # tidy the dataframe
     ctss_dinuc_freq_df_tidy <- ctss_dinuc_freq_df[, grep(
         x = colnames(ctss_dinuc_freq_df),

@@ -68,7 +68,7 @@ tx_annotation_obj <- loadDb(tx_annotation)
 ce <- CAGEr::annotateCTSS(ce, tx_annotation_obj)
 
 # Save intermediate annotated object
-saveRDS(ce, "annotated_cager.rds")
+saveRDS(ce, "annotated_cagexp.rds")
 
 pdf("tag_region_annotation.pdf")
 annotations <- CAGEr::plotAnnot(ce, "counts")

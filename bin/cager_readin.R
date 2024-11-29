@@ -101,4 +101,4 @@ if (tolower(data_type) == "bam"){
 }
 
 # save the initial CAGEexp object
-saveRDS(ce, "CAGEexp_initial.rds")
+saveRDS(ce, "initial_cagexp.rds")
