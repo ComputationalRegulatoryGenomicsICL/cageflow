@@ -95,6 +95,9 @@ dev.off()
 
 # Plot sequence distribution at the TSS
 pdf("TSSLogos.pdf")
+# CAGEr::TSSlogo(
+#     CAGEr::CTSScoordinatesGR(ce) |> subset(annotation == "promoter"),
+#     upstream = 35)
 TSSlogo_local(
     CAGEr::CTSScoordinatesGR(ce) |> subset(annotation == "promoter"),
     genome_name=reference_name,
