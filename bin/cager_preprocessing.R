@@ -81,7 +81,7 @@ ce_path         <- opt$cageexp_object
 range_min       <- opt$range_min
 range_max       <- opt$range_max
 method          <- opt$method
-total_tag_num   <-opt$total_tag_num
+total_tag_num   <- opt$total_tag_num
 sample_num_thr  <- opt$sample_num_thr
 ctss_thr        <- opt$ctss_thr
 project_dir     <- opt$project_dir
@@ -109,8 +109,7 @@ ce <- cager_normalization(
     rangeMin=range_min,
     rangeMax=range_max,
     method=method,
-    total_tag_num=total_tag_num,
-    cager_folder="cager_results") # = cager_folder
+    total_tag_num=total_tag_num)
 
 # CTSS clustering
 # uses functions from cager_modified_plots.R and plot_number_of_ctss.R
@@ -123,7 +122,7 @@ ce <- cager_clustering(
 
 # save output
 # RDS
-saveRDS(ce, file = "normalizes_clustered_cagexp.rds")
+saveRDS(ce, file = "normalized_clustered_cagexp.rds")
 # CTSS count matrix
 # consensus cluster count matrix
 

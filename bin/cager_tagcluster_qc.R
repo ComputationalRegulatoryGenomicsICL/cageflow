@@ -133,14 +133,9 @@ normalized_ctss_list <- extract_ctss_normalized_tmp_per_sample(ce, tpmThreshold)
 # dinculeotide composition
 expanded_ctss_list <- expand_ctss_regions(normalized_ctss_list, reference_name)
 ctss_sequences <- extract_ctss_sequences(expanded_ctss_list, reference_name)
-outlist <- count_dinucleotide_frequency(ctss_sequences)
-ctss_dinuc_freq_df_tidy <- outlist[[1]]
-dinuc_levels <- outlist[[2]]
-column_names <- outlist[[3]]
+ctss_dinuc_freq_df_tidy <- count_dinucleotide_frequency(ctss_sequences)
 print(plot_dinucleotide_frequency(
     ctss_dinuc_freq_df_tidy,
-    dinuc_levels,
-    column_names,
     "dinucleotide_freq.pdf",
     pdfheight = pdfHeight,
     pdfwidth = pdfWidth))

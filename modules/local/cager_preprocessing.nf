@@ -10,7 +10,7 @@ process CAGER_PREPROCESSING {
     path cager_obj
 
     output:
-    path "*.rds",        emit: rds
+    path "normalized_clustered_cagexp.rds",        emit: rds
     path "versions.yml", emit: versions
 
     """

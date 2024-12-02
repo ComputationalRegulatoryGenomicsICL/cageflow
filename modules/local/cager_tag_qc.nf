@@ -13,7 +13,7 @@ process CAGER_TAG_QC {
     val bsgenome_name
 
     output:
-    path "annotated_cager.rds", emit: cager_rds
+    path "annotated_cagexp.rds", emit: cager_rds
     path "corr_m.rds", emit: correlation_rds
     path "*.pdf", emit: plots
     path "versions.yml", emit: versions
