@@ -103,32 +103,32 @@ tag_clusters <- lapply(
 
 names(tag_clusters) <- sampleNames
 
-# # annotate peaks with chipseeker
-# peakAnno_list <- lapply(
-#     tag_clusters,
-#     function(x) ChIPseeker::annotatePeak(
-#         x,
-#         TxDb = tx_annotation_obj,
-#         tssRegion = c(-3000, 3000),
-#         sameStrand = TRUE)
-# )
-# pdf("chipseeker_tagCluster_annotation.pdf")
-# print(ChIPseeker::plotAnnoBar(peakAnno_list))
-# dev.off()
+# annotate peaks with chipseeker
+peakAnno_list <- lapply(
+    tag_clusters,
+    function(x) ChIPseeker::annotatePeak(
+        x,
+        TxDb = tx_annotation_obj,
+        tssRegion = c(-3000, 3000),
+        sameStrand = TRUE)
+)
+pdf("chipseeker_tagCluster_annotation.pdf")
+print(ChIPseeker::plotAnnoBar(peakAnno_list))
+dev.off()
 
 # # nucleotide composition
 normalized_ctss_list <- extract_ctss_normalized_tmp_per_sample(ce, tpmThreshold)
-# ctss_sequences <- extract_ctss_sequences(normalized_ctss_list, reference_name)
-# outlist <- calculate_nucleotide_frequency(ctss_sequences)
-# ctss_nucl_freq_df_tidy <- outlist[[1]]
-# sample_names <- outlist[[2]]
-# print(plot_nucleotide_frequency(
-#     ctss_nucl_freq_df_tidy,
-#     sample_names,
-#     "nucleotide_freq.pdf",
-#     pdfheight = pdfHeight,
-#     pdfwidth = pdfWidth
-# ))
+ctss_sequences <- extract_ctss_sequences(normalized_ctss_list, reference_name)
+outlist <- calculate_nucleotide_frequency(ctss_sequences)
+ctss_nucl_freq_df_tidy <- outlist[[1]]
+sample_names <- outlist[[2]]
+print(plot_nucleotide_frequency(
+    ctss_nucl_freq_df_tidy,
+    sample_names,
+    "nucleotide_freq.pdf",
+    pdfheight = pdfHeight,
+    pdfwidth = pdfWidth
+))
 
 # dinculeotide composition
 expanded_ctss_list <- expand_ctss_regions(normalized_ctss_list, reference_name)

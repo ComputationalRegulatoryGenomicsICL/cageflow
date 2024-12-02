@@ -38,17 +38,9 @@ cager_normalization <- function(
         fit.slopes = fit.slopes,
         fitInRange = c(range_min, range_max))
     
-    # TODO: pdf if not too many samples
-    if (length(CAGEr::sampleLabels(ce)) < 10){
-        pdf("reverse_cumulative.pdf")
-        print(plots)
-        dev.off()
-    } else {
-        png("reverse_cumulative.png")
-        print(plots)
-        dev.off()
-    }
-    
+    pdf("reverse_cumulative.pdf")
+    print(plots)
+    dev.off()
 
     ce <- normalizeTagCount(
         ce,

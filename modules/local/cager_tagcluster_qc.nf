@@ -14,6 +14,7 @@ process CAGER_TAGCLUSTER_QC {
 
     output:
     path "versions.yml", emit: versions
+    path "*.pdf", emit: plots
 
     """
     if [ -z ${bsgenome_name} ]
