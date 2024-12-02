@@ -65,6 +65,11 @@ option_list = list(
         default = 0,
         help = "Project directory, from which the analysis is run."),
     make_option(
+        c("-b", "--bsgenome"),
+        type = "character",
+        default = NULL,
+        help = "Name of the BSgenome version to be used (Mandatory)"),
+    make_option(
         c("-c", "--num_core"),
         type = "integer",
         default = 0,
@@ -85,9 +90,12 @@ total_tag_num   <- opt$total_tag_num
 sample_num_thr  <- opt$sample_num_thr
 ctss_thr        <- opt$ctss_thr
 project_dir     <- opt$project_dir
+bsgenome        <- opt$bsgenome
 num_core        <- opt$num_core
 
 # import functions
+# installing BSgenome
+source(file.path(project_dir, "bin/install_bsgenome.R"))
 
 # for analysis
 source(file.path(project_dir, "bin/cager_merge_replicates.R"))
@@ -95,6 +103,8 @@ source(file.path(project_dir, "bin/cager_normalization.R"))
 source(file.path(project_dir, "bin/plot_number_of_ctss.R"))
 source(file.path(project_dir, "bin/cager_modified_plots.R"))
 source(file.path(project_dir, "bin/cager_clustering.R"))
+
+reference_name <- install_bsgenome(bsgenome)
 
 # Read in CAGEexp object
 ce <- readRDS(ce_path)

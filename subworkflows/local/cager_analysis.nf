@@ -39,7 +39,7 @@ workflow CAGER {
         annotated_cager_rds = CAGER_TAG_QC.out.cager_rds
         ch_versions = ch_versions.mix(CAGER_TAG_QC.out.versions)
 
-        CAGER_PREPROCESSING(annotated_cager_rds)
+        CAGER_PREPROCESSING(annotated_cager_rds, ch_bsgenome_file, ch_bsgenome_name)
         clustered_cager_rds = CAGER_PREPROCESSING.out.rds
         ch_versions = ch_versions.mix(CAGER_PREPROCESSING.out.versions)
 

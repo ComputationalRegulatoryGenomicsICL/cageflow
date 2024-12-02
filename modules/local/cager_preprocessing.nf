@@ -8,6 +8,8 @@ process CAGER_PREPROCESSING {
 
     input:
     path cager_obj
+    path bsgenome_file
+    val bsgenome_name
 
     output:
     path "normalized_clustered_cagexp.rds",        emit: rds
@@ -15,6 +17,13 @@ process CAGER_PREPROCESSING {
     path "versions.yml", emit: versions
 
     """
+    if [ -z ${bsgenome_name} ]
+    then
+        bsgenome=${bsgenome_file}
+    else
+        bsgenome=${bsgenome_name}
+    fi
+
     cager_preprocessing.R  \
         -i ${cager_obj} \
         -n ${params.norm_range_min} \
@@ -24,6 +33,7 @@ process CAGER_PREPROCESSING {
         -s ${params.sample_num_thr} \
         -r ${params.ctss_thr} \
         -p ${projectDir} \
+        -b \${bsgenome} \
         -c ${task.cpus}
 
     cat <<-END_VERSIONS > versions.yml
