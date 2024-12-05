@@ -99,7 +99,6 @@ read_in_bigwig <- function(
   cageexpobj = as(ctss.obj, "CAGEexp")
 
   colData(cageexpobj)$inputFilesType <- "CTSStable"
-  colData(cageexpobj)$inputFiles <- bigwigs[grepl("str1", bigwigs)]
 
   metadata(cageexpobj)$genomeName = bsgenome_name
 

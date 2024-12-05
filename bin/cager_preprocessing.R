@@ -98,7 +98,7 @@ num_core        <- opt$num_core
 source(file.path(project_dir, "bin/install_bsgenome.R"))
 
 # for analysis
-source(file.path(project_dir, "bin/cager_merge_replicates.R"))
+# source(file.path(project_dir, "bin/cager_merge_replicates.R"))
 source(file.path(project_dir, "bin/cager_normalization.R"))
 source(file.path(project_dir, "bin/plot_number_of_ctss.R"))
 source(file.path(project_dir, "bin/cager_modified_plots.R"))
@@ -110,7 +110,7 @@ reference_name <- install_bsgenome(bsgenome)
 ce <- readRDS(ce_path)
 
 # Merging of replicates if _repX is present in their name
-ce <- merge_replicates(ce)
+# ce <- merge_replicates(ce)
 
 # Normalization
 # uses functions from cager_modified_plots.R
