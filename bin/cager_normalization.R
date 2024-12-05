@@ -39,7 +39,7 @@ cager_normalization <- function(
         fitInRange = c(range_min, range_max))
     
     save_plot(
-        "reverse_cumulative.pdf",
+        "reverse_cumulative_plot.pdf",
         revcum_plots)
 
     ce <- CAGEr::normalizeTagCount(

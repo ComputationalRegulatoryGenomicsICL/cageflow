@@ -103,7 +103,7 @@ peakAnno_list <- lapply(
 )
 chipannot_plot <- ChIPseeker::plotAnnoBar(peakAnno_list)
 save_plot(
-    "chipseeker_tagCluster_annotation.pdf",
+    "chipseeker_tagCluster_annotation_plot.pdf",
     chipannot_plot
 )
 
@@ -118,7 +118,7 @@ nuclfreq_plot <- plot_nucleotide_frequency(
     sample_names
 )
 save_plot(
-    "nucleotide_frequencies.pdf",
+    "nucleotide_frequencies_plot.pdf",
     nuclfreq_plot
 )
 
@@ -129,6 +129,6 @@ ctss_dinuc_freq_df_tidy <- count_dinucleotide_frequency(ctss_sequences)
 dinuclfreq_plot <- plot_dinucleotide_frequency(
     ctss_dinuc_freq_df_tidy)
 save_plot(
-    "dinucleotide_frequencies.pdf",
+    "dinucleotide_frequencies_plot.pdf",
     dinuclfreq_plot
 )

@@ -73,7 +73,7 @@ saveRDS(ce, "annotated_cagexp.rds")
 
 annotations <- CAGEr::plotAnnot(ce, "counts")
 save_plot(
-    "tag_region_annotation.pdf",
+    "tag_region_annotation_plot.pdf",
     annotations
 )
 
@@ -92,10 +92,10 @@ saveRDS(corr_m, "corr_m.rds")
 
 # plot correlations in heatmap format
 hm <- gplots::heatmap.2(corr_m, trace="none", margins=c(12, 12),cexRow=0.2)
-pdf("correlations_heatmap.pdf")
+pdf("correlations_heatmap_plot.pdf")
 eval(hm$call)
 dev.off()
-saveRDS(hm, "correlations_heatmap.rds")
+saveRDS(hm, "correlations_heatmap_plot.rds")
 
 # Plot sequence distribution at the TSS
 # tsslogo_plot <- CAGEr::TSSlogo(
@@ -106,6 +106,6 @@ tsslogo_plot <- TSSlogo_local(
     genome_name=reference_name,
     upstream = 35)
 save_plot(
-    "TSSlogos.pdf",
+    "TSSlogos_plot.pdf",
     tsslogo_plot
 )

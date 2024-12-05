@@ -52,7 +52,7 @@ cager_clustering <- function(ce, iqw_plot_lim, sample_num_thr, ctss_thr, num_cor
         qUp = 0.9,
         xlim = iqw_plot_lim) # plot_lim
     save_plot(
-        "interquartile_width_tagclusters.pdf",
+        "interquartile_width_tagclusters_plot.pdf",
         iqw_plot)
 
     # count CTSS
@@ -68,10 +68,9 @@ cager_clustering <- function(ce, iqw_plot_lim, sample_num_thr, ctss_thr, num_cor
     ctss_plot <- plot_number_of_ctss(
         sample_ctss_count=sample_ctss_count,
         yaxistitle="Number of TSS clusters",
-        mytitle="CTSS per sample",
-        myfilename="ctss_counts_plots.pdf")
+        mytitle="CTSS per sample")
     save_plot(
-        myfilename,
+        "ctss_counts_plot.pdf",
         ctss_plot)
 
     # annotate tag clusters
