@@ -1,0 +1,5 @@
+# Collect plots and knit them into a document
+
+```{r include=TRUE}
+test <- "hi"
+```
