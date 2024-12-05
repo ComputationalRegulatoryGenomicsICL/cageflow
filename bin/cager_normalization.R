@@ -30,7 +30,7 @@ cager_normalization <- function(
     intercept <- outlist[[4]]
     fit.slopes <- outlist[[5]]
 
-    plots <- plotReverseCumulatives_local(
+    revcum_plots <- plotReverseCumulatives_local(
         tag_count_df=tag_count_df,
         slope=slope,
         intercept=intercept,
@@ -38,11 +38,11 @@ cager_normalization <- function(
         fit.slopes = fit.slopes,
         fitInRange = c(range_min, range_max))
     
-    pdf("reverse_cumulative.pdf")
-    print(plots)
-    dev.off()
+    save_plot(
+        "reverse_cumulative.pdf",
+        revcum_plots)
 
-    ce <- normalizeTagCount(
+    ce <- CAGEr::normalizeTagCount(
         ce,
         method = method,
         fitInRange = c(range_min, range_max),

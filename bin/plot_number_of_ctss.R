@@ -29,15 +29,6 @@ plot_settings <- function(.data, y_value, color_by_value, y_label, title) {
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 }
 
-save_plot <- function(filename, plot_out){
-    ggsave(
-        filename = filename,
-        plot = plot_out,
-        width = 20,
-        height = 10,
-        limitsize = FALSE)
-}
-
 plot_number_of_ctss <- function(sample_ctss_count, yaxistitle, mytitle, myfilename) {
   sample_ctss_count_table <- tibble::enframe(
     sample_ctss_count,
@@ -50,8 +41,5 @@ plot_number_of_ctss <- function(sample_ctss_count, yaxistitle, mytitle, myfilena
       color_by_value = Sample,
       y_label = yaxistitle,
       title = mytitle)
-  save_plot(
-    myfilename,
-    ctss_plot)
-  return("feature counts plotted")
+  return(ctss_plot)
 }

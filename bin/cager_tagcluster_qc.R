@@ -50,18 +50,6 @@ option_list = list(
         type = "double",
         default = 1,
         help = "Threshold to filter CTSS that has few tags per million (Optional), defaults to 1 ",
-        metavar = "double"),
-    make_option(
-        c("-e", "--pdf_height"),
-        type = "double",
-        default = 5,
-        help = "Height of the plot, depends on the number of samples (Optional), defaults to 5 ",
-        metavar = "double"),
-    make_option(
-        c("-w", "--pdf_width"),
-        type = "double",
-        default = 4,
-        help = "Width of the plot (Optional), defaults to 4 ",
         metavar = "double")
 )
 
@@ -83,7 +71,8 @@ pdfHeight     <- opt$pdf_height
 source(file.path(project_dir, "bin/install_bsgenome.R"))
 # Read in TxDb object
 tx_annotation_obj <- loadDb(tx_annotation)
-# import functions for second quality control
+# import functions for second quality control and plotting
+source(file.path(project_dir, "bin/plot_saving.R"))
 source(file.path(project_dir, "bin/cager_nucleotide_composition_functions.R"))
 
 reference_name <- install_bsgenome(bsgenome)
@@ -112,9 +101,11 @@ peakAnno_list <- lapply(
         tssRegion = c(-3000, 3000),
         sameStrand = TRUE)
 )
-pdf("chipseeker_tagCluster_annotation.pdf")
-print(ChIPseeker::plotAnnoBar(peakAnno_list))
-dev.off()
+chipannot_plot <- ChIPseeker::plotAnnoBar(peakAnno_list)
+save_plot(
+    "chipseeker_tagCluster_annotation.pdf",
+    chipannot_plot
+)
 
 # # nucleotide composition
 normalized_ctss_list <- extract_ctss_normalized_tmp_per_sample(ce, tpmThreshold)
@@ -122,20 +113,22 @@ ctss_sequences <- extract_ctss_sequences(normalized_ctss_list, reference_name)
 outlist <- calculate_nucleotide_frequency(ctss_sequences)
 ctss_nucl_freq_df_tidy <- outlist[[1]]
 sample_names <- outlist[[2]]
-print(plot_nucleotide_frequency(
+nuclfreq_plot <- plot_nucleotide_frequency(
     ctss_nucl_freq_df_tidy,
-    sample_names,
-    "nucleotide_freq.pdf",
-    pdfheight = pdfHeight,
-    pdfwidth = pdfWidth
-))
+    sample_names
+)
+save_plot(
+    "nucleotide_frequencies.pdf",
+    nuclfreq_plot
+)
 
 # dinculeotide composition
 expanded_ctss_list <- expand_ctss_regions(normalized_ctss_list, reference_name)
 ctss_sequences <- extract_ctss_sequences(expanded_ctss_list, reference_name)
 ctss_dinuc_freq_df_tidy <- count_dinucleotide_frequency(ctss_sequences)
-print(plot_dinucleotide_frequency(
-    ctss_dinuc_freq_df_tidy,
-    "dinucleotide_freq.pdf",
-    pdfheight = pdfHeight,
-    pdfwidth = pdfWidth))
+dinuclfreq_plot <- plot_dinucleotide_frequency(
+    ctss_dinuc_freq_df_tidy)
+save_plot(
+    "dinucleotide_frequencies.pdf",
+    dinuclfreq_plot
+)
