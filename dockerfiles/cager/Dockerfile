@@ -14,6 +14,13 @@ RUN apt-get update && \
     libssl-dev \
     libxml2-dev \
     libfontconfig1-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libfreetype6-dev \
+    libpng-dev \
+    libtiff5-dev \
+    libjpeg-dev \
+    littler \
     procps \
     g++ && \
     apt-get clean && \
@@ -22,4 +29,4 @@ RUN apt-get update && \
 # Install R dependencies
 COPY requirements.R /opt/software/requirements.R
 RUN Rscript requirements.R
-ENV R_LIBS=${R_LIBS}:/opt/software
+CMD ["/bin/bash"]

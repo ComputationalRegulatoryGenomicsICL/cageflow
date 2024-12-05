@@ -5,7 +5,6 @@
 #' @param rangeMax range max within which the slope is calculated
 #' @param method method of normalizing tag counts
 #' @param total_tag_num total number of tags
-#' @param cager_folder path to save plots
 #' @return ce normalized CAGEexp object
 #' @examples
 #' cager_normalization(
@@ -13,23 +12,13 @@
 #' rangeMin=50,
 #' rangeMax=100000,
 #' method="powerLaw",
-#' total_tag_num=1*10^6,
-#' cager_folder="cager_results/")
+#' total_tag_num=1*10^6)
 
 cager_normalization <- function(
     ce,
     rangeMin, rangeMax,
     method,
-    total_tag_num,
-    cager_folder){
-
-    # merge replicates - automatic extraction of replicate counts
-    # only if they follow some pattern
-    # ce <- CAGEr::mergeSamples(
-    #     ce,
-    #     mergeIndex = new_indeces,
-    #     mergedSampleLabels = sample_names
-    # )
+    total_tag_num){
 
     outlist <- calculateReverseCumulative(
         object = ce,
@@ -49,11 +38,7 @@ cager_normalization <- function(
         fit.slopes = fit.slopes,
         fitInRange = c(range_min, range_max))
     
-    if (!dir.exists(file.path(cager_folder))) {
-        dir.create(file.path(cager_folder))
-    }
-    # TODO: pdf if not too many samples
-    png(file.path(cager_folder, "reverse_cumulative.png"))
+    pdf("reverse_cumulative.pdf")
     print(plots)
     dev.off()
 

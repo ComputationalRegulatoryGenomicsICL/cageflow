@@ -11,10 +11,11 @@ extract_ctss_normalized_tmp_per_sample <- function(ce, tpm_threshold = 1) {
 }
 
 extract_ctss_sequences <- function(ctss_list, seq_data) {
+    bsgenome <- getBSgenome(seq_data)
     ctss_sequences <- lapply(
         ctss_list,
         function(x) {
-            BSgenome::getSeq(seq_data, x)
+            BSgenome::getSeq(bsgenome, x)
         }
     )
     return(ctss_sequences)
@@ -101,10 +102,11 @@ plot_nucleotide_frequency <- function(
 
 ### For dinucleotide composition
 
-expand_ctss_regions <- function(normalized_ctss_list) {
+expand_ctss_regions <- function(normalized_ctss_list, seq_data) {
+    bsgenome <- getBSgenome(seq_data)
     # this might not be necessary
     for (sample in names(normalized_ctss_list)){
-        GenomeInfoDb::seqinfo(normalized_ctss_list[[sample]]) <- GenomeInfoDb::seqinfo(seq_data)[
+        GenomeInfoDb::seqinfo(normalized_ctss_list[[sample]]) <- GenomeInfoDb::seqinfo(bsgenome)[
             GenomeInfoDb::seqlevels(normalized_ctss_list[[sample]])
         ]
     }
@@ -141,52 +143,46 @@ count_dinucleotide_frequency <- function(ctss_sequences) {
     # remove single letter long "dinucleotides"
     true_dinuc <- unlist(lapply(all_nonn_dinuc, function(x) {x[nchar(x) > 1]}))
     dinuc_values <- true_dinuc[order(true_dinuc)]
-    # ensure the lists are of the same length - remove entries with N base or single base
     ctss_dinuc_freq_filt <- lapply(
         ctss_dinuc_freq,
         function(x) {x[names(x) %in% dinuc_values]})
-    # set levels in value order based on first entry order
-    dinuc_levels <- names(sort(ctss_dinuc_freq_filt[[1]]))
     # convert to dataframe
-    ctss_dinuc_freq_df <- as.data.frame(ctss_dinuc_freq_filt)
-    # tidy the dataframe
-    ctss_dinuc_freq_df_tidy <- ctss_dinuc_freq_df[, grep(
-        x = colnames(ctss_dinuc_freq_df),
-        pattern = "Freq")]
-    # attach dinucleotide information
-    ctss_dinuc_freq_df_tidy <- cbind(
-        ctss_dinuc_freq_df_tidy,
-        ctss_dinuc_freq_df[,1])
-    # rename columns
-    column_names <- names(ctss_sequences)
-    colnames(ctss_dinuc_freq_df_tidy) <- c(column_names, "dinucleotide")
-    rownames(ctss_dinuc_freq_df_tidy) <- ctss_dinuc_freq_df_tidy$dinucleotide
-    return(list(ctss_dinuc_freq_df_tidy, dinuc_levels, column_names))
+    cdf_intermediate <- lapply(ctss_dinuc_freq, as.data.frame)
+    cdf_almost_good <- dplyr::bind_rows(cdf_intermediate, .id="Name")
+    ctss_dinuc_freq_df <- reshape(cdf_almost_good, idvar="Var1", timevar="Name",direction="wide")
+    # fill in 0 instead of NA
+    ctss_dinuc_freq_df[is.na(ctss_dinuc_freq_df)]<-0
+    # order
+    ctss_dinuc_freq_df_srt <- arrange(ctss_dinuc_freq_df, desc(across(names(ctss_dinuc_freq_df)[2])))
+    # fix names
+    names(ctss_dinuc_freq_df_srt) <- gsub("Freq.", "", names(ctss_dinuc_freq_df_srt))
+    names(ctss_dinuc_freq_df_srt) <- gsub("Var1", "dinucleotide", names(ctss_dinuc_freq_df_srt))
+    rownames(ctss_dinuc_freq_df_srt) <- ctss_dinuc_freq_df_srt$dinucleotide
+    return(ctss_dinuc_freq_df_srt)
 }
 
 plot_dinucleotide_frequency <- function(
         ctss_dinuc_freq_df_tidy,
-        dinuc_levels,
-        column_names,
         outfilepath,
         pdfheight = 12,
         pdfwidth = 10) {
     # prepare dataframe for ggplot
-    ctss_dinuc_freq_df_tidy_gg <- tidyr::gather(
+    ctss_dinuc_freq_df_tidy_gg <- tidyr::pivot_longer(
         ctss_dinuc_freq_df_tidy,
-        samples,
-        percentage,
-        colnames(ctss_dinuc_freq_df_tidy[,1:(length(ctss_dinuc_freq_df_tidy)-1)]))
-
+        cols=2:3,
+        names_to="samples",
+        values_to="percentage"
+    )
     # plot initiators as a histogram - all samples
     # set levels
     ctss_dinuc_freq_df_tidy_gg$dinucleotide <- factor(
         ctss_dinuc_freq_df_tidy_gg$dinucleotide,
-        levels = dinuc_levels)
+        levels=ctss_dinuc_freq_df_tidy$dinucleotide)
     # keep alphabetical order of samples
+    column_names <- sort(unique(ctss_dinuc_freq_df_tidy_gg$samples))
     ctss_dinuc_freq_df_tidy_gg$samples <- factor(
         ctss_dinuc_freq_df_tidy_gg$samples,
-        levels = column_names)
+        levels=column_names)
 
     col = viridis::magma(
         length(column_names),

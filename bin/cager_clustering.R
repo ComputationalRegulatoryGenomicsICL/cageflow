@@ -10,24 +10,25 @@
 #' iqw_plot_lim = c(0, 150),
 #' num_core = 4)
 
-cager_clustering <- function(ce, iqw_plot_lim, num_core){
+cager_clustering <- function(ce, iqw_plot_lim, sample_num_thr, ctss_thr, num_core){
     multicore <- TRUE
     if(num_core < 2){
         multicore <- FALSE
         num_core <- NULL
     }
 
-    # cluster TSS
-    ce <- CAGEr::clusterCTSS(
+    # CTSS flagging used for filtering
+    ce <- CAGEr::filterLowExpCTSS(
         ce,
         thresholdIsTpm = TRUE,
-        nrPassThreshold = 1,
-        method="distclu",
+        nrPassThreshold = sample_num_thr,
+        threshold = ctss_thr)
+
+    # cluster TSS with distclu
+    ce <- CAGEr::distclu(
+        ce,
         maxDist=20,
-        removeSingletons = TRUE,
-        keepSingletonsAbove = 5,
-        useMulticore = multicore,
-        nrCores = num_core)
+        keepSingletonsAbove = 5)
 
     # calculate IQ range
     ce <- CAGEr::cumulativeCTSSdistribution(

@@ -58,7 +58,23 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 11. Assess mapping quality using [`samtools stats`](https://www.htslib.org/doc/samtools-stats.html), [`samtools flagstat`](https://www.htslib.org/doc/samtools-flagstat.html) and [`samtools idxstats`](https://www.htslib.org/doc/samtools-idxstats.html).
 12. Create a [BSgenome package](https://bioconductor.org/packages/release/bioc/html/BSgenome.html) for the reference genome, if the package is not available.
 13. Create a CAGEexp object and call TSSs with [`CAGEr`](https://bioconductor.org/packages/release/bioc/html/CAGEr.html) using a [BSgenome package](https://bioconductor.org/packages/release/bioc/html/BSgenome.html) for the respective genome. If reads were mapped with `STAR`, then convert its 5'-coverage wig files into bigWig files to use as input for `CAGEr` (the `CAGEexp-bigWig` module); if reads were mapped with `bowtie2`, then use MAPQ-filtered and sorted BAM files as `CAGEr` input (the `CAGEexp-BAM` module).
-14. Create a [MultiQC](https://multiqc.info/) report.
+14. Analysis of CAGE reads according to the manual of [`CAGEr`](https://www.bioconductor.org/packages/release/bioc/vignettes/CAGEr/inst/doc/CAGEexp.html). Clustering done using distance based (distclu) method. Merging of the replicates is disabled currently (meaning it is commented out). Hardcoded values to be discussed:
+```
+ce <- CAGEr::distclu(
+        ce,
+        maxDist=20,
+        keepSingletonsAbove = 5)
+```
+```
+iqw_plot <- plotInterquantileWidth_local(
+        ce,
+        clusters = "tagClusters",
+        tpmThreshold = 3,
+        qLow = 0.1,
+        qUp = 0.9,
+        xlim = c(0, 150))
+```
+15. Create a [MultiQC](https://multiqc.info/) report.
 
 ## Usage
 

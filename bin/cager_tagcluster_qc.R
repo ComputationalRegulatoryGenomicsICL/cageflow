@@ -10,6 +10,7 @@ required.libraries <- c(
     "optparse",
     "rlang",
     "CAGEr",
+    "GenomicFeatures",
     "ChIPseeker",
     "Biostrings",
     "tidyr",
@@ -35,10 +36,10 @@ option_list = list(
         default = NULL,
         help = "Genome annotation package, eg TxDb.Hsapiens.UCSC.hg38.knownGene (Mandatory)"),
     make_option(
-        c("-d", "--annot_db"),
+        c("-b", "--bsgenome"),
         type = "character",
         default = NULL,
-        help = "Genome annotation database package, eg org.Hs.eg.db (Mandatory)"),
+        help = "Name of the BSgenome version to be used (Mandatory)"),
     make_option(
         c("-p", "--project_dir"),
         type = "character",
@@ -61,7 +62,7 @@ option_list = list(
         type = "double",
         default = 4,
         help = "Width of the plot (Optional), defaults to 4 ",
-        metavar = "double"),
+        metavar = "double")
 )
 
 message("; Reading arguments from command line.")
@@ -72,14 +73,20 @@ opt = optparse::parse_args(opt_parser)
 
 ce_path         <- opt$cageexp_object
 tx_annotation   <- opt$annotation
-annot_db        <- opt$annot_db
+bsgenome        <- opt$bsgenome
 project_dir     <- opt$project_dir
 tpmThreshold  <- opt$tpm_threshold
 pdfWidth      <- opt$pdf_width
 pdfHeight     <- opt$pdf_height
 
+# installing BSgenome
+source(file.path(project_dir, "bin/install_bsgenome.R"))
+# Read in TxDb object
+tx_annotation_obj <- loadDb(tx_annotation)
 # import functions for second quality control
 source(file.path(project_dir, "bin/cager_nucleotide_composition_functions.R"))
+
+reference_name <- install_bsgenome(bsgenome)
 
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
@@ -91,7 +98,6 @@ tag_clusters <- lapply(
     function (x) CAGEr::tagClustersGR(
         ce,
         sample = x,
-        returnInterquantileWidth = TRUE,
         qLow = 0.1,
         qUp = 0.9))
 
@@ -102,18 +108,17 @@ peakAnno_list <- lapply(
     tag_clusters,
     function(x) ChIPseeker::annotatePeak(
         x,
-        TxDb = tx_annotation,
+        TxDb = tx_annotation_obj,
         tssRegion = c(-3000, 3000),
-        annoDb = annot_db, # TODO: we don't want to depend on orgdb
         sameStrand = TRUE)
 )
 pdf("chipseeker_tagCluster_annotation.pdf")
 print(ChIPseeker::plotAnnoBar(peakAnno_list))
 dev.off()
 
-# nucleotide composition
+# # nucleotide composition
 normalized_ctss_list <- extract_ctss_normalized_tmp_per_sample(ce, tpmThreshold)
-ctss_sequences <- extract_ctss_sequences(normalized_ctss_list, seq_data)
+ctss_sequences <- extract_ctss_sequences(normalized_ctss_list, reference_name)
 outlist <- calculate_nucleotide_frequency(ctss_sequences)
 ctss_nucl_freq_df_tidy <- outlist[[1]]
 sample_names <- outlist[[2]]
@@ -126,16 +131,11 @@ print(plot_nucleotide_frequency(
 ))
 
 # dinculeotide composition
-expanded_ctss_list <- expand_ctss_regions(normalized_ctss_list)
-ctss_sequences <- extract_ctss_sequences(expanded_ctss_list, seq_data)
-outlist <- count_dinucleotide_frequency(ctss_sequences)
-ctss_dinuc_freq_df_tidy <- outlist[[1]]
-dinuc_levels <- outlist[[2]]
-column_names <- outlist[[3]]
+expanded_ctss_list <- expand_ctss_regions(normalized_ctss_list, reference_name)
+ctss_sequences <- extract_ctss_sequences(expanded_ctss_list, reference_name)
+ctss_dinuc_freq_df_tidy <- count_dinucleotide_frequency(ctss_sequences)
 print(plot_dinucleotide_frequency(
     ctss_dinuc_freq_df_tidy,
-    dinuc_levels,
-    column_names,
     "dinucleotide_freq.pdf",
     pdfheight = pdfHeight,
     pdfwidth = pdfWidth))

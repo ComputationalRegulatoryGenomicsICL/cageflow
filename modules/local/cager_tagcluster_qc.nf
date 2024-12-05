@@ -9,15 +9,25 @@ process CAGER_TAGCLUSTER_QC {
     input:
     path cager_obj
     path txdb
+    path bsgenome_file
+    val bsgenome_name
 
     output:
     path "versions.yml", emit: versions
+    path "*.pdf", emit: plots
 
     """
+    if [ -z ${bsgenome_name} ]
+    then
+        bsgenome=${bsgenome_file}
+    else
+        bsgenome=${bsgenome_name}
+    fi
+
     cager_tagcluster_qc.R  \
         -i ${cager_obj} \
         -a ${txdb} \
-        -d ${params.orgdb} \
+        -b \${bsgenome} \
         -p ${projectDir} \
         -t ${params.tpm_threshold} \
         -e ${params.tagcluster_qc_pdf_height} \

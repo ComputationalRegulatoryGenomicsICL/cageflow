@@ -23,3 +23,6 @@ norm_range_min: 10
 norm_range_max: 10000
 norm_method: "powerLaw"
 total_tag_num: 1000000
+# parameters for CTSS
+sample_num_thr: 1
+ctss_thr: 1

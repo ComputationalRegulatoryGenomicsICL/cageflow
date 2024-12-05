@@ -35,15 +35,24 @@ workflow CAGER {
         cager_rds = CAGER_READIN.out.rds
         ch_versions = ch_versions.mix(CAGER_READIN.out.versions)
 
-        CAGER_TAG_QC(cager_rds, ch_txdb)
+        CAGER_TAG_QC(cager_rds, ch_txdb, ch_bsgenome_file, ch_bsgenome_name)
+        annotated_cager_rds = CAGER_TAG_QC.out.cager_rds
         ch_versions = ch_versions.mix(CAGER_TAG_QC.out.versions)
 
-        CAGER_PREPROCESSING(cager_rds)
+        CAGER_PREPROCESSING(annotated_cager_rds, ch_bsgenome_file, ch_bsgenome_name)
         clustered_cager_rds = CAGER_PREPROCESSING.out.rds
         ch_versions = ch_versions.mix(CAGER_PREPROCESSING.out.versions)
 
-        CAGER_TAGCLUSTER_QC(clustered_cager_rds, ch_txdb)
+        CAGER_TAGCLUSTER_QC(clustered_cager_rds, ch_txdb, ch_bsgenome_file, ch_bsgenome_name)
         ch_versions = ch_versions.mix(CAGER_TAGCLUSTER_QC.out.versions)
+
+        // TODO:
+        // 1. consensus clusters
+        // 2. track exports (what kinds?)
+        // 3. expression profiling
+        // 4. differential expression analysis
+        // 5. shifting promoters
+        // 6. enhancer calling
 
     emit:
         ch_versions

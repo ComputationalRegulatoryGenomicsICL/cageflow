@@ -7,7 +7,7 @@
 #' @return a CAGEexp object
 #' @examples
 #' read_in_bigwig(
-#'  bsgenome_name=hsapiens,
+#'  bsgenome_name="BSgenome.Scerevisiae.UCSC.sacCer3",
 #'  bigwig_paths=["path/to/file1.bw", "path/to/file2.bw"],
 #'  cpus=4)
 
@@ -96,12 +96,15 @@ read_in_bigwig <- function(
     dplyr::mutate(across(all_of(plus_sample_names), as.integer))
   ctss.obj$chr = as.character(ctss.obj$chr)
   ctss.obj$strand = as.character(ctss.obj$strand)
-  ctss.obj = as(ctss.obj, "CAGEexp")
-  ctss.obj$genomeName = bsgenome_name
+  cageexpobj = as(ctss.obj, "CAGEexp")
 
-  rowRanges(ctss.obj@ExperimentList$tagCountMatrix) = as(
-    rowRanges(ctss.obj@ExperimentList$tagCountMatrix),
+  colData(cageexpobj)$inputFilesType <- "CTSStable"
+
+  metadata(cageexpobj)$genomeName = bsgenome_name
+
+  rowRanges(cageexpobj@ExperimentList$tagCountMatrix) = as(
+    rowRanges(cageexpobj@ExperimentList$tagCountMatrix),
     Class = "CTSS")
   
-  return(ctss.obj)
+  return(cageexpobj)
 }
