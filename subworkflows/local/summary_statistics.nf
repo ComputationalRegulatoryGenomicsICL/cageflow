@@ -15,7 +15,7 @@ workflow SUMMARY_STAT {
 
     main:
         SAMTOOLS_STATS ( 
-            ch_bam_bai, 
+            ch_bam_bai,
             ch_fasta.ifEmpty(
                 file("$projectDir/assets/NO_FILE_FASTA",
                 checkIfExists: true))
