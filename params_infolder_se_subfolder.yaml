@@ -1,13 +1,13 @@
 # preprocessing parameters
 samplesheet:
-infolder: "customcageq/assets/sacCer_fastq/sese_2_fields_hyphen"
+infolder: "assets/sacCer_fastq/sese_2_fields_hyphen"
 sample_name_fields: 2 # including _repX if applicable
 bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
 forgeseed:
 sourcedir:
-fasta: "customcageq/assets/sacCer3_genome/sacCer3.fa"
+fasta: "assets/sacCer3_genome/sacCer3.fa"
 index:
-gtf: "customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf"
+gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
 star_ignore_sjdbgtf: false
 seq_platform: "illumina"
 seq_center: false
