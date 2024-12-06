@@ -1,8 +1,11 @@
 # Use the official R base image
-FROM r-base:latest
+FROM r-base:4.4.1
 
 # Maintainer label
-LABEL maintainer="nikipavel14@gmail.com"
+LABEL maintainer="katalitf@uio.no"
+
+# Set up folder structure
+WORKDIR /opt/software
 
 # Update and install system libraries
 RUN apt-get update && \
@@ -10,11 +13,20 @@ RUN apt-get update && \
     libcurl4-openssl-dev \
     libssl-dev \
     libxml2-dev \
+    libfontconfig1-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libfreetype6-dev \
+    libpng-dev \
+    libtiff5-dev \
+    libjpeg-dev \
+    littler \
     procps \
     g++ && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Install Bioconductor and the desired packages
-RUN R -e "install.packages('BiocManager', repos='https://cloud.r-project.org/')"
-RUN R -e "BiocManager::install(c('CAGEr', 'BSgenome'))"
+# Install R dependencies
+COPY requirements.R /opt/software/requirements.R
+RUN Rscript requirements.R
+CMD ["/bin/bash"]

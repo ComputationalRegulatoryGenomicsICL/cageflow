@@ -1,15 +1,20 @@
-process CAGER_BAM {
+// 
+// Quality Control steps of CAGEr after clustering of CTSS
+// 
+
+process CAGER_TAGCLUSTER_QC {
     label 'process_medium'
     stageInMode 'copy'
 
     input:
+    path cager_obj
+    path txdb
     path bsgenome_file
     val bsgenome_name
-    val meta_bam
 
     output:
-    path "*.rds",        emit: rds
     path "versions.yml", emit: versions
+    path "*.pdf", emit: plots
 
     """
     if [ -z ${bsgenome_name} ]
@@ -19,22 +24,21 @@ process CAGER_BAM {
         bsgenome=${bsgenome_name}
     fi
 
-    echo ${meta_bam} | \\
-        sed 's/, \\[/\\n/g' | \\
-        tr -d '[],' | \\
-        tr ' ' '\\t' | \\
-        sed 's/id://' | \\
-        sed 's/single_end://' \\
-            > sample_list.tsv
-
-    cager_bam.R \${bsgenome} sample_list.tsv ${task.cpus}
+    cager_tagcluster_qc.R  \
+        -i ${cager_obj} \
+        -a ${txdb} \
+        -b \${bsgenome} \
+        -p ${projectDir} \
+        -t ${params.tpm_threshold} \
+        -e ${params.tagcluster_qc_pdf_height} \
+        -w ${params.tagcluster_qc_pdf_width}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         Bash: \$(echo "\$BASH_VERSION")
         R: \$(R --version | head -1 | awk '{print \$3}')
         R_CAGEr: \$(Rscript -e 'packageVersion("CAGEr")' | awk '{print \$2}' | tr -d "‘’")
-        R_BSgenome: \$(Rscript -e 'packageVersion("BSgenome")' | awk '{print \$2}' | tr -d "‘’")
+        R_packages: \$(Rscript -e 'sessionInfo(package = NULL)')
     END_VERSIONS
     """
 }

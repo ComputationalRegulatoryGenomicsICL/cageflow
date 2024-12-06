@@ -6,17 +6,25 @@ include { SAMPLESHEET_CHECK } from '../../modules/local/samplesheet_check.nf'
 
 workflow INPUT_FROM_SAMPLESHEET {
     take:
-    samplesheet // file: /path/to/samplesheet.csv
+    samplesheet // /path/to/samplesheet.csv
 
     main:
-    SAMPLESHEET_CHECK ( samplesheet )
+    input_handler = file(samplesheet, checkIfExists: true)
+    reads = SAMPLESHEET_CHECK ( input_handler )
         .csv
         .splitCsv ( header:true, sep:',' )
         .map { create_fastq_channel(it) }
-        .set { reads }
+
+    ch_fastq = reads
+        .map {
+                meta, fastq ->
+                    meta.id = meta.id.split('_')[0..-2].join('_')
+                    [ meta, fastq ] }
+            .groupTuple(by: [0])
+            .map{ meta, fastq -> [ meta, fastq.flatten() ] }
 
     emit:
-    reads                                     // channel: [ val(meta), [ reads ] ]
+    ch_fastq                                  // channel: [ val(meta), [ reads ] ]
     versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
 }
 

@@ -2,11 +2,16 @@ process BOWTIE2_BUILD {
     tag "$fasta"
     label 'process_high'
 
+    conda "${moduleDir}/environment.yml"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/bowtie2:2.5.2--py39h6fed5c7_0' :
+        'biocontainers/bowtie2:2.5.2--py39h6fed5c7_0' }"
+
     input:
-    path fasta
+    tuple val(meta), path(fasta)
 
     output:
-    path 'bowtie2'    , emit: index
+    tuple val(meta), path('bowtie2')    , emit: index
     path "versions.yml"                 , emit: versions
 
     when:
