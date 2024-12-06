@@ -5,7 +5,7 @@ sample_name_fields:
 bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
 forgeseed:
 sourcedir:
-fasta:
+fasta: "customcageq/assets/sacCer3_genome/sacCer3.fa"
 index: "customcageq/assets/sacCer3_genome/sacCer3_star_index/"
 gtf: "customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf"
 star_ignore_sjdbgtf: false
