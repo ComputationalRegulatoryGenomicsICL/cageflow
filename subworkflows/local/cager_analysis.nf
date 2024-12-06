@@ -54,7 +54,7 @@ workflow CAGER {
         // tagcluster annotations, nucleotide frequencies, dinucleotide frequencies
         ch_tagc_plots = CAGER_TAGCLUSTER_QC.out.plots
 
-        ch_template = Channel.fromPath("customcageq/bin/cager_report.Rmd")
+        ch_template = Channel.fromPath(params.markdown_path)
 
         ch_html = CAGER_REPORT(
             ch_template,

@@ -24,3 +24,5 @@ total_tag_num: 1000000
 # parameters for CTSS
 sample_num_thr: 1
 ctss_thr: 1
+# markdown location
+markdown_path: "customcageq/assets/cager_report.Rmd"
