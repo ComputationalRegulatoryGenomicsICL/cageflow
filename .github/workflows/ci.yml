@@ -38,7 +38,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin' # See 'Supported distributions' for available options
-          java-version: '16'
+          java-version: '17'
 
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v1
