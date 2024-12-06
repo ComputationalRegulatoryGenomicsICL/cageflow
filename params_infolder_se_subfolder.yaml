@@ -6,7 +6,7 @@ bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
 forgeseed:
 sourcedir:
 fasta: "assets/sacCer3_genome/sacCer3.fa"
-index:
+index: "assets/sacCer3_genome/sacCer3_star_index/"
 gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
 star_ignore_sjdbgtf: false
 seq_platform: "illumina"
