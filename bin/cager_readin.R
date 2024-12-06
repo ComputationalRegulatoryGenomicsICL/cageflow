@@ -75,12 +75,14 @@ reference_name <- install_bsgenome(bsgenome)
 
 sample_table <- parse_input(sample_file)
 single_end_uniq <- unique(sample_table$single_end)
-if (length(single_end_uniq) == 1) {
-    bam_type <- ifelse(single_end_uniq == "true",
-                    "bam", "bamPairedEnd")
-} else {
+if (length(single_end_uniq) < 1) {
+    stop("Sample table is empty")
+} else if (length(single_end_uniq) > 1) {
     print(sample_table)
     stop("Sample table contains both single-end and paired-end reads.")
+} else {
+    bam_type <- ifelse(single_end_uniq == "true",
+                    "bam", "bamPairedEnd")
 }
 
 if (tolower(data_type) == "bam"){
