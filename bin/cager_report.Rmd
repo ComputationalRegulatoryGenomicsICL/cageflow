@@ -11,19 +11,19 @@ geometry: margin = 2cm
 
 # Results of CAGEr analysis
 
-```{r eval=TRUE, include=TRUE}
+```{r eval=TRUE, include=TRUE, echo=FALSE}
 results_dir <- "../../results/cager"
 ```
 
 ### Tag region annotation
-```{r eval=TRUE, include=TRUE}
+```{r eval=TRUE, include=TRUE, echo=FALSE}
 tagannot_plot <- readRDS(
     file.path(results_dir, "tag_region_annotation_plot.rds"))
 tagannot_plot
 ```
 
 ### Correlation
-```{r eval=TRUE, include=TRUE}
+```{r eval=TRUE, include=TRUE, echo=FALSE}
 corr_m <- readRDS(file.path(results_dir, "corr_m.rds"))
 hm_plot <- readRDS(
     file.path(results_dir, "correlations_heatmap_plot.rds"))
@@ -31,35 +31,36 @@ eval(hm_plot$call)
 ```
 
 ### TSS logo
-```{r eval=TRUE, include=TRUE}
+```{r eval=TRUE, include=TRUE, echo=FALSE}
 tss_plot <- readRDS(
     file.path(results_dir, "TSSlogos_plot.rds"))
-tss_plot
+tss_plot + ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 90))
 ```
 
 ### Normalization
-```{r eval=TRUE, include=TRUE}
+```{r eval=TRUE, include=TRUE, echo=FALSE}
 revc_plot <- readRDS(
     file.path(results_dir, "reverse_cumulative_plot.rds"))
 revc_plot
 ```
 
 ### Promoter width
-```{r eval=TRUE, include=TRUE}
+```{r eval=TRUE, include=TRUE, echo=FALSE}
 iqw_plot <- readRDS(
     file.path(results_dir, "interquartile_width_tagclusters_plot.rds"))
 iqw_plot
 ```
 
 ### Tagcluster annotation
-```{r eval=TRUE, include=TRUE}
+```{r eval=TRUE, include=TRUE, echo=FALSE}
 chta_plot <- readRDS(
     file.path(results_dir, "chipseeker_tagCluster_annotation_plot.rds"))
 chta_plot
 ```
 
 ### Nucleotide and dinucleotide frequencies in tagclusters
-```{r eval=TRUE, include=TRUE}
+```{r eval=TRUE, include=TRUE, echo=FALSE}
 nucl_plot <- readRDS(
     file.path(results_dir, "nucleotide_frequencies_plot.rds"))
 nucl_plot
@@ -67,7 +68,7 @@ nucl_plot
 dinucl_plot <- readRDS(
     file.path(results_dir, "dinucleotide_frequencies_plot.rds"))
 dinucl_plot + ggplot2::theme(
-    text=ggplot2::element_text(size=5),
+    text=ggplot2::element_text(size=10),
     axis.text.x = ggplot2::element_text(angle = 90, size=5),
     axis.text.y = ggplot2::element_text(size=5))
 ```
