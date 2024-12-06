@@ -19,51 +19,55 @@ results_dir <- "../../results/cager"
 ```{r eval=TRUE, include=TRUE}
 tagannot_plot <- readRDS(
     file.path(results_dir, "tag_region_annotation_plot.rds"))
-print(tagannot_plot)
+tagannot_plot
 ```
 
 ### Correlation
 ```{r eval=TRUE, include=TRUE}
+corr_m <- readRDS(file.path(results_dir, "corr_m.rds"))
 hm_plot <- readRDS(
     file.path(results_dir, "correlations_heatmap_plot.rds"))
-print(hm_plot)
+eval(hm_plot$call)
 ```
 
 ### TSS logo
 ```{r eval=TRUE, include=TRUE}
 tss_plot <- readRDS(
     file.path(results_dir, "TSSlogos_plot.rds"))
-print(tss_plot)
+tss_plot
 ```
 
 ### Normalization
 ```{r eval=TRUE, include=TRUE}
 revc_plot <- readRDS(
     file.path(results_dir, "reverse_cumulative_plot.rds"))
-print(revc_plot)
+revc_plot
 ```
 
 ### Promoter width
 ```{r eval=TRUE, include=TRUE}
 iqw_plot <- readRDS(
     file.path(results_dir, "interquartile_width_tagclusters_plot.rds"))
-print(iqw_plot)
+iqw_plot
 ```
 
 ### Tagcluster annotation
 ```{r eval=TRUE, include=TRUE}
 chta_plot <- readRDS(
     file.path(results_dir, "chipseeker_tagCluster_annotation_plot.rds"))
-print(chta_plot)
+chta_plot
 ```
 
 ### Nucleotide and dinucleotide frequencies in tagclusters
 ```{r eval=TRUE, include=TRUE}
 nucl_plot <- readRDS(
     file.path(results_dir, "nucleotide_frequencies_plot.rds"))
-print(nucl_plot)
+nucl_plot
 
 dinucl_plot <- readRDS(
     file.path(results_dir, "dinucleotide_frequencies_plot.rds"))
-print(dinucl_plot)
+dinucl_plot + ggplot2::theme(
+    text=ggplot2::element_text(size=5),
+    axis.text.x = ggplot2::element_text(angle = 90, size=5),
+    axis.text.y = ggplot2::element_text(size=5))
 ```
