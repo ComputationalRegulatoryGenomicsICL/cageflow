@@ -135,7 +135,7 @@ workflow CUSTOMCAGE {
 
     // sorting samples alphabetically
     merged_sample_file = ch_collected.collectFile(
-        name: "intermediate/sample_list.csv",
+        name: "sample_list.csv",
         newLine: true,
         sort: { file -> file.text })
 
