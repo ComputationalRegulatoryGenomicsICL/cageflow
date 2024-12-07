@@ -32,30 +32,40 @@ workflow PARAMETER_CHECKS {
             meta = meta
             [meta]}
 
+        ch_genome_name = Channel.of(params.genome_name)
+
         // // if index is specified, it is used as input
-        // if (!params.fasta && !params.index) {
-        //     exit 1, 'Reference FASTA file (--fasta) or genome index (--index) should be specified.'
-        // } else if (params.index) {
-        //     ch_pre_idx = Channel.fromPath(params.index)
-        //     ch_index = sample_meta.combine(ch_pre_idx)
-        //     // NOTE: this will mean bowtie2 does not run
-        //     // TODO: mock some input maybe, fasta is only needed for a specific type of output which we don't use
-        //     ch_fasta = Channel.empty()
-        // } else {
-        //     ch_pre_fa = Channel.fromPath(params.fasta)
-        //     ch_fasta = sample_meta.combine(ch_pre_fa)
-        //     ch_index = Channel.empty()
-        // }
+        if (!params.fasta && !params.index) {
+            exit 1, 'Reference FASTA file (--fasta) or genome index (--index) should be specified.'
+        } else if (params.index) {
+            ch_pre_idx = Channel.fromPath(params.index, checkIfExists: true)
+            ch_index = sample_meta.combine(ch_pre_idx)
+            // NOTE: this will mean bowtie2 does not run
+            // TODO: mock some input maybe, fasta is only needed for a specific type of output which we don't use
+            if (params.fasta) {
+                ch_pre_fa = Channel.fromPath(params.fasta, checkIfExists: true)
+                ch_fasta = ch_genome_name.combine(ch_pre_fa)
+            } else {
+                ch_fasta = Channel.empty()
+            }
+        } else {
+            //ch_fasta = Channel.fromPath(params.fasta)
+            ch_pre_fa = Channel.fromPath(params.fasta, checkIfExists: true)
+            ch_fasta = ch_genome_name.combine(ch_pre_fa)
+            ch_index = Channel.empty()
+        }
 
         // All hell broke loose with removing this option, so that now it is placed back
-        ch_pre_fa = Channel.fromPath(params.fasta)
-        ch_fasta = sample_meta.combine(ch_pre_fa)
-        ch_pre_idx = Channel.fromPath(params.index)
-        ch_index = sample_meta.combine(ch_pre_idx)
+        // ch_pre_fa = Channel.fromPath(params.fasta)
+        // ch_fasta = sample_meta.combine(ch_pre_fa)
+        // ch_pre_idx = Channel.fromPath(params.index)
+        // ch_index = sample_meta.combine(ch_pre_idx)
 
         if (params.gtf) {
-            ch_pre_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
-            ch_gtf = sample_meta.combine(ch_pre_gtf)
+            ch_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
+            // ch_pre_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
+            // ch_gtf = sample_meta.combine(ch_pre_gtf)
+            // ch_gtf = ch_genome_name.combine(ch_pre_gtf)
         } else {
             exit 1, "The --gtf argument is mandatory."
         }

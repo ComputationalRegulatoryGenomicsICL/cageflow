@@ -18,19 +18,25 @@ workflow STAR_PROCESSING {
         ch_versions
 
     main:
+        ch_genome_name = Channel.of(params.genome_name)
+
+        sample_meta = ch_reads_to_align.map{ meta, fastq ->
+            meta = meta
+            [meta]}
+
         if (!params.index) {
             STAR_GENOMEGENERATE (
                 ch_fasta,
-                ch_gtf
+                ch_genome_name.combine(ch_gtf)
             )
             ch_versions = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
-            ch_index = STAR_GENOMEGENERATE.out.index
+            ch_index = sample_meta.combine(STAR_GENOMEGENERATE.out.index.map { it[1] })
         }
 
         STAR_ALIGN (
             ch_reads_to_align,
             ch_index,
-            ch_gtf,
+            sample_meta.combine(ch_gtf),
             params.star_ignore_sjdbgtf,
             params.seq_platform,
             params.seq_center
