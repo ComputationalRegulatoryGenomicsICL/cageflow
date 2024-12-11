@@ -146,6 +146,12 @@ workflow CUSTOMCAGE {
     
     if (params.cageronly or params.fullpipeline) {
 
+        if (!params.cager_sample_file ) {
+            exit 1, 'Sample list file is mandatory if mapping is not done within the pipeline.'
+        }
+
+        merged_sample_file = Channel.fromPath(params.cager_sample_file)
+
         PREPARE_CAGER_METADATA( ch_gtf, ch_versions )
         ch_bsgenome_file = PREPARE_CAGER_METADATA.out.ch_bsgenome_file
         ch_bsgenome_name = PREPARE_CAGER_METADATA.out.ch_bsgenome_name
