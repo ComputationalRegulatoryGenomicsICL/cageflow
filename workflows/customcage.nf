@@ -64,18 +64,35 @@ def multiqc_report = []
 
 workflow CUSTOMCAGE {
 
-    if (params.maponly or params.fullpipeline) {
+    if (params.gtf) {
+            ch_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
+            // ch_pre_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
+            // ch_gtf = sample_meta.combine(ch_pre_gtf)
+            // ch_gtf = ch_genome_name.combine(ch_pre_gtf)
+        } else {
+            exit 1, "The --gtf argument is mandatory."
+    }
+
+    if (!params.maponly){
+        if (!params.cager_sample_file ) {
+            exit 1, 'Sample list file is mandatory if mapping is not done within the pipeline.'
+        }
+
+        merged_sample_file = Channel.fromPath(params.cager_sample_file)
+    }
+
+    ch_versions = Channel.empty()
+    ch_multiqc_files = Channel.empty()
+
+    if (params.maponly || params.fullpipeline) {
 
         ch_fasta = Channel.empty()
         ch_index = Channel.empty()
-        ch_multiqc_files = Channel.empty()
-        ch_versions = Channel.empty()
 
         PARAMETER_CHECKS(ch_fasta, ch_index, ch_versions)
 
         ch_fasta = PARAMETER_CHECKS.out.ch_fasta
         ch_index = PARAMETER_CHECKS.out.ch_index
-        ch_gtf = PARAMETER_CHECKS.out.ch_gtf
         ch_fastq = PARAMETER_CHECKS.out.ch_fastq
         ch_versions = PARAMETER_CHECKS.out.ch_versions
 
@@ -141,16 +158,9 @@ workflow CUSTOMCAGE {
             name: "sample_list.csv",
             newLine: true,
             sort: { file -> file.text })
-
-    } 
+    }
     
-    if (params.cageronly or params.fullpipeline) {
-
-        if (!params.cager_sample_file ) {
-            exit 1, 'Sample list file is mandatory if mapping is not done within the pipeline.'
-        }
-
-        merged_sample_file = Channel.fromPath(params.cager_sample_file)
+    if (params.cageronly || params.fullpipeline) {
 
         PREPARE_CAGER_METADATA( ch_gtf, ch_versions )
         ch_bsgenome_file = PREPARE_CAGER_METADATA.out.ch_bsgenome_file

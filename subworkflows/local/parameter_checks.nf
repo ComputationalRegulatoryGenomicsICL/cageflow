@@ -61,15 +61,6 @@ workflow PARAMETER_CHECKS {
         // ch_pre_idx = Channel.fromPath(params.index)
         // ch_index = sample_meta.combine(ch_pre_idx)
 
-        if (params.gtf) {
-            ch_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
-            // ch_pre_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
-            // ch_gtf = sample_meta.combine(ch_pre_gtf)
-            // ch_gtf = ch_genome_name.combine(ch_pre_gtf)
-        } else {
-            exit 1, "The --gtf argument is mandatory."
-        }
-
         if (params.dist) {
             if (!params.dedup) {
                 exit 1, 'The --dist option requires the --dedup option.'
@@ -94,7 +85,6 @@ workflow PARAMETER_CHECKS {
     emit:
         ch_fasta
         ch_index
-        ch_gtf
         ch_fastq
         ch_versions
 
