@@ -4,6 +4,7 @@
 
 include { INPUT_FROM_FOLDER } from './input_from_folder.nf'
 include { INPUT_FROM_SAMPLESHEET } from './input_from_samplesheet.nf'
+include { GUNZIP } from '../../modules/nf-core/gunzip/main'
 
 workflow PARAMETER_CHECKS {
 
@@ -62,10 +63,14 @@ workflow PARAMETER_CHECKS {
         // ch_index = sample_meta.combine(ch_pre_idx)
 
         if (params.gtf) {
-            ch_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
-            // ch_pre_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
-            // ch_gtf = sample_meta.combine(ch_pre_gtf)
-            // ch_gtf = ch_genome_name.combine(ch_pre_gtf)
+            gtf_file = file(params.gtf)
+            if (gtf_file.extension == 'gz') {
+                GUNZIP ([[], gtf_file])
+                ch_gtf = GUNZIP.out.gunzip.map { it[1] }
+                ch_versions = ch_versions.mix(GUNZIP.out.versions)
+            } else {
+                ch_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
+            }
         } else {
             exit 1, "The --gtf argument is mandatory."
         }
