@@ -22,10 +22,6 @@ params.params_trimgalore = ''
 // cutadapt parameters
 params.nogtrim = false
 
-// read deduplication parameters
-params.dedup = false
-params.dist = false
-
 // genome annotation in GTF
 params.gtf = null // "$projectDir/assets/NO_FILE_GTF"
 
@@ -47,7 +43,6 @@ include { PREPROCESSING } from '../subworkflows/local/preprocessing.nf'
 include { PREPARE_METADATA } from '../subworkflows/local/prepare_metadata.nf'
 include { STAR_PROCESSING } from '../subworkflows/local/star_processing.nf'
 include { BOWTIE2_PROCESSING } from '../subworkflows/local/bowtie2_processing.nf'
-include { DEDUP } from '../subworkflows/local/deduplication.nf'
 include { SAMTOOLS_PROCESSING } from '../subworkflows/local/samtools_processing.nf'
 include { SUMMARY_STAT } from '../subworkflows/local/summary_statistics.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
@@ -106,19 +101,11 @@ workflow CUSTOMCAGE {
         ch_versions = STAR_PROCESSING.out.ch_versions
     }
 
-    if (params.dedup) {
-        DEDUP(ch_aligned, ch_versions, ch_for_cager)
+    SAMTOOLS_PROCESSING(ch_aligned, ch_versions, ch_for_cager)
 
-        ch_for_cager = DEDUP.out.ch_for_cager
-        ch_bam_bai = DEDUP.out.ch_bam_bai
-        ch_versions = DEDUP.out.ch_versions
-    } else {
-        SAMTOOLS_PROCESSING(ch_aligned, ch_versions, ch_for_cager)
-
-        ch_for_cager = SAMTOOLS_PROCESSING.out.ch_for_cager
-        ch_bam_bai = SAMTOOLS_PROCESSING.out.ch_bam_bai
-        ch_versions = SAMTOOLS_PROCESSING.out.ch_versions
-    }
+    ch_for_cager = SAMTOOLS_PROCESSING.out.ch_for_cager
+    ch_bam_bai = SAMTOOLS_PROCESSING.out.ch_bam_bai
+    ch_versions = SAMTOOLS_PROCESSING.out.ch_versions
 
     SUMMARY_STAT(ch_bam_bai, ch_fasta, ch_multiqc_files, ch_versions)
 

@@ -70,12 +70,6 @@ workflow PARAMETER_CHECKS {
             exit 1, "The --gtf argument is mandatory."
         }
 
-        if (params.dist) {
-            if (!params.dedup) {
-                exit 1, 'The --dist option requires the --dedup option.'
-            }
-        }
-
         if (params.splicesites != "$projectDir/assets/NO_FILE_SPLICESITES" & !params.fasta) {
             exit 1, 'The --splicesites option can only be used with the --fasta option.'
         }
