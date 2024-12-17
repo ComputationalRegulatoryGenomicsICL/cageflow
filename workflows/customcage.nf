@@ -90,20 +90,20 @@ workflow CUSTOMCAGE {
         ch_versions = BOWTIE2_PROCESSING.out.ch_versions
         // NOTE: placeholder so that the channel is not empty
         // it will be replaced in SAMTOOLS_PROCESSING
-        ch_for_cager = ch_aligned
+        ch_sample_list = ch_aligned
 
     } else {
         STAR_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_gtf, ch_chrom_sizes, ch_multiqc_files, ch_versions)
 
-        ch_for_cager = STAR_PROCESSING.out.bigwig_ch_for_cager
+        ch_sample_list = STAR_PROCESSING.out.bigwig_ch_for_cager
         ch_aligned = STAR_PROCESSING.out.ch_aligned
         ch_multiqc_files = STAR_PROCESSING.out.ch_multiqc_files
         ch_versions = STAR_PROCESSING.out.ch_versions
     }
 
-    SAMTOOLS_PROCESSING(ch_aligned, ch_versions, ch_for_cager)
+    SAMTOOLS_PROCESSING(ch_aligned, ch_sample_list, ch_versions)
 
-    ch_for_cager = SAMTOOLS_PROCESSING.out.ch_for_cager
+    ch_sample_list = SAMTOOLS_PROCESSING.out.ch_sample_list
     ch_bam_bai = SAMTOOLS_PROCESSING.out.ch_bam_bai
     ch_versions = SAMTOOLS_PROCESSING.out.ch_versions
 
@@ -113,7 +113,7 @@ workflow CUSTOMCAGE {
     ch_versions = SUMMARY_STAT.out.ch_versions
 
     // NOTE: this writes to file in random order
-    ch_sample_files = WRITE_SAMPLE_LIST(ch_for_cager)
+    ch_sample_files = WRITE_SAMPLE_LIST(ch_sample_list)
 
     def header = "id,single_end,path"
 
