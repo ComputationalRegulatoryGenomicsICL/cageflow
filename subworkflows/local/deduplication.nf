@@ -13,8 +13,8 @@ include { SAMTOOLS_INDEX as INDEX_DEDUP} from '../../modules/nf-core/samtools/in
 workflow DEDUP {
     take:
         ch_aligned
+        ch_sample_list
         ch_versions
-        ch_for_cager
 
     main:
         SORT_FOR_FIXMATE (
@@ -43,11 +43,11 @@ workflow DEDUP {
         ch_bam_bai = SAMTOOLS_DEDUP.out.bam.join(INDEX_DEDUP.out.bai)
 
         if (params.bowtie2) {
-            ch_for_cager = SAMTOOLS_DEDUP.out.bam
+            ch_sample_list = SAMTOOLS_DEDUP.out.bam
         }
 
     emit:
-        ch_for_cager
+        ch_sample_list
         ch_bam_bai
         ch_versions
 }
