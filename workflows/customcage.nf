@@ -35,6 +35,7 @@ params.bowtie2 = false
 // STAR parameters
 //params.chromsizes = null 
 params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
+params.bamsortmem = 4000000000
 
 // BSgenome parameters
 params.bsgenome = false
@@ -105,6 +106,7 @@ workflow CUSTOMCAGE {
         ch_versions = STAR_PROCESSING.out.ch_versions
     }
 
+    // Works for bowtie2 alignment only
     if (params.dedup) {
         DEDUP(ch_aligned, ch_sample_list, ch_versions)
 
