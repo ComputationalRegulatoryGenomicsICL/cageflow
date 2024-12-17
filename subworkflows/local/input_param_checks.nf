@@ -62,10 +62,12 @@ workflow PARAMETER_CHECKS {
         // ch_index = sample_meta.combine(ch_pre_idx)
 
         if (params.gtf) {
-            ch_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
-            // ch_pre_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
-            // ch_gtf = sample_meta.combine(ch_pre_gtf)
-            // ch_gtf = ch_genome_name.combine(ch_pre_gtf)
+            gtf_path = file(params.gtf)
+            if (gtf_path.extension == 'gz') {
+                ch_gtf = 
+            } else {
+                ch_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
+            }
         } else {
             exit 1, "The --gtf argument is mandatory."
         }
