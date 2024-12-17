@@ -35,6 +35,7 @@ params.bowtie2 = false
 // STAR parameters
 //params.chromsizes = null 
 params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
+params.bamsortmem = 4000000000
 
 // BSgenome parameters
 params.bsgenome = false
