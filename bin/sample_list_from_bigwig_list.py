@@ -14,6 +14,15 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-f','--filepath', type=str, help='Path to the file with bigwigs')
+parser.add_argument(
+    '-s','--singleend', type=str,
+    help='Whether the samples are single ended or not')
+parser.add_argument(
+    '-d','--delimiter', type=str, default=None,
+    help='Additional delimiter to remove parts of the input name, eg pool from sequencing facility')
+parser.add_argument(
+    '-l','--field', type=int, default=None,
+    help='Which field to keep after splitting with additional delimiter')
 args = parser.parse_args()
 
 outdict = {}
@@ -21,6 +30,8 @@ with open(args.filepath, "r", encoding="utf-8") as filein:
     for line in filein:
         samplepath = line.strip()
         sample_name = samplepath.split("/")[-1].split(".Signal.")[0]
+        if args.delimiter is not None:
+            sample_name = sample_name.split(args.delimiter)[args.field]
         if sample_name not in outdict:
             outdict[sample_name] = [samplepath]
         else:
@@ -29,10 +40,8 @@ with open(args.filepath, "r", encoding="utf-8") as filein:
 with open("sample_list.csv", "w+", encoding="utf-8") as outfile:
     for sample, paths in outdict.items():
         if len(paths) > 1:
-            singleend = "false"
             path_str = " ".join(paths)
         else:
-            singleend = "true"
             path_str = paths
-        line_to_write = f"{sample},{singleend},[{path_str}]\n"
+        line_to_write = f"{sample},{args.singleend},[{path_str}]\n"
         outfile.write(line_to_write)
