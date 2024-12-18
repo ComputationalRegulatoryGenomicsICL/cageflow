@@ -5,7 +5,7 @@ sample_name_fields:
 bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
 forgeseed:
 sourcedir:
-fasta:
+fasta: "assets/sacCer3_genome/sacCer3.fa"
 index: "assets/sacCer3_genome/sacCer3_bowtie2_index/"
 gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
 star_ignore_sjdbgtf: false
@@ -16,8 +16,6 @@ unique_only: false
 
 # CAGEr parameters
 tpm_threshold: 1
-tagcluster_qc_pdf_height: 5
-tagcluster_qc_pdf_width: 4
 # parameters for normalization
 norm_range_min: 10
 norm_range_max: 10000
@@ -26,3 +24,4 @@ total_tag_num: 1000000
 # parameters for CTSS
 sample_num_thr: 1
 ctss_thr: 1
+markdown_path: "assets/cager_report.Rmd"

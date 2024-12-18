@@ -14,7 +14,7 @@ process CAGER_TAGCLUSTER_QC {
 
     output:
     path "versions.yml", emit: versions
-    path "*.pdf", emit: plots
+    tuple path("*.pdf"), path("*plot.rds"), emit: plots
 
     """
     if [ -z ${bsgenome_name} ]
@@ -29,9 +29,7 @@ process CAGER_TAGCLUSTER_QC {
         -a ${txdb} \
         -b \${bsgenome} \
         -p ${projectDir} \
-        -t ${params.tpm_threshold} \
-        -e ${params.tagcluster_qc_pdf_height} \
-        -w ${params.tagcluster_qc_pdf_width}
+        -t ${params.tpm_threshold}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

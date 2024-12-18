@@ -1,0 +1,68 @@
+---
+date: "Date: `r Sys.Date()`"
+output:
+    html_document:
+        toc: true
+        toc_depth: 3
+        toc_float: true
+        theme: cerulean
+geometry: margin = 2cm
+---
+
+# Results of CAGEr analysis
+
+### Tag region annotation
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+tagannot_plot <- readRDS("tag_region_annotation_plot.rds")
+tagannot_plot
+```
+
+### Correlation
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+corr_m <- readRDS("corr_m.rds")
+hm_plot <- readRDS("correlations_heatmap_plot.rds")
+eval(hm_plot$call)
+```
+
+### TSS logo
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+tss_plot <- readRDS("TSSlogos_plot.rds")
+tss_plot + ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 90))
+```
+
+### Normalization
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+revc_plot <- readRDS("reverse_cumulative_plot.rds")
+revc_plot
+```
+
+### Promoter width
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+iqw_plot <- readRDS("interquartile_width_tagclusters_plot.rds")
+iqw_plot
+```
+
+### CTSS counts
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+ctssc_plot <- readRDS("ctss_counts_plot.rds")
+ctssc_plot
+```
+
+### Tagcluster annotation
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+chta_plot <- readRDS("chipseeker_tagCluster_annotation_plot.rds")
+chta_plot
+```
+
+### Nucleotide and dinucleotide frequencies in tagclusters
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+nucl_plot <- readRDS("nucleotide_frequencies_plot.rds")
+nucl_plot
+
+dinucl_plot <- readRDS("dinucleotide_frequencies_plot.rds")
+dinucl_plot + ggplot2::theme(
+    text=ggplot2::element_text(size=5),
+    axis.text.x = ggplot2::element_text(angle = 90, size=5),
+    axis.text.y = ggplot2::element_text(size=5))
+```

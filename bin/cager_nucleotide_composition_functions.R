@@ -53,10 +53,7 @@ calculate_nucleotide_frequency <- function(ctss_sequences) {
 
 plot_nucleotide_frequency <- function(
         ctss_nucl_freq_df_tidy,
-        sample_names,
-        outfilepath,
-        pdfheight=3,
-        pdfwidth=5) {
+        sample_names) {
     # plot start nucleotide frequencies as a histogram
     # set levels, alphabetical order of samples
     ctss_nucl_freq_df_tidy$samples <- factor(
@@ -94,10 +91,7 @@ plot_nucleotide_frequency <- function(
             panel.grid.minor = element_blank()) +
         labs(y = "Percentage", x = NULL)
 
-    pdf(file=outfilepath, height = pdfheight, width = pdfwidth)
-    print(p)
-    dev.off()
-    return("Nucleotide frequencies plotted")
+    return(p)
 }
 
 ### For dinucleotide composition
@@ -162,10 +156,7 @@ count_dinucleotide_frequency <- function(ctss_sequences) {
 }
 
 plot_dinucleotide_frequency <- function(
-        ctss_dinuc_freq_df_tidy,
-        outfilepath,
-        pdfheight = 12,
-        pdfwidth = 10) {
+        ctss_dinuc_freq_df_tidy) {
     # prepare dataframe for ggplot
     ctss_dinuc_freq_df_tidy_gg <- tidyr::pivot_longer(
         ctss_dinuc_freq_df_tidy,
@@ -203,12 +194,7 @@ plot_dinucleotide_frequency <- function(
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank()) +
         labs(fill = "%")
-    # todo: fix this with inputs
-    # pdfheight <- (length(colnames(ctss_dinuc_freq_df_tidy))-1)*0.4+2
-    pdf(file = outfilepath, height = pdfheight, width = pdfwidth)
-    print(p)
-    invisible(dev.off())
-    print("Dinucleotide frequency plotted")
+    return(p)
 }
 
 
