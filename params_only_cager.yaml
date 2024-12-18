@@ -20,7 +20,7 @@ seq_center: false
 unique_only: false
 
 # CAGEr parameters
-cager_sample_file: "assets/sample_list.csv" # with alphabetically sorted list of bigwigs, if mapping is run elsewhere
+cager_sample_file: "assets/sample_list.csv" # with sorted list of bigwigs, if mapping is run elsewhere
 tpm_threshold: 1
 # parameters for normalization
 norm_range_min: 10

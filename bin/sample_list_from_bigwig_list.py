@@ -38,6 +38,8 @@ with open(args.filepath, "r", encoding="utf-8") as filein:
             outdict[sample_name].append(samplepath)
 
 with open("sample_list.csv", "w+", encoding="utf-8") as outfile:
+    header = "id,single_end,path\n"
+    outfile.write(header)
     for sample, paths in outdict.items():
         if len(paths) > 1:
             path_str = " ".join(paths)

@@ -1,2 +1,3 @@
-S10,false,[bigwig/S10.Signal.UniqueMultiple.str1.out.wig.bw bigwig/S10.Signal.UniqueMultiple.str2.out.wig.bw]
-S14,false,[bigwig/S14.Signal.UniqueMultiple.str1.out.wig.bw bigwig/S14.Signal.UniqueMultiple.str2.out.wig.bw]
+id,single_end,path
+S10,false,[/storage/scratch2/TCGA/BRCAGE/customcageq/assets/bigwig/S10.Signal.UniqueMultiple.str1.out.wig.bw /storage/scratch2/TCGA/BRCAGE/customcageq/assets/bigwig/S10.Signal.UniqueMultiple.str2.out.wig.bw]
+S14,false,[/storage/scratch2/TCGA/BRCAGE/customcageq/assets/bigwig/S14.Signal.UniqueMultiple.str1.out.wig.bw /storage/scratch2/TCGA/BRCAGE/customcageq/assets/bigwig/S14.Signal.UniqueMultiple.str2.out.wig.bw]
