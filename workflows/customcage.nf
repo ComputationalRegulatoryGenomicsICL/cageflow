@@ -73,7 +73,7 @@ workflow CUSTOMCAGE {
             exit 1, "The --gtf argument is mandatory."
     }
 
-    if (!params.maponly){
+    if (!params.maponly && !params.fullpipeline){
         if (!params.cager_sample_file ) {
             exit 1, 'Sample list file is mandatory if mapping is not done within the pipeline.'
         }
