@@ -8,6 +8,7 @@ gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
 samplesheet:
 infolder: "assets/sacCer_fastq/sese_2_fields_hyphen"
 sample_name_fields: 2 # including _repX if applicable
+genome_name: "sacCer3"
 fasta: "assets/sacCer3_genome/sacCer3.fa"
 index: "assets/sacCer3_genome/sacCer3_star_index/"
 star_ignore_sjdbgtf: false

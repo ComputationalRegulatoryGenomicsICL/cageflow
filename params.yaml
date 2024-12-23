@@ -1,13 +1,14 @@
 # pipeline parameters
-fullpipeline: false
+fullpipeline: true
 maponly: false
-cageronly: true
+cageronly: false
 gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
 
 # preprocessing parameters
 samplesheet: "assets/samplesheet_sacer_pe_template_for_GA.csv"
 infolder:
 sample_name_fields:
+genome_name: "sacCer3"
 fasta: "assets/sacCer3_genome/sacCer3.fa"
 index: "assets/sacCer3_genome/sacCer3_star_index/"
 star_ignore_sjdbgtf: false

@@ -16,10 +16,12 @@ read_in_bigwig <- function(
     bigwig_paths,
     cpus){
 
+  bigwig_paths <- stringr::str_squish(bigwig_paths)
+
   bigwigs = unlist(
     stringr::str_split(
       stringr::str_remove_all(
-        bigwig_paths, "[\\[\\],]"),
+        bigwig_paths, ","),
       stringr::fixed(" ")))
 
   signals = lapply(

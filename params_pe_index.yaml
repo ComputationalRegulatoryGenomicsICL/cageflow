@@ -8,6 +8,7 @@ gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
 samplesheet: "assets/samplesheet_sacer_pe_template_for_GA.csv"
 infolder:
 sample_name_fields:
+genome_name: "sacCer3"
 fasta: "assets/sacCer3_genome/sacCer3.fa"
 index: "assets/sacCer3_genome/sacCer3_star_index/"
 star_ignore_sjdbgtf: false

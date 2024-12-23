@@ -26,10 +26,15 @@ workflow CAGER {
             ch_data_type = Channel.of("bigwig")
         }
 
+        sample_table = ch_sample_file
+            .splitCsv( header:true , sep:',')
+            .map { create_mapping_channel(it) }
+            .collect()
+
         CAGER_READIN (
             ch_bsgenome_file,
             ch_bsgenome_name,
-            ch_sample_file,
+            sample_table,
             ch_data_type
         )
 
@@ -65,7 +70,7 @@ workflow CAGER {
 
         // TODO:
         // 1. consensus clusters
-        // 2. track exports (what kinds?)
+        // 2. track exports: bigwigs
         // 3. expression profiling
         // 4. differential expression analysis
         // 5. shifting promoters
@@ -74,4 +79,13 @@ workflow CAGER {
     emit:
         ch_versions
 
+}
+
+def create_mapping_channel(LinkedHashMap row) {
+    id = row.id
+    single_end = row.single_end
+    str1_bw = file(row.path.split(" ")[0].minus('['))
+    str2_bw = file(row.path.split(" ")[1].minus(']'))
+
+    return [id, single_end, str1_bw, str2_bw]
 }
