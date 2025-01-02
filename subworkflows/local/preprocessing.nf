@@ -5,6 +5,7 @@
 include { CAT_FASTQ } from '../../modules/nf-core/cat/fastq/main.nf'
 include { FASTQC } from '../../modules/nf-core/fastqc/main.nf'
 include { TRIMGALORE } from '../../modules/nf-core/trimgalore/main.nf'
+include { REMOVE_NON_G } from '../../modules/local/remove_non_g_reads.nf'
 include { CUTADAPT } from '../../modules/nf-core/cutadapt/main.nf'
 
 workflow PREPROCESSING {
@@ -30,6 +31,15 @@ workflow PREPROCESSING {
         )
         ch_versions = ch_versions.mix(TRIMGALORE.out.versions)
 
+        if (params.removenong) {
+            REMOVE_NON_G (
+                TRIMGALORE.out.reads
+            )
+            ch_versions = ch_versions.mix(REMOVE_NON_G.out.versions)
+
+            params.nogtrim = true
+        }
+
         if (!params.nogtrim) {
             CUTADAPT (
                 TRIMGALORE.out.reads
@@ -40,8 +50,16 @@ workflow PREPROCESSING {
         ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
         ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.log.collect{it[1]}.ifEmpty([]))
         ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.zip.collect{it[1]}.ifEmpty([]))
-        ch_reads_to_align = !params.nogtrim ? CUTADAPT.out.reads : TRIMGALORE.out.reads
 
+        if (!params.nogtrim) {
+            ch_reads_to_align = CUTADAPT.out.reads
+        } else if (params.removenong) {
+            ch_reads_to_align = REMOVE_NON_G.out.reads
+        } else {
+            ch_reads_to_align = TRIMGALORE.out.reads
+        }
+
+        //ch_reads_to_align = !params.nogtrim ? CUTADAPT.out.reads : TRIMGALORE.out.reads
 
     emit:
         ch_reads_to_align

@@ -22,6 +22,9 @@ params.params_trimgalore = ''
 // cutadapt parameters
 params.nogtrim = false
 
+// non-5'-G read removal parameters
+params.removenong = false
+
 // read deduplication parameters
 params.dedup = false
 params.dist = false
