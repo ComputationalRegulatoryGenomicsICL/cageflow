@@ -1,13 +1,16 @@
+# pipeline parameters
+fullpipeline: true
+maponly: false
+cageronly: false
+gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
+
 # preprocessing parameters
 samplesheet:
 infolder: "assets/sacCer_fastq/sese_2_fields_hyphen"
 sample_name_fields: 2 # including _repX if applicable
-bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
-forgeseed:
-sourcedir:
+genome_name: "sacCer3"
 fasta: "assets/sacCer3_genome/sacCer3.fa"
 index: "assets/sacCer3_genome/sacCer3_star_index/"
-gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
 star_ignore_sjdbgtf: false
 seq_platform: "illumina"
 seq_center: false
@@ -15,6 +18,12 @@ seq_center: false
 unique_only: false
 
 # CAGEr parameters
+cager_sample_file:
+# BSgenome
+forgeseed:
+sourcedir:
+bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
+# tagcluster qc
 tpm_threshold: 1
 # parameters for normalization
 norm_range_min: 10
