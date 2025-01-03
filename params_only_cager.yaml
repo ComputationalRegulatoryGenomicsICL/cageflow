@@ -1,8 +1,7 @@
 # pipeline parameters
-fullpipeline: true
+fullpipeline: false
 maponly: false
-cageronly: false
-gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
+cageronly: true
 
 # preprocessing parameters
 samplesheet: "assets/samplesheet_sacer_pe_template_for_GA.csv"
@@ -11,14 +10,15 @@ sample_name_fields:
 genome_name: "sacCer3"
 fasta: "assets/sacCer3_genome/sacCer3.fa"
 index: "assets/sacCer3_genome/sacCer3_star_index/"
+gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
 star_ignore_sjdbgtf: false
 seq_platform: "illumina"
 seq_center: false
-# whether to take the uniquely mapped only (for STAR)
+# whether to take the uniquely mapped only
 unique_only: false
 
 # CAGEr parameters
-cager_sample_file:
+cager_sample_file: "assets/sample_list.csv" # with sorted list of bigwigs, if mapping is run elsewhere
 # BSgenome
 forgeseed:
 sourcedir:
@@ -33,4 +33,5 @@ total_tag_num: 1000000
 # parameters for CTSS
 sample_num_thr: 1
 ctss_thr: 1
+# markdown location
 markdown_path: "assets/cager_report.Rmd"

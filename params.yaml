@@ -1,13 +1,16 @@
+# pipeline parameters
+fullpipeline: true
+maponly: false
+cageronly: false
+gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
+
 # preprocessing parameters
 samplesheet: "assets/samplesheet_sacer_pe_template_for_GA.csv"
 infolder:
 sample_name_fields:
-bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
-forgeseed:
-sourcedir:
+genome_name: "sacCer3"
 fasta: "assets/sacCer3_genome/sacCer3.fa"
 index: "assets/sacCer3_genome/sacCer3_star_index/"
-gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
 star_ignore_sjdbgtf: false
 seq_platform: "illumina"
 seq_center: false
@@ -15,9 +18,13 @@ seq_center: false
 unique_only: false
 
 # CAGEr parameters
+cager_sample_file: "assets/sample_list.csv" # with sorted list of bigwigs, if mapping is run elsewhere
+# BSgenome
+forgeseed:
+sourcedir:
+bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
+# tagcluster qc
 tpm_threshold: 1
-tagcluster_qc_pdf_height: 5
-tagcluster_qc_pdf_width: 4
 # parameters for normalization
 norm_range_min: 10
 norm_range_max: 10000
@@ -26,3 +33,5 @@ total_tag_num: 1000000
 # parameters for CTSS
 sample_num_thr: 1
 ctss_thr: 1
+# markdown location
+markdown_path: "assets/cager_report.Rmd"

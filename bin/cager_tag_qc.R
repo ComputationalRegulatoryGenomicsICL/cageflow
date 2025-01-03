@@ -55,7 +55,8 @@ project_dir     <- opt$project_dir
 
 # installing BSgenome
 source(file.path(project_dir, "bin/install_bsgenome.R"))
-# import functions for quality control
+# import functions for quality control and plotting
+source(file.path(project_dir, "bin/plot_saving.R"))
 source(file.path(project_dir, "bin/cager_modified_plots.R"))
 
 reference_name <- install_bsgenome(bsgenome)
@@ -70,10 +71,11 @@ ce <- CAGEr::annotateCTSS(ce, tx_annotation_obj)
 # Save intermediate annotated object
 saveRDS(ce, "annotated_cagexp.rds")
 
-pdf("tag_region_annotation.pdf")
 annotations <- CAGEr::plotAnnot(ce, "counts")
-print(annotations)
-dev.off()
+save_plot(
+    "tag_region_annotation_plot.pdf",
+    annotations
+)
 
 # uses function from cager_modified_plots.R
 corr_m <- plotCorrelation2_local(
@@ -89,17 +91,21 @@ corr_m <- plotCorrelation2_local(
 saveRDS(corr_m, "corr_m.rds")
 
 # plot correlations in heatmap format
-pdf("correlations_heatmap.pdf")
-gplots::heatmap.2(corr_m, trace="none", margins=c(12, 12),cexRow=0.2)
+hm <- gplots::heatmap.2(corr_m, trace="none", margins=c(12, 12),cexRow=0.2)
+pdf("correlations_heatmap_plot.pdf")
+eval(hm$call)
 dev.off()
+saveRDS(hm, "correlations_heatmap_plot.rds")
 
 # Plot sequence distribution at the TSS
-pdf("TSSLogos.pdf")
-# CAGEr::TSSlogo(
+# tsslogo_plot <- CAGEr::TSSlogo(
 #     CAGEr::CTSScoordinatesGR(ce) |> subset(annotation == "promoter"),
 #     upstream = 35)
-TSSlogo_local(
+tsslogo_plot <- TSSlogo_local(
     CAGEr::CTSScoordinatesGR(ce) |> subset(annotation == "promoter"),
     genome_name=reference_name,
     upstream = 35)
-dev.off()
+save_plot(
+    "TSSlogos_plot.pdf",
+    tsslogo_plot
+)
