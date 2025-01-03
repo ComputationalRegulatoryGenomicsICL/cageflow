@@ -74,6 +74,9 @@ tx_annotation_obj <- loadDb(tx_annotation)
 # import functions for second quality control and plotting
 source(file.path(project_dir, "bin/plot_saving.R"))
 source(file.path(project_dir, "bin/cager_nucleotide_composition_functions.R"))
+source(file.path(project_dir, "bin/cager_consensus_qc.R"))
+source(file.path(project_dir, "bin/plot_number_and_pca_of_ctss.R"))
+
 
 reference_name <- install_bsgenome(bsgenome)
 
@@ -132,3 +135,7 @@ save_plot(
     "dinucleotide_frequencies_plot.pdf",
     dinuclfreq_plot
 )
+
+# Consensus clustered CTSS quality plots
+# uses functions from plot_number_and_pca_of_ctss.R
+consensus_qc(ce=ce, pcarank=pca_rank)

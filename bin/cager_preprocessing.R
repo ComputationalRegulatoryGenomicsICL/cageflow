@@ -129,7 +129,6 @@ source(file.path(project_dir, "bin/plot_number_and_pca_of_ctss.R"))
 source(file.path(project_dir, "bin/cager_modified_plots.R"))
 source(file.path(project_dir, "bin/cager_clustering.R"))
 source(file.path(project_dir, "bin/cager_consensus_clustering.R"))
-source(file.path(project_dir, "bin/cager_consensus_qc.R"))
 
 reference_name <- install_bsgenome(bsgenome)
 
@@ -146,7 +145,7 @@ ce <- cager_normalization(
     total_tag_num=total_tag_num)
 
 # CTSS clustering
-# uses functions from cager_modified_plots.R and plot_number_of_ctss.R
+# uses functions from cager_modified_plots.R and plot_number_and_pca_of_ctss.R
 ce <- cager_clustering(
     ce=ce,
     iqw_plot_lim=c(0, 150),
@@ -167,8 +166,5 @@ ce <- consensus_clustering(
     tx_annotation=tx_annotation,
     num_core=num_core)
 
-# Consensus clustered CTSS quality plots
-# uses functions from plot_number_and_pca_of_ctss.R
-consensus_qc(ce=ce, pcarank=pca_rank)
-
+# Track export (bigwig)
 
