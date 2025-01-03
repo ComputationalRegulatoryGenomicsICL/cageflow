@@ -110,9 +110,6 @@ reference_name <- install_bsgenome(bsgenome)
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
 
-# Merging of replicates if _repX is present in their name
-# ce <- merge_replicates(ce)
-
 # Normalization
 # uses functions from cager_modified_plots.R
 ce <- cager_normalization(

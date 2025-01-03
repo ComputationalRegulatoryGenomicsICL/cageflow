@@ -59,6 +59,14 @@ workflow CAGER {
         // tagcluster annotations, nucleotide frequencies, dinucleotide frequencies
         ch_tagc_plots = CAGER_TAGCLUSTER_QC.out.plots
 
+        // TODO:
+        // 1. consensus clusters
+        // 2. track exports: bigwigs
+        // 3. expression profiling
+        // 4. differential expression analysis
+        // 5. shifting promoters
+        // 6. enhancer calling
+
         ch_template = Channel.fromPath(params.markdown_path)
 
         ch_html = CAGER_REPORT(
@@ -67,14 +75,6 @@ workflow CAGER {
             corr_data,
             ch_preproc_res,
             ch_tagc_plots)
-
-        // TODO:
-        // 1. consensus clusters
-        // 2. track exports: bigwigs
-        // 3. expression profiling
-        // 4. differential expression analysis
-        // 5. shifting promoters
-        // 6. enhancer calling
 
     emit:
         ch_versions
