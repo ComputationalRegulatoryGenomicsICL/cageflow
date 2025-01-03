@@ -73,8 +73,6 @@ cager_clustering <- function(ce, iqw_plot_lim, sample_num_thr, ctss_thr, num_cor
         "ctss_counts_plot.pdf",
         ctss_plot)
 
-    # annotate tag clusters
-
     return(ce)
 }
 
