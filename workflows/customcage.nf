@@ -13,6 +13,11 @@ ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.mu
 ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
 ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
 
+// pipeline run settings
+params.fullpipeline = true
+params.maponly = false
+params.cageronly = false
+
 // input parameters
 params.samplesheet = false
 
@@ -41,9 +46,10 @@ params.bsgenome = false
 params.forgeseed = false
 params.sourcedir = false
 
-include { PARAMETER_CHECKS } from '../subworkflows/local/input_param_checks.nf'
+include { PARAMETER_CHECKS } from '../subworkflows/local/parameter_checks.nf'
 include { PREPROCESSING } from '../subworkflows/local/preprocessing.nf'
-include { PREPARE_METADATA } from '../subworkflows/local/prepare_metadata.nf'
+include { PREPARE_MAPPING_METADATA } from '../subworkflows/local/prepare_mapping_metadata.nf'
+include { PREPARE_CAGER_METADATA } from '../subworkflows/local/prepare_cager_metadata.nf'
 include { STAR_PROCESSING } from '../subworkflows/local/star_processing.nf'
 include { BOWTIE2_PROCESSING } from '../subworkflows/local/bowtie2_processing.nf'
 include { DEDUP } from '../subworkflows/local/deduplication.nf'
@@ -58,94 +64,118 @@ def multiqc_report = []
 
 workflow CUSTOMCAGE {
 
-    ch_fasta = Channel.empty()
-    ch_index = Channel.empty()
-    ch_multiqc_files = Channel.empty()
+    if (params.gtf) {
+            ch_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
+            // ch_pre_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
+            // ch_gtf = sample_meta.combine(ch_pre_gtf)
+            // ch_gtf = ch_genome_name.combine(ch_pre_gtf)
+        } else {
+            exit 1, "The --gtf argument is mandatory."
+    }
+
+    if (!params.maponly && !params.fullpipeline){
+        if (!params.cager_sample_file ) {
+            exit 1, 'Sample list file is mandatory if mapping is not done within the pipeline.'
+        }
+
+        merged_sample_file = Channel.fromPath(params.cager_sample_file)
+    }
+
     ch_versions = Channel.empty()
+    ch_multiqc_files = Channel.empty()
 
-    PARAMETER_CHECKS(ch_fasta, ch_index, ch_versions)
+    if (params.maponly || params.fullpipeline) {
 
-    ch_fasta = PARAMETER_CHECKS.out.ch_fasta
-    ch_index = PARAMETER_CHECKS.out.ch_index
-    ch_gtf = PARAMETER_CHECKS.out.ch_gtf
-    ch_fastq = PARAMETER_CHECKS.out.ch_fastq
-    ch_versions = PARAMETER_CHECKS.out.ch_versions
+        ch_fasta = Channel.empty()
+        ch_index = Channel.empty()
 
-    PREPROCESSING(ch_fastq, ch_versions, ch_multiqc_files)
+        PARAMETER_CHECKS(ch_fasta, ch_index, ch_versions)
 
-    ch_reads_to_align = PREPROCESSING.out.ch_reads_to_align
-    ch_multiqc_files = PREPROCESSING.out.ch_multiqc_files
-    ch_versions = PREPROCESSING.out.ch_versions
-    
-    PREPARE_METADATA( ch_fasta, ch_gtf, ch_versions )
+        ch_fasta = PARAMETER_CHECKS.out.ch_fasta
+        ch_index = PARAMETER_CHECKS.out.ch_index
+        ch_fastq = PARAMETER_CHECKS.out.ch_fastq
+        ch_versions = PARAMETER_CHECKS.out.ch_versions
 
-    ch_bsgenome_file = PREPARE_METADATA.out.ch_bsgenome_file
-    ch_bsgenome_name = PREPARE_METADATA.out.ch_bsgenome_name
-    ch_txdb_file = PREPARE_METADATA.out.ch_txdb_file
-    ch_chrom_sizes = PREPARE_METADATA.out.ch_chrom_sizes
-    ch_fasta = PREPARE_METADATA.out.ch_fasta
-    ch_versions = PREPARE_METADATA.out.ch_versions
+        PREPROCESSING(ch_fastq, ch_versions, ch_multiqc_files)
 
-    if (params.bowtie2) {            
-        BOWTIE2_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_multiqc_files, ch_versions)
+        ch_reads_to_align = PREPROCESSING.out.ch_reads_to_align
+        ch_multiqc_files = PREPROCESSING.out.ch_multiqc_files
+        ch_versions = PREPROCESSING.out.ch_versions
         
-        ch_aligned = BOWTIE2_PROCESSING.out.ch_aligned
-        ch_multiqc_files = BOWTIE2_PROCESSING.out.ch_multiqc_files
-        ch_versions = BOWTIE2_PROCESSING.out.ch_versions
-        // NOTE: placeholder so that the channel is not empty
-        // it will be replaced in SAMTOOLS_PROCESSING
-        ch_for_cager = ch_aligned
+        PREPARE_MAPPING_METADATA( ch_fasta, ch_versions )
+        ch_chrom_sizes = PREPARE_MAPPING_METADATA.out.ch_chrom_sizes
+        ch_fasta = PREPARE_MAPPING_METADATA.out.ch_fasta
+        ch_versions = PREPARE_MAPPING_METADATA.out.ch_versions
 
-    } else {
-        STAR_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_gtf, ch_chrom_sizes, ch_multiqc_files, ch_versions)
+        if (params.bowtie2) {            
+            BOWTIE2_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_multiqc_files, ch_versions)
+            
+            ch_aligned = BOWTIE2_PROCESSING.out.ch_aligned
+            ch_multiqc_files = BOWTIE2_PROCESSING.out.ch_multiqc_files
+            ch_versions = BOWTIE2_PROCESSING.out.ch_versions
+            // NOTE: placeholder so that the channel is not empty
+            // it will be replaced in SAMTOOLS_PROCESSING
+            ch_for_cager = ch_aligned
 
-        ch_for_cager = STAR_PROCESSING.out.bigwig_ch_for_cager
-        ch_aligned = STAR_PROCESSING.out.ch_aligned
-        ch_multiqc_files = STAR_PROCESSING.out.ch_multiqc_files
-        ch_versions = STAR_PROCESSING.out.ch_versions
+        } else {
+            STAR_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_gtf, ch_chrom_sizes, ch_multiqc_files, ch_versions)
+
+            ch_for_cager = STAR_PROCESSING.out.bigwig_ch_for_cager
+            ch_aligned = STAR_PROCESSING.out.ch_aligned
+            ch_multiqc_files = STAR_PROCESSING.out.ch_multiqc_files
+            ch_versions = STAR_PROCESSING.out.ch_versions
+        }
+
+        if (params.dedup) {
+            DEDUP(ch_aligned, ch_versions, ch_for_cager)
+
+            ch_for_cager = DEDUP.out.ch_for_cager
+            ch_bam_bai = DEDUP.out.ch_bam_bai
+            ch_versions = DEDUP.out.ch_versions
+        } else {
+            SAMTOOLS_PROCESSING(ch_aligned, ch_versions, ch_for_cager)
+
+            ch_for_cager = SAMTOOLS_PROCESSING.out.ch_for_cager
+            ch_bam_bai = SAMTOOLS_PROCESSING.out.ch_bam_bai
+            ch_versions = SAMTOOLS_PROCESSING.out.ch_versions
+        }
+
+        SUMMARY_STAT(ch_bam_bai, ch_fasta, ch_multiqc_files, ch_versions)
+
+        ch_multiqc_files = SUMMARY_STAT.out.ch_multiqc_files
+        ch_versions = SUMMARY_STAT.out.ch_versions
+
+        ch_sample_files = WRITE_SAMPLE_LIST(ch_for_cager)
+
+        def header = "id,single_end,path"
+
+        ch_collected = ch_sample_files
+        .reduce( header ) { acc, table_line ->
+            acc + '\n' + table_line.readLines()[0]}
+
+        // sorting samples alphabetically
+        merged_sample_file = ch_collected.collectFile(
+            name: "sample_list.csv",
+            newLine: true,
+            sort: { file -> file.text })
     }
+    
+    if (params.cageronly || params.fullpipeline) {
 
-    if (params.dedup) {
-        DEDUP(ch_aligned, ch_versions, ch_for_cager)
+        PREPARE_CAGER_METADATA( ch_gtf, ch_versions )
+        ch_bsgenome_file = PREPARE_CAGER_METADATA.out.ch_bsgenome_file
+        ch_bsgenome_name = PREPARE_CAGER_METADATA.out.ch_bsgenome_name
+        ch_txdb_file = PREPARE_CAGER_METADATA.out.ch_txdb_file
+        ch_versions = PREPARE_CAGER_METADATA.out.ch_versions
 
-        ch_for_cager = DEDUP.out.ch_for_cager
-        ch_bam_bai = DEDUP.out.ch_bam_bai
-        ch_versions = DEDUP.out.ch_versions
-    } else {
-        SAMTOOLS_PROCESSING(ch_aligned, ch_versions, ch_for_cager)
-
-        ch_for_cager = SAMTOOLS_PROCESSING.out.ch_for_cager
-        ch_bam_bai = SAMTOOLS_PROCESSING.out.ch_bam_bai
-        ch_versions = SAMTOOLS_PROCESSING.out.ch_versions
+        CAGER(
+            ch_bsgenome_file,
+            ch_bsgenome_name,
+            merged_sample_file,
+            ch_txdb_file,
+            ch_versions
+        )
     }
-
-    SUMMARY_STAT(ch_bam_bai, ch_fasta, ch_multiqc_files, ch_versions)
-
-    ch_multiqc_files = SUMMARY_STAT.out.ch_multiqc_files
-    ch_versions = SUMMARY_STAT.out.ch_versions
-
-    // NOTE: this writes to file in random order
-    ch_sample_files = WRITE_SAMPLE_LIST(ch_for_cager)
-
-    def header = "id,single_end,path"
-
-    ch_collected = ch_sample_files
-      .reduce( header ) { acc, table_line ->
-        acc + '\n' + table_line.readLines()[0]}
-
-    // sorting samples alphabetically
-    merged_sample_file = ch_collected.collectFile(
-        name: "sample_list.csv",
-        newLine: true,
-        sort: { file -> file.text })
-
-    CAGER(
-        ch_bsgenome_file,
-        ch_bsgenome_name,
-        merged_sample_file,
-        ch_txdb_file,
-        ch_versions
-    )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
