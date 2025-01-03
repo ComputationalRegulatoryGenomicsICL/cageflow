@@ -70,7 +70,7 @@ corVector <- function(expr.table, method, tagCountThreshold, applyThresholdBoth)
 
 plotCorrelation2_local <- function( expr.table, samples, method
                                , tagCountThreshold, applyThresholdBoth
-                               , digits, toPlot=FALSE) {
+                               , digits, plot_pairs=FALSE) {
   # Select samples
   if(samples == "all"){
     samples <- colnames(expr.table)
@@ -126,8 +126,8 @@ plotCorrelation2_local <- function( expr.table, samples, method
     points(df, ...)
   }
   
-  if (toPlot){
-    pairs( expr.table
+  if (plot_pairs){
+    pairs_plot <- pairs( expr.table
            , lower.panel = pointsUnique
            , upper.panel = panel.cor
            , pch = "."
@@ -137,6 +137,10 @@ plotCorrelation2_local <- function( expr.table, samples, method
            , xaxp = c(1,10,1)
            , yaxp = c(1,10,1)
            , labels = samples)
+    pdf("correlations_heatmap_plot.pdf")
+    print(pairs_plot)
+    dev.off()
+    saveRDS(pairs_plot, "correlations_heatmap_plot.rds")
   }
   
   # Return a correlation matrix
