@@ -36,14 +36,18 @@ workflow PREPROCESSING {
                 TRIMGALORE.out.reads
             )
             ch_versions = ch_versions.mix(REMOVE_NON_G.out.versions)
-
-            params.nogtrim = true
         }
 
         if (!params.nogtrim) {
-            CUTADAPT (
-                TRIMGALORE.out.reads
-            )
+            if (!params.removenong) {
+                CUTADAPT (
+                    TRIMGALORE.out.reads
+                )
+            } else {
+                CUTADAPT (
+                    REMOVE_NON_G.out.reads
+                )
+            }
             ch_versions = ch_versions.mix(CUTADAPT.out.versions)
         }
 
