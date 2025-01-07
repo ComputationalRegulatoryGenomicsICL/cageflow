@@ -12,7 +12,8 @@ required.libraries <- c(
     "GenomicFeatures",
     "gplots",
     "ggplot2",
-    "ggseqlogo"
+    "ggseqlogo",
+    "memoise"
     )
 
 for (lib in required.libraries) {
