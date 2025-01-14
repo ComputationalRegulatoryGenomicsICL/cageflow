@@ -141,4 +141,4 @@ save_plot(
 
 # Consensus clustered CTSS quality plots
 # uses functions from plot_number_and_pca_of_ctss.R
-consensus_qc(ce=ce, pcarank=pca_rank)
+# consensus_qc(ce=ce, pcarank=pca_rank)
