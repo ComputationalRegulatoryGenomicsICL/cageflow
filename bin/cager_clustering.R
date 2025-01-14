@@ -2,12 +2,16 @@
 #'
 #' @param ce normalized CAGEexp object
 #' @param iqw_plot_lim Limits to IQ width plot x axis
+#' @param sample_num_thr Threshold for nr of samples where tpm should be higher
+#' @param ctss_thr Tpm threshold
 #' @param num_core Number of cores to run on
 #' @return ce clustered CAGEexp object
 #' @examples
 #' cager_clustering(
 #' ce,
 #' iqw_plot_lim = c(0, 150),
+#' sample_num_thr = 1,
+#' ctss_thr = 1,
 #' num_core = 4)
 
 cager_clustering <- function(ce, iqw_plot_lim, sample_num_thr, ctss_thr, num_core){
