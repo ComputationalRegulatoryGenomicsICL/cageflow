@@ -49,13 +49,12 @@ option_list = list(
         c("-t", "--tpm_threshold"),
         type = "double",
         default = 1,
-        help = "Threshold to filter CTSS that has few tags per million (Optional), defaults to 1 ",
-        metavar = "double")
+        help = "Threshold to filter CTSS that has few tags per million (Optional), defaults to 1 "),
     make_option(
         c("-k", "--pca_rank"),
         type = "integer",
         default = 50,
-        help = "Rank of PCAs for analysis. (Default = 50) "),
+        help = "Rank of PCAs for analysis. (Default = 50) ")
 )
 
 message("; Reading arguments from command line.")
