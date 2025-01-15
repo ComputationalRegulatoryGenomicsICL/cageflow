@@ -14,6 +14,7 @@ workflow CAGER {
         ch_bsgenome_file
         ch_bsgenome_name
         ch_sample_file
+        ch_collected
         ch_txdb
         ch_versions
     
@@ -30,7 +31,8 @@ workflow CAGER {
             ch_bsgenome_file,
             ch_bsgenome_name,
             ch_sample_file,
-            ch_data_type
+            ch_data_type,
+            ch_collected
         )
 
         cager_rds = CAGER_READIN.out.rds

@@ -20,7 +20,8 @@ seq_center: false
 unique_only: true
 
 # CAGEr parameters
-cager_sample_file: "/storage/scratch2/TCGA/BRCAGE/sample_list.csv" # with sorted list of bigwigs, if mapping is run elsewhere
+cager_sample_file: "/storage/scratch2/TCGA/BRCAGE/sample_list_wo_lowquality.csv" # with sorted list of bigwigs, if mapping is run elsewhere
+# cager_sample_file: "assets/sample_list.csv"
 tpm_threshold: 1
 # parameters for normalization
 norm_range_min: 10
