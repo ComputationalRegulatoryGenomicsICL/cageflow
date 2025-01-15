@@ -15,7 +15,8 @@ required_packages_cran = c(
   "viridis",          ## Plotting
   "ggplot2",          ## Plotting
   "gplots",           ## Plotting
-  "ggseqlogo")        ## Plotting
+  "ggseqlogo",        ## Plotting
+  "memoise")          ## Caching
 
 message(
   "; Installing these R packages from CRAN repository: ",

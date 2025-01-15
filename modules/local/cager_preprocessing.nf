@@ -10,6 +10,7 @@ process CAGER_PREPROCESSING {
     path cager_obj
     path bsgenome_file
     val bsgenome_name
+    path txdb
 
     output:
     path "normalized_clustered_cagexp.rds",        emit: rds
@@ -32,6 +33,9 @@ process CAGER_PREPROCESSING {
         -t ${params.total_tag_num} \
         -s ${params.sample_num_thr} \
         -r ${params.ctss_thr} \
+        -u ${params.consensus_ctss_thr} \
+        -d ${params.consensus_ctss_dist} \
+        -a ${txdb} \
         -p ${projectDir} \
         -b \${bsgenome} \
         -c ${task.cpus}

@@ -12,7 +12,8 @@ required.libraries <- c(
     "GenomicFeatures",
     "gplots",
     "ggplot2",
-    "ggseqlogo"
+    "ggseqlogo",
+    "memoise"
     )
 
 for (lib in required.libraries) {
@@ -77,25 +78,36 @@ save_plot(
     annotations
 )
 
-# uses function from cager_modified_plots.R
-corr_m <- plotCorrelation2_local(
-    CTSStagCountDF(ce),
-    samples = "all",
-    tagCountThreshold = 1,
-    applyThresholdBoth = FALSE,
-    method = "pearson",
-    digits = 3,
-    toPlot = FALSE)
+if (length(sampleLabels(ce)) > 10){
+    # uses function from cager_modified_plots.R
+    corr_m <- plotCorrelation2_local(
+        CTSStagCountDF(ce),
+        samples = "all",
+        tagCountThreshold = 1,
+        applyThresholdBoth = FALSE,
+        method = "pearson",
+        digits = 3,
+        plot_pairs = FALSE)
+
+    # plot correlations in heatmap format
+    hm <- gplots::heatmap.2(corr_m, trace="none", margins=c(12, 12),cexRow=0.2)
+    pdf("correlations_heatmap_plot.pdf")
+    eval(hm$call)
+    dev.off()
+    saveRDS(hm, "correlations_heatmap_plot.rds")
+} else {
+    corr_m <- plotCorrelation2_local(
+        CTSStagCountDF(ce),
+        samples = "all",
+        tagCountThreshold = 1,
+        applyThresholdBoth = FALSE,
+        method = "pearson",
+        digits = 3,
+        plot_pairs=TRUE)
+}
 
 # save intermediate file
 saveRDS(corr_m, "corr_m.rds")
-
-# plot correlations in heatmap format
-hm <- gplots::heatmap.2(corr_m, trace="none", margins=c(12, 12),cexRow=0.2)
-pdf("correlations_heatmap_plot.pdf")
-eval(hm$call)
-dev.off()
-saveRDS(hm, "correlations_heatmap_plot.rds")
 
 # Plot sequence distribution at the TSS
 # tsslogo_plot <- CAGEr::TSSlogo(

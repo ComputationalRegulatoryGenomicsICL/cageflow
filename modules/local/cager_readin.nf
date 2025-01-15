@@ -7,7 +7,7 @@ process CAGER_READIN {
     input:
     path bsgenome_file
     val bsgenome_name
-    path sample_file
+    val sample_table
     val data_type
     path ch_collected
 
@@ -26,7 +26,8 @@ process CAGER_READIN {
     cager_readin.R \
         -t "${data_type}" \
         -b \${bsgenome} \
-        -s ${sample_file} \
+        -s "${sample_table}" \
+        -n "${params.chromosomes_to_keep}" \
         -p ${projectDir} \
         -c ${task.cpus}
 
