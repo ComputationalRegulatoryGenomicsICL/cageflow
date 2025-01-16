@@ -105,14 +105,14 @@ if (tolower(data_type) == "bam"){
     sample_names_files_dict <- list()
     for(idx in 1:nrow(sample_table)) {
         row <- sample_table[idx,]
-        path1 <- unlist(strsplit(sample_table$path, ","))[1]
-        path2 <- unlist(strsplit(sample_table$path, ","))[2]
+        path1 <- trimws(unlist(strsplit(row$path, ","))[1])
+        path2 <- trimws(unlist(strsplit(row$path, ","))[2])
         if (grepl("str1", path1)){
-            sample_names_files_dict[[path1]] <- paste0(sample_table$id, "_str1")
-            sample_names_files_dict[[path2]] <- paste0(sample_table$id, "_str2")
+            sample_names_files_dict[[path1]] <- paste0(trimws(row$id), "_str1")
+            sample_names_files_dict[[path2]] <- paste0(trimws(row$id), "_str2")
         } else if (grepl("str2", path1)){
-            sample_names_files_dict[[path1]] <- paste0(sample_table$id, "_str2")
-            sample_names_files_dict[[path2]] <- paste0(sample_table$id, "_str1")
+            sample_names_files_dict[[path1]] <- paste0(trimws(row$id), "_str2")
+            sample_names_files_dict[[path2]] <- paste0(trimws(row$id), "_str1")
         } else {
             print(path1)
             print(path2)

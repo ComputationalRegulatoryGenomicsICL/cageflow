@@ -44,7 +44,6 @@ read_in_bigwig <- function(
     signals_chr_filt[[sname]] <- signal
   }
   
-
   signalsSplit = split(
     signals_chr_filt,
     grepl("str1", names(signals_chr_filt)))
