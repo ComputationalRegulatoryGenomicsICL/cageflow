@@ -102,10 +102,17 @@ if (tolower(data_type) == "bam"){
         cpus=num_core
     )
 }else if(tolower(data_type) == "bigwig") {
+    sample_names_files_dict <- list()
+    for(idx in 1:nrow(sample_table)) {
+        row <- sample_table[idx,]
+        sample_names_files_dict[[sample_table$path1]] <- sample_table$id
+        sample_names_files_dict[[sample_table$path2]] <- sample_table$id
+    }
     chromosome_names_list <- unlist(strsplit(chromosome_names, ','))
     ce <- read_in_bigwig(
         bsgenome_name=reference_name,
         bigwig_paths=sample_table$path,
+        sample_names=sample_names_files_dict,
         chromosome_names=chromosome_names_list,
         cpus=num_core
     )

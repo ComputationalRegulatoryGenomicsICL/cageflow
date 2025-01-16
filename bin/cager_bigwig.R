@@ -2,6 +2,7 @@
 #'
 #' @param bsgenome_name the name of the reference genome (bsgenome)
 #' @param bigwig_paths list of input bigwig files with full path
+#' @param sample_names_files_dict dictionary of matching sample names to files
 #' @param chromosome_names list of chromosome names to keep
 #' @param cpus number of cores to use
 #' @return a CAGEexp object
@@ -14,6 +15,7 @@
 read_in_bigwig <- function(
     bsgenome_name,
     bigwig_paths,
+    sample_names_files_dict,
     chromosome_names,
     cpus){
 
@@ -29,7 +31,11 @@ read_in_bigwig <- function(
     bigwigs,
     function(x) rtracklayer::import(x))
 
-  names(signals) = basename(bigwigs)
+  signal_names <- c()
+  for (bn in basename(bigwigs)){
+    signal_names <- append(signal_names, sample_names_files_dict[[bn]])
+  }
+  names(signals) = signal_names
 
   signals_chr_filt <- list()
   for (sname in names(signals)){
