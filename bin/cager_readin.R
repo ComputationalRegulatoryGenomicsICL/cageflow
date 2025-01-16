@@ -105,8 +105,10 @@ if (tolower(data_type) == "bam"){
     sample_names_files_dict <- list()
     for(idx in 1:nrow(sample_table)) {
         row <- sample_table[idx,]
-        sample_names_files_dict[[sample_table$path1]] <- sample_table$id
-        sample_names_files_dict[[sample_table$path2]] <- sample_table$id
+        path1 <- strsplit(sample_table$path, ",")[[1]]
+        path2 <- strsplit(sample_table$path, ",")[[2]]
+        sample_names_files_dict[[path1]] <- sample_table$id
+        sample_names_files_dict[[path2]] <- sample_table$id
     }
     chromosome_names_list <- unlist(strsplit(chromosome_names, ','))
     ce <- read_in_bigwig(
