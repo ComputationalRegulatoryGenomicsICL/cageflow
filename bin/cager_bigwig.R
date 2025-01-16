@@ -73,6 +73,16 @@ read_in_bigwig <- function(
     minus_sample_names = stringr::str_remove_all(
       names(minus),
       ".Signal.Unique.str2.out.wig.bw")
+  } else if (grepl( "_str1", names(plus)[1], fixed = TRUE)) {
+    plus_sample_names = stringr::str_remove_all(
+      names(plus),
+      "_str1")
+    minus_sample_names = stringr::str_remove_all(
+      names(minus),
+      "_str2")
+  } else {
+    plus_sample_names = names(plus)
+    minus_sample_names = names(minus)
   }
 
   names(plus) <- plus_sample_names
