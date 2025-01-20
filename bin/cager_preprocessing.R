@@ -9,6 +9,7 @@ required.libraries <- c(
     "optparse",
     "rlang",
     "CAGEr",
+    "GenomicFeatures",
     "dplyr",
     "purrr",
     "magrittr",
@@ -75,11 +76,6 @@ option_list = list(
         default = NULL,
         help = "SQLite file with a TxDb genome annotation package (Mandatory)"),
     make_option(
-        c("-k", "--pca_rank"),
-        type = "integer",
-        default = 50,
-        help = "Rank of PCAs for analysis. (Default = 50) "),
-    make_option(
         c("-p", "--project_dir"),
         type = "character",
         default = 0,
@@ -112,7 +108,6 @@ ctss_thr            <- opt$ctss_thr
 consensus_ctss_thr  <- opt$consensus_ctss_thr
 consensus_ctss_dist <- opt$consensus_ctss_dist
 tx_annotation       <- opt$annotation
-pca_rank             <- opt$pca_rank
 project_dir         <- opt$project_dir
 bsgenome            <- opt$bsgenome
 num_core            <- opt$num_core

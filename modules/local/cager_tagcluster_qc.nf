@@ -29,7 +29,8 @@ process CAGER_TAGCLUSTER_QC {
         -a ${txdb} \
         -b \${bsgenome} \
         -p ${projectDir} \
-        -t ${params.tpm_threshold}
+        -t ${params.tpm_threshold} \
+        -k ${params.pca_rank}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

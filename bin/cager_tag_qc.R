@@ -89,9 +89,6 @@ if (length(sampleLabels(ce)) > 10){
         digits = 3,
         plot_pairs = FALSE)
 
-    # save intermediate file
-    saveRDS(corr_m, "corr_m.rds")
-
     # plot correlations in heatmap format
     hm <- gplots::heatmap.2(corr_m, trace="none", margins=c(12, 12),cexRow=0.2)
     pdf("correlations_heatmap_plot.pdf")
@@ -107,10 +104,10 @@ if (length(sampleLabels(ce)) > 10){
         method = "pearson",
         digits = 3,
         plot_pairs=TRUE)
-    # save intermediate file
-    saveRDS(corr_m, "corr_m.rds")
 }
 
+# save intermediate file
+saveRDS(corr_m, "corr_m.rds")
 
 # Plot sequence distribution at the TSS
 # tsslogo_plot <- CAGEr::TSSlogo(

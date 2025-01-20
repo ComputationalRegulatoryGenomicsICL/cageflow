@@ -49,8 +49,12 @@ option_list = list(
         c("-t", "--tpm_threshold"),
         type = "double",
         default = 1,
-        help = "Threshold to filter CTSS that has few tags per million (Optional), defaults to 1 ",
-        metavar = "double")
+        help = "Threshold to filter CTSS that has few tags per million (Optional), defaults to 1 "),
+    make_option(
+        c("-k", "--pca_rank"),
+        type = "integer",
+        default = 50,
+        help = "Rank of PCAs for analysis. (Default = 50) ")
 )
 
 message("; Reading arguments from command line.")
@@ -63,9 +67,8 @@ ce_path         <- opt$cageexp_object
 tx_annotation   <- opt$annotation
 bsgenome        <- opt$bsgenome
 project_dir     <- opt$project_dir
-tpmThreshold  <- opt$tpm_threshold
-pdfWidth      <- opt$pdf_width
-pdfHeight     <- opt$pdf_height
+tpmThreshold    <- opt$tpm_threshold
+pca_rank        <- opt$pca_rank
 
 # installing BSgenome
 source(file.path(project_dir, "bin/install_bsgenome.R"))
@@ -138,4 +141,4 @@ save_plot(
 
 # Consensus clustered CTSS quality plots
 # uses functions from plot_number_and_pca_of_ctss.R
-consensus_qc(ce=ce, pcarank=pca_rank)
+# consensus_qc(ce=ce, pcarank=pca_rank)

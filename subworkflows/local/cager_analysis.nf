@@ -48,7 +48,7 @@ workflow CAGER {
         tra_ch_tss = CAGER_TAG_QC.out.plots
         corr_data = CAGER_TAG_QC.out.correlation_rds
 
-        CAGER_PREPROCESSING(annotated_cager_rds, ch_bsgenome_file, ch_bsgenome_name)
+        CAGER_PREPROCESSING(annotated_cager_rds, ch_bsgenome_file, ch_bsgenome_name, ch_txdb)
         clustered_cager_rds = CAGER_PREPROCESSING.out.rds
         ch_versions = ch_versions.mix(CAGER_PREPROCESSING.out.versions)
         // reverse cumulative, iterquartile width, ctss counts

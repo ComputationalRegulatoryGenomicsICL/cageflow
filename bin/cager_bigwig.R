@@ -2,7 +2,7 @@
 #'
 #' @param bsgenome_name the name of the reference genome (bsgenome)
 #' @param bigwig_paths list of input bigwig files with full path
-#' @param sample_names list of sample names
+#' @param chromosome_names list of chromosome names to keep
 #' @param cpus number of cores to use
 #' @return a CAGEexp object
 #' @examples
@@ -14,6 +14,7 @@
 read_in_bigwig <- function(
     bsgenome_name,
     bigwig_paths,
+    chromosome_names,
     cpus){
 
   bigwig_paths <- stringr::str_squish(bigwig_paths)
@@ -30,9 +31,17 @@ read_in_bigwig <- function(
 
   names(signals) = basename(bigwigs)
 
+  signals_chr_filt <- list()
+  for (sname in names(signals)){
+    signal <- signals[[sname]]
+    signal <- signal[seqnames(signal) %in% chromosome_names]
+    signals_chr_filt[[sname]] <- signal
+  }
+  
+
   signalsSplit = split(
-    signals,
-    grepl("str1", names(signals)))
+    signals_chr_filt,
+    grepl("str1", names(signals_chr_filt)))
 
   plus = lapply(signalsSplit$`TRUE`, function(x) {
     strand(x) = "+"
