@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
 # 
-# Process data with CAGEr: merging of replicates and normalization, clustering of tags
+# Process data with CAGEr: normalization, clustering of tags, consensus cluster calling, and track export
 # 
 
 # Load libraries
@@ -9,6 +9,7 @@ required.libraries <- c(
     "optparse",
     "rlang",
     "CAGEr",
+    "GenomicFeatures",
     "dplyr",
     "purrr",
     "magrittr",
@@ -60,6 +61,21 @@ option_list = list(
         default = 1,
         help = "CTSS Tpm threshold which should be passed in sample_num_thr number of samples (Default = 1)"),
     make_option(
+        c("-u", "--consensus_ctss_thr"),
+        type = "integer",
+        default = 5,
+        help = "CTSS Tpm threshold for consensus clustering (Default = 5)"),
+    make_option(
+        c("-d", "--consensus_ctss_dist"),
+        type = "integer",
+        default = 100,
+        help = "Distance threshold for consensus clustering (Default = 100)"),
+    make_option(
+        c("-a", "--annotation"),
+        type = "character",
+        default = NULL,
+        help = "SQLite file with a TxDb genome annotation package (Mandatory)"),
+    make_option(
         c("-p", "--project_dir"),
         type = "character",
         default = 0,
@@ -82,16 +98,19 @@ opt = optparse::parse_args(opt_parser)
 
 # set variable names
 
-ce_path         <- opt$cageexp_object
-range_min       <- opt$range_min
-range_max       <- opt$range_max
-method          <- opt$method
-total_tag_num   <- opt$total_tag_num
-sample_num_thr  <- opt$sample_num_thr
-ctss_thr        <- opt$ctss_thr
-project_dir     <- opt$project_dir
-bsgenome        <- opt$bsgenome
-num_core        <- opt$num_core
+ce_path             <- opt$cageexp_object
+range_min           <- opt$range_min
+range_max           <- opt$range_max
+method              <- opt$method
+total_tag_num       <- opt$total_tag_num
+sample_num_thr      <- opt$sample_num_thr
+ctss_thr            <- opt$ctss_thr
+consensus_ctss_thr  <- opt$consensus_ctss_thr
+consensus_ctss_dist <- opt$consensus_ctss_dist
+tx_annotation       <- opt$annotation
+project_dir         <- opt$project_dir
+bsgenome            <- opt$bsgenome
+num_core            <- opt$num_core
 
 # import functions
 # installing BSgenome
@@ -101,17 +120,15 @@ source(file.path(project_dir, "bin/install_bsgenome.R"))
 # source(file.path(project_dir, "bin/cager_merge_replicates.R"))
 source(file.path(project_dir, "bin/cager_normalization.R"))
 source(file.path(project_dir, "bin/plot_saving.R"))
-source(file.path(project_dir, "bin/plot_number_of_ctss.R"))
+source(file.path(project_dir, "bin/plot_number_and_pca_of_ctss.R"))
 source(file.path(project_dir, "bin/cager_modified_plots.R"))
 source(file.path(project_dir, "bin/cager_clustering.R"))
+source(file.path(project_dir, "bin/cager_consensus_clustering.R"))
 
 reference_name <- install_bsgenome(bsgenome)
 
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
-
-# Merging of replicates if _repX is present in their name
-# ce <- merge_replicates(ce)
 
 # Normalization
 # uses functions from cager_modified_plots.R
@@ -123,7 +140,7 @@ ce <- cager_normalization(
     total_tag_num=total_tag_num)
 
 # CTSS clustering
-# uses functions from cager_modified_plots.R and plot_number_of_ctss.R
+# uses functions from cager_modified_plots.R and plot_number_and_pca_of_ctss.R
 ce <- cager_clustering(
     ce=ce,
     iqw_plot_lim=c(0, 150),
@@ -134,6 +151,15 @@ ce <- cager_clustering(
 # save output
 # RDS
 saveRDS(ce, file = "normalized_clustered_cagexp.rds")
-# CTSS count matrix
-# consensus cluster count matrix
+
+# Consensus clustering of clustered CTSS
+
+ce <- consensus_clustering(
+    ce=ce,
+    tpmThreshold=consensus_ctss_thr,
+    maxDist=consensus_ctss_dist,
+    tx_annotation=tx_annotation,
+    num_core=num_core)
+
+# Track export (bigwig)
 

@@ -39,10 +39,15 @@ option_list = list(
         default = NULL,
         help = "Name of the BSgenome version to be used (Mandatory)"),
     make_option(
+        c("-n", "--chromosomes"),
+        type = "character",
+        default = NULL,
+        help = "Comma separated list of chromosomes to keep (Optional)"),
+    make_option(
         c("-p", "--project_dir"),
         type = "character",
-        default = 0,
-        help = "Project directory, from which the analysis is run."),
+        default = NULL,
+        help = "Project directory, from which the analysis is run. (Mandatory)"),
     make_option(
         c("-c", "--num_core"),
         type = "integer",
@@ -58,6 +63,7 @@ opt = optparse::parse_args(opt_parser)
 data_type           <- opt$data_type
 sample_table_list   <- opt$sample_table_list
 bsgenome            <- opt$bsgenome
+chromosome_names    <- opt$chromosomes
 project_dir         <- opt$project_dir
 num_core            <- opt$num_core
 
@@ -96,9 +102,11 @@ if (tolower(data_type) == "bam"){
         cpus=num_core
     )
 }else if(tolower(data_type) == "bigwig") {
+    chromosome_names_list <- unlist(strsplit(chromosome_names, ','))
     ce <- read_in_bigwig(
         bsgenome_name=reference_name,
         bigwig_paths=sample_table$path,
+        chromosome_names=chromosome_names_list,
         cpus=num_core
     )
 } else {

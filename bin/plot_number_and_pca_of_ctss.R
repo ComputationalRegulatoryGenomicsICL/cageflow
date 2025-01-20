@@ -43,3 +43,24 @@ plot_number_of_ctss <- function(sample_ctss_count, yaxistitle, mytitle, myfilena
       title = mytitle)
   return(ctss_plot)
 }
+
+plot_pcs <- function(ce_tmp, pcarank){
+  pca_out <- prcomp(
+    ce_tmp,
+    rank. = pcarank)
+  plca_to_plot <- as_tibble(
+    data.frame(
+      pca_out$rotation[,c("PC1","PC2")]),
+      rownames = "name")
+  pca_plot <- ggplot2::ggplot(
+    plca_to_plot,
+    aes(x=PC1, y=PC2,label=name)) +
+    geom_point() +
+    ggrepel::geom_text_repel(
+      hjust=0,
+      vjust=0,
+      size=2,
+      max.overlaps=5)
+
+  return(pca_plot)
+}

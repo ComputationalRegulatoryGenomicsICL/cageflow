@@ -155,8 +155,8 @@ count_dinucleotide_frequency <- function(ctss_sequences) {
     return(ctss_dinuc_freq_df_srt)
 }
 
-plot_dinucleotide_frequency <- function(
-        ctss_dinuc_freq_df_tidy) {
+dinucleotide_freq_plot_prep <- function(
+    ctss_dinuc_freq_df_tidy){
     # prepare dataframe for ggplot
     ctss_dinuc_freq_df_tidy_gg <- tidyr::pivot_longer(
         ctss_dinuc_freq_df_tidy,
@@ -164,7 +164,7 @@ plot_dinucleotide_frequency <- function(
         names_to="samples",
         values_to="percentage"
     )
-    # plot initiators as a histogram - all samples
+    # plot initiators as a heatmap - all samples
     # set levels
     ctss_dinuc_freq_df_tidy_gg$dinucleotide <- factor(
         ctss_dinuc_freq_df_tidy_gg$dinucleotide,
@@ -174,10 +174,12 @@ plot_dinucleotide_frequency <- function(
     ctss_dinuc_freq_df_tidy_gg$samples <- factor(
         ctss_dinuc_freq_df_tidy_gg$samples,
         levels=column_names)
+    
+    return(ctss_dinuc_freq_df_tidy_gg)
+}
 
-    col = viridis::magma(
-        length(column_names),
-        alpha = 0.8)[length(column_names):1]
+plot_dinucleotide_frequency_heatmap <- function(
+        ctss_dinuc_freq_df_tidy_gg) {
 
     p <- ggplot(
         data = ctss_dinuc_freq_df_tidy_gg,
@@ -197,4 +199,54 @@ plot_dinucleotide_frequency <- function(
     return(p)
 }
 
+plot_dinucleotide_frequency_histogram <- function(
+    ctss_dinuc_freq_df_tidy_gg, col) {
 
+    p <- ggplot(
+        data = ctss_dinuc_freq_df_tidy_gg,
+        aes(x = dinucleotide, y = percentage, fill = samples)) + 
+        scale_fill_manual(values = col) +
+        geom_bar(
+            stat = "identity",
+            position = position_dodge(),
+            colour = "black",
+            linewidth = 0.25) + 
+        coord_flip() +
+        xlab("Initiator dinucleotide") + 
+        ylab("Percentage") + 
+        ggtitle(NULL) + 
+        theme_bw() +
+        theme(
+            text = element_text(size = 14, colour = "black"), 
+            axis.text.x = element_text(size = 14, colour = "black"),
+            axis.text.y = element_text(size = 14, colour = "black"),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank()) +
+        scale_y_continuous(limits = c(0, 30)) +
+        labs(fill = NULL)
+
+    return(p)
+}
+
+plot_dinucleotide_frequency <- function(
+        ctss_dinuc_freq_df_tidy) {
+    
+    ctss_dinuc_freq_df_tidy_gg <- dinucleotide_freq_plot_prep(ctss_dinuc_freq_df_tidy)
+
+    column_names <- sort(unique(ctss_dinuc_freq_df_tidy_gg$samples))
+    col = viridis::magma(
+        length(column_names),
+        alpha = 0.8)[length(column_names):1]
+
+    # heatmap if more than 10 samples, otherwise barplot
+    if (length(column_names) > 10){
+        p <- plot_dinucleotide_frequency_heatmap(
+            ctss_dinuc_freq_df_tidy_gg=ctss_dinuc_freq_df_tidy_gg
+        )
+    } else {
+        p <- plot_dinucleotide_frequency_histogram(
+            ctss_dinuc_freq_df_tidy_gg=ctss_dinuc_freq_df_tidy_gg,
+            col=col)
+    }
+    return(p)
+}
