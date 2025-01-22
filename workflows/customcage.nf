@@ -77,7 +77,7 @@ workflow CUSTOMCAGE {
             exit 1, "The --gtf argument is mandatory."
     }
 
-    if (!params.maponly && !params.fullpipeline){
+    if (!params.maponly && !params.fullpipeline) {
         if (!params.cager_sample_file ) {
             exit 1, 'Sample list file is mandatory if mapping is not done within the pipeline.'
         }
@@ -107,6 +107,7 @@ workflow CUSTOMCAGE {
         ch_versions = PREPROCESSING.out.ch_versions
         
         PREPARE_MAPPING_METADATA( ch_fasta, ch_versions )
+        
         ch_chrom_sizes = PREPARE_MAPPING_METADATA.out.ch_chrom_sizes
         ch_fasta = PREPARE_MAPPING_METADATA.out.ch_fasta
         ch_versions = PREPARE_MAPPING_METADATA.out.ch_versions
@@ -121,12 +122,6 @@ workflow CUSTOMCAGE {
             // it will be replaced in SAMTOOLS_PROCESSING
             ch_for_cager = ch_aligned
 
-<<<<<<< HEAD
-        ch_sample_list = STAR_PROCESSING.out.bigwig_ch_for_cager
-        ch_aligned = STAR_PROCESSING.out.ch_aligned
-        ch_multiqc_files = STAR_PROCESSING.out.ch_multiqc_files
-        ch_versions = STAR_PROCESSING.out.ch_versions
-=======
         } else {
             STAR_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_gtf, ch_chrom_sizes, ch_multiqc_files, ch_versions)
 
@@ -168,7 +163,6 @@ workflow CUSTOMCAGE {
             name: "sample_list.csv",
             newLine: true,
             sort: { file -> file.text })
->>>>>>> dev
     }
     
     if (params.cageronly || params.fullpipeline) {
