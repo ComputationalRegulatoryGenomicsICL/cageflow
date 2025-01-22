@@ -29,7 +29,7 @@ option_list = list(
         default = NULL,
         help = "Whether BAM (bam) or BigWig (bigwig) is provided (Mandatory)"),
     make_option(
-        c("-s", "--sample_file"),
+        c("-s", "--sample_table_list"),
         type = "character",
         default = NULL,
         help = "Csv with information from the input channel with [id, pairedness, bigwig or bam path] (Mandatory)"),
@@ -39,10 +39,15 @@ option_list = list(
         default = NULL,
         help = "Name of the BSgenome version to be used (Mandatory)"),
     make_option(
+        c("-n", "--chromosomes"),
+        type = "character",
+        default = NULL,
+        help = "Comma separated list of chromosomes to keep (Optional)"),
+    make_option(
         c("-p", "--project_dir"),
         type = "character",
-        default = 0,
-        help = "Project directory, from which the analysis is run."),
+        default = NULL,
+        help = "Project directory, from which the analysis is run. (Mandatory)"),
     make_option(
         c("-c", "--num_core"),
         type = "integer",
@@ -55,11 +60,12 @@ opt_parser = optparse::OptionParser(option_list = option_list)
 opt = optparse::parse_args(opt_parser)
 
 # set variable names
-data_type       <- opt$data_type
-sample_file     <- opt$sample_file
-bsgenome        <- opt$bsgenome
-project_dir     <- opt$project_dir
-num_core        <- opt$num_core
+data_type           <- opt$data_type
+sample_table_list   <- opt$sample_table_list
+bsgenome            <- opt$bsgenome
+chromosome_names    <- opt$chromosomes
+project_dir         <- opt$project_dir
+num_core            <- opt$num_core
 
 # import functions
 
@@ -70,19 +76,21 @@ source(file.path(project_dir, "bin/parse_input.R"))
 source(file.path(project_dir, "bin/cager_bam.R"))
 source(file.path(project_dir, "bin/cager_bigwig.R"))
 
-
 reference_name <- install_bsgenome(bsgenome)
 
-sample_table <- parse_input(sample_file)
+sample_table <- parse_input(sample_table_list, data_type)
 single_end_uniq <- unique(sample_table$single_end)
 if (length(single_end_uniq) < 1) {
-    stop("Sample table is empty")
+    print(sample_table)
+    stop("Sample table is empty or the header is missing.")
 } else if (length(single_end_uniq) > 1) {
     print(sample_table)
     stop("Sample table contains both single-end and paired-end reads.")
 } else {
-    bam_type <- ifelse(single_end_uniq == "true",
-                    "bam", "bamPairedEnd")
+    bam_type <- ifelse(
+        single_end_uniq == "true",
+        "bam",
+        "bamPairedEnd")
 }
 
 if (tolower(data_type) == "bam"){
@@ -94,9 +102,11 @@ if (tolower(data_type) == "bam"){
         cpus=num_core
     )
 }else if(tolower(data_type) == "bigwig") {
+    chromosome_names_list <- unlist(strsplit(chromosome_names, ','))
     ce <- read_in_bigwig(
         bsgenome_name=reference_name,
         bigwig_paths=sample_table$path,
+        chromosome_names=chromosome_names_list,
         cpus=num_core
     )
 } else {

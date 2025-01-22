@@ -9,8 +9,8 @@
 #' @examples
 #' cager_normalization(
 #' ce,
-#' rangeMin=50,
-#' rangeMax=100000,
+#' rangeMin=10,
+#' rangeMax=10000,
 #' method="powerLaw",
 #' total_tag_num=1*10^6)
 
@@ -23,7 +23,7 @@ cager_normalization <- function(
     outlist <- calculateReverseCumulative(
         object = ce,
         values = "raw",
-        fitInRange = c(10, 1000))
+        fitInRange = c(rangeMin, rangeMax))
     tag_count_df <- outlist[[1]]
     slope <- outlist[[2]]
     library_size <- outlist[[3]]
@@ -36,7 +36,7 @@ cager_normalization <- function(
         intercept=intercept,
         library_size=library_size,
         fit.slopes = fit.slopes,
-        fitInRange = c(range_min, range_max))
+        fitInRange = c(rangeMin, rangeMax))
     
     save_plot(
         "reverse_cumulative_plot.pdf",
@@ -45,8 +45,8 @@ cager_normalization <- function(
     ce <- CAGEr::normalizeTagCount(
         ce,
         method = method,
-        fitInRange = c(range_min, range_max),
-        alpha = slope,
+        fitInRange = c(rangeMin, rangeMax),
+        alpha = -slope,
         T = total_tag_num)
 
     return(ce)

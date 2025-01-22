@@ -31,8 +31,6 @@ process CAGER_TAG_QC {
         -a ${txdb} \
         -b \${bsgenome} \
         -p ${projectDir}
-    
-    rm Rplots.pdf
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
