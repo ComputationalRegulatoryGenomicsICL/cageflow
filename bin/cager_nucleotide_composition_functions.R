@@ -160,7 +160,7 @@ dinucleotide_freq_plot_prep <- function(
     # prepare dataframe for ggplot
     ctss_dinuc_freq_df_tidy_gg <- tidyr::pivot_longer(
         ctss_dinuc_freq_df_tidy,
-        cols=2:3,
+        cols=2:length(ctss_dinuc_freq_df_tidy),
         names_to="samples",
         values_to="percentage"
     )

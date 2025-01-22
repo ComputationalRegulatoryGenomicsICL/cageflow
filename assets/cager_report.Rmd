@@ -20,8 +20,14 @@ tagannot_plot
 ### Correlation
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 corr_m <- readRDS("corr_m.rds")
-hm_plot <- readRDS("correlations_heatmap_plot.rds")
-eval(hm_plot$call)
+hm_plot <- readRDS("correlations_plot.rds")
+tryCatch(
+    {
+        eval(hm_plot$call)
+    },
+    error = function(cond){
+        print(hm_plot)
+    })
 ```
 
 ### TSS logo
