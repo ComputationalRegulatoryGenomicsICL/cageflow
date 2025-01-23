@@ -16,8 +16,8 @@ required.libraries <- c(
     "stringr",
     "tidyr",
     "tibble",
-    "data.table"
-    )
+    "data.table",
+    "rtracklayer")
 
 for (lib in required.libraries) {
   suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
@@ -124,6 +124,7 @@ source(file.path(project_dir, "bin/plot_number_and_pca_of_ctss.R"))
 source(file.path(project_dir, "bin/cager_modified_plots.R"))
 source(file.path(project_dir, "bin/cager_clustering.R"))
 source(file.path(project_dir, "bin/cager_consensus_clustering.R"))
+source(file.path(project_dir, "bin/cager_track_export.R"))
 
 reference_name <- install_bsgenome(bsgenome)
 
@@ -157,7 +158,9 @@ ce <- consensus_clustering(
     tx_annotation=tx_annotation,
     num_core=num_core)
 
-# Track export (bigwig)
+# Track export (bigwig and bed)
+export_tagclusters(ce)
+export_consensus_clusters(ce)
 
 # save output
 # RDS

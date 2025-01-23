@@ -15,6 +15,7 @@ process CAGER_PREPROCESSING {
     output:
     path "normalized_clustered_cagexp.rds",        emit: rds
     tuple path("*.pdf"), path("*.txt"), path("*plot.rds"), emit: results
+    tuple path("*.bw"), path("*.bed"), emit: tracks
     path "versions.yml", emit: versions
 
     """
