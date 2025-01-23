@@ -7,7 +7,8 @@ required_packages_cran = c(
   "knitr",
   "rmarkdown",
   "ggplot2",
-  "gplots")
+  "gplots",
+  "ggrepel")
 
 message(
   "; Installing these R packages from CRAN repository: ",
