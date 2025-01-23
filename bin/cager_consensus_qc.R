@@ -30,14 +30,14 @@ consensus_qc <- function(
         yaxistitle="Number of non-zero consensus clusters",
         mytitle="Non-zero consensus clusters per sample and union")
     save_plot(
-        "consensus_counts_plots.pdf",
+        "consensus_counts_plot.pdf",
         consensus_ctss_plot)
     print("Number of non-zero consensus clusters plotted")
 
     # plot PCAs
     pca_plot <- plot_pcs(ce_tmp=consclustTmp, pcarank=pcarank)
     save_plot(
-        "consensus_clusters_pca.pdf",
+        "consensus_clusters_pca_plot.pdf",
         pca_plot)
     print("Consensus cluster PCA plotted")
 }
