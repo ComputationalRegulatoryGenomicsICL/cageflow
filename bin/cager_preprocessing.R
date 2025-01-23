@@ -158,11 +158,11 @@ ce <- consensus_clustering(
     tx_annotation=tx_annotation,
     num_core=num_core)
 
-# Track export (bigwig and bed)
-export_tagclusters(ce)
-export_consensus_clusters(ce)
-
 # save output
 # RDS
 saveRDS(ce, file = "normalized_clustered_cagexp.rds")
+
+# Track export (bigwig and bed)
+export_tagclusters(ce)
+export_consensus_clusters(ce)
 
