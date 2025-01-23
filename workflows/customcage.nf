@@ -41,6 +41,9 @@ params.bowtie2 = false
 //params.chromsizes = null 
 params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
 
+// CAGEr markdown template location
+params.markdown_path = "$projectDir/assets/cager_report.Rmd"
+
 // BSgenome parameters
 params.bsgenome = false
 params.forgeseed = false
