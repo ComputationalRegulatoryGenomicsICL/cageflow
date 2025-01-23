@@ -286,8 +286,8 @@ plotCorrelation2_local <- function( expr.table, samples, method
            , xaxp = c(1,10,1)
            , yaxp = c(1,10,1)
            , labels = samples)
-    pairs_plot <- recordPlot()
     dev.off()
+    pairs_plot <- list(expr.table, pointsUnique, panel.cor, samples)
     saveRDS(pairs_plot, "correlations_plot.rds")
   }
   

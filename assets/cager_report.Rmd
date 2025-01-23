@@ -21,11 +21,25 @@ tagannot_plot
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 corr_m <- readRDS("corr_m.rds")
 hm_plot <- readRDS("correlations_plot.rds")
-if (!is.null(eval(hm_plot$call))){
-    eval(hm_plot$call)
-} else {
-    print(hm_plot)
-}
+tryCatch({
+    expr.table <- pairs_plot[[1]]
+    pointsUnique <- pairs_plot[[2]]
+    panel.cor <- pairs_plot[[3]]
+    samples <- pairs_plot[[4]]
+    pairs( expr.table
+        , lower.panel = pointsUnique
+        , upper.panel = panel.cor
+        , pch = "."
+        , cex = 4
+        , log = "xy"
+        , las = 1
+        , xaxp = c(1,10,1)
+        , yaxp = c(1,10,1)
+        , labels = samples)
+    },
+    error = function(cond){
+        eval(hm_plot$call)
+})
 ```
 
 ### TSS logo
