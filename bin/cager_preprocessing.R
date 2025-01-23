@@ -148,10 +148,6 @@ ce <- cager_clustering(
     ctss_thr=ctss_thr,
     num_core=num_core)
 
-# save output
-# RDS
-saveRDS(ce, file = "normalized_clustered_cagexp.rds")
-
 # Consensus clustering of clustered CTSS
 
 ce <- consensus_clustering(
@@ -162,4 +158,8 @@ ce <- consensus_clustering(
     num_core=num_core)
 
 # Track export (bigwig)
+
+# save output
+# RDS
+saveRDS(ce, file = "normalized_clustered_cagexp.rds")
 

@@ -62,10 +62,7 @@ workflow CAGER {
         ch_tagc_plots = CAGER_TAGCLUSTER_QC.out.plots
 
         // TODO:
-        // 1. track exports: bigwigs
-        // 2. expression profiling
-        // 3. differential expression analysis
-        // 4. shifting promoters
+        // 1. track exports: bigwigs and beds
         // 5. enhancer calling
 
         ch_template = Channel.fromPath(params.markdown_path)

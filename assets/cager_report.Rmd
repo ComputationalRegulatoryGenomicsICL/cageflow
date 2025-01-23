@@ -20,8 +20,12 @@ tagannot_plot
 ### Correlation
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 corr_m <- readRDS("corr_m.rds")
-hm_plot <- readRDS("correlations_heatmap_plot.rds")
-eval(hm_plot$call)
+hm_plot <- readRDS("correlations_plot.rds")
+if (!is.null(eval(hm_plot$call))){
+    eval(hm_plot$call)
+} else {
+    print(hm_plot)
+}
 ```
 
 ### TSS logo
@@ -65,4 +69,16 @@ dinucl_plot + ggplot2::theme(
     text=ggplot2::element_text(size=5),
     axis.text.x = ggplot2::element_text(angle = 90, size=5),
     axis.text.y = ggplot2::element_text(size=5))
+```
+
+### Consensus cluster TPM counts
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+cc_plot <- readRDS("consensus_counts_plots.rds")
+cc_plot
+```
+
+### Consensus cluster PCA
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+cc_plot <- readRDS("consensus_clusters_pca.rds")
+cc_plot
 ```

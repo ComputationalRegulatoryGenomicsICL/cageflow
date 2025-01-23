@@ -37,6 +37,7 @@ read_in_bigwig <- function(
   }
   names(signals) = signal_names
 
+  # set the seqlevels of signals to bsgenome in x - ask Damir to fix chromosomes
   signals_chr_filt <- list()
   for (sname in names(signals)){
     signal <- signals[[sname]]

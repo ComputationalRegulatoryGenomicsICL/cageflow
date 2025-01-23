@@ -91,10 +91,10 @@ if (length(sampleLabels(ce)) > 10){
 
     # plot correlations in heatmap format
     hm <- gplots::heatmap.2(corr_m, trace="none", margins=c(12, 12),cexRow=0.2)
-    pdf("correlations_heatmap_plot.pdf")
+    pdf("correlations_plot.pdf")
     eval(hm$call)
     dev.off()
-    saveRDS(hm, "correlations_heatmap_plot.rds")
+    saveRDS(hm, "correlations_plot.rds")
 } else {
     corr_m <- plotCorrelation2_local(
         CTSStagCountDF(ce),

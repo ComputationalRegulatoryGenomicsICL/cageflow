@@ -87,7 +87,7 @@ reference_name <- install_bsgenome(bsgenome)
 ce <- readRDS(ce_path)
 
 # extract tag clusters to GRanger object
-sampleNames <- unname(sampleLabels(ce))
+sampleNames <- unname(CAGEr::sampleLabels(ce))
 tag_clusters <- lapply(
     sampleNames,
     function (x) CAGEr::tagClustersGR(
@@ -141,4 +141,4 @@ save_plot(
 
 # Consensus clustered CTSS quality plots
 # uses functions from plot_number_and_pca_of_ctss.R
-# consensus_qc(ce=ce, pcarank=pca_rank)
+consensus_qc(ce=ce, pcarank=pca_rank)

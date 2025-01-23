@@ -13,8 +13,9 @@ process CAGER_TAGCLUSTER_QC {
     val bsgenome_name
 
     output:
-    path "versions.yml", emit: versions
+    path "*.csv", emit: counts_csv
     tuple path("*.pdf"), path("*plot.rds"), emit: plots
+    path "versions.yml", emit: versions
 
     """
     if [ -z ${bsgenome_name} ]
