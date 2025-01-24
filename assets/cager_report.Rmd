@@ -73,12 +73,12 @@ dinucl_plot + ggplot2::theme(
 
 ### Consensus cluster TPM counts
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-cc_plot <- readRDS("consensus_counts_plots.rds")
+cc_plot <- readRDS("consensus_counts_plot.rds")
 cc_plot
 ```
 
 ### Consensus cluster PCA
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-cc_plot <- readRDS("consensus_clusters_pca.rds")
+cc_plot <- readRDS("consensus_clusters_pca_plot.rds")
 cc_plot
 ```
