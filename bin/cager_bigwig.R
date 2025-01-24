@@ -1,3 +1,67 @@
+# Function from CAGEr version 2.12.0
+#' @name getRefGenome
+#' 
+#' @title Return a BSgenome or throws an error
+#' 
+#' @details If the `reference.genome` object exists and is a BSgenome_, it will
+#' be returned.  This allows the user to run things like
+#' `seqlevelsStyle(BSgenome.Hsapiens.UCSC.hg19) <- "NCBI"` on the BSgenome
+#' object before running `getCTSS`.  If the `reference.genome` object does not
+#' exist, attempts to load it and return it, or throws an error if not available.
+#' 
+#' @return A BSgenome object of the same name as the `reference.genome` argument.
+#' 
+#' @param reference.genome
+#' 
+#' @author Charles Plessy
+#' @importFrom utils installed.packages
+#' 
+#' @noRd
+
+getRefGenome <- function(reference.genome) {
+  if (is.null(reference.genome))
+    stop("Can not run this function with a NULL genome; see ", sQuote('help("genomeName")'), ".")
+  if (exists(reference.genome))
+    if ("BSgenome" %in% class(get(reference.genome)))
+      return(get(reference.genome))
+    else
+      stop("The ", sQuote(reference.genome), " object in the namespace is not a BSgenome")
+  if(reference.genome %in% rownames(installed.packages()) == FALSE)
+    stop("Requested genome is not installed! Please install required BSgenome package before running CAGEr.")
+  requireNamespace(reference.genome)
+  getExportedValue(reference.genome, reference.genome)
+}
+
+# Function from CAGEr version 2.12.0
+#' coerceInBSgenome
+#' 
+#' A private (non-exported) function to discard any range that is
+#' not compatible with the CAGEr object's BSgenome.
+#' 
+#' @param gr The genomic ranges to coerce.
+#' @param genome The name of a BSgenome package, which must me installed,
+#'   or \code{NULL} to skip coercion.
+#' 
+#' @return A GRanges object in which every range is guaranteed to be compatible
+#' with the given BSgenome object.  The sequnames of the GRanges are also set
+#' accordingly to the BSgenome.
+#' 
+#' @importFrom GenomeInfoDb seqinfo
+#' @importFrom GenomeInfoDb seqlengths
+#' @importFrom GenomeInfoDb seqlevels seqlevels<-
+#' @importFrom GenomeInfoDb seqnames
+#' @importFrom S4Vectors %in%
+
+coerceInBSgenome <- function(gr, genome) {
+  if (is.null(genome)) return(gr)
+  genome <- getRefGenome(genome)
+  gr <- gr[seqnames(gr) %in% seqnames(genome)]
+  gr <- gr[! end(gr) > seqlengths(genome)[as.character(seqnames(gr))]]
+  seqlevels(gr) <- seqlevels(genome)
+  seqinfo(gr) <- seqinfo(genome)
+  gr
+}
+
 #' Read in BigWig files to CAGEexp object
 #'
 #' @param bsgenome_name the name of the reference genome (bsgenome)
@@ -81,42 +145,49 @@ read_in_bigwig <- function(
     }
   }
 
+  # Step 0: Create a CAGEexp object, filenames only of str1
+  ce <- new( "CAGEexp"
+     , colData = DataFrame( inputFiles     = bigwigs[grep("str1", bigwigs)]
+                          , sampleLabels   = plus_sample_names
+                          , inputFilesType = "CTSStable"
+                          , row.names      = plus_sample_names)
+     , metadata = list(genomeName = bsgenome_name))
+
+  # Step 1: Load each file as GRangesList where each GRange is a CTSS data.
   merged = mapply(c, plus, minus)
+  merged_gpos <- lapply(merged, function(x) {
+    gp <- GPos(stitch=FALSE, x)
+    score(gp) <- x$score
+    gp <- coerceInBSgenome(gp, bsgenome_name)
+    gp <- sort(gp)
+  })
+  merged_gpos <-  GRangesList(merged_gpos)
 
-  ctss.obj = purrr::reduce(
-    merged,
-    function(x, y) {
-      dplyr::full_join(
-        as.data.frame(x),
-        as.data.frame(y),
-        by = c("seqnames", "start", "strand")) %>%
-      dplyr::select(
-        c("seqnames", "start", "strand"),
-        contains("score"))
-    }) %>%
-    dplyr::rename(
-      chr = "seqnames",
-      pos = "start") %>%
-    dplyr::mutate(
-      across(
-        where(is.numeric),
-        ~tidyr::replace_na(., 0)))
+  # Step 2: Create GPos representing all the nucleotides with CAGE counts in the list.
+  rowRanges <- sort(unique(unlist(merged_gpos)))
+  mcols(rowRanges) <- NULL
 
-  names(ctss.obj) = c("chr", "pos", "strand", names(merged))
-
-  ctss.obj %<>%
-    dplyr::mutate(across(all_of(plus_sample_names), as.integer))
-  ctss.obj$chr = as.character(ctss.obj$chr)
-  ctss.obj$strand = as.character(ctss.obj$strand)
-  cageexpobj = as(ctss.obj, "CAGEexp")
-
-  colData(cageexpobj)$inputFilesType <- "CTSStable"
-
-  metadata(cageexpobj)$genomeName = bsgenome_name
-
-  rowRanges(cageexpobj@ExperimentList$tagCountMatrix) = as(
-    rowRanges(cageexpobj@ExperimentList$tagCountMatrix),
-    Class = "CTSS")
+  # Step 3: Fold the GRangesList in a expression DataFrame of Rle-encoded counts.
+  assay <- DataFrame(V1 = Rle(rep(0L, length(rowRanges))))
+  expandRange <- function(global, local) {
+    x <- Rle(rep(0L, length(global)))
+    x[global %in% local] <- score(local)
+    x
+  }
+  for (i in seq_along(merged_gpos))
+    assay[,i] <- expandRange(rowRanges, merged_gpos[[i]])
   
-  return(cageexpobj)
+  rowRanges <- new("CTSS", rowRanges, bsgenomeName = bsgenome_name)
+  colnames(assay) <- names(merged)
+
+  # Setp 4: Put the data in the appropriate slot of the MultiAssayExperiment.
+  CTSStagCountSE(ce) <- SummarizedExperiment(
+      rowRanges = rowRanges,
+      assays    = SimpleList(counts = assay))
+  
+  # Step 5: update the sample metadata (colData).
+  ce$librarySizes <- unlist(lapply(CTSStagCountDF(ce), sum))
+  
+  # Setp 6: Return the modified object.
+  ce
 }
