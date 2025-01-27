@@ -4,7 +4,7 @@
 #' @param rangeMin range min within which the slope is calculated
 #' @param rangeMax range max within which the slope is calculated
 #' @param method method of normalizing tag counts
-#' @param total_tag_num total number of tags
+#' @param T_norm total number of tags
 #' @return ce normalized CAGEexp object
 #' @examples
 #' cager_normalization(
@@ -12,13 +12,13 @@
 #' rangeMin=10,
 #' rangeMax=10000,
 #' method="powerLaw",
-#' total_tag_num=1*10^6)
+#' T_norm=1*10^6)
 
 cager_normalization <- function(
     ce,
     rangeMin, rangeMax,
     method,
-    total_tag_num){
+    T_norm){
 
     outlist <- calculateReverseCumulative(
         object = ce,
@@ -47,7 +47,7 @@ cager_normalization <- function(
         method = method,
         fitInRange = c(rangeMin, rangeMax),
         alpha = -slope,
-        T = total_tag_num)
+        T = T_norm)
 
     return(ce)
 }

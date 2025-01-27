@@ -66,7 +66,6 @@ coerceInBSgenome <- function(gr, genome) {
 #'
 #' @param bsgenome_name the name of the reference genome (bsgenome)
 #' @param bigwig_paths list of input bigwig files with full path
-#' @param chromosome_names list of chromosome names to keep
 #' @param cpus number of cores to use
 #' @return a CAGEexp object
 #' @examples
@@ -78,7 +77,6 @@ coerceInBSgenome <- function(gr, genome) {
 read_in_bigwig <- function(
     bsgenome_name,
     bigwig_paths,
-    chromosome_names,
     cpus){
 
   bigwig_paths <- stringr::str_squish(bigwig_paths)
@@ -95,18 +93,9 @@ read_in_bigwig <- function(
 
   names(signals) = basename(bigwigs)
 
-  # set the seqlevels of signals to bsgenome in x - ask Damir to fix chromosomes
-  signals_chr_filt <- list()
-  for (sname in names(signals)){
-    signal <- signals[[sname]]
-    signal <- signal[seqnames(signal) %in% chromosome_names]
-    signals_chr_filt[[sname]] <- signal
-  }
-  
-
   signalsSplit = split(
-    signals_chr_filt,
-    grepl("str1", names(signals_chr_filt)))
+    signals,
+    grepl("str1", names(signals)))
 
   plus = lapply(signalsSplit$`TRUE`, function(x) {
     strand(x) = "+"

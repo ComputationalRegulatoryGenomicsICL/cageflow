@@ -46,7 +46,7 @@ option_list = list(
         default = "powerLaw",
         help = "Method for normalization (Optional)"),
     make_option(
-        c("-t", "--total_tag_num"),
+        c("-t", "--T_norm"),
         type = "integer",
         default = 1*10^6,
         help = "Total number of tags. Setting it to 1 million (default) results in normalized tags per million (tpm) values (Optional)"),
@@ -102,7 +102,7 @@ ce_path             <- opt$cageexp_object
 range_min           <- opt$range_min
 range_max           <- opt$range_max
 method              <- opt$method
-total_tag_num       <- opt$total_tag_num
+T_norm              <- opt$T_norm
 sample_num_thr      <- opt$sample_num_thr
 ctss_thr            <- opt$ctss_thr
 consensus_ctss_thr  <- opt$consensus_ctss_thr
@@ -138,7 +138,7 @@ ce <- cager_normalization(
     rangeMin=range_min,
     rangeMax=range_max,
     method=method,
-    total_tag_num=total_tag_num)
+    T_norm=T_norm)
 
 # CTSS clustering
 # uses functions from cager_modified_plots.R and plot_number_and_pca_of_ctss.R
