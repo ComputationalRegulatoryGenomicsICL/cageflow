@@ -32,7 +32,7 @@ params.dedup = false
 params.dist = false
 
 // genome annotation in GTF
-params.gtf = null // "$projectDir/assets/NO_FILE_GTF"
+params.gtf = "$projectDir/assets/NO_FILE_GTF"
 
 // bowtie2 parameters
 params.bowtie2 = false
@@ -45,6 +45,9 @@ params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
 params.bsgenome = false
 params.forgeseed = false
 params.sourcedir = false
+
+// CAGEr markdown template location
+params.markdown_path = "assets/cager_report.Rmd"
 
 include { PARAMETER_CHECKS } from '../subworkflows/local/parameter_checks.nf'
 include { PREPROCESSING } from '../subworkflows/local/preprocessing.nf'

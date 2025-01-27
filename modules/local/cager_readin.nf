@@ -26,7 +26,6 @@ process CAGER_READIN {
         -t "${data_type}" \
         -b \${bsgenome} \
         -s "${sample_table}" \
-        -n "${params.chromosomes_to_keep}" \
         -p ${projectDir} \
         -c ${task.cpus}
 
