@@ -26,7 +26,5 @@ export_consensus_clusters <- function(ce){
         colorByExpressionProfile = TRUE,
         oneTrack = FALSE)
 
-    mapply(function(x, y){
-        rtracklayer::export.bed(x, paste0(y,"_consensusClusters.bed"))
-    }, ccbedTracks, CAGEr::sampleLabels(ce))
+    rtracklayer::export.bed(ccbedTracks, "consensusClusters.bed")
 }

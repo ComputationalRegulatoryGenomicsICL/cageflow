@@ -89,7 +89,10 @@ read_in_bigwig <- function(
 
   signals = lapply(
     bigwigs,
-    function(x) rtracklayer::import(x))
+    function(x) {
+      track_in <- rtracklayer::import(x)
+      track_bs <- coerceInBSgenome(track_in, bsgenome_name)
+    })
 
   names(signals) = basename(bigwigs)
 
