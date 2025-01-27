@@ -430,31 +430,3 @@ plotReverseCumulatives_local <- function(
     
   return(plot_out)
 }
-
-TSSlogo_local <- function(x, genome_name, upstream=10, downstream=10) {
-  if (! requireNamespace("ggseqlogo"))
-    stop("This function requires the ", dQuote("ggseqlogo"), " package; please install it.")
-  # Extract sequences
-  upstreamRanges <-
-    promoters(x = x, upstream = upstream, downstream = downstream) |>
-    suppressWarnings() # This warns about off-genome coordinates, but we will fix this below.
-  
-  # Discard ranges that would be trimmed 
-  upstreamRanges_trimmed <- upstreamRanges |> trim()
-  upstreamRanges <- upstreamRanges[width(upstreamRanges) == width(upstreamRanges_trimmed)]
-  
-  # Extract sequences
-  bsgenome <- getBSgenome(genome_name)
-  upstreamSeq <- getSeq(bsgenome, upstreamRanges)
-  
-  # Plot sequence logo
-  letter_counts <- consensusMatrix(upstreamSeq)
-  probs <- prop.table(letter_counts[1:4,], 2)
-  gg <- ggseqlogo::ggseqlogo(probs)
-  # Circumvent "Scale for x is already present." warning.
-  gg$scales$scales[[2]]$breaks <- seq(    1       , upstream + downstream, by = 1)
-  gg$scales$scales[[2]]$labels <- seq(1 - upstream,            downstream, by = 1)
-  gg$scales$scales[[1]]$breaks <- seq(    1       , upstream + downstream, by = 1)
-  gg$scales$scales[[1]]$labels <- seq(1 - upstream,            downstream, by = 1)
-  gg
-}
