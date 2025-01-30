@@ -275,7 +275,7 @@ plotCorrelation2_local <- function( expr.table, samples, method
   }
   
   if (plot_pairs){
-    pdf("correlations_plot.pdf")
+    pdf("plots/correlations_plot.pdf")
     pairs( expr.table
            , lower.panel = pointsUnique
            , upper.panel = panel.cor
@@ -288,7 +288,7 @@ plotCorrelation2_local <- function( expr.table, samples, method
            , labels = samples)
     dev.off()
     pairs_plot <- list(expr.table, pointsUnique, panel.cor, samples, corr.v, pseudocount)
-    saveRDS(pairs_plot, "correlations_plot.rds")
+    saveRDS(pairs_plot, "plots/correlations_plot.rds")
   }
   
   # Return a correlation matrix
