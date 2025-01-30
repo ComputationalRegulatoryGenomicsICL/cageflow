@@ -131,12 +131,6 @@ reference_name <- install_bsgenome(bsgenome)
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
 
-# Create folders for organized analysis
-dir.create(file.path("plots"))
-dir.create(file.path("tracks"))
-dir.create(file.path("tables"))
-dir.create(file.path("intermediate_cagerobj"))
-
 # Normalization
 # uses functions from cager_modified_plots.R
 ce <- cager_normalization(
