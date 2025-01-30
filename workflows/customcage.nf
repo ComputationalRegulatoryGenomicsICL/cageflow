@@ -68,14 +68,14 @@ def multiqc_report = []
 
 workflow CUSTOMCAGE {
 
-    if (params.gtf) {
-            ch_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
-            // ch_pre_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
-            // ch_gtf = sample_meta.combine(ch_pre_gtf)
-            // ch_gtf = ch_genome_name.combine(ch_pre_gtf)
-        } else {
-            exit 1, "The --gtf argument is mandatory."
-    }
+    // if (params.gtf) {
+    //         ch_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
+    //         // ch_pre_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
+    //         // ch_gtf = sample_meta.combine(ch_pre_gtf)
+    //         // ch_gtf = ch_genome_name.combine(ch_pre_gtf)
+    //     } else {
+    //         exit 1, "The --gtf argument is mandatory."
+    // }
 
     if (!params.maponly && !params.fullpipeline) {
         if (!params.cager_sample_file ) {
@@ -98,6 +98,7 @@ workflow CUSTOMCAGE {
         ch_fasta = PARAMETER_CHECKS.out.ch_fasta
         ch_index = PARAMETER_CHECKS.out.ch_index
         ch_fastq = PARAMETER_CHECKS.out.ch_fastq
+        ch_gtf   = PARAMETER_CHECKS.out.ch_gtf
         ch_versions = PARAMETER_CHECKS.out.ch_versions
 
         PREPROCESSING(ch_fastq, ch_versions, ch_multiqc_files)
@@ -121,7 +122,6 @@ workflow CUSTOMCAGE {
             // NOTE: placeholder so that the channel is not empty
             // it will be replaced in SAMTOOLS_PROCESSING
             ch_for_cager = ch_aligned
-
         } else {
             STAR_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_gtf, ch_chrom_sizes, ch_multiqc_files, ch_versions)
 
@@ -132,13 +132,13 @@ workflow CUSTOMCAGE {
         }
 
         if (params.dedup) {
-            DEDUP(ch_aligned, ch_versions, ch_for_cager)
+            DEDUP(ch_aligned, ch_for_cager, ch_versions)
 
-            ch_for_cager = DEDUP.out.ch_for_cager
+            ch_for_cager = DEDUP.out.ch_for_cager // check
             ch_bam_bai = DEDUP.out.ch_bam_bai
             ch_versions = DEDUP.out.ch_versions
         } else {
-            SAMTOOLS_PROCESSING(ch_aligned, ch_versions, ch_for_cager)
+            SAMTOOLS_PROCESSING(ch_aligned, ch_for_cager, ch_versions)
 
             ch_for_cager = SAMTOOLS_PROCESSING.out.ch_for_cager
             ch_bam_bai = SAMTOOLS_PROCESSING.out.ch_bam_bai
@@ -167,51 +167,6 @@ workflow CUSTOMCAGE {
     
     if (params.cageronly || params.fullpipeline) {
 
-<<<<<<< HEAD
-    // Works for bowtie2 alignment only
-    if (params.dedup) {
-        DEDUP(ch_aligned, ch_sample_list, ch_versions)
-
-        ch_sample_list = DEDUP.out.ch_sample_list
-        ch_bam_bai = DEDUP.out.ch_bam_bai
-        ch_versions = DEDUP.out.ch_versions
-    } else {
-        SAMTOOLS_PROCESSING(ch_aligned, ch_sample_list, ch_versions)
-
-        ch_sample_list = SAMTOOLS_PROCESSING.out.ch_sample_list
-        ch_bam_bai = SAMTOOLS_PROCESSING.out.ch_bam_bai
-        ch_versions = SAMTOOLS_PROCESSING.out.ch_versions
-    }
-
-    SUMMARY_STAT(ch_bam_bai, ch_fasta, ch_multiqc_files, ch_versions)
-
-    ch_multiqc_files = SUMMARY_STAT.out.ch_multiqc_files
-    ch_versions = SUMMARY_STAT.out.ch_versions
-
-    // NOTE: this writes to file in random order
-    ch_sample_files = WRITE_SAMPLE_LIST(ch_sample_list)
-
-    def header = "id,single_end,path"
-
-    ch_collected = ch_sample_files
-      .reduce( header ) { acc, table_line ->
-        acc + '\n' + table_line.readLines()[0]}
-
-    // sorting samples alphabetically
-    merged_sample_file = ch_collected.collectFile(
-        name: "sample_list.csv",
-        newLine: true,
-        sort: { file -> file.text })
-
-    CAGER(
-        ch_bsgenome_file,
-        ch_bsgenome_name,
-        merged_sample_file,
-        ch_txdb_file,
-        ch_versions
-    )
-
-=======
         PREPARE_CAGER_METADATA( ch_gtf, ch_versions )
         ch_bsgenome_file = PREPARE_CAGER_METADATA.out.ch_bsgenome_file
         ch_bsgenome_name = PREPARE_CAGER_METADATA.out.ch_bsgenome_name
@@ -227,7 +182,6 @@ workflow CUSTOMCAGE {
         )
     }
 
->>>>>>> dev
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
