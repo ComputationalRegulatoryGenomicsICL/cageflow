@@ -70,6 +70,12 @@ source(file.path(project_dir, "bin/parse_input.R"))
 source(file.path(project_dir, "bin/cager_bam.R"))
 source(file.path(project_dir, "bin/cager_bigwig.R"))
 
+# Create folders for organized analysis
+dir.create(file.path("plots"))
+dir.create(file.path("tracks"))
+dir.create(file.path("tables"))
+dir.create(file.path("intermediate_cagerobj"))
+
 reference_name <- install_bsgenome(bsgenome)
 
 sample_table <- parse_input(sample_table_list, data_type)
