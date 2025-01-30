@@ -128,6 +128,12 @@ source(file.path(project_dir, "bin/cager_track_export.R"))
 
 reference_name <- install_bsgenome(bsgenome)
 
+# Create folders for organized analysis
+dir.create(file.path("plots"))
+dir.create(file.path("tracks"))
+dir.create(file.path("tables"))
+dir.create(file.path("intermediate_cagerobj"))
+
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
 

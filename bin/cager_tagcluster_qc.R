@@ -80,8 +80,13 @@ source(file.path(project_dir, "bin/cager_nucleotide_composition_functions.R"))
 source(file.path(project_dir, "bin/cager_consensus_qc.R"))
 source(file.path(project_dir, "bin/plot_number_and_pca_of_ctss.R"))
 
-
 reference_name <- install_bsgenome(bsgenome)
+
+# Create folders for organized analysis
+dir.create(file.path("plots"))
+dir.create(file.path("tracks"))
+dir.create(file.path("tables"))
+dir.create(file.path("intermediate_cagerobj"))
 
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
@@ -112,8 +117,6 @@ save_plot(
     "chipseeker_tagCluster_annotation_plot.pdf",
     chipannot_plot
 )
-
-
 
 # Plot sequence distribution at the dominant TSS for each sample
 for (sample in sampleNames){
