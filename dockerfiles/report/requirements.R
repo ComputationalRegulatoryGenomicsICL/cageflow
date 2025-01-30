@@ -18,3 +18,8 @@ install.packages(
   required_packages_cran,
   repos="https://cran.uib.no/")
 
+install.packages(
+  'BiocManager',
+  repos='https://cloud.r-project.org/')
+
+BiocManager::install("S4Vectors")

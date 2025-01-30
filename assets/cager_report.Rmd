@@ -29,7 +29,7 @@ hm_plot <- readRDS("correlations_plot.rds")
   }
   df[idx,]
 }
-if (is_ggplot(hm_plot)){
+if (ggplot2::is.ggplot(hm_plot)){
   eval(hm_plot$call)
 } else {
   expr.table <- hm_plot[[1]]
@@ -77,9 +77,13 @@ chta_plot
 
 ### TSS logo
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-tss_plot <- readRDS("tagcluster_dominantTSSlogos_plot.rds")
-tss_plot + ggplot2::theme(
-    axis.text.x = ggplot2::element_text(angle = 90))
+tss_logos <- list.files(pattern = "tagcluster_dominantTSSlogos_plot.rds")
+for (logofile in tss_logos){
+  tss_plot <- readRDS(logofile)
+  tss_plot + ggplot2::theme(
+      axis.text.x = ggplot2::element_text(angle = 90))
+}
+
 ```
 
 ### Nucleotide and dinucleotide frequencies in tagclusters
