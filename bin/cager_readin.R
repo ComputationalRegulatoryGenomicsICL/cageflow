@@ -114,7 +114,6 @@ if (tolower(data_type) == "bam"){
         }
         
     }
-    chromosome_names_list <- unlist(strsplit(chromosome_names, ','))
     ce <- read_in_bigwig(
         bsgenome_name=reference_name,
         bigwig_paths=sample_table$path,
