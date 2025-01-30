@@ -1,12 +1,24 @@
+bigwig_export <- function(x, y){
+    tracks <- split(x, strand(x))
+    rtracklayer::export.bw(tracks$`+`, paste0(y,"_plus.bw"))
+    min <- tracks$`-`
+    min$score <- min$score * (-1)
+    rtracklayer::export.bw(tracks$`+`, paste0(y,"_plus.bw"))
+    rtracklayer::export.bw(min, paste0(y, "_minus.bw") )
+}
+
 export_tagclusters <- function(ce){
-    mapply(function(x, y){
-        tracks <- split(x, strand(x))
-        rtracklayer::export.bw(tracks$`+`, paste0(y,"_plus.bw"))
-        min <- tracks$`-`
-        min$score <- min$score * (-1)
-        rtracklayer::export.bw(tracks$`+`, paste0(y,"_plus.bw"))
-        rtracklayer::export.bw(min, paste0(y, "_minus.bw") )
-    }, CAGEr::CTSSnormalizedTpmGR(ce, "all"), CAGEr::sampleLabels(ce))
+    # export normalized TSS counts into bigwig
+    mapply(
+        bigwig_export,
+        CAGEr::CTSSnormalizedTpmGR(ce, "all"),
+        CAGEr::sampleLabels(ce))
+
+    # export raw TSS counts into bigwig
+    mapply(
+        bigwig_export,
+        CAGEr::CTSStagCountGR(ce, "all"),
+        CAGEr::sampleLabels(ce))
 
     bedTracks <- CAGEr::exportToTrack(
         ce, 
