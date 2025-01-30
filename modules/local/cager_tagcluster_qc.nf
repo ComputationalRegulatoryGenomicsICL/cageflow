@@ -13,8 +13,8 @@ process CAGER_TAGCLUSTER_QC {
     val bsgenome_name
 
     output:
-    path "*.csv", emit: counts_csv
-    tuple path("*.pdf"), path("*plot.rds"), emit: plots
+    path "tables/*.csv", emit: counts_csv
+    tuple path("plots/*.pdf"), path("plots/*plot.rds"), emit: plots
     path "versions.yml", emit: versions
 
     """

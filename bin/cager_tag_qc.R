@@ -70,7 +70,7 @@ tx_annotation_obj <- loadDb(tx_annotation)
 ce <- CAGEr::annotateCTSS(ce, tx_annotation_obj)
 
 # Save intermediate annotated object
-saveRDS(ce, "annotated_cagexp.rds")
+saveRDS(ce, "intermediate_cagerobj/annotated_cagexp.rds")
 
 annotations <- CAGEr::plotAnnot(ce, "counts")
 save_plot(
@@ -91,10 +91,10 @@ if (length(sampleLabels(ce)) > 10){
 
     # plot correlations in heatmap format
     hm <- gplots::heatmap.2(corr_m, trace="none", margins=c(12, 12),cexRow=0.2)
-    pdf("correlations_plot.pdf")
+    pdf("plots/correlations_plot.pdf")
     eval(hm$call)
     dev.off()
-    saveRDS(hm, "correlations_plot.rds")
+    saveRDS(hm, "plots/correlations_plot.rds")
 } else {
     corr_m <- plotCorrelation2_local(
         CTSStagCountDF(ce),
@@ -107,4 +107,4 @@ if (length(sampleLabels(ce)) > 10){
 }
 
 # save intermediate file
-saveRDS(corr_m, "corr_m.rds")
+saveRDS(corr_m, "plots/corr_m.rds")
