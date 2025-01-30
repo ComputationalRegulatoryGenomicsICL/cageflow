@@ -113,6 +113,20 @@ save_plot(
     chipannot_plot
 )
 
+
+
+# Plot sequence distribution at the dominant TSS for each sample
+for (sample in sampleNames){
+    tsslogo_plot <- CAGEr::TSSlogo(
+        CAGEr::tagClustersGR(ce, sample=sample),
+        upstream = 35)
+    save_plot(
+        paste0(sample, "_tagcluster_dominantTSSlogos_plot.pdf"),
+        tsslogo_plot
+    )
+}
+
+
 # # nucleotide composition
 normalized_ctss_list <- extract_ctss_normalized_tmp_per_sample(ce, tpmThreshold)
 ctss_sequences <- extract_ctss_sequences(normalized_ctss_list, reference_name)

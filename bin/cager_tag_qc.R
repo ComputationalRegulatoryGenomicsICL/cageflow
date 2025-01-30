@@ -108,16 +108,3 @@ if (length(sampleLabels(ce)) > 10){
 
 # save intermediate file
 saveRDS(corr_m, "corr_m.rds")
-
-# Plot sequence distribution at the TSS
-# tsslogo_plot <- CAGEr::TSSlogo(
-#     CAGEr::CTSScoordinatesGR(ce) |> subset(annotation == "promoter"),
-#     upstream = 35)
-tsslogo_plot <- TSSlogo_local(
-    CAGEr::CTSScoordinatesGR(ce) |> subset(annotation == "promoter"),
-    genome_name=reference_name,
-    upstream = 35)
-save_plot(
-    "TSSlogos_plot.pdf",
-    tsslogo_plot
-)

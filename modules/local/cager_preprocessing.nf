@@ -15,6 +15,7 @@ process CAGER_PREPROCESSING {
     output:
     path "normalized_clustered_cagexp.rds",        emit: rds
     tuple path("*.pdf"), path("*.txt"), path("*plot.rds"), emit: results
+    tuple path("*.bw"), path("*.bed"), emit: tracks
     path "versions.yml", emit: versions
 
     """
@@ -30,7 +31,7 @@ process CAGER_PREPROCESSING {
         -n ${params.norm_range_min} \
         -m ${params.norm_range_max} \
         -e ${params.norm_method} \
-        -t ${params.total_tag_num} \
+        -t ${params.T_norm} \
         -s ${params.sample_num_thr} \
         -r ${params.ctss_thr} \
         -u ${params.consensus_ctss_thr} \
