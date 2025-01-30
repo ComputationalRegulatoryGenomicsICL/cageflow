@@ -32,7 +32,7 @@ params.dedup = false
 params.dist = false
 
 // genome annotation in GTF
-params.gtf = null // "$projectDir/assets/NO_FILE_GTF"
+params.gtf = "$projectDir/assets/NO_FILE_GTF"
 
 // bowtie2 parameters
 params.bowtie2 = false
@@ -45,6 +45,9 @@ params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
 params.bsgenome = false
 params.forgeseed = false
 params.sourcedir = false
+
+// CAGEr markdown template location
+params.markdown_path = "assets/cager_report.Rmd"
 
 include { PARAMETER_CHECKS } from '../subworkflows/local/parameter_checks.nf'
 include { PREPROCESSING } from '../subworkflows/local/preprocessing.nf'
@@ -176,14 +179,14 @@ workflow CUSTOMCAGE {
             ch_versions
         )
     }
+}
+
+if (params.maponly || params.fullpipeline) {
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
-
+        ch_versions.unique().collectFile(name: 'collated_versions.yml'))
     workflow_summary    = WorkflowCustomcage.paramsSummaryMultiqc(workflow, summary_params)
     ch_workflow_summary = Channel.value(workflow_summary)
-
     methods_description    = WorkflowCustomcage.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
     ch_methods_description = Channel.value(methods_description)
 
@@ -199,7 +202,6 @@ workflow CUSTOMCAGE {
     )
     multiqc_report = MULTIQC.out.report.toList()
 }
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     COMPLETION EMAIL AND SUMMARY

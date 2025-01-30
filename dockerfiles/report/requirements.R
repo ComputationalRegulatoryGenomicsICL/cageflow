@@ -7,7 +7,9 @@ required_packages_cran = c(
   "knitr",
   "rmarkdown",
   "ggplot2",
-  "gplots")
+  "gplots",
+  "ggrepel",
+  "memoise")
 
 message(
   "; Installing these R packages from CRAN repository: ",
@@ -16,3 +18,8 @@ install.packages(
   required_packages_cran,
   repos="https://cran.uib.no/")
 
+install.packages(
+  'BiocManager',
+  repos='https://cloud.r-project.org/')
+
+BiocManager::install("S4Vectors")

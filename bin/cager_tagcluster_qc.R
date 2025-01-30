@@ -80,14 +80,19 @@ source(file.path(project_dir, "bin/cager_nucleotide_composition_functions.R"))
 source(file.path(project_dir, "bin/cager_consensus_qc.R"))
 source(file.path(project_dir, "bin/plot_number_and_pca_of_ctss.R"))
 
-
 reference_name <- install_bsgenome(bsgenome)
+
+# Create folders for organized analysis
+dir.create(file.path("plots"))
+dir.create(file.path("tracks"))
+dir.create(file.path("tables"))
+dir.create(file.path("intermediate_cagerobj"))
 
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
 
 # extract tag clusters to GRanger object
-sampleNames <- unname(sampleLabels(ce))
+sampleNames <- unname(CAGEr::sampleLabels(ce))
 tag_clusters <- lapply(
     sampleNames,
     function (x) CAGEr::tagClustersGR(
@@ -112,6 +117,18 @@ save_plot(
     "chipseeker_tagCluster_annotation_plot.pdf",
     chipannot_plot
 )
+
+# Plot sequence distribution at the dominant TSS for each sample
+for (sample in sampleNames){
+    tsslogo_plot <- CAGEr::TSSlogo(
+        CAGEr::tagClustersGR(ce, sample=sample),
+        upstream = 35)
+    save_plot(
+        paste0(sample, "_tagcluster_dominantTSSlogos_plot.pdf"),
+        tsslogo_plot
+    )
+}
+
 
 # # nucleotide composition
 normalized_ctss_list <- extract_ctss_normalized_tmp_per_sample(ce, tpmThreshold)
@@ -141,4 +158,4 @@ save_plot(
 
 # Consensus clustered CTSS quality plots
 # uses functions from plot_number_and_pca_of_ctss.R
-# consensus_qc(ce=ce, pcarank=pca_rank)
+consensus_qc(ce=ce, pcarank=pca_rank)

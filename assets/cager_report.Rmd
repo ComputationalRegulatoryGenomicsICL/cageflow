@@ -19,16 +19,37 @@ tagannot_plot
 
 ### Correlation
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
+library(memoise)
 corr_m <- readRDS("corr_m.rds")
-hm_plot <- readRDS("correlations_heatmap_plot.rds")
-eval(hm_plot$call)
-```
-
-### TSS logo
-```{r eval=TRUE, include=TRUE, echo=FALSE}
-tss_plot <- readRDS("TSSlogos_plot.rds")
-tss_plot + ggplot2::theme(
-    axis.text.x = ggplot2::element_text(angle = 90))
+hm_plot <- readRDS("correlations_plot.rds")
+.applyThreshold <- function(df, tagCountThreshold, applyThresholdBoth) {
+  if (applyThresholdBoth) {
+    idx <- (df[[1]] >= tagCountThreshold) & (df[[2]] >= tagCountThreshold)
+  } else {
+    idx <- (df[[1]] >= tagCountThreshold) | (df[[2]] >= tagCountThreshold)
+  }
+  df[idx,]
+}
+if (ggplot2::is.ggplot(hm_plot)){
+  eval(hm_plot$call)
+} else {
+  expr.table <- hm_plot[[1]]
+  pointsUnique <- hm_plot[[2]]
+  panel.cor <- hm_plot[[3]]
+  samples <- hm_plot[[4]]
+  corr.v <- hm_plot[[5]]
+  pseudocount <- hm_plot[[6]]
+  pairs( expr.table
+    , lower.panel = pointsUnique
+    , upper.panel = panel.cor
+    , pch = "."
+    , cex = 4
+    , log = "xy"
+    , las = 1
+    , xaxp = c(1,10,1)
+    , yaxp = c(1,10,1)
+    , labels = samples)
+}
 ```
 
 ### Normalization
@@ -55,6 +76,17 @@ chta_plot <- readRDS("chipseeker_tagCluster_annotation_plot.rds")
 chta_plot
 ```
 
+### TSS logo
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+tss_logos <- list.files(pattern = "tagcluster_dominantTSSlogos_plot.rds")
+for (logofile in tss_logos){
+  tss_plot <- readRDS(logofile)
+  tss_plot + ggplot2::theme(
+      axis.text.x = ggplot2::element_text(angle = 90))
+}
+
+```
+
 ### Nucleotide and dinucleotide frequencies in tagclusters
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 nucl_plot <- readRDS("nucleotide_frequencies_plot.rds")
@@ -65,4 +97,16 @@ dinucl_plot + ggplot2::theme(
     text=ggplot2::element_text(size=5),
     axis.text.x = ggplot2::element_text(angle = 90, size=5),
     axis.text.y = ggplot2::element_text(size=5))
+```
+
+### Consensus cluster TPM counts
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+cc_plot <- readRDS("consensus_counts_plot.rds")
+cc_plot
+```
+
+### Consensus cluster PCA
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+ccp_plot <- readRDS("consensus_clusters_pca_plot.rds")
+ccp_plot
 ```

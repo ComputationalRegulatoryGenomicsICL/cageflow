@@ -62,6 +62,12 @@ source(file.path(project_dir, "bin/cager_modified_plots.R"))
 
 reference_name <- install_bsgenome(bsgenome)
 
+# Create folders for organized analysis
+dir.create(file.path("plots"))
+dir.create(file.path("tracks"))
+dir.create(file.path("tables"))
+dir.create(file.path("intermediate_cagerobj"))
+
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
 
@@ -70,7 +76,7 @@ tx_annotation_obj <- loadDb(tx_annotation)
 ce <- CAGEr::annotateCTSS(ce, tx_annotation_obj)
 
 # Save intermediate annotated object
-saveRDS(ce, "annotated_cagexp.rds")
+saveRDS(ce, "intermediate_cagerobj/annotated_cagexp.rds")
 
 annotations <- CAGEr::plotAnnot(ce, "counts")
 save_plot(
@@ -91,10 +97,10 @@ if (length(sampleLabels(ce)) > 10){
 
     # plot correlations in heatmap format
     hm <- gplots::heatmap.2(corr_m, trace="none", margins=c(12, 12),cexRow=0.2)
-    pdf("correlations_heatmap_plot.pdf")
+    pdf("plots/correlations_plot.pdf")
     eval(hm$call)
     dev.off()
-    saveRDS(hm, "correlations_heatmap_plot.rds")
+    saveRDS(hm, "plots/correlations_plot.rds")
 } else {
     corr_m <- plotCorrelation2_local(
         CTSStagCountDF(ce),
@@ -107,17 +113,4 @@ if (length(sampleLabels(ce)) > 10){
 }
 
 # save intermediate file
-saveRDS(corr_m, "corr_m.rds")
-
-# Plot sequence distribution at the TSS
-# tsslogo_plot <- CAGEr::TSSlogo(
-#     CAGEr::CTSScoordinatesGR(ce) |> subset(annotation == "promoter"),
-#     upstream = 35)
-tsslogo_plot <- TSSlogo_local(
-    CAGEr::CTSScoordinatesGR(ce) |> subset(annotation == "promoter"),
-    genome_name=reference_name,
-    upstream = 35)
-save_plot(
-    "TSSlogos_plot.pdf",
-    tsslogo_plot
-)
+saveRDS(corr_m, "plots/corr_m.rds")
