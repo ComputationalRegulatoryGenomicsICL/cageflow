@@ -19,6 +19,7 @@ tagannot_plot
 
 ### Correlation
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
+library(memoise)
 corr_m <- readRDS("corr_m.rds")
 hm_plot <- readRDS("correlations_plot.rds")
 .applyThreshold <- function(df, tagCountThreshold, applyThresholdBoth) {
