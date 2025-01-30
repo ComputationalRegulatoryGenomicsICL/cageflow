@@ -2,37 +2,38 @@
 fullpipeline: false
 maponly: false
 cageronly: true
+gtf: "/storage/mathelierarea/raw/GENCODE/Gencode_human/release_46/gencode.v46.primary_assembly.annotation.gtf"
 
 # preprocessing parameters
 samplesheet:
 infolder: "/storage/mathelierarea/raw/BRCAGE/cell_lines/cell_usethese/230804_A01447.A.Project_Aronsen-Libs10-2023-06-29/"
 sample_name_fields: 2
-bsgenome: "BSgenome.Hsapiens.UCSC.hg38"
-forgeseed:
-sourcedir:
+genome_name: "hg38"
 fasta: "/storage/mathelierarea/raw/GENCODE/Gencode_human/release_46/GRCh38.primary_assembly.genome.fa"
 index: "/storage/mathelierarea/raw/GENCODE/Gencode_human/release_46/star_index/star_genomegenerate/star"
-gtf: "/storage/mathelierarea/raw/GENCODE/Gencode_human/release_46/gencode.v46.primary_assembly.annotation.gtf"
 star_ignore_sjdbgtf: false
 seq_platform: "illumina"
 seq_center: false
 # whether to take the uniquely mapped only
 unique_only: true
-chromosomes_to_keep: "chr1,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr2,chr20,chr21,chr22,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chrM,chrX,chrY"
 
 # CAGEr parameters
-cager_sample_file: sample_list.csv # with sorted list of bigwigs, if mapping is run elsewhere
+cager_sample_file: ../sample_list.csv # with sorted list of bigwigs, if mapping is run elsewhere
+# BSgenome
+forgeseed:
+sourcedir:
+bsgenome: "BSgenome.Hsapiens.UCSC.hg38"
 # cager_sample_file: "assets/sample_list.csv"
 tpm_threshold: 1
 # parameters for normalization
-norm_range_min: 10
+norm_range_min: 5
 norm_range_max: 10000
 norm_method: "powerLaw"
-total_tag_num: 1000000
+T_norm: 1000000
 # parameters for CTSS
 sample_num_thr: 1
 ctss_thr: 1
 # parameters for consensus clusters
-consensus_ctss_thr: 5
+consensus_ctss_thr: 2
 consensus_ctss_dist: 100
 pca_rank: 50
