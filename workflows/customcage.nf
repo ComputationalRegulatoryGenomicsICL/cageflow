@@ -179,14 +179,14 @@ workflow CUSTOMCAGE {
             ch_versions
         )
     }
+}
+
+if (params.maponly || params.fullpipeline) {
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
-
+        ch_versions.unique().collectFile(name: 'collated_versions.yml'))
     workflow_summary    = WorkflowCustomcage.paramsSummaryMultiqc(workflow, summary_params)
     ch_workflow_summary = Channel.value(workflow_summary)
-
     methods_description    = WorkflowCustomcage.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
     ch_methods_description = Channel.value(methods_description)
 
@@ -202,7 +202,6 @@ workflow CUSTOMCAGE {
     )
     multiqc_report = MULTIQC.out.report.toList()
 }
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     COMPLETION EMAIL AND SUMMARY
