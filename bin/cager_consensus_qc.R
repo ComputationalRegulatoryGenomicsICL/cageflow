@@ -15,7 +15,7 @@ consensus_qc <- function(
     # save matrix of sample per consensus cluster TPM
     write.table(
         consclustTmp,
-        file="consensus_clusters_tpm.csv")
+        file="tables/consensus_clusters_tpm.csv")
     print("Consensus cluster tpms saved")
 
     # count and plot the number of consensus clusters with signal

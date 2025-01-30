@@ -11,7 +11,7 @@ process CAGER_READIN {
     val data_type
 
     output:
-    path "*.rds",        emit: rds
+    path "intermediate_cagerobj/*.rds",        emit: rds
     path "versions.yml", emit: versions
 
     """

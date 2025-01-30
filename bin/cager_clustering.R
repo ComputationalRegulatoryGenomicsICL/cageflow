@@ -65,7 +65,7 @@ cager_clustering <- function(ce, iqw_plot_lim, sample_num_thr, ctss_thr, num_cor
         sample_ctss_count[[sample]] <- sum(as.vector(CTSStagCountDF(ce)[[sample]])>0)
     }
 
-    sink("sample_ctss_count.txt")
+    sink("plots/sample_ctss_count.txt")
     print(sample_ctss_count)
     sink()
 
