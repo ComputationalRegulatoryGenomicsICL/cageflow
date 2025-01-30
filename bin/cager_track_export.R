@@ -1,10 +1,9 @@
-bigwig_export <- function(x, y){
+bigwig_export <- function(x, y, type){
     tracks <- split(x, strand(x))
-    rtracklayer::export.bw(tracks$`+`, paste0(y,"_plus.bw"))
+    rtracklayer::export.bw(tracks$`+`, paste(y, type, "plus.bw", sep="_"))
     min <- tracks$`-`
     min$score <- min$score * (-1)
-    rtracklayer::export.bw(tracks$`+`, paste0(y,"_plus.bw"))
-    rtracklayer::export.bw(min, paste0(y, "_minus.bw") )
+    rtracklayer::export.bw(min, paste(y, type, "minus.bw", sep="_") )
 }
 
 export_tagclusters <- function(ce){
@@ -12,13 +11,15 @@ export_tagclusters <- function(ce){
     mapply(
         bigwig_export,
         CAGEr::CTSSnormalizedTpmGR(ce, "all"),
-        CAGEr::sampleLabels(ce))
+        CAGEr::sampleLabels(ce),
+        "normalized")
 
     # export raw TSS counts into bigwig
     mapply(
         bigwig_export,
         CAGEr::CTSStagCountGR(ce, "all"),
-        CAGEr::sampleLabels(ce))
+        CAGEr::sampleLabels(ce),
+        "raw")
 
     bedTracks <- CAGEr::exportToTrack(
         ce, 
@@ -35,8 +36,9 @@ export_consensus_clusters <- function(ce){
     ccbedTracks <- CAGEr::exportToTrack(
         ce, 
         what = "consensusClusters", 
-        colorByExpressionProfile = TRUE,
-        oneTrack = FALSE)
-
+        colorByExpressionProfile = FALSE,
+        oneTrack = TRUE)
+    # remove dominant TSS because it is not applicable for consensus clusters
+    ccbedTracks$thick = NA
     rtracklayer::export.bed(ccbedTracks, "consensusClusters.bed")
 }
