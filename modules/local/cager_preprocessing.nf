@@ -34,6 +34,9 @@ process CAGER_PREPROCESSING {
         -t ${params.T_norm} \
         -s ${params.sample_num_thr} \
         -r ${params.ctss_thr} \
+        -l ${params.distclu_maxDist} \
+        -k ${params.keepSingletonsAbove} \
+        -w ${params.iqw_tpm_threshold} \
         -u ${params.consensus_ctss_thr} \
         -d ${params.consensus_ctss_dist} \
         -a ${txdb} \

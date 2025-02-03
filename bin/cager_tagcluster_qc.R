@@ -16,7 +16,8 @@ required.libraries <- c(
     "tidyr",
     "viridis",
     "tidyverse",
-    "ggplot2"
+    "ggplot2",
+    "dplyr"
     )
 
 for (lib in required.libraries) {
@@ -41,15 +42,25 @@ option_list = list(
         default = NULL,
         help = "Name of the BSgenome version to be used (Mandatory)"),
     make_option(
+        c("-u", "--tssregion_up"),
+        type = "integer",
+        default = -3000,
+        help = "Upstream distance to consider into TSS region for ChIPseeker annotation. Should be negative (Default = -3000)"),
+    make_option(
+        c("-d", "--tssregion_down"),
+        type = "integer",
+        default = 3000,
+        help = "Downstream distance to consider into TSS region for ChIPseeker annotation. Should be positive (Default = 3000)"),
+    make_option(
+        c("-l", "--tsslogo_upstream"),
+        type = "integer",
+        default = 35,
+        help = "Upstream nucleotides to consider fot the TSS logo plot (Default = 35)"),
+    make_option(
         c("-p", "--project_dir"),
         type = "character",
         default = 0,
         help = "Project directory, from which the analysis is run."),
-    make_option(
-        c("-t", "--tpm_threshold"),
-        type = "double",
-        default = 1,
-        help = "Threshold to filter CTSS that has few tags per million (Optional), defaults to 1 "),
     make_option(
         c("-k", "--pca_rank"),
         type = "integer",
@@ -66,8 +77,10 @@ opt = optparse::parse_args(opt_parser)
 ce_path         <- opt$cageexp_object
 tx_annotation   <- opt$annotation
 bsgenome        <- opt$bsgenome
+tssregion_up    <- opt$tssregion_up
+tssregion_down  <- opt$tssregion_down
+tsslogo_upstream    <- opt$tsslogo_upstream
 project_dir     <- opt$project_dir
-tpmThreshold    <- opt$tpm_threshold
 pca_rank        <- opt$pca_rank
 
 # installing BSgenome
@@ -84,7 +97,11 @@ dir.create(file.path("tracks"))
 dir.create(file.path("tables"))
 dir.create(file.path("intermediate_cagerobj"))
 
+iqlow <- 0.1
+iqhigh <- 0.9
+
 reference_name <- install_bsgenome(bsgenome)
+
 # Read in TxDb object
 tx_annotation_obj <- GenomicFeatures::loadDb(tx_annotation)
 
@@ -98,8 +115,8 @@ tag_clusters <- lapply(
     function (x) CAGEr::tagClustersGR(
         ce,
         sample = x,
-        qLow = 0.1,
-        qUp = 0.9))
+        qLow = iqlow,
+        qUp = iqhigh))
 names(tag_clusters) <- sampleNames
 
 # annotate peaks with chipseeker
@@ -108,7 +125,7 @@ peakAnno_list <- lapply(
     function(x) ChIPseeker::annotatePeak(
         x,
         TxDb = tx_annotation_obj,
-        tssRegion = c(-3000, 3000),
+        tssRegion = c(tssregion_up, tssregion_down),
         sameStrand = TRUE,
         level = "transcript",
         genomicAnnotationPriority = c(
@@ -123,14 +140,20 @@ save_plot(
 )
 
 # Plot sequence distribution at the dominant TSS for each sample
-# Note: "Promoter (<= 1kb)" is a proper annotation if tssRegion in annotatePeak is bigger than 1kb
+# "Promoter (<= 1kb)" is a proper annotation if tssRegion in annotatePeak is bigger than 1kb
 # otherwise it would be just "Promoter"
+if (tssregion_up < 1000){
+    promoter_annot <- "Promoter"
+}else{
+    promoter_annot <- "Promoter (<=1kb)"
+}
 for (sample in sampleNames){
     sample_annotation <- peakAnno_list[[sample]]@anno
     genomeName(sample_annotation) <- reference_name
     tsslogo_plot <- CAGEr::TSSlogo(
-        sample_annotation |> subset(sample_annotation@elementMetadata$annotation == "Promoter (<=1kb)"),
-        upstream = 35)
+        sample_annotation |> subset(
+            sample_annotation@elementMetadata$annotation == promoter_annot),
+        upstream = tsslogo_upstream)
     save_plot(
         paste0(sample, "_tagcluster_dominantTSSlogos_plot.pdf"),
         tsslogo_plot
@@ -138,13 +161,13 @@ for (sample in sampleNames){
 }
 
 # dinculeotide composition
-# extract_dinucleotide_information()
-# dinuclfreq_plot <- plot_dinucleotide_frequency(
-#     ctss_dinuc_freq_df_tidy)
-# save_plot(
-#     "dinucleotide_frequencies_plot.pdf",
-#     dinuclfreq_plot
-# )
+weigthed_dinuc_vals_df <- extract_dinucleotide_information(ce, reference_name)
+dinuclfreq_plot <- plot_dinucleotide_frequency(
+    weigthed_dinuc_vals_df)
+save_plot(
+    "dinucleotide_frequencies_plot.pdf",
+    dinuclfreq_plot
+)
 
 # Consensus clustered CTSS quality plots
 # uses functions from plot_number_and_pca_of_ctss.R

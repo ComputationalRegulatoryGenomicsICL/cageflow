@@ -25,12 +25,14 @@ consensus_clustering <- function(
         multicore <- FALSE
         num_core <- NULL
     }
+    iqlow <- 0.1
+    iqhigh <- 0.9
 
     ce <- CAGEr::aggregateTagClusters(
         ce,
         tpmThreshold = tpmThreshold,
-        qLow = 0.1,
-        qUp = 0.9,
+        qLow = iqlow,
+        qUp = iqhigh,
         maxDist = maxDist)
 
     # Read in TxDb object
@@ -46,8 +48,8 @@ consensus_clustering <- function(
     ce <- quantilePositions(
         ce,
         clusters = "consensusClusters",
-        qLow = 0.1,
-        qUp = 0.9,
+        qLow = iqlow,
+        qUp = iqhigh,
         useMulticore = multicore,
         nrCores = num_core)
 

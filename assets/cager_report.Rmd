@@ -17,7 +17,7 @@ tagannot_plot <- readRDS("tag_region_annotation_plot.rds")
 tagannot_plot
 ```
 
-### Correlation
+### Correlation of samples at raw tag count level
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 library(memoise)
 corr_m <- readRDS("corr_m.rds")
@@ -58,16 +58,16 @@ revc_plot <- readRDS("reverse_cumulative_plot.rds")
 revc_plot
 ```
 
-### Promoter width
+### Tag cluster interquartile width
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 iqw_plot <- readRDS("interquartile_width_tagclusters_plot.rds")
 iqw_plot
 ```
 
-### CTSS counts
+### Number of tag clusters per sample
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-ctssc_plot <- readRDS("ctss_counts_plot.rds")
-ctssc_plot
+tag_clusters_count_plot <- readRDS("tag_clusters_counts_plot.rds")
+tag_clusters_count_plot
 ```
 
 ### Tagcluster annotation

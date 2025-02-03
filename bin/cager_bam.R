@@ -27,6 +27,12 @@ read_in_bam <- function(
         sample_names,
         cpus){
 
+    multicore <- TRUE
+    if(cpus < 2){
+        multicore <- FALSE
+        cpus <- NULL
+    }
+
     ce = CAGEexp(genomeName     = bsgenome_name,
              inputFiles         = bam_paths,
              inputFilesType     = bam_pairedness,
@@ -36,7 +42,7 @@ read_in_bam <- function(
         ce,
         removeFirstG = F,
         correctSystematicG = F,
-        useMulticore = T,
+        useMulticore = multicore,
         nrCores = cpus)
 
     return(ce)

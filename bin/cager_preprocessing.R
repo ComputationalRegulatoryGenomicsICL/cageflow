@@ -61,6 +61,21 @@ option_list = list(
         default = 1,
         help = "CTSS Tpm threshold which should be passed in sample_num_thr number of samples (Default = 1)"),
     make_option(
+        c("-l", "--distclu_maxDist"),
+        type = "integer",
+        default = 20,
+        help = "Maximum distance parameter for distclu CAGEr function (Default = 20)"),
+    make_option(
+        c("-k", "--keepSingletonsAbove"),
+        type = "integer",
+        default = 5,
+        help = "Threshold above which to keep the singletons during tag clustering (Default = 5)"),
+    make_option(
+        c("-w", "--iqw_tpm_threshold"),
+        type = "integer",
+        default = 3,
+        help = "Tpm threshold for plotting tagcluster IQwidth (Default = 3)"),
+    make_option(
         c("-u", "--consensus_ctss_thr"),
         type = "integer",
         default = 5,
@@ -169,6 +184,6 @@ ce <- consensus_clustering(
 saveRDS(ce, file = "intermediate_cagerobj/normalized_clustered_cagexp.rds")
 
 # Track export (bigwig and bed)
-export_tagclusters(ce)
+export_tagclusters(ce, iqlow, iqhigh)
 export_consensus_clusters(ce)
 
