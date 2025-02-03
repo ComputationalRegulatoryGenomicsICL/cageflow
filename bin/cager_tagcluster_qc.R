@@ -72,21 +72,21 @@ pca_rank        <- opt$pca_rank
 
 # installing BSgenome
 source(file.path(project_dir, "bin/install_bsgenome.R"))
-# Read in TxDb object
-tx_annotation_obj <- loadDb(tx_annotation)
 # import functions for second quality control and plotting
 source(file.path(project_dir, "bin/plot_saving.R"))
 source(file.path(project_dir, "bin/cager_nucleotide_composition_functions.R"))
 source(file.path(project_dir, "bin/cager_consensus_qc.R"))
 source(file.path(project_dir, "bin/plot_number_and_pca_of_ctss.R"))
 
-reference_name <- install_bsgenome(bsgenome)
-
 # Create folders for organized analysis
 dir.create(file.path("plots"))
 dir.create(file.path("tracks"))
 dir.create(file.path("tables"))
 dir.create(file.path("intermediate_cagerobj"))
+
+reference_name <- install_bsgenome(bsgenome)
+# Read in TxDb object
+tx_annotation_obj <- GenomicFeatures::loadDb(tx_annotation)
 
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
@@ -100,7 +100,6 @@ tag_clusters <- lapply(
         sample = x,
         qLow = 0.1,
         qUp = 0.9))
-
 names(tag_clusters) <- sampleNames
 
 # annotate peaks with chipseeker
@@ -110,7 +109,12 @@ peakAnno_list <- lapply(
         x,
         TxDb = tx_annotation_obj,
         tssRegion = c(-3000, 3000),
-        sameStrand = TRUE)
+        sameStrand = TRUE,
+        level = "transcript",
+        genomicAnnotationPriority = c(
+            "Promoter", "5UTR", "3UTR",
+            "Exon", "Intron",
+            "Downstream", "Intergenic"))
 )
 chipannot_plot <- ChIPseeker::plotAnnoBar(peakAnno_list)
 save_plot(
@@ -119,9 +123,13 @@ save_plot(
 )
 
 # Plot sequence distribution at the dominant TSS for each sample
+# Note: "Promoter (<= 1kb)" is a proper annotation if tssRegion in annotatePeak is bigger than 1kb
+# otherwise it would be just "Promoter"
 for (sample in sampleNames){
+    sample_annotation <- peakAnno_list[[sample]]@anno
+    genomeName(sample_annotation) <- reference_name
     tsslogo_plot <- CAGEr::TSSlogo(
-        CAGEr::tagClustersGR(ce, sample=sample),
+        sample_annotation |> subset(sample_annotation@elementMetadata$annotation == "Promoter (<=1kb)"),
         upstream = 35)
     save_plot(
         paste0(sample, "_tagcluster_dominantTSSlogos_plot.pdf"),
@@ -129,32 +137,14 @@ for (sample in sampleNames){
     )
 }
 
-
-# # nucleotide composition
-normalized_ctss_list <- extract_ctss_normalized_tmp_per_sample(ce, tpmThreshold)
-ctss_sequences <- extract_ctss_sequences(normalized_ctss_list, reference_name)
-outlist <- calculate_nucleotide_frequency(ctss_sequences)
-ctss_nucl_freq_df_tidy <- outlist[[1]]
-sample_names <- outlist[[2]]
-nuclfreq_plot <- plot_nucleotide_frequency(
-    ctss_nucl_freq_df_tidy,
-    sample_names
-)
-save_plot(
-    "nucleotide_frequencies_plot.pdf",
-    nuclfreq_plot
-)
-
 # dinculeotide composition
-expanded_ctss_list <- expand_ctss_regions(normalized_ctss_list, reference_name)
-ctss_sequences <- extract_ctss_sequences(expanded_ctss_list, reference_name)
-ctss_dinuc_freq_df_tidy <- count_dinucleotide_frequency(ctss_sequences)
-dinuclfreq_plot <- plot_dinucleotide_frequency(
-    ctss_dinuc_freq_df_tidy)
-save_plot(
-    "dinucleotide_frequencies_plot.pdf",
-    dinuclfreq_plot
-)
+# extract_dinucleotide_information()
+# dinuclfreq_plot <- plot_dinucleotide_frequency(
+#     ctss_dinuc_freq_df_tidy)
+# save_plot(
+#     "dinucleotide_frequencies_plot.pdf",
+#     dinuclfreq_plot
+# )
 
 # Consensus clustered CTSS quality plots
 # uses functions from plot_number_and_pca_of_ctss.R

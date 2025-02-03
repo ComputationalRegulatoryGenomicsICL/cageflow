@@ -31,8 +31,8 @@ cager_clustering <- function(ce, iqw_plot_lim, sample_num_thr, ctss_thr, num_cor
     # cluster TSS with distclu
     ce <- CAGEr::distclu(
         ce,
-        maxDist=20,
-        keepSingletonsAbove = 5)
+        maxDist=20, # move it up as param
+        keepSingletonsAbove = 5) # move it up as param
 
     # calculate IQ range
     ce <- CAGEr::cumulativeCTSSdistribution(
@@ -51,7 +51,7 @@ cager_clustering <- function(ce, iqw_plot_lim, sample_num_thr, ctss_thr, num_cor
     iqw_plot <- plotInterquantileWidth_local(
         ce,
         clusters = "tagClusters",
-        tpmThreshold = 3,
+        tpmThreshold = 3, # move it up as param
         qLow = 0.1,
         qUp = 0.9,
         xlim = iqw_plot_lim) # plot_lim
