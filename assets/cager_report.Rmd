@@ -30,7 +30,7 @@ hm_plot <- readRDS("correlations_plot.rds")
   }
   df[idx,]
 }
-if (ggplot2::is.ggplot(hm_plot)){
+if (length(hm_plot)==10){
   eval(hm_plot$call)
 } else {
   expr.table <- hm_plot[[1]]
