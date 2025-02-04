@@ -120,6 +120,9 @@ method              <- opt$method
 T_norm              <- opt$T_norm
 sample_num_thr      <- opt$sample_num_thr
 ctss_thr            <- opt$ctss_thr
+distclu_maxDist     <- opt$distclu_maxDist
+keepSingletonsAbove <- opt$keepSingletonsAbove
+iqw_tpm_threshold   <- opt$iqw_tpm_threshold
 consensus_ctss_thr  <- opt$consensus_ctss_thr
 consensus_ctss_dist <- opt$consensus_ctss_dist
 tx_annotation       <- opt$annotation
@@ -168,6 +171,9 @@ ce <- cager_clustering(
     iqw_plot_lim=c(0, 150),
     sample_num_thr=sample_num_thr,
     ctss_thr=ctss_thr,
+    distclu_maxDist=distclu_maxDist,
+    keepSingletonsAbove=keepSingletonsAbove,
+    iqw_tpm_threshold=iqw_tpm_threshold,
     num_core=num_core)
 
 # Consensus clustering of clustered CTSS
