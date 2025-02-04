@@ -50,7 +50,7 @@ option_list = list(
     make_option(
         c("-p", "--project_dir"),
         type = "character",
-        default = 0,
+        default = NULL,
         help = "Project directory, from which the analysis is run.")
 )
 
