@@ -186,7 +186,9 @@ ce <- cager_clustering(
     distclu_maxDist=distclu_maxDist,
     keepSingletonsAbove=keepSingletonsAbove,
     iqw_tpm_threshold=iqw_tpm_threshold,
-    num_core=num_core)
+    num_core=num_core,
+    iqlow=iqlow,
+    iqhigh=iqhigh)
 
 # Consensus clustering of clustered CTSS
 
@@ -195,7 +197,9 @@ ce <- consensus_clustering(
     tpmThreshold=consensus_ctss_thr,
     maxDist=consensus_ctss_dist,
     tx_annotation=tx_annotation,
-    num_core=num_core)
+    num_core=num_core,
+    iqlow=iqlow,
+    iqhigh=iqhigh)
 
 # save output
 # RDS
