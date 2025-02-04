@@ -112,7 +112,7 @@ dir.create(file.path("intermediate_cagerobj"))
 reference_name <- install_bsgenome(bsgenome)
 
 # Read in TxDb object
-tx_annotation_obj <- GenomicFeatures::loadDb(tx_annotation)
+tx_annotation_obj <- loadDb(tx_annotation)
 
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
