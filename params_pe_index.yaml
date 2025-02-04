@@ -37,6 +37,8 @@ sample_num_thr: 1
 ctss_thr: 1
 distclu_maxDist: 20
 keepSingletonsAbove: 5
+iq_low: 0.1
+iq_high: 0.9
 # plotting for tagclusters QC
 iqw_tpm_threshold: 3
 tssregion_up: -3000

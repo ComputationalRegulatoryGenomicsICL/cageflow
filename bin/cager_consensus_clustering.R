@@ -18,15 +18,15 @@ consensus_clustering <- function(
         tpmThreshold,
         maxDist,
         tx_annotation,
-        num_core){
+        num_core,
+        iqlow,
+        iqhigh){
 
     multicore <- TRUE
     if(num_core < 2){
         multicore <- FALSE
         num_core <- NULL
     }
-    iqlow <- 0.1
-    iqhigh <- 0.9
 
     ce <- CAGEr::aggregateTagClusters(
         ce,

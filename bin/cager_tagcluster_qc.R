@@ -42,6 +42,16 @@ option_list = list(
         default = NULL,
         help = "Name of the BSgenome version to be used (Mandatory)"),
     make_option(
+        c("-o", "--iq_low"),
+        type = "double",
+        default = 0.1,
+        help = "Lower boundary of interquartile range (Default = 0.1)"),
+    make_option(
+        c("-g", "--iq_high"),
+        type = "double",
+        default = 0.9,
+        help = "Higher boundary of interquartile range (Default = 0.9)"),
+    make_option(
         c("-u", "--tssregion_up"),
         type = "integer",
         default = -3000,
@@ -77,6 +87,8 @@ opt = optparse::parse_args(opt_parser)
 ce_path         <- opt$cageexp_object
 tx_annotation   <- opt$annotation
 bsgenome        <- opt$bsgenome
+iqlow           <- opt$iq_low
+iqhigh          <- opt$iq_high
 tssregion_up    <- opt$tssregion_up
 tssregion_down  <- opt$tssregion_down
 tsslogo_upstream    <- opt$tsslogo_upstream
@@ -96,9 +108,6 @@ dir.create(file.path("plots"))
 dir.create(file.path("tracks"))
 dir.create(file.path("tables"))
 dir.create(file.path("intermediate_cagerobj"))
-
-iqlow <- 0.1
-iqhigh <- 0.9
 
 reference_name <- install_bsgenome(bsgenome)
 

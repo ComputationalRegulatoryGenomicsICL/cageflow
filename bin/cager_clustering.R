@@ -28,15 +28,15 @@ cager_clustering <- function(
         distclu_maxDist,
         keepSingletonsAbove,
         iqw_tpm_threshold,
-        num_core){
+        num_core,
+        iqlow,
+        iqhigh){
 
     multicore <- TRUE
     if(num_core < 2){
         multicore <- FALSE
         num_core <- NULL
     }
-    iqlow <- 0.1
-    iqhigh <- 0.9
 
     # CTSS flagging used for filtering
     ce <- CAGEr::filterLowExpCTSS(

@@ -71,6 +71,16 @@ option_list = list(
         default = 5,
         help = "Threshold above which to keep the singletons during tag clustering (Default = 5)"),
     make_option(
+        c("-o", "--iq_low"),
+        type = "double",
+        default = 0.1,
+        help = "Lower boundary of interquartile range (Default = 0.1)"),
+    make_option(
+        c("-g", "--iq_high"),
+        type = "double",
+        default = 0.9,
+        help = "Higher boundary of interquartile range (Default = 0.9)"),
+    make_option(
         c("-w", "--iqw_tpm_threshold"),
         type = "integer",
         default = 3,
@@ -122,6 +132,8 @@ sample_num_thr      <- opt$sample_num_thr
 ctss_thr            <- opt$ctss_thr
 distclu_maxDist     <- opt$distclu_maxDist
 keepSingletonsAbove <- opt$keepSingletonsAbove
+iqlow               <- opt$iq_low
+iqhigh              <- opt$iq_high
 iqw_tpm_threshold   <- opt$iqw_tpm_threshold
 consensus_ctss_thr  <- opt$consensus_ctss_thr
 consensus_ctss_dist <- opt$consensus_ctss_dist

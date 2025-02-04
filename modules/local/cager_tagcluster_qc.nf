@@ -29,6 +29,8 @@ process CAGER_TAGCLUSTER_QC {
         -i ${cager_obj} \
         -a ${txdb} \
         -b \${bsgenome} \
+        -o ${params.iq_low} \
+        -g ${params.iq_high} \
         -u ${params.tssregion_up} \
         -d ${params.tssregion_down} \
         -l ${params.tsslogo_upstream} \
