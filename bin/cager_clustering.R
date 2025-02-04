@@ -89,7 +89,7 @@ cager_clustering <- function(
     sink()
 
     tag_clusters_count_plot <- plot_number_of_tag_clusters(
-        sample_tag_cluster_count=sample_tag_cluster_count,
+        sample_tag_count=sample_tag_cluster_count,
         yaxistitle="Number of tag clusters",
         mytitle="Number of tag clusters per sample")
     save_plot(
