@@ -3,7 +3,7 @@
 // 
 
 process CAGER_PREPROCESSING {
-    label 'process_medium'
+    label 'process_verylong'
     stageInMode 'copy'
 
     input:

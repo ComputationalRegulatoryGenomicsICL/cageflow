@@ -22,7 +22,7 @@ parser.add_argument(
     help='Additional delimiter to remove parts of the input name, eg pool from sequencing facility')
 parser.add_argument(
     '-l','--field', type=int, default=None,
-    help='Which field to keep after splitting with additional delimiter')
+    help='Which field to keep after splitting with additional delimiter (0 indexed)')
 args = parser.parse_args()
 
 outdict = {}
