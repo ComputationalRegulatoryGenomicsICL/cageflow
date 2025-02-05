@@ -39,11 +39,6 @@ option_list = list(
         default = NULL,
         help = "Name of the BSgenome version to be used (Mandatory)"),
     make_option(
-        c("-n", "--chromosomes"),
-        type = "character",
-        default = NULL,
-        help = "Comma separated list of chromosomes to keep (Optional)"),
-    make_option(
         c("-p", "--project_dir"),
         type = "character",
         default = NULL,
@@ -63,7 +58,6 @@ opt = optparse::parse_args(opt_parser)
 data_type           <- opt$data_type
 sample_table_list   <- opt$sample_table_list
 bsgenome            <- opt$bsgenome
-chromosome_names    <- opt$chromosomes
 project_dir         <- opt$project_dir
 num_core            <- opt$num_core
 
@@ -75,6 +69,12 @@ source(file.path(project_dir, "bin/install_bsgenome.R"))
 source(file.path(project_dir, "bin/parse_input.R"))
 source(file.path(project_dir, "bin/cager_bam.R"))
 source(file.path(project_dir, "bin/cager_bigwig.R"))
+
+# Create folders for organized analysis
+dir.create(file.path("plots"))
+dir.create(file.path("tracks"))
+dir.create(file.path("tables"))
+dir.create(file.path("intermediate_cagerobj"))
 
 reference_name <- install_bsgenome(bsgenome)
 
@@ -102,11 +102,9 @@ if (tolower(data_type) == "bam"){
         cpus=num_core
     )
 }else if(tolower(data_type) == "bigwig") {
-    chromosome_names_list <- unlist(strsplit(chromosome_names, ','))
     ce <- read_in_bigwig(
         bsgenome_name=reference_name,
         bigwig_paths=sample_table$path,
-        chromosome_names=chromosome_names_list,
         cpus=num_core
     )
 } else {
@@ -114,4 +112,4 @@ if (tolower(data_type) == "bam"){
 }
 
 # save the initial CAGEexp object
-saveRDS(ce, "initial_cagexp.rds")
+saveRDS(ce, "intermediate_cagerobj/initial_cagexp.rds")

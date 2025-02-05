@@ -23,14 +23,28 @@ cager_sample_file:
 forgeseed:
 sourcedir:
 bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
-# tagcluster qc
-tpm_threshold: 1
+# parameter for correlation calculation
+corrplot_tagCountThreshold: 1
+# correlation plotting of 10+ samples
+heatmap_cex_row: 0.2
 # parameters for normalization
-norm_range_min: 10
+norm_range_min: 5
 norm_range_max: 10000
 norm_method: "powerLaw"
-total_tag_num: 1000000
-# parameters for CTSS
+T_norm: 1000000
+# parameters for tag clustering
 sample_num_thr: 1
 ctss_thr: 1
-markdown_path: "assets/cager_report.Rmd"
+distclu_maxDist: 20
+keepSingletonsAbove: 5
+iq_low: 0.1
+iq_high: 0.9
+# plotting for tagclusters QC
+iqw_tpm_threshold: 3
+tssregion_up: -3000
+tssregion_down: 3000
+tsslogo_upstream: 35
+# parameters for consensus clusters
+consensus_ctss_thr: 2
+consensus_ctss_dist: 100
+pca_rank: 50

@@ -13,8 +13,9 @@ process CAGER_PREPROCESSING {
     path txdb
 
     output:
-    path "normalized_clustered_cagexp.rds",        emit: rds
-    tuple path("*.pdf"), path("*.txt"), path("*plot.rds"), emit: results
+    path "intermediate_cagerobj/normalized_clustered_cagexp.rds",        emit: rds
+    tuple path("plots/*.pdf"), path("plots/*.txt"), path("plots/*plot.rds"), emit: results
+    tuple path("tracks/*.bw"), path("tracks/*.bed"), emit: tracks
     path "versions.yml", emit: versions
 
     """
@@ -30,9 +31,14 @@ process CAGER_PREPROCESSING {
         -n ${params.norm_range_min} \
         -m ${params.norm_range_max} \
         -e ${params.norm_method} \
-        -t ${params.total_tag_num} \
+        -t ${params.T_norm} \
         -s ${params.sample_num_thr} \
         -r ${params.ctss_thr} \
+        -o ${params.iq_low} \
+        -g ${params.iq_high} \
+        -l ${params.distclu_maxDist} \
+        -k ${params.keepSingletonsAbove} \
+        -w ${params.iqw_tpm_threshold} \
         -u ${params.consensus_ctss_thr} \
         -d ${params.consensus_ctss_dist} \
         -a ${txdb} \

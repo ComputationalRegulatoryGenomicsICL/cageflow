@@ -11,7 +11,7 @@ process CAGER_READIN {
     val data_type
 
     output:
-    path "*.rds",        emit: rds
+    path "intermediate_cagerobj/*.rds",        emit: rds
     path "versions.yml", emit: versions
 
     """
@@ -26,7 +26,6 @@ process CAGER_READIN {
         -t "${data_type}" \
         -b \${bsgenome} \
         -s "${sample_table}" \
-        -n "${params.chromosomes_to_keep}" \
         -p ${projectDir} \
         -c ${task.cpus}
 

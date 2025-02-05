@@ -2,8 +2,11 @@
 #'
 #' @param ce normalized CAGEexp object
 #' @param iqw_plot_lim Limits to IQ width plot x axis
-#' @param sample_num_thr Threshold for nr of samples where tpm should be higher
-#' @param ctss_thr Tpm threshold
+#' @param sample_num_thr Threshold for nr of samples where tpm should be higher during filtering low expressed TSS before tag clustering
+#' @param ctss_thr Tpm threshold for filtering low expressed TSS before tag clustering
+#' @param distclu_maxDist maximum distance parameter for distclu CAGEr function
+#' @param keepSingletonsAbove threshold above which to keep the singletons during tag clustering
+#' @param iqw_tpm_threshold Tpm threshold for plotting tagcluster IQwidth
 #' @param num_core Number of cores to run on
 #' @return ce clustered CAGEexp object
 #' @examples
@@ -12,9 +15,23 @@
 #' iqw_plot_lim = c(0, 150),
 #' sample_num_thr = 1,
 #' ctss_thr = 1,
+#' distclu_maxDist = 20,
+#' keepSingletonsAbove = 5,
+#' iqw_tpm_threshold = 3,
 #' num_core = 4)
 
-cager_clustering <- function(ce, iqw_plot_lim, sample_num_thr, ctss_thr, num_core){
+cager_clustering <- function(
+        ce,
+        iqw_plot_lim,
+        sample_num_thr,
+        ctss_thr,
+        distclu_maxDist,
+        keepSingletonsAbove,
+        iqw_tpm_threshold,
+        num_core,
+        iqlow,
+        iqhigh){
+
     multicore <- TRUE
     if(num_core < 2){
         multicore <- FALSE
@@ -28,11 +45,13 @@ cager_clustering <- function(ce, iqw_plot_lim, sample_num_thr, ctss_thr, num_cor
         nrPassThreshold = sample_num_thr,
         threshold = ctss_thr)
 
+    # TODO: plot correlation of normalized, filtered tags
+
     # cluster TSS with distclu
     ce <- CAGEr::distclu(
         ce,
-        maxDist=20,
-        keepSingletonsAbove = 5)
+        maxDist=distclu_maxDist,
+        keepSingletonsAbove = keepSingletonsAbove)
 
     # calculate IQ range
     ce <- CAGEr::cumulativeCTSSdistribution(
@@ -44,38 +63,38 @@ cager_clustering <- function(ce, iqw_plot_lim, sample_num_thr, ctss_thr, num_cor
     ce <- CAGEr::quantilePositions(
         ce,
         clusters = "tagClusters",
-        qLow = 0.1,
-        qUp = 0.9)
+        qLow = iqlow,
+        qUp = iqhigh)
     
     # plot IQ width
     iqw_plot <- plotInterquantileWidth_local(
         ce,
         clusters = "tagClusters",
-        tpmThreshold = 3,
-        qLow = 0.1,
-        qUp = 0.9,
+        tpmThreshold = iqw_tpm_threshold,
+        qLow = iqlow,
+        qUp = iqhigh,
         xlim = iqw_plot_lim) # plot_lim
     save_plot(
         "interquartile_width_tagclusters_plot.pdf",
         iqw_plot)
 
     # count CTSS
-    sample_ctss_count <- list()
+    sample_tag_cluster_count <- list()
     for (sample in CAGEr::sampleLabels(ce)) {
-        sample_ctss_count[[sample]] <- sum(as.vector(CTSStagCountDF(ce)[[sample]])>0)
+        sample_tag_cluster_count[[sample]] <- sum(as.vector(CTSStagCountDF(ce)[[sample]])>0)
     }
 
-    sink("sample_ctss_count.txt")
-    print(sample_ctss_count)
+    sink("plots/sample_tag_cluster_count.txt")
+    print(sample_tag_cluster_count)
     sink()
 
-    ctss_plot <- plot_number_of_ctss(
-        sample_ctss_count=sample_ctss_count,
-        yaxistitle="Number of TSS clusters",
-        mytitle="CTSS per sample")
+    tag_clusters_count_plot <- plot_number_of_tag_clusters(
+        sample_tag_count=sample_tag_cluster_count,
+        yaxistitle="Number of tag clusters",
+        mytitle="Number of tag clusters per sample")
     save_plot(
-        "ctss_counts_plot.pdf",
-        ctss_plot)
+        "tag_clusters_counts_plot.pdf",
+        tag_clusters_count_plot)
 
     return(ce)
 }

@@ -16,8 +16,8 @@ required.libraries <- c(
     "stringr",
     "tidyr",
     "tibble",
-    "data.table"
-    )
+    "data.table",
+    "rtracklayer")
 
 for (lib in required.libraries) {
   suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
@@ -46,7 +46,7 @@ option_list = list(
         default = "powerLaw",
         help = "Method for normalization (Optional)"),
     make_option(
-        c("-t", "--total_tag_num"),
+        c("-t", "--T_norm"),
         type = "integer",
         default = 1*10^6,
         help = "Total number of tags. Setting it to 1 million (default) results in normalized tags per million (tpm) values (Optional)"),
@@ -60,6 +60,31 @@ option_list = list(
         type = "integer",
         default = 1,
         help = "CTSS Tpm threshold which should be passed in sample_num_thr number of samples (Default = 1)"),
+    make_option(
+        c("-l", "--distclu_maxDist"),
+        type = "integer",
+        default = 20,
+        help = "Maximum distance parameter for distclu CAGEr function (Default = 20)"),
+    make_option(
+        c("-k", "--keepSingletonsAbove"),
+        type = "integer",
+        default = 5,
+        help = "Threshold above which to keep the singletons during tag clustering (Default = 5)"),
+    make_option(
+        c("-o", "--iq_low"),
+        type = "double",
+        default = 0.1,
+        help = "Lower boundary of interquartile range (Default = 0.1)"),
+    make_option(
+        c("-g", "--iq_high"),
+        type = "double",
+        default = 0.9,
+        help = "Higher boundary of interquartile range (Default = 0.9)"),
+    make_option(
+        c("-w", "--iqw_tpm_threshold"),
+        type = "integer",
+        default = 3,
+        help = "Tpm threshold for plotting tagcluster IQwidth (Default = 3)"),
     make_option(
         c("-u", "--consensus_ctss_thr"),
         type = "integer",
@@ -102,9 +127,14 @@ ce_path             <- opt$cageexp_object
 range_min           <- opt$range_min
 range_max           <- opt$range_max
 method              <- opt$method
-total_tag_num       <- opt$total_tag_num
+T_norm              <- opt$T_norm
 sample_num_thr      <- opt$sample_num_thr
 ctss_thr            <- opt$ctss_thr
+distclu_maxDist     <- opt$distclu_maxDist
+keepSingletonsAbove <- opt$keepSingletonsAbove
+iqlow               <- opt$iq_low
+iqhigh              <- opt$iq_high
+iqw_tpm_threshold   <- opt$iqw_tpm_threshold
 consensus_ctss_thr  <- opt$consensus_ctss_thr
 consensus_ctss_dist <- opt$consensus_ctss_dist
 tx_annotation       <- opt$annotation
@@ -124,8 +154,15 @@ source(file.path(project_dir, "bin/plot_number_and_pca_of_ctss.R"))
 source(file.path(project_dir, "bin/cager_modified_plots.R"))
 source(file.path(project_dir, "bin/cager_clustering.R"))
 source(file.path(project_dir, "bin/cager_consensus_clustering.R"))
+source(file.path(project_dir, "bin/cager_track_export.R"))
 
 reference_name <- install_bsgenome(bsgenome)
+
+# Create folders for organized analysis
+dir.create(file.path("plots"))
+dir.create(file.path("tracks"))
+dir.create(file.path("tables"))
+dir.create(file.path("intermediate_cagerobj"))
 
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
@@ -137,7 +174,7 @@ ce <- cager_normalization(
     rangeMin=range_min,
     rangeMax=range_max,
     method=method,
-    total_tag_num=total_tag_num)
+    T_norm=T_norm)
 
 # CTSS clustering
 # uses functions from cager_modified_plots.R and plot_number_and_pca_of_ctss.R
@@ -146,11 +183,12 @@ ce <- cager_clustering(
     iqw_plot_lim=c(0, 150),
     sample_num_thr=sample_num_thr,
     ctss_thr=ctss_thr,
-    num_core=num_core)
-
-# save output
-# RDS
-saveRDS(ce, file = "normalized_clustered_cagexp.rds")
+    distclu_maxDist=distclu_maxDist,
+    keepSingletonsAbove=keepSingletonsAbove,
+    iqw_tpm_threshold=iqw_tpm_threshold,
+    num_core=num_core,
+    iqlow=iqlow,
+    iqhigh=iqhigh)
 
 # Consensus clustering of clustered CTSS
 
@@ -159,7 +197,15 @@ ce <- consensus_clustering(
     tpmThreshold=consensus_ctss_thr,
     maxDist=consensus_ctss_dist,
     tx_annotation=tx_annotation,
-    num_core=num_core)
+    num_core=num_core,
+    iqlow=iqlow,
+    iqhigh=iqhigh)
 
-# Track export (bigwig)
+# save output
+# RDS
+saveRDS(ce, file = "intermediate_cagerobj/normalized_clustered_cagexp.rds")
+
+# Track export (bigwig and bed)
+export_tagclusters(ce, iqlow, iqhigh)
+export_consensus_clusters(ce)
 

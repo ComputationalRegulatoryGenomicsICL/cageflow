@@ -38,9 +38,19 @@ option_list = list(
         default = NULL,
         help = "Name of the BSgenome version to be used (Mandatory)"),
     make_option(
+        c("-t", "--corrplot_tagCountThreshold"),
+        type = "integer",
+        default = 1,
+        help = "Threshold for considering tags when calculating correlations (Default = 1)"),
+    make_option(
+        c("-c", "--heatmap_cex_row"),
+        type = "double",
+        default = 0.2,
+        help = "Text size for plotting heatmaps of correlation for 10+ samples (Default = 0.2)"),
+    make_option(
         c("-p", "--project_dir"),
         type = "character",
-        default = 0,
+        default = NULL,
         help = "Project directory, from which the analysis is run.")
 )
 
@@ -52,6 +62,8 @@ opt = optparse::parse_args(opt_parser)
 ce_path         <- opt$cageexp_object
 tx_annotation   <- opt$annotation
 bsgenome        <- opt$bsgenome
+corrplot_tagCountThreshold <- opt$corrplot_tagCountThreshold
+heatmap_cex_row <- opt$heatmap_cex_row
 project_dir     <- opt$project_dir
 
 # installing BSgenome
@@ -62,6 +74,12 @@ source(file.path(project_dir, "bin/cager_modified_plots.R"))
 
 reference_name <- install_bsgenome(bsgenome)
 
+# Create folders for organized analysis
+dir.create(file.path("plots"))
+dir.create(file.path("tracks"))
+dir.create(file.path("tables"))
+dir.create(file.path("intermediate_cagerobj"))
+
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
 
@@ -70,7 +88,7 @@ tx_annotation_obj <- loadDb(tx_annotation)
 ce <- CAGEr::annotateCTSS(ce, tx_annotation_obj)
 
 # Save intermediate annotated object
-saveRDS(ce, "annotated_cagexp.rds")
+saveRDS(ce, "intermediate_cagerobj/annotated_cagexp.rds")
 
 annotations <- CAGEr::plotAnnot(ce, "counts")
 save_plot(
@@ -83,23 +101,27 @@ if (length(sampleLabels(ce)) > 10){
     corr_m <- plotCorrelation2_local(
         CTSStagCountDF(ce),
         samples = "all",
-        tagCountThreshold = 1,
+        tagCountThreshold = corrplot_tagCountThreshold,
         applyThresholdBoth = FALSE,
         method = "pearson",
         digits = 3,
         plot_pairs = FALSE)
 
     # plot correlations in heatmap format
-    hm <- gplots::heatmap.2(corr_m, trace="none", margins=c(12, 12),cexRow=0.2)
-    pdf("correlations_heatmap_plot.pdf")
+    hm <- gplots::heatmap.2(
+        corr_m,
+        trace="none",
+        margins=c(12, 12),
+        cexRow=heatmap_cex_row)
+    pdf("plots/correlations_plot.pdf")
     eval(hm$call)
     dev.off()
-    saveRDS(hm, "correlations_heatmap_plot.rds")
+    saveRDS(hm, "plots/correlations_plot.rds")
 } else {
     corr_m <- plotCorrelation2_local(
         CTSStagCountDF(ce),
         samples = "all",
-        tagCountThreshold = 1,
+        tagCountThreshold = corrplot_tagCountThreshold,
         applyThresholdBoth = FALSE,
         method = "pearson",
         digits = 3,
@@ -107,17 +129,4 @@ if (length(sampleLabels(ce)) > 10){
 }
 
 # save intermediate file
-saveRDS(corr_m, "corr_m.rds")
-
-# Plot sequence distribution at the TSS
-# tsslogo_plot <- CAGEr::TSSlogo(
-#     CAGEr::CTSScoordinatesGR(ce) |> subset(annotation == "promoter"),
-#     upstream = 35)
-tsslogo_plot <- TSSlogo_local(
-    CAGEr::CTSScoordinatesGR(ce) |> subset(annotation == "promoter"),
-    genome_name=reference_name,
-    upstream = 35)
-save_plot(
-    "TSSlogos_plot.pdf",
-    tsslogo_plot
-)
+saveRDS(corr_m, "plots/corr_m.rds")
