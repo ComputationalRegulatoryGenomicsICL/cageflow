@@ -182,7 +182,7 @@ workflow CUSTOMCAGE {
         )
     }
 
-    CUSTOM_DUMPSOFTWAREVERSIONS (
+    /*CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
 
@@ -202,7 +202,7 @@ workflow CUSTOMCAGE {
         ch_multiqc_custom_config.toList(),
         ch_multiqc_logo.toList()
     )
-    multiqc_report = MULTIQC.out.report.toList()
+    multiqc_report = MULTIQC.out.report.toList()*/
 }
 
 /*
