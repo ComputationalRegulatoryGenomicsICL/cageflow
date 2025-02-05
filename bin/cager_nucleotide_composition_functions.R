@@ -93,7 +93,7 @@ plot_dinucleotide_frequency_histogram <- function(
             axis.text.y = element_text(size = 20, colour = "black"),
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank()) +
-        scale_y_continuous(limits = c(0, 30)) +
+        scale_y_continuous(limits = c(0, 1)) +
         labs(fill = NULL)
 
     return(p)

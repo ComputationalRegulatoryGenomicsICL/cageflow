@@ -151,14 +151,13 @@ save_plot(
 # Plot sequence distribution at the dominant TSS for each sample
 # "Promoter (<= 1kb)" is a proper annotation if tssRegion in annotatePeak is bigger than 1kb
 # otherwise it would be just "Promoter"
-if (tssregion_up < 1000){
+if (abs(tssregion_up-tssregion_down) < 1000){
     promoter_annot <- "Promoter"
 }else{
     promoter_annot <- "Promoter (<=1kb)"
 }
 for (sample in sampleNames){
     sample_annotation <- peakAnno_list[[sample]]@anno
-    genomeName(sample_annotation) <- reference_name
     tsslogo_plot <- CAGEr::TSSlogo(
         sample_annotation |> subset(
             sample_annotation@elementMetadata$annotation == promoter_annot),

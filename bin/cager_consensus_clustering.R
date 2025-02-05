@@ -28,6 +28,7 @@ consensus_clustering <- function(
         num_core <- NULL
     }
 
+    # TODO: use filtered CTSS to calculate score
     ce <- CAGEr::aggregateTagClusters(
         ce,
         tpmThreshold = tpmThreshold,

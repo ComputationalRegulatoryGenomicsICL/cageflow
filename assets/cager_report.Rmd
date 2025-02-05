@@ -79,6 +79,7 @@ chta_plot
 ### TSS logo
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 tss_logos <- list.files(pattern = "tagcluster_dominantTSSlogos_plot.rds")
+print(tss_logos)
 for (logofile in tss_logos){
   tss_plot <- readRDS(logofile)
   tss_plot + ggplot2::theme(
@@ -87,11 +88,8 @@ for (logofile in tss_logos){
 
 ```
 
-### Nucleotide and dinucleotide frequencies in tagclusters
+### Dinucleotide frequencies in tagclusters weighted by expression (tpm)
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-nucl_plot <- readRDS("nucleotide_frequencies_plot.rds")
-nucl_plot
-
 dinucl_plot <- readRDS("dinucleotide_frequencies_plot.rds")
 dinucl_plot + ggplot2::theme(
     text=ggplot2::element_text(size=5),
