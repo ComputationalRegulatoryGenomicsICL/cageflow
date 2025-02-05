@@ -153,7 +153,7 @@ workflow CUSTOMCAGE {
         ch_multiqc_files = SUMMARY_STAT.out.ch_multiqc_files
         ch_versions = SUMMARY_STAT.out.ch_versions
 
-        ch_sample_files = WRITE_SAMPLE_LIST(ch_for_cager)
+        /*ch_sample_files = WRITE_SAMPLE_LIST(ch_for_cager)
 
         def header = "id,single_end,path"
 
@@ -165,10 +165,10 @@ workflow CUSTOMCAGE {
         merged_sample_file = ch_collected.collectFile(
             name: "sample_list.csv",
             newLine: true,
-            sort: { file -> file.text })
+            sort: { file -> file.text })*/
     }
     
-    if (params.cageronly || params.fullpipeline) {
+    /*if (params.cageronly || params.fullpipeline) {
 
         PREPARE_CAGER_METADATA( ch_gtf, ch_versions )
         ch_bsgenome_file = PREPARE_CAGER_METADATA.out.ch_bsgenome_file
@@ -183,7 +183,7 @@ workflow CUSTOMCAGE {
             ch_txdb_file,
             ch_versions
         )
-    }
+    } */
 }
 
 if (params.maponly || params.fullpipeline) {

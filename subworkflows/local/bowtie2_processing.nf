@@ -16,14 +16,21 @@ workflow BOWTIE2_PROCESSING {
         ch_versions
 
     main:
+        sample_meta = ch_reads_to_align.map{ meta, fastq ->
+            meta = meta
+            [meta]}
+        
         if (!params.index) {
             BOWTIE2_BUILD (
                 ch_fasta
             )
             ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions)
-            
-            ch_index = BOWTIE2_BUILD.out.index
+            ch_index = sample_meta.combine(BOWTIE2_BUILD.out.index.map { it[1] }) // test
         }
+
+        ch_fasta = sample_meta.combine(ch_fasta.map{ it[1] })
+
+        ch_fasta.view()
 
         BOWTIE2_ALIGN (
             ch_reads_to_align,

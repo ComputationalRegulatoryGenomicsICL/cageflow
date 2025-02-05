@@ -33,6 +33,8 @@ workflow STAR_PROCESSING {
             ch_index = sample_meta.combine(STAR_GENOMEGENERATE.out.index.map { it[1] })
         }
 
+        ch_index.view() // test
+
         STAR_ALIGN (
             ch_reads_to_align,
             ch_index,
