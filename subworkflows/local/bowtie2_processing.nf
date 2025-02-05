@@ -30,8 +30,6 @@ workflow BOWTIE2_PROCESSING {
 
         ch_fasta = sample_meta.combine(ch_fasta.map{ it[1] })
 
-        ch_fasta.view()
-
         BOWTIE2_ALIGN (
             ch_reads_to_align,
             ch_index,
