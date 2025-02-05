@@ -9,6 +9,7 @@ process CAGER_READIN {
     val bsgenome_name
     val sample_table
     val data_type
+    path ch_collected
 
     output:
     path "intermediate_cagerobj/*.rds",        emit: rds

@@ -14,6 +14,7 @@ workflow CAGER {
         ch_bsgenome_file
         ch_bsgenome_name
         ch_sample_file
+        ch_collected
         ch_txdb
         ch_versions
     
@@ -30,12 +31,13 @@ workflow CAGER {
             .splitCsv( header:true , sep:',')
             .map { create_mapping_channel(it) }
             .collect()
-
+        
         CAGER_READIN (
             ch_bsgenome_file,
             ch_bsgenome_name,
             sample_table,
-            ch_data_type
+            ch_data_type,
+            ch_collected
         )
 
         cager_rds = CAGER_READIN.out.rds
@@ -79,8 +81,8 @@ workflow CAGER {
 def create_mapping_channel(LinkedHashMap row) {
     id = row.id
     single_end = row.single_end
-    str1_bw = file(row.path.split(" ")[0].minus('['))
-    str2_bw = file(row.path.split(" ")[1].minus(']'))
+    str1_bw = row.path.split(" ")[0].minus('[')
+    str2_bw = row.path.split(" ")[1].minus(']')
 
     return [id, single_end, str1_bw, str2_bw]
 }

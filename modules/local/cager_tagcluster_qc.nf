@@ -3,7 +3,7 @@
 // 
 
 process CAGER_TAGCLUSTER_QC {
-    label 'process_medium'
+    label 'process_high'
     stageInMode 'copy'
 
     input:
@@ -29,8 +29,12 @@ process CAGER_TAGCLUSTER_QC {
         -i ${cager_obj} \
         -a ${txdb} \
         -b \${bsgenome} \
+        -o ${params.iq_low} \
+        -g ${params.iq_high} \
+        -u ${params.tssregion_up} \
+        -d ${params.tssregion_down} \
+        -l ${params.tsslogo_upstream} \
         -p ${projectDir} \
-        -t ${params.tpm_threshold} \
         -k ${params.pca_rank}
 
     cat <<-END_VERSIONS > versions.yml

@@ -6,7 +6,7 @@ bigwig_export <- function(x, y, type){
     rtracklayer::export.bw(min, paste0("tracks/", paste(y, type, "minus.bw", sep="_") ))
 }
 
-export_tagclusters <- function(ce){
+export_tagclusters <- function(ce, iqlow, iqhigh){
     # export normalized TSS counts into bigwig
     mapply(
         bigwig_export,
@@ -24,7 +24,7 @@ export_tagclusters <- function(ce){
     bedTracks <- CAGEr::exportToTrack(
         ce, 
         what = "tagClusters", 
-        qLow = 0.1, qUp = 0.9, 
+        qLow = iqlow, qUp = iqhigh, 
         oneTrack = FALSE)
 
     mapply(function(x, y){

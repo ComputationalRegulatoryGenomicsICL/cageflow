@@ -17,7 +17,7 @@ tagannot_plot <- readRDS("tag_region_annotation_plot.rds")
 tagannot_plot
 ```
 
-### Correlation
+### Correlation of samples at raw tag count level
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 library(memoise)
 corr_m <- readRDS("corr_m.rds")
@@ -30,7 +30,7 @@ hm_plot <- readRDS("correlations_plot.rds")
   }
   df[idx,]
 }
-if (ggplot2::is.ggplot(hm_plot)){
+if (length(hm_plot)==10){
   eval(hm_plot$call)
 } else {
   expr.table <- hm_plot[[1]]
@@ -58,16 +58,16 @@ revc_plot <- readRDS("reverse_cumulative_plot.rds")
 revc_plot
 ```
 
-### Promoter width
+### Tag cluster interquartile width
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 iqw_plot <- readRDS("interquartile_width_tagclusters_plot.rds")
 iqw_plot
 ```
 
-### CTSS counts
+### Number of tag clusters per sample
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-ctssc_plot <- readRDS("ctss_counts_plot.rds")
-ctssc_plot
+tag_clusters_count_plot <- readRDS("tag_clusters_counts_plot.rds")
+tag_clusters_count_plot
 ```
 
 ### Tagcluster annotation
@@ -79,6 +79,7 @@ chta_plot
 ### TSS logo
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 tss_logos <- list.files(pattern = "tagcluster_dominantTSSlogos_plot.rds")
+print(tss_logos)
 for (logofile in tss_logos){
   tss_plot <- readRDS(logofile)
   tss_plot + ggplot2::theme(
@@ -87,11 +88,8 @@ for (logofile in tss_logos){
 
 ```
 
-### Nucleotide and dinucleotide frequencies in tagclusters
+### Dinucleotide frequencies in tagclusters weighted by expression (tpm)
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-nucl_plot <- readRDS("nucleotide_frequencies_plot.rds")
-nucl_plot
-
 dinucl_plot <- readRDS("dinucleotide_frequencies_plot.rds")
 dinucl_plot + ggplot2::theme(
     text=ggplot2::element_text(size=5),

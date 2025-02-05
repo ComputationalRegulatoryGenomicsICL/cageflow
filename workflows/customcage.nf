@@ -41,11 +41,16 @@ params.bowtie2 = false
 //params.chromsizes = null 
 params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
 
+// CAGEr markdown template location
+params.markdown_path = "$projectDir/assets/cager_report.Rmd"
+
 // BSgenome parameters
 params.bsgenome = false
 params.forgeseed = false
 params.sourcedir = false
 
+include { BIGWIG_INPUTS } from "../subworkflows/local/read_in_bigwigs.nf"
+include { RELATIVISATION } from '../modules/local/make_paths_relative.nf'
 // CAGEr markdown template location
 params.markdown_path = "assets/cager_report.Rmd"
 
@@ -81,7 +86,10 @@ workflow CUSTOMCAGE {
             exit 1, 'Sample list file is mandatory if mapping is not done within the pipeline.'
         }
 
-        merged_sample_file = Channel.fromPath(params.cager_sample_file)
+        ch_cager_sample_file = Channel.fromPath(params.cager_sample_file)
+        ch_collected = BIGWIG_INPUTS(ch_cager_sample_file).collect()
+        merged_sample_file = RELATIVISATION(ch_cager_sample_file)
+
     }
 
     ch_versions = Channel.empty()
@@ -175,6 +183,7 @@ workflow CUSTOMCAGE {
             ch_bsgenome_file,
             ch_bsgenome_name,
             merged_sample_file,
+            ch_collected,
             ch_txdb_file,
             ch_versions
         )

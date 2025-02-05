@@ -66,18 +66,18 @@ coerceInBSgenome <- function(gr, genome) {
 #'
 #' @param bsgenome_name the name of the reference genome (bsgenome)
 #' @param bigwig_paths list of input bigwig files with full path
-#' @param cpus number of cores to use
+#' @param sample_names_files_dict dictionary of matching sample names to files
 #' @return a CAGEexp object
 #' @examples
 #' read_in_bigwig(
 #'  bsgenome_name="BSgenome.Scerevisiae.UCSC.sacCer3",
-#'  bigwig_paths=["path/to/file1.bw", "path/to/file2.bw"],
-#'  cpus=4)
+#'  bigwig_paths=["path/to/file1.bw", "path/to/file2.bw"]
+#'  )
 
 read_in_bigwig <- function(
     bsgenome_name,
     bigwig_paths,
-    cpus){
+    sample_names_files_dict){
 
   bigwig_paths <- stringr::str_squish(bigwig_paths)
 
@@ -94,7 +94,11 @@ read_in_bigwig <- function(
       track_bs <- coerceInBSgenome(track_in, bsgenome_name)
     })
 
-  names(signals) = basename(bigwigs)
+  signal_names <- c()
+  for (bn in basename(bigwigs)){
+    signal_names <- append(signal_names, sample_names_files_dict[[bn]])
+  }
+  names(signals) = signal_names
 
   signalsSplit = split(
     signals,
@@ -124,6 +128,16 @@ read_in_bigwig <- function(
     minus_sample_names = stringr::str_remove_all(
       names(minus),
       ".Signal.Unique.str2.out.wig.bw")
+  } else if (grepl( "_str1", names(plus)[1], fixed = TRUE)) {
+    plus_sample_names = stringr::str_remove_all(
+      names(plus),
+      "_str1")
+    minus_sample_names = stringr::str_remove_all(
+      names(minus),
+      "_str2")
+  } else {
+    plus_sample_names = names(plus)
+    minus_sample_names = names(minus)
   }
 
   names(plus) <- plus_sample_names

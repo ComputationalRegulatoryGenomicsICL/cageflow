@@ -25,8 +25,8 @@ consensus_qc <- function(
             as.vector(consclustTmp[,sample]) > 0)
     }
     sample_cons_ctss_count[["Union"]] <- dim(consclustTmp)[1]
-    consensus_ctss_plot <- plot_number_of_ctss(
-        sample_ctss_count=sample_cons_ctss_count,
+    consensus_ctss_plot <- plot_number_of_tag_clusters(
+        sample_tag_count=sample_cons_ctss_count,
         yaxistitle="Number of non-zero consensus clusters",
         mytitle="Non-zero consensus clusters per sample and union")
     save_plot(
