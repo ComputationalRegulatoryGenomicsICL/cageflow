@@ -24,7 +24,8 @@ workflow SAMTOOLS_PROCESSING {
 
             ch_bam_bai = SAMTOOLS_SORT.out.bam.join(SAMTOOLS_INDEX.out.bai)
             //ch_sample_list = SAMTOOLS_SORT.out.bam.collect()
-            ch_for_cager = SAMTOOLS_SORT.out.bam.collect()
+            // ch_for_cager = SAMTOOLS_SORT.out.bam.collect()
+            ch_for_cager = SAMTOOLS_SORT.out.bam
         } else {
             SAMTOOLS_INDEX (ch_aligned)
             ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions)

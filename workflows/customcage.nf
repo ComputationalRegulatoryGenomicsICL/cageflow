@@ -122,8 +122,10 @@ workflow CUSTOMCAGE {
             ch_aligned = BOWTIE2_PROCESSING.out.ch_aligned
             ch_multiqc_files = BOWTIE2_PROCESSING.out.ch_multiqc_files
             ch_versions = BOWTIE2_PROCESSING.out.ch_versions
-            // NOTE: placeholder so that the channel is not empty
-            // it will be replaced in SAMTOOLS_PROCESSING
+            // ch_aligned is a placeholder in ch_for_cager,
+            // so that ch_for_cager is not empty.
+            // The contents of ch_for_cager will be replaced 
+            // in SAMTOOLS_PROCESSING below
             ch_for_cager = ch_aligned
         } else {
             STAR_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_gtf, ch_chrom_sizes, ch_multiqc_files, ch_versions)
@@ -153,7 +155,13 @@ workflow CUSTOMCAGE {
         ch_multiqc_files = SUMMARY_STAT.out.ch_multiqc_files
         ch_versions = SUMMARY_STAT.out.ch_versions
 
-        /*ch_sample_files = WRITE_SAMPLE_LIST(ch_for_cager)
+        //ch_for_cager.view() // debugging
+
+        ch_sample_files = WRITE_SAMPLE_LIST(ch_for_cager)
+        
+        // debug
+        //ch_sample_files.view()
+        // end_debug
 
         def header = "id,single_end,path"
 
@@ -161,14 +169,22 @@ workflow CUSTOMCAGE {
         .reduce( header ) { acc, table_line ->
             acc + '\n' + table_line.readLines()[0]}
 
+        // debug
+        //ch_collected.view()
+        //end_debug
+
         // sorting samples alphabetically
         merged_sample_file = ch_collected.collectFile(
             name: "sample_list.csv",
             newLine: true,
-            sort: { file -> file.text })*/
+            sort: { file -> file.text })
+
+        // debug
+        merged_sample_file.view()
+        // end_debug
     }
     
-    /*if (params.cageronly || params.fullpipeline) {
+    if (params.cageronly || params.fullpipeline) {
 
         PREPARE_CAGER_METADATA( ch_gtf, ch_versions )
         ch_bsgenome_file = PREPARE_CAGER_METADATA.out.ch_bsgenome_file
@@ -183,7 +199,7 @@ workflow CUSTOMCAGE {
             ch_txdb_file,
             ch_versions
         )
-    } */
+    }
 }
 
 if (params.maponly || params.fullpipeline) {

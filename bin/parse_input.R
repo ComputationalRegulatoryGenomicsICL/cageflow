@@ -7,12 +7,22 @@ parse_input <- function(sample_info, data_type){
     cleaned_string <- gsub("\\]", "", cleaned_string)
     elements <- strsplit(cleaned_string, ",")[[1]]
 
-    if (tolower(data_type) == "bam"){
+    # debug
+    cat(paste(c("cleaned_string=", cleaned_string), collapse = "|"), "\n")
+    cat(paste(c("elements=", elements), collapse = "|"), "\n")
+    for(el.i in 1:length(elements)) {
+        cat(paste(c("el.i:", el.i, ":'", elements[el.i], "'"),
+                  collapse = "|"), "\n")
+    }
+    # end_debug
+
+    if (tolower(data_type) == "bam") {
+        elements <- gsub(" ", "", elements)
         sample_matrix <- matrix(elements, ncol=3, byrow=TRUE)
         sample_table <- as.data.frame(
             sample_matrix, stringsAsFactors=FALSE)
         colnames(sample_table) <- c("id", "single_end", "path")
-    }else if (tolower(data_type) == "bigwig") {
+    } else if (tolower(data_type) == "bigwig") {
         sample_matrix <- matrix(elements, ncol=4, byrow=TRUE)
         sample_table <- as.data.frame(
             sample_matrix, stringsAsFactors=FALSE)

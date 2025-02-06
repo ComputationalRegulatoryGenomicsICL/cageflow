@@ -79,8 +79,15 @@ workflow CAGER {
 def create_mapping_channel(LinkedHashMap row) {
     id = row.id
     single_end = row.single_end
-    str1_bw = file(row.path.split(" ")[0].minus('['))
-    str2_bw = file(row.path.split(" ")[1].minus(']'))
+    // alignment_ext = row.path.split("\\.")[-1]
+    alignment_ext = row.path.split(" ")[0].minus('[').split("\\.")[-1]
+    if (alignment_ext == "bw") {
+        str1_bw = file(row.path.split(" ")[0].minus('['))
+        str2_bw = file(row.path.split(" ")[1].minus(']'))
+        return [id, single_end, str1_bw, str2_bw]
+    } else { // alignment_ext == "bam"
+        str12_bam = file(row.path) // check!
+        return [id, single_end, str12_bam]
+    }
 
-    return [id, single_end, str1_bw, str2_bw]
 }

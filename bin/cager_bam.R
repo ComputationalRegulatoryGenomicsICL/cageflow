@@ -32,6 +32,16 @@ read_in_bam <- function(
         multicore <- FALSE
         cpus <- NULL
     }
+    
+    # debug
+    cat(class(sample_names), "\n") 
+    cat(sample_names, "\n") 
+    cat("=======\n")
+    for (smpn in sample_names) {
+      cat("'", smpn, "'\n")
+    }
+    cat("=======\n")
+    # end_debug
 
     ce = CAGEexp(genomeName     = bsgenome_name,
              inputFiles         = bam_paths,
