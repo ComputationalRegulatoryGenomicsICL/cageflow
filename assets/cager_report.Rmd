@@ -12,19 +12,20 @@ geometry: margin = 2cm
 # Results of CAGEr analysis
 
 ### Tag region annotation
+Annotation of raw tags per samples.
+Note: tags are not filtered or normalized yet.
+It is expected to see more intergenic reads here than after filtering and clustering which removes much of the noise.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-print("Annotation of raw tags per samples.")
-print("Note: tags are not filtered or normalized yet.")
-print("It is expected to see more intergenic reads here than after filtering and clustering which removes much of the noise.")
+options(warn=-1)
 tagannot_plot <- readRDS("tag_region_annotation_plot.rds")
 tagannot_plot
 ```
 
 ### Correlation of samples at raw tag count level
+Correlation of samples by the raw tag counts.
+Note: these are not filtered or normalized yet. The plot is for diagnostic purposes, such as highlighting batch effects.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-print("Correlation of samples by the raw tag counts.")
-print("Note: these are not filtered or normalized yet. The plot is for diagnostic purposes, such as highlighting batch effects.")
-library(memoise)
+suppressMessages(library(memoise))
 corr_m <- readRDS("corr_m.rds")
 hm_plot <- readRDS("correlations_plot.rds")
 .applyThreshold <- function(df, tagCountThreshold, applyThresholdBoth) {
@@ -58,19 +59,21 @@ if (length(hm_plot)==10){
 ```
 
 ### Normalization
+Number of CAGE tags versus number of TSS supported by at least as many tags should follow the power-law distribution.
+The power-law distribution is fitted in the range between the two dotted lines.
+The positions of the dotted lines are modifiable by user with norm_range_min and norm_range_max parameters.
+These defaults to 5 and 10000, respectively.
+The total number of tags (T_norm) defaults to 1000000 which corresponds to TPM, but in cases of very deep sequencing this should be adjusted.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-print("Number of CAGE tags versus number of TSS supported by at least as many tags should follow the power-law distribution.")
-print("The power-law distribution is fitted in the range between the two dotted lines.")
-print("The positions of the dotted lines are modifiable by user with norm_range_min and norm_range_max parameters. These defaults to 5 and 10000, respectively.")
-print("The total number of tags (T_norm) defaults to 1000000 which corresponds to TPM, but in cases of very deep sequencing this should be adjusted.")
 revc_plot <- readRDS("reverse_cumulative_plot.rds")
 revc_plot
 ```
 
 ### Tag cluster interquartile width
+Interquartile width distribution in each sample.
+A sequencing library of sufficient depth shows two types of tag clusters: narrow and wide.
+In low depth cases, the wider type might be lacking which flags low quality data.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-print("Interquartile width distribution in each sample.")
-print("A sequencing library of sufficient depth shows two types of tag clusters: narrow and wide. In low depth cases, the wider type might be lacking which flags low quality data.")
 iqw_plot <- readRDS("interquartile_width_tagclusters_plot.rds")
 iqw_plot
 ```
@@ -82,20 +85,22 @@ tag_clusters_count_plot
 ```
 
 ### Tagcluster annotation
+ChipSeeker annotation of genomic regions of tag clusters.
+Note: the region labels are extracted from a TxDb generated from GTF file provided by the user.
+You may find this file in results/txdb folder.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-print("ChipSeeker annotation of genomic regions of tag clusters")
-print("Note: the region labels are extracted from a TxDb generated from GTF file provided by the user. You may find this file in results/txdb folder")
 chta_plot <- readRDS("chipseeker_tagCluster_annotation_plot.rds")
 chta_plot
 ```
 
 ### TSS logo
+Sequence distribution at the dominant TSS of tag clusters within promoter regions (according to annotation by ChipSeeker).
+Note: Before clustering, low expressed CTSS are filtered by the user defined thresholds: sample_num_thr and ctss_thr.
+By default, these values are 1 sample and 1 TPM meaning that these are low-fidelity TSSs supported by less than 1 normalized tag counts in any of the samples.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-print("Sequence distribution at the dominant TSS of tag clusters within promoter regions (according to annotation by ChipSeeker).")
-print("Note: Before clustering, low expressed CTSS are filtered by the user defined thresholds: sample_num_thr and ctss_thr.")
-print("By default, these values are 1 sample and 1 TPM meaning that these are low-fidelity TSSs supported by less than 1 normalized tag counts in any of the samples.")
 tss_logos <- list.files(pattern = "tagcluster_dominantTSSlogos_plot.rds")
 for (logofile in tss_logos){
+  print(logofile)
   tss_plot <- readRDS(logofile)
   tss_plot = tss_plot + ggplot2::theme(
       axis.text.x = ggplot2::element_text(angle = 90))
@@ -105,10 +110,10 @@ for (logofile in tss_logos){
 ```
 
 ### Dinucleotide frequencies in tagclusters weighted by expression (tpm)
+Expression-level-aware dinucleotide frequencies at dominant TSSs of tag clusters (sorted by frequencies at the first sample in alphabetical order).
+Note: Before clustering, low expressed CTSS are filtered by the user defined thresholds: sample_num_thr and ctss_thr.
+By default, these values are 1 sample and 1 TPM meaning that these are low-fidelity TSSs supported by less than 1 normalized tag counts in any of the samples.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-print("Expression-level-aware dinucleotide frequencies at dominant TSSs of tag clusters.")
-print("Note: Before clustering, low expressed CTSS are filtered by the user defined thresholds: sample_num_thr and ctss_thr.")
-print("By default, these values are 1 sample and 1 TPM meaning that these are low-fidelity TSSs supported by less than 1 normalized tag counts in any of the samples.")
 dinucl_plot <- readRDS("dinucleotide_frequencies_plot.rds")
 dinucl_plot + ggplot2::theme(
     text=ggplot2::element_text(size=5),
@@ -117,18 +122,18 @@ dinucl_plot + ggplot2::theme(
 ```
 
 ### Consensus cluster TPM counts
+Consensus clusters are clusters aggregated from tag clusters of different samples which are in close vicinity and pass a tpm threshold.
+The maximum distance between the 0.1-0.9 interquartile ranges of tag clusters and TPM thresholds can be set by the user with the consensus_ctss_dist and consensus_ctss_thr parameters (defaults are 100 and 2, respecitvely).
+This plot shows the number of non zero consensus clusters per samples, as well as the total number of consensus clusters (union).
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-print("Consensus clusters are clusters aggregated from tag clusters of different samples which are in close vicinity and pass a tpm threshold.")
-print("The maximum distance between the 0.1-0.9 interquartile ranges of tag clusters and TPM thresholds can be set by the user with the consensus_ctss_dist and consensus_ctss_thr parameters (defaults are 100 and 2, respecitvely).")
-print("This plot shows the number of non zero consensus clusters per samples, as well as the total number of consensus clusters (union).")
 cc_plot <- readRDS("consensus_counts_plot.rds")
 cc_plot
 ```
 
 ### Consensus cluster PCA
+PCA calculated on the TPM values of samples within consensus clusters.
+By default the first 50 PCs are used, this can be set with the parameter pca_rank.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-print("PCA calculated on the TPM values of samples within consensus clusters.")
-print("By default the first 50 PCs are used, this can be set with the parameter pca_rank.")
 ccp_plot <- readRDS("consensus_clusters_pca_plot.rds")
 ccp_plot
 ```
