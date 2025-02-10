@@ -61,6 +61,31 @@ option_list = list(
         default = 1,
         help = "CTSS Tpm threshold which should be passed in sample_num_thr number of samples (Default = 1)"),
     make_option(
+        c("-l", "--distclu_maxDist"),
+        type = "integer",
+        default = 20,
+        help = "Maximum distance parameter for distclu CAGEr function (Default = 20)"),
+    make_option(
+        c("-k", "--keepSingletonsAbove"),
+        type = "integer",
+        default = 5,
+        help = "Threshold above which to keep the singletons during tag clustering (Default = 5)"),
+    make_option(
+        c("-o", "--iq_low"),
+        type = "double",
+        default = 0.1,
+        help = "Lower boundary of interquartile range (Default = 0.1)"),
+    make_option(
+        c("-g", "--iq_high"),
+        type = "double",
+        default = 0.9,
+        help = "Higher boundary of interquartile range (Default = 0.9)"),
+    make_option(
+        c("-w", "--iqw_tpm_threshold"),
+        type = "integer",
+        default = 3,
+        help = "Tpm threshold for plotting tagcluster IQwidth (Default = 3)"),
+    make_option(
         c("-u", "--consensus_ctss_thr"),
         type = "integer",
         default = 5,
@@ -105,6 +130,11 @@ method              <- opt$method
 T_norm              <- opt$T_norm
 sample_num_thr      <- opt$sample_num_thr
 ctss_thr            <- opt$ctss_thr
+distclu_maxDist     <- opt$distclu_maxDist
+keepSingletonsAbove <- opt$keepSingletonsAbove
+iqlow               <- opt$iq_low
+iqhigh              <- opt$iq_high
+iqw_tpm_threshold   <- opt$iqw_tpm_threshold
 consensus_ctss_thr  <- opt$consensus_ctss_thr
 consensus_ctss_dist <- opt$consensus_ctss_dist
 tx_annotation       <- opt$annotation
@@ -153,7 +183,12 @@ ce <- cager_clustering(
     iqw_plot_lim=c(0, 150),
     sample_num_thr=sample_num_thr,
     ctss_thr=ctss_thr,
-    num_core=num_core)
+    distclu_maxDist=distclu_maxDist,
+    keepSingletonsAbove=keepSingletonsAbove,
+    iqw_tpm_threshold=iqw_tpm_threshold,
+    num_core=num_core,
+    iqlow=iqlow,
+    iqhigh=iqhigh)
 
 # Consensus clustering of clustered CTSS
 
@@ -162,13 +197,15 @@ ce <- consensus_clustering(
     tpmThreshold=consensus_ctss_thr,
     maxDist=consensus_ctss_dist,
     tx_annotation=tx_annotation,
-    num_core=num_core)
+    num_core=num_core,
+    iqlow=iqlow,
+    iqhigh=iqhigh)
 
 # save output
 # RDS
 saveRDS(ce, file = "intermediate_cagerobj/normalized_clustered_cagexp.rds")
 
 # Track export (bigwig and bed)
-export_tagclusters(ce)
+export_tagclusters(ce, iqlow, iqhigh)
 export_consensus_clusters(ce)
 

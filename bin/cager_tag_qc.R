@@ -38,9 +38,19 @@ option_list = list(
         default = NULL,
         help = "Name of the BSgenome version to be used (Mandatory)"),
     make_option(
+        c("-t", "--corrplot_tagCountThreshold"),
+        type = "integer",
+        default = 1,
+        help = "Threshold for considering tags when calculating correlations (Default = 1)"),
+    make_option(
+        c("-c", "--heatmap_cex_row"),
+        type = "double",
+        default = 0.2,
+        help = "Text size for plotting heatmaps of correlation for 10+ samples (Default = 0.2)"),
+    make_option(
         c("-p", "--project_dir"),
         type = "character",
-        default = 0,
+        default = NULL,
         help = "Project directory, from which the analysis is run.")
 )
 
@@ -52,6 +62,8 @@ opt = optparse::parse_args(opt_parser)
 ce_path         <- opt$cageexp_object
 tx_annotation   <- opt$annotation
 bsgenome        <- opt$bsgenome
+corrplot_tagCountThreshold <- opt$corrplot_tagCountThreshold
+heatmap_cex_row <- opt$heatmap_cex_row
 project_dir     <- opt$project_dir
 
 # installing BSgenome
@@ -89,14 +101,18 @@ if (length(sampleLabels(ce)) > 10){
     corr_m <- plotCorrelation2_local(
         CTSStagCountDF(ce),
         samples = "all",
-        tagCountThreshold = 1,
+        tagCountThreshold = corrplot_tagCountThreshold,
         applyThresholdBoth = FALSE,
         method = "pearson",
         digits = 3,
         plot_pairs = FALSE)
 
     # plot correlations in heatmap format
-    hm <- gplots::heatmap.2(corr_m, trace="none", margins=c(12, 12),cexRow=0.2)
+    hm <- gplots::heatmap.2(
+        corr_m,
+        trace="none",
+        margins=c(12, 12),
+        cexRow=heatmap_cex_row)
     pdf("plots/correlations_plot.pdf")
     eval(hm$call)
     dev.off()
@@ -105,7 +121,7 @@ if (length(sampleLabels(ce)) > 10){
     corr_m <- plotCorrelation2_local(
         CTSStagCountDF(ce),
         samples = "all",
-        tagCountThreshold = 1,
+        tagCountThreshold = corrplot_tagCountThreshold,
         applyThresholdBoth = FALSE,
         method = "pearson",
         digits = 3,

@@ -18,7 +18,9 @@ consensus_clustering <- function(
         tpmThreshold,
         maxDist,
         tx_annotation,
-        num_core){
+        num_core,
+        iqlow,
+        iqhigh){
 
     multicore <- TRUE
     if(num_core < 2){
@@ -26,11 +28,12 @@ consensus_clustering <- function(
         num_core <- NULL
     }
 
+    # TODO: use filtered CTSS to calculate score
     ce <- CAGEr::aggregateTagClusters(
         ce,
         tpmThreshold = tpmThreshold,
-        qLow = 0.1,
-        qUp = 0.9,
+        qLow = iqlow,
+        qUp = iqhigh,
         maxDist = maxDist)
 
     # Read in TxDb object
@@ -46,8 +49,8 @@ consensus_clustering <- function(
     ce <- quantilePositions(
         ce,
         clusters = "consensusClusters",
-        qLow = 0.1,
-        qUp = 0.9,
+        qLow = iqlow,
+        qUp = iqhigh,
         useMulticore = multicore,
         nrCores = num_core)
 

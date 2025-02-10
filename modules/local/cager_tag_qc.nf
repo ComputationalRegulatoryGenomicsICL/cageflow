@@ -30,6 +30,8 @@ process CAGER_TAG_QC {
         -i ${cager_obj} \
         -a ${txdb} \
         -b \${bsgenome} \
+        -t ${params.corrplot_tagCountThreshold} \
+        -c ${params.heatmap_cex_row} \
         -p ${projectDir}
 
     cat <<-END_VERSIONS > versions.yml
