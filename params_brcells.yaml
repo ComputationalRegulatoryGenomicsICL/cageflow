@@ -18,7 +18,7 @@ seq_center: false
 unique_only: true
 
 # CAGEr parameters
-cager_sample_file: ../sample_list.csv # with sorted list of bigwigs, if mapping is run elsewhere
+cager_sample_file: ../brcell_sample_list.csv
 # BSgenome
 forgeseed:
 sourcedir:
