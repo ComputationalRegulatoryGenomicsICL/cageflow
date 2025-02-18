@@ -31,7 +31,7 @@ workflow CAGER {
             .splitCsv( header:true , sep:',')
             .map { create_mapping_channel(it) }
             .collect()
-        
+
         CAGER_READIN (
             ch_bsgenome_file,
             ch_bsgenome_name,

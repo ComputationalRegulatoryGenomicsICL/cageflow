@@ -87,7 +87,7 @@ workflow CUSTOMCAGE {
         }
 
         ch_cager_sample_file = Channel.fromPath(params.cager_sample_file)
-        ch_collected = BIGWIG_INPUTS(ch_cager_sample_file).collect()
+        bigwig_files_ch = BIGWIG_INPUTS(ch_cager_sample_file).collect()
         merged_sample_file = RELATIVISATION(ch_cager_sample_file)
 
     }
@@ -156,6 +156,12 @@ workflow CUSTOMCAGE {
         ch_multiqc_files = SUMMARY_STAT.out.ch_multiqc_files
         ch_versions = SUMMARY_STAT.out.ch_versions
 
+        bigwig_files_ch = ch_for_cager.map{ meta, paths ->
+            file1 =  paths[0]
+            file2 = paths[1]
+            [file1, file2]}
+            .collect()
+
         ch_sample_files = WRITE_SAMPLE_LIST(ch_for_cager)
 
         def header = "id,single_end,path"
@@ -202,7 +208,7 @@ workflow CUSTOMCAGE {
             ch_bsgenome_file,
             ch_bsgenome_name,
             merged_sample_file,
-            ch_collected,
+            bigwig_files_ch,
             ch_txdb_file,
             ch_versions
         )

@@ -94,11 +94,18 @@ read_in_bigwig <- function(
       track_bs <- coerceInBSgenome(track_in, bsgenome_name)
     })
 
+  print(sample_names_files_dict)
   signal_names <- c()
   for (bn in basename(bigwigs)){
+    print(bn)
+    print(sample_names_files_dict[[bn]])
     signal_names <- append(signal_names, sample_names_files_dict[[bn]])
   }
+  print(signal_names)
   names(signals) = signal_names
+
+  # print(signals)
+  # print(grepl("str1", names(signals)))
 
   signalsSplit = split(
     signals,
