@@ -38,7 +38,5 @@ export_consensus_clusters <- function(ce){
         what = "consensusClusters", 
         colorByExpressionProfile = FALSE,
         oneTrack = TRUE)
-    # remove dominant TSS because it is not applicable for consensus clusters
-    ccbedTracks$thick = NA
     rtracklayer::export.bed( ccbedTracks, "tracks/consensusClusters.bed")
 }
