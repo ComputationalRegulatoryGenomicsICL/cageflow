@@ -18,6 +18,7 @@ process CAGER_REPORT {
     #!/usr/bin/env Rscript
     library(rmarkdown)
 
+    heatmap_cex_row <- ${heatmap_cex_row}
     rmarkdown::render('${rmarkd_template}')
     """
 }
