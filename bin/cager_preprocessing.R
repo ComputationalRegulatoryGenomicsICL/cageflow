@@ -197,7 +197,7 @@ ce <- consensus_clustering(
     tpmThreshold=consensus_ctss_thr,
     maxDist=consensus_ctss_dist,
     tx_annotation=tx_annotation,
-    num_core=num_core,
+    num_core=1,
     iqlow=iqlow,
     iqhigh=iqhigh)
 
