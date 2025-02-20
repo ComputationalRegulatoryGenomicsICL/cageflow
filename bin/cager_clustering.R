@@ -47,8 +47,8 @@ cager_clustering <- function(
 
     # TODO: plot correlation of normalized, filtered tags
 
-    # TODO: exclude filtered
     # cluster TSS with distclu
+    # filtered CTSS are excluded by default
     ce <- CAGEr::distclu(
         ce,
         maxDist=distclu_maxDist,
