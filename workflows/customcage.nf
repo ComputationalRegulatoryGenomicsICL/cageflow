@@ -51,8 +51,6 @@ params.sourcedir = false
 
 include { BIGWIG_INPUTS } from "../subworkflows/local/read_in_bigwigs.nf"
 include { RELATIVISATION } from '../modules/local/make_paths_relative.nf'
-// CAGEr markdown template location
-params.markdown_path = "assets/cager_report.Rmd"
 
 include { PARAMETER_CHECKS } from '../subworkflows/local/parameter_checks.nf'
 include { PREPROCESSING } from '../subworkflows/local/preprocessing.nf'

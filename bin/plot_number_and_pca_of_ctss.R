@@ -22,11 +22,13 @@ plot_settings <- function(.data, y_value, color_by_value, y_label, title) {
       begin = 0.1,
       end = 0.9,
       option = "magma") +
-  theme_bw(base_size = 8) +
+  theme_bw(base_size = 12) +
   ylab(y_label) +
   xlab("") + 
   ggtitle(title) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position="none")
 }
 
 plot_number_of_tag_clusters <- function(sample_tag_count, yaxistitle, mytitle, myfilename) {
