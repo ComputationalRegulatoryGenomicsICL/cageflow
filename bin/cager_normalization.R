@@ -50,7 +50,6 @@ cager_normalization <- function(
     } else{
         slope_to_calc = user_alpha
     }
-    print(slope_to_calc)
 
     ce <- CAGEr::normalizeTagCount(
         ce,
