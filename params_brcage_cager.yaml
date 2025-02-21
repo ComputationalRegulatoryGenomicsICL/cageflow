@@ -46,6 +46,6 @@ tssregion_up: -3000
 tssregion_down: 3000
 tsslogo_upstream: 35
 # parameters for consensus clusters
-consensus_ctss_thr: 2
-consensus_ctss_dist: 100
+consensus_thr: 2
+consensus_dist: 100
 pca_rank: 50
