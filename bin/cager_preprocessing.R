@@ -51,6 +51,10 @@ option_list = list(
         default = 1*10^6,
         help = "Total number of tags. Setting it to 1 million (default) results in normalized tags per million (tpm) values (Optional)"),
     make_option(
+        c("-a", "--alpha"),
+        type = "double",
+        help = "Alpha values from the reverse cumulative distribution fitting (Optional)"),
+    make_option(
         c("-s", "--sample_num_thr"),
         type = "integer",
         default = 1,
@@ -86,17 +90,17 @@ option_list = list(
         default = 3,
         help = "Tpm threshold for plotting tagcluster IQwidth (Default = 3)"),
     make_option(
-        c("-u", "--consensus_ctss_thr"),
+        c("-u", "--consensus_thr"),
         type = "integer",
         default = 5,
         help = "CTSS Tpm threshold for consensus clustering (Default = 5)"),
     make_option(
-        c("-d", "--consensus_ctss_dist"),
+        c("-d", "--consensus_dist"),
         type = "integer",
         default = 100,
         help = "Distance threshold for consensus clustering (Default = 100)"),
     make_option(
-        c("-a", "--annotation"),
+        c("-x", "--annotation"),
         type = "character",
         default = NULL,
         help = "SQLite file with a TxDb genome annotation package (Mandatory)"),
@@ -128,6 +132,7 @@ range_min           <- opt$range_min
 range_max           <- opt$range_max
 method              <- opt$method
 T_norm              <- opt$T_norm
+alpha               <- opt$alpha
 sample_num_thr      <- opt$sample_num_thr
 ctss_thr            <- opt$ctss_thr
 distclu_maxDist     <- opt$distclu_maxDist
@@ -135,8 +140,8 @@ keepSingletonsAbove <- opt$keepSingletonsAbove
 iqlow               <- opt$iq_low
 iqhigh              <- opt$iq_high
 iqw_tpm_threshold   <- opt$iqw_tpm_threshold
-consensus_ctss_thr  <- opt$consensus_ctss_thr
-consensus_ctss_dist <- opt$consensus_ctss_dist
+consensus_thr       <- opt$consensus_thr
+consensus_dist      <- opt$consensus_dist
 tx_annotation       <- opt$annotation
 project_dir         <- opt$project_dir
 bsgenome            <- opt$bsgenome
@@ -174,7 +179,8 @@ ce <- cager_normalization(
     rangeMin=range_min,
     rangeMax=range_max,
     method=method,
-    T_norm=T_norm)
+    T_norm=T_norm,
+    user_alpha=alpha)
 
 # CTSS clustering
 # uses functions from cager_modified_plots.R and plot_number_and_pca_of_ctss.R
@@ -194,10 +200,10 @@ ce <- cager_clustering(
 
 ce <- consensus_clustering(
     ce=ce,
-    tpmThreshold=consensus_ctss_thr,
-    maxDist=consensus_ctss_dist,
+    tpmThreshold=consensus_thr,
+    maxDist=consensus_dist,
     tx_annotation=tx_annotation,
-    num_core=num_core,
+    num_core=1,
     iqlow=iqlow,
     iqhigh=iqhigh)
 

@@ -24,11 +24,11 @@ process CAGER_READIN {
     fi
 
     cager_readin.R \
-        -t "${data_type}" \
-        -b \${bsgenome} \
-        -s "${sample_table}" \
-        -p ${projectDir} \
-        -c ${task.cpus}
+        --data_type "${data_type}" \
+        --bsgenome \${bsgenome} \
+        --sample_table_list "${sample_table}" \
+        --project_dir ${projectDir} \
+        --num_core ${task.cpus}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

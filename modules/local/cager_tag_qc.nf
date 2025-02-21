@@ -27,12 +27,12 @@ process CAGER_TAG_QC {
     fi
 
     cager_tag_qc.R  \
-        -i ${cager_obj} \
-        -a ${txdb} \
-        -b \${bsgenome} \
-        -t ${params.corrplot_tagCountThreshold} \
-        -c ${params.heatmap_cex_row} \
-        -p ${projectDir}
+        --cageexp_object ${cager_obj} \
+        --annotation ${txdb} \
+        --bsgenome \${bsgenome} \
+        --corrplot_tagCountThreshold ${params.corrplot_tagCountThreshold} \
+        --heatmap_cex_row ${params.heatmap_cex_row} \
+        --project_dir ${projectDir}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

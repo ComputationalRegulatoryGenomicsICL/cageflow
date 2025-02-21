@@ -31,6 +31,7 @@ heatmap_cex_row: 0.2
 norm_range_min: 5
 norm_range_max: 10000
 norm_method: "powerLaw"
+alpha: 1.01
 T_norm: 1000000
 # parameters for tag clustering
 sample_num_thr: 1
@@ -45,6 +46,6 @@ tssregion_up: -3000
 tssregion_down: 3000
 tsslogo_upstream: 35
 # parameters for consensus clusters
-consensus_ctss_thr: 2
-consensus_ctss_dist: 100
+consensus_thr: 2
+consensus_dist: 100
 pca_rank: 50
