@@ -43,6 +43,6 @@ export_consensus_clusters <- function(ce){
     thick_end <- thick_start
     thick_width <- thick_start
     ccbedTracks$thick <- IRanges(
-        start=thick_start, end=, width=thick_width)
+        start=thick_start, end=thick_end, width=thick_width)
     rtracklayer::export.bed( ccbedTracks, "tracks/consensusClusters.bed")
 }
