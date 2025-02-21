@@ -27,25 +27,25 @@ process CAGER_PREPROCESSING {
     fi
 
     cager_preprocessing.R  \
-        -i ${cager_obj} \
-        -n ${params.norm_range_min} \
-        -m ${params.norm_range_max} \
-        -e ${params.norm_method} \
-        -t ${params.T_norm} \
-        -a ${params.alpha}
-        -s ${params.sample_num_thr} \
-        -r ${params.ctss_thr} \
-        -o ${params.iq_low} \
-        -g ${params.iq_high} \
-        -l ${params.distclu_maxDist} \
-        -k ${params.keepSingletonsAbove} \
-        -w ${params.iqw_tpm_threshold} \
-        -u ${params.consensus_ctss_thr} \
-        -d ${params.consensus_ctss_dist} \
-        -x ${txdb} \
-        -p ${projectDir} \
-        -b \${bsgenome} \
-        -c ${task.cpus}
+        --cageexp_object ${cager_obj} \
+        --range_min ${params.norm_range_min} \
+        --range_max ${params.norm_range_max} \
+        --method ${params.norm_method} \
+        --T_norm ${params.T_norm} \
+        --alpha ${params.alpha} \
+        --sample_num_thr ${params.sample_num_thr} \
+        --ctss_thr ${params.ctss_thr} \
+        --iq_low ${params.iq_low} \
+        --iq_high ${params.iq_high} \
+        --distclu_maxDist ${params.distclu_maxDist} \
+        --keepSingletonsAbove ${params.keepSingletonsAbove} \
+        --iqw_tpm_threshold ${params.iqw_tpm_threshold} \
+        --consensus_thr ${params.consensus_thr} \
+        --consensus_dist ${params.consensus_dist} \
+        --annotation ${txdb} \
+        --project_dir ${projectDir} \
+        --bsgenome \${bsgenome} \
+        --num_core ${task.cpus}
     
     rm Rplots.pdf
 

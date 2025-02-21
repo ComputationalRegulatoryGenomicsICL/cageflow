@@ -26,16 +26,16 @@ process CAGER_TAGCLUSTER_QC {
     fi
 
     cager_tagcluster_qc.R  \
-        -i ${cager_obj} \
-        -a ${txdb} \
-        -b \${bsgenome} \
-        -o ${params.iq_low} \
-        -g ${params.iq_high} \
-        -u ${params.tssregion_up} \
-        -d ${params.tssregion_down} \
-        -l ${params.tsslogo_upstream} \
-        -p ${projectDir} \
-        -k ${params.pca_rank}
+        --cageexp_object ${cager_obj} \
+        --annotation ${txdb} \
+        --bsgenome \${bsgenome} \
+        --iq_low ${params.iq_low} \
+        --iq_high ${params.iq_high} \
+        --tssregion_up ${params.tssregion_up} \
+        --tssregion_down ${params.tssregion_down} \
+        --tsslogo_upstream ${params.tsslogo_upstream} \
+        --project_dir ${projectDir} \
+        --pca_rank ${params.pca_rank}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
