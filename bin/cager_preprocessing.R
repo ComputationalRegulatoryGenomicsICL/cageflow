@@ -51,6 +51,11 @@ option_list = list(
         default = 1*10^6,
         help = "Total number of tags. Setting it to 1 million (default) results in normalized tags per million (tpm) values (Optional)"),
     make_option(
+        c("-a", "--alpha"),
+        type = "integer",
+        default = NA,
+        help = "Alpha values from the reverse cumulative distribution fitting (Optional)"),
+    make_option(
         c("-s", "--sample_num_thr"),
         type = "integer",
         default = 1,
@@ -96,7 +101,7 @@ option_list = list(
         default = 100,
         help = "Distance threshold for consensus clustering (Default = 100)"),
     make_option(
-        c("-a", "--annotation"),
+        c("-x", "--annotation"),
         type = "character",
         default = NULL,
         help = "SQLite file with a TxDb genome annotation package (Mandatory)"),

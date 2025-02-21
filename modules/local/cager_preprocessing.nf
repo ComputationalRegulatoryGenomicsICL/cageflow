@@ -32,6 +32,7 @@ process CAGER_PREPROCESSING {
         -m ${params.norm_range_max} \
         -e ${params.norm_method} \
         -t ${params.T_norm} \
+        -a ${params.alpha}
         -s ${params.sample_num_thr} \
         -r ${params.ctss_thr} \
         -o ${params.iq_low} \
@@ -41,7 +42,7 @@ process CAGER_PREPROCESSING {
         -w ${params.iqw_tpm_threshold} \
         -u ${params.consensus_ctss_thr} \
         -d ${params.consensus_ctss_dist} \
-        -a ${txdb} \
+        -x ${txdb} \
         -p ${projectDir} \
         -b \${bsgenome} \
         -c ${task.cpus}
