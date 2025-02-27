@@ -21,7 +21,7 @@ cagefightr_enhancers <- function(
     colData(se) <- colData(ce)
     rowRanges(se) <- as(rowRanges(se), "StitchedGPos")
     colData(se)$Name <- colData(se)$sampleLabels
-    assays(se) <- List(counts=as(as.matrix(as.data.frame(assay(se))), "dgCMatrix"))
+    assays(se, withDimnames=FALSE) <- List(counts=as(as.matrix(as.data.frame(assay(se))), "dgCMatrix"))
     # TODO: do steps of cagefighter here, maybe after powerlaw normalization?
     # Damir's task
     BCs <- clusterBidirectionally(se, balanceThreshold=cfBalanceThreshold)
