@@ -270,6 +270,10 @@ When running the pipeline you need to define the location of the `params.yaml` f
 nextflow run customcageq/main.nf -params-file customcageseq/params.yaml -profile singularity -w /path/to/scratch/work
 ```
 
+## Remarks
+
+1. By default, up to 10 different mapping loci are allowed for each read but only uniquely mapping reads are selected to create bigWig files. If you would like to work with multimappers (or change mapping parameters in any other way), please amend STAR mapping options in `conf/modules.config` and/or replace the default `true` value for the `unique_only` pipeline option with `false` (in which case bigWig files will be created using the full set of alignments, not only unique ones). However, if multimapping reads are allowed, then bigWig files will contain non-integer counts for positions where multimappers align. This is due to the fact that STAR splits the count of 1 between all alignments of the same read.
+
 ## Credits
 
 **ComputationalRegulatoryGenomicsICL/customcageq** has been developed by Pavel Nikitin ([@nikitin-p](https://github.com/nikitin-p)), Sviatoslav Sidorov ([@sidorov-si](https://github.com/sidorov-si)), Damir Baranasic ([@da-bar](https://github.com/da-bar)), Elena Gómez-Marín ([@ElenaGoMa](https://github.com/ElenaGoMa)), Katalin Ferenc ([@ferenckata](https://github.com/ferenckata)).
