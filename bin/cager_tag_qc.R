@@ -96,6 +96,8 @@ save_plot(
     annotations
 )
 
+# to compare raw counts CTSStagCountDF is used
+# bypassing the automatic selection of this assay
 if (length(sampleLabels(ce)) > 10){
     # uses function from cager_modified_plots.R
     corr_m <- plotCorrelation2_local(

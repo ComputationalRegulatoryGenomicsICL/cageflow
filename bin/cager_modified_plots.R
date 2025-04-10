@@ -245,7 +245,7 @@ plotCorrelation2_local <- function( expr.table, samples, method
       txt <- paste(prefix, txt, sep="")
       if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
       gmean <- memoise(function(x) {
-        exp(mean(log(c(pseudocount, max(x)))))
+        return(exp(mean(log(c(pseudocount, max(x))))))
       })
       text(gmean(x), gmean(y), txt, cex = cex.cor * sqrt(r))
     }
@@ -272,6 +272,10 @@ plotCorrelation2_local <- function( expr.table, samples, method
     df <- .applyThreshold(df, tagCountThreshold * 0.999, applyThresholdBoth)
     df <- df[rowSums(df) > pseudocount * 1.999,] # Remove the (0,0) point.
     points(df, ...)
+    # p <- ggplot(df, aes(x=x, y=y)) + 
+    #   geom_density_2d(aes(fill = ..level..), geom = "polygon") + 
+    #   theme_classic()
+    # print(p)
   }
   
   if (plot_pairs){
@@ -290,6 +294,14 @@ plotCorrelation2_local <- function( expr.table, samples, method
     pairs_plot <- list(expr.table, pointsUnique, panel.cor, samples, corr.v, pseudocount)
     saveRDS(pairs_plot, "plots/correlations_plot.rds")
   }
+
+  p <- ggpairs(
+    expr.table,
+    upper = list(continuous = "cor"),
+    lower = list(continuous = "density"),
+    diag = list(continuous = "densityDiag")
+  )
+  ggsave("ggpairs_test.pdf", p)
   
   # Return a correlation matrix
   corr.m <- matrix(1, nr.samples, nr.samples)
