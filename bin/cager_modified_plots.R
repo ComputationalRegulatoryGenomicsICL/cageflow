@@ -272,10 +272,6 @@ plotCorrelation2_local <- function( expr.table, samples, method
     df <- .applyThreshold(df, tagCountThreshold * 0.999, applyThresholdBoth)
     df <- df[rowSums(df) > pseudocount * 1.999,] # Remove the (0,0) point.
     points(df, ...)
-    # p <- ggplot(df, aes(x=x, y=y)) + 
-    #   geom_density_2d(aes(fill = ..level..), geom = "polygon") + 
-    #   theme_classic()
-    # print(p)
   }
   
   if (plot_pairs){
@@ -296,11 +292,12 @@ plotCorrelation2_local <- function( expr.table, samples, method
   }
 
   p <- ggpairs(
-    expr.table,
-    upper = list(continuous = "cor"),
+    expr.table[1:50,],
+    upper = list(continuous = wrap(ggally_cor, displayGrid = FALSE)),
     lower = list(continuous = "density"),
     diag = list(continuous = "densityDiag")
   )
+
   ggsave("ggpairs_test.pdf", p)
   
   # Return a correlation matrix
