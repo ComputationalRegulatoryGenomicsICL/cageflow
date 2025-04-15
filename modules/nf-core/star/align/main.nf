@@ -72,6 +72,9 @@ process STAR_ALIGN {
         gzip ${prefix}.unmapped_2.fastq
     fi
 
+    echo "task_memory:\n"
+    echo ${task.memory}
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         star: \$(STAR --version | sed -e "s/STAR_//g")
