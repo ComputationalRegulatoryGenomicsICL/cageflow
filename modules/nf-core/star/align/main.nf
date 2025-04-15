@@ -55,6 +55,7 @@ process STAR_ALIGN {
         --readFilesIn ${reads1.join(",")} ${reads2.join(",")} \\
         --runThreadN $task.cpus \\
         --outFileNamePrefix $prefix. \\
+        --limitBAMsortRAM $task.memory \\
         $out_sam_type \\
         $ignore_gtf \\
         $attrRG \\
