@@ -50,7 +50,7 @@ process STAR_ALIGN {
     def out_sam_type    = (args.contains('--outSAMtype')) ? '' : '--outSAMtype BAM Unsorted'
     mv_unsorted_bam = (args.contains('--outSAMtype BAM Unsorted SortedByCoordinate')) ? "mv ${prefix}.Aligned.out.bam ${prefix}.Aligned.unsort.out.bam" : ''
     """
-    taskmemory=`echo ${task.memory} | \\
+    taskmemory=`echo "${task.memory}" | \\
                 awk -F" " '{n = \$1; \\
                             if (\$2 == "KB") { \\
                                 m = 1024 \\
@@ -66,6 +66,9 @@ process STAR_ALIGN {
                                 } \\
                             }; \\
                             print n * m}'`
+
+    echo "task_memory:"
+    echo \$"{taskmemory}"
 
     STAR \\
         --genomeDir $index \\
