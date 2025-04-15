@@ -51,14 +51,14 @@ process STAR_ALIGN {
     mv_unsorted_bam = (args.contains('--outSAMtype BAM Unsorted SortedByCoordinate')) ? "mv ${prefix}.Aligned.out.bam ${prefix}.Aligned.unsort.out.bam" : ''
     """
     taskmemory=`echo ${task.memory} | \\
-                awk -F" " '{n = $1; \\
-                            if ($2 == "KB") { \\
+                awk -F" " '{n = \$1; \\
+                            if (\$2 == "KB") { \\
                                 m = 1024 \\
                             } else { \\
-                                if ($2 == "MB") { \\
+                                if (\$2 == "MB") { \\
                                     m = 1024^2 \\
                                 } else { \\
-                                    if ($2 == "GB") { \\
+                                    if (\$2 == "GB") { \\
                                         m = 1024^3 \\
                                     } else { \\
                                         m = 1024^4 \\
