@@ -50,12 +50,29 @@ process STAR_ALIGN {
     def out_sam_type    = (args.contains('--outSAMtype')) ? '' : '--outSAMtype BAM Unsorted'
     mv_unsorted_bam = (args.contains('--outSAMtype BAM Unsorted SortedByCoordinate')) ? "mv ${prefix}.Aligned.out.bam ${prefix}.Aligned.unsort.out.bam" : ''
     """
+    taskmemory=`echo ${task.memory} | \\
+                awk -F" " '{n = $1; \\
+                            if ($2 == "KB") { \\
+                                m = 1024 \\
+                            } else { \\
+                                if ($2 == "MB") { \\
+                                    m = 1024^2 \\
+                                } else { \\
+                                    if ($2 == "GB") { \\
+                                        m = 1024^3 \\
+                                    } else { \\
+                                        m = 1024^4 \\
+                                    } \\
+                                } \\
+                            }; \\
+                            print n * m}'`
+
     STAR \\
         --genomeDir $index \\
         --readFilesIn ${reads1.join(",")} ${reads2.join(",")} \\
         --runThreadN $task.cpus \\
         --outFileNamePrefix $prefix. \\
-        --limitBAMsortRAM $task.memory \\
+        --limitBAMsortRAM \${taskmemory} \\
         $out_sam_type \\
         $ignore_gtf \\
         $attrRG \\
@@ -71,9 +88,6 @@ process STAR_ALIGN {
         mv ${prefix}.Unmapped.out.mate2 ${prefix}.unmapped_2.fastq
         gzip ${prefix}.unmapped_2.fastq
     fi
-
-    echo "task_memory:\n"
-    echo ${task.memory}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
