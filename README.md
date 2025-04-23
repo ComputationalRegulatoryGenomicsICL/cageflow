@@ -116,6 +116,15 @@ Alternatively, you can provide a path to a directory containing FASTQ files. Rea
 
 The pipeline has toy *S. cerevisiae* CAGE data stored in [assets/sacCer_fastq](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets/sacCer_fastq) for testing purposes (single-end reads in the [se](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets/sacCer_fastq/se) subfolder and paired-end reads in [pe](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets/sacCer_fastq/pe) subfolder). The single-end reads were obtained by subsampling the [ERR2495152](https://www.ebi.ac.uk/ena/browser/view/ERR2495152) dataset published by ([Börlin et al., 2018](https://academic.oup.com/femsyr/article/19/2/foy128/5257840)), while the paired-end reads were obtained by subsampling the [SRR1631657](https://www.ebi.ac.uk/ena/browser/view/SRR1631657) dataset published by ([Chabbert et al., 2015](https://www.embopress.org/doi/full/10.15252/msb.20145776)).
 
+Single-end test datasets were obtained in the following way (subsampling 5,000 reads for each "lane"):
+
+```
+<20171106_CAGE_SequencingData_Ana_Rep1.fastq head -1000000 | tail -20000 > S1_S1_L001_R1_001.fastq
+<20171106_CAGE_SequencingData_Ana_Rep1.fastq head -5000000 | tail -20000 > S1_S1_L002_R1_001.fastq
+<20171106_CAGE_SequencingData_Eth_Rep1.fastq head -1000000 | tail -20000 > S2_S2_L001_R1_001.fastq
+<20171106_CAGE_SequencingData_Eth_Rep1.fastq head -5000000 | tail -20000 > S2_S2_L002_R1_001.fastq
+```
+
 The corresponding *template* input spreadsheets can be found in [assets](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets): [samplesheet_sacer_se_template.csv](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/assets/samplesheet_sacer_se_template.csv) for single-end reads and [samplesheet_sacer_pe_template.csv](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/assets/samplesheet_sacer_pe_template.csv) for paired-end reads. You will need to add the absolute paths to the `customcageq` repository on your computer / HPC cluster to these templates to use them with the pipeline.
 
 ### How to run the pipeline
@@ -260,6 +269,10 @@ When running the pipeline you need to define the location of the `params.yaml` f
 ```
 nextflow run customcageq/main.nf -params-file customcageseq/params.yaml -profile singularity -w /path/to/scratch/work
 ```
+
+## Remarks
+
+1. By default, up to 10 different mapping loci are allowed for each read but only uniquely mapping reads are selected to create bigWig files. If you would like to work with multimappers (or change mapping parameters in any other way), please amend STAR mapping options in `conf/modules.config` and/or replace the default `true` value for the `unique_only` pipeline option with `false` (in which case bigWig files will be created using the full set of alignments, not only unique ones). However, if multimapping reads are allowed, then bigWig files will contain non-integer counts for positions where multimappers align. This is due to the fact that STAR splits the count of 1 between all alignments of the same read.
 
 ## Credits
 
