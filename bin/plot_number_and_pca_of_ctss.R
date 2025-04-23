@@ -52,7 +52,7 @@ plot_pcs <- function(ce_tmp, pcarank){
     rank. = pcarank)
   plca_to_plot <- as_tibble(
     data.frame(
-      pca_out$rotation[,c("PC1","PC2")]),
+      pca_out$x[,c("PC1","PC2")]),
       rownames = "name")
   pca_plot <- ggplot2::ggplot(
     plca_to_plot,
