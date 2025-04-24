@@ -98,37 +98,25 @@ save_plot(
 
 # to compare raw counts CTSStagCountDF is used
 # bypassing the automatic selection of this assay
-if (length(sampleLabels(ce)) > 10){
-    # uses function from cager_modified_plots.R
-    corr_m <- plotCorrelation2_local(
-        CTSStagCountDF(ce),
-        samples = "all",
-        tagCountThreshold = corrplot_tagCountThreshold,
-        applyThresholdBoth = FALSE,
-        method = "pearson",
-        digits = 3,
-        plot_pairs = FALSE)
+# uses function from cager_modified_plots.R
 
-    # plot correlations in heatmap format
-    hm <- gplots::heatmap.2(
-        corr_m,
-        trace="none",
-        margins=c(12, 12),
-        cexRow=heatmap_cex_row)
-    pdf("plots/correlations_plot.pdf")
-    eval(hm$call)
-    dev.off()
-    saveRDS(hm, "plots/correlations_plot.rds")
-} else {
-    corr_m <- plotCorrelation2_local(
-        CTSStagCountDF(ce),
-        samples = "all",
-        tagCountThreshold = corrplot_tagCountThreshold,
-        applyThresholdBoth = FALSE,
-        method = "pearson",
-        digits = 3,
-        plot_pairs=TRUE)
-}
+corr_m <- calculate_correlation_matrix(
+    CTSStagCountDF(ce),
+    samples = "all",
+    tagCountThreshold = corrplot_tagCountThreshold,
+    applyThresholdBoth = FALSE,
+    method = "pearson")
+
+# plot correlations in heatmap format
+hm <- gplots::heatmap.2(
+    corr_m,
+    trace="none",
+    margins=c(12, 12),
+    cexRow=heatmap_cex_row)
+pdf("plots/correlations_plot.pdf")
+eval(hm$call)
+dev.off()
+saveRDS(hm, "plots/correlations_plot.rds")
 
 # save intermediate file
 saveRDS(corr_m, "plots/corr_m.rds")

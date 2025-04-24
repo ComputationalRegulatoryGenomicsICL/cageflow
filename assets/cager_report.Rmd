@@ -28,35 +28,8 @@ Note: these are not filtered or normalized yet. The plot is for diagnostic purpo
 suppressMessages(library(memoise))
 corr_m <- readRDS("corr_m.rds")
 hm_plot <- readRDS("correlations_plot.rds")
-.applyThreshold <- function(df, tagCountThreshold, applyThresholdBoth) {
-  if (applyThresholdBoth) {
-    idx <- (df[[1]] >= tagCountThreshold) & (df[[2]] >= tagCountThreshold)
-  } else {
-    idx <- (df[[1]] >= tagCountThreshold) | (df[[2]] >= tagCountThreshold)
-  }
-  df[idx,]
-}
-# TODO: try str(hm_plot)
-if (length(hm_plot)==10){
-  eval(hm_plot$call)
-} else {
-  expr.table <- hm_plot[[1]]
-  pointsUnique <- hm_plot[[2]]
-  panel.cor <- hm_plot[[3]]
-  samples <- hm_plot[[4]]
-  corr.v <- hm_plot[[5]]
-  pseudocount <- hm_plot[[6]]
-  pairs( expr.table
-    , lower.panel = pointsUnique
-    , upper.panel = panel.cor
-    , pch = "."
-    , cex = 4
-    , log = "xy"
-    , las = 1
-    , xaxp = c(1,10,1)
-    , yaxp = c(1,10,1)
-    , labels = samples)
-}
+eval(hm_plot$call)
+
 ```
 
 ### Normalization
