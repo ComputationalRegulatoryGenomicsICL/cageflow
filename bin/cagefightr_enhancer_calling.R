@@ -17,13 +17,14 @@ cagefightr_enhancers <- function(
     cfBalanceThreshold,
     txdb){
 
-    se <- CTSStagCountSE(ce) # take normalizedSE
+    se <- CTSStagCountSE(ce) # TODO: take normalizedSE
     colData(se) <- colData(ce)
     rowRanges(se) <- as(rowRanges(se), "StitchedGPos")
     colData(se)$Name <- colData(se)$sampleLabels
     assays(se, withDimnames=FALSE) <- List(counts=as(as.matrix(as.data.frame(assay(se))), "dgCMatrix"))
-    # TODO: do steps of cagefighter here, maybe after powerlaw normalization?
-    # Damir's task
+    # . 
+    # .
+    # . from Damir
     BCs <- clusterBidirectionally(se, balanceThreshold=cfBalanceThreshold)
     # Calculate number of bidirectional samples
     BCs <- calcBidirectionality(BCs, samples=se)

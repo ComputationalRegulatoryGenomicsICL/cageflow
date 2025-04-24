@@ -68,7 +68,6 @@ corVector <- function(expr.table, method, tagCountThreshold, applyThresholdBoth)
   corr.v
 }
 
-
 calculate_correlation_matrix <- function(
     expr.table, samples, method, tagCountThreshold,
     applyThresholdBoth){
@@ -89,6 +88,8 @@ calculate_correlation_matrix <- function(
   rownames(corr.m) <- samples
   corr.m[lower.tri(corr.m)] <- corr.v
   corr.m[upper.tri(corr.m)] <- t(corr.m)[upper.tri(corr.m)]
+
+  return(corr.m)
 
 }
 

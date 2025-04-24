@@ -46,6 +46,7 @@ plot_number_of_tag_clusters <- function(sample_tag_count, yaxistitle, mytitle, m
   return(tag_count_plot)
 }
 
+# TODO: replace with code from Damir
 plot_pcs <- function(ce_tmp, pcarank){
   pca_out <- prcomp(
     ce_tmp,

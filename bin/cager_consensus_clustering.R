@@ -28,13 +28,16 @@ consensus_clustering <- function(
         num_core <- NULL
     }
 
-    # TODO: use filtered CTSS to calculate score
     ce <- CAGEr::aggregateTagClusters(
         ce,
         tpmThreshold = tpmThreshold,
         qLow = iqlow,
         qUp = iqhigh,
         maxDist = maxDist)
+
+    # TODO: use filtered CTSS to calculate and update score
+    #  o <- findOverlaps(query = clusters, subject = ctss) # ignore strand is false by default
+    #  grouped_scores <- extractList(score(ctss), o)
 
     # Read in TxDb object
     tx_annotation_obj <- loadDb(tx_annotation)
