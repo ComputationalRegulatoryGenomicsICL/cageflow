@@ -1,3 +1,15 @@
+#' Extract CTSS score per sample per region
+
+overlapper <- function(ce, sample){
+    ctss <- CTSSnormalizedTpmGR(ce, sample=sample)
+    overlap <- findOverlaps(
+            query = consensusClustersGR(ce),
+            subject = ctss)
+    grouped_scores <- extractList(score(ctss), overlap)
+    return(grouped_scores)
+}
+
+
 #' Consensus clustering of CTSS across samples
 #'
 #' @param ce normalized CAGEexp object
@@ -35,9 +47,32 @@ consensus_clustering <- function(
         qUp = iqhigh,
         maxDist = maxDist)
 
-    # TODO: use filtered CTSS to calculate and update score
-    #  o <- findOverlaps(query = clusters, subject = ctss) # ignore strand is false by default
-    #  grouped_scores <- extractList(score(ctss), o)
+    # use normalized CTSS to calculate and update score
+    # extract the scores of the first sample
+    sample <- CAGEr::sampleLabels(ce)[[1]]
+    grouped_scores <- overlapper(ce, sample)
+
+    # ...and of the rest of the samples
+    for (sample in CAGEr::sampleLabels(ce)[2:length(CAGEr::sampleLabels(ce))]){
+        new_scores <- overlapper(ce, sample)
+        combined <- mapply(append, grouped_scores, new_scores, SIMPLIFY=FALSE)
+        grouped_scores <- RleList(combined)
+    }
+
+    # sum values
+    result_vector <- numeric(length(grouped_scores))
+    # Loop through each element and add the value at the correct position
+    for (i in seq_along(grouped_scores)) {
+        summed_value <- sum(as.numeric(grouped_scores[[i]]))
+        result_vector[i] <- summed_value
+    }
+
+    # Convert to Rle  and assign to consensus cluster
+    # TODO: this does not actually assign the value which is 
+    # interesting because within cager it does
+    score(consensusClustersGR(ce)) <- Rle(result_vector)
+
+
 
     # Read in TxDb object
     tx_annotation_obj <- loadDb(tx_annotation)
@@ -45,8 +80,7 @@ consensus_clustering <- function(
         ce,
         tx_annotation_obj)
     ce <- cumulativeCTSSdistribution(
-        ce,
-        clusters = "consensusClusters",
+    clusters = "consensusClusters",
         useMulticore = multicore,
         nrCores = num_core)
     ce <- quantilePositions(
