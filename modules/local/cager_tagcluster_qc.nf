@@ -14,7 +14,7 @@ process CAGER_TAGCLUSTER_QC {
 
     output:
     path "tables/*.csv", emit: counts_csv
-    tuple path("plots/*.pdf"), path("plots/*plot.rds"), emit: plots
+    tuple path("plots/*plot.pdf"), path("plots/*plot.rds"), emit: plots
     path "versions.yml", emit: versions
 
     """
@@ -35,7 +35,8 @@ process CAGER_TAGCLUSTER_QC {
         --tssregion_down ${params.tssregion_down} \
         --tsslogo_upstream ${params.tsslogo_upstream} \
         --project_dir ${projectDir} \
-        --pca_rank ${params.pca_rank}
+        --corrplot_tagCountThreshold ${params.corrplot_tagCountThreshold} \
+        --heatmap_cex ${params.heatmap_cex} \
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

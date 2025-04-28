@@ -105,25 +105,3 @@ plot_correlation(
     corrplot_tagCountThreshold=corrplot_tagCountThreshold,
     heatmap_cex=heatmap_cex)
 print("CTSS correlation plotted")
-
-# plot PCA
-# extract normalized data
-count_mat <- CTSSnormalizedTpmDF(ce)
-for (i in 1:ncol(count_mat)){
-  count_mat[,i] <- as.vector(count_mat[,i])
-}
-count_matmat <- as.matrix(count_mat)
-
-plot_correlation(
-    datatype="norm_CTSS",
-    dataframe=CTSSnormalizedTpmDF(ce),
-    corrplot_tagCountThreshold=corrplot_tagCountThreshold,
-    heatmap_cex=heatmap_cex)
-print("CTSS correlation plotted")
-
-pca_plot <- plot_pcs(count_matmat)
-save_plot(
-    "CTSS_pca_plot.pdf",
-    pca_plot
-)
-print("CTSS PCA plotted")

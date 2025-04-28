@@ -72,6 +72,11 @@ option_list = list(
         default = 0,
         help = "Project directory, from which the analysis is run."),
     make_option(
+        c("-t", "--corrplot_tagCountThreshold"),
+        type = "integer",
+        default = 1,
+        help = "Threshold for considering tags when calculating correlations of normalized CTSS (Default = 1)"),
+    make_option(
         c("-c", "--heatmap_cex"),
         type = "double",
         default = 0.2,
@@ -93,6 +98,7 @@ tssregion_up    <- opt$tssregion_up
 tssregion_down  <- opt$tssregion_down
 tsslogo_upstream    <- opt$tsslogo_upstream
 project_dir     <- opt$project_dir
+corrplot_tagCountThreshold <- opt$corrplot_tagCountThreshold
 heatmap_cex <- opt$heatmap_cex
 
 # installing BSgenome
@@ -116,6 +122,29 @@ tx_annotation_obj <- loadDb(tx_annotation)
 
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
+
+# plot PCA
+# extract normalized data
+count_mat <- CTSSnormalizedTpmDF(ce)
+for (i in 1:ncol(count_mat)){
+  count_mat[,i] <- as.vector(count_mat[,i])
+}
+count_matmat <- as.matrix(count_mat)
+
+plot_correlation(
+    datatype="norm_CTSS",
+    dataframe=CTSSnormalizedTpmDF(ce),
+    corrplot_tagCountThreshold=corrplot_tagCountThreshold,
+    heatmap_cex=heatmap_cex)
+print("Normalized CTSS correlation plotted")
+
+pca_plot <- plot_pcs(count_matmat)
+save_plot(
+    "CTSS_pca_plot.pdf",
+    pca_plot
+)
+print("CTSS PCA plotted")
+
 
 # extract tag clusters to GRanger object
 sampleNames <- unname(CAGEr::sampleLabels(ce))
@@ -178,7 +207,41 @@ save_plot(
 )
 
 # Consensus clustered CTSS quality plots
-# uses functions from qc_plots.R
-consensus_qc(
-    ce=ce,
+
+consclustTpm <- CAGEr::consensusClustersTpm(ce)
+# save matrix of sample per consensus cluster TPM
+write.table(
+    consclustTpm,
+    file="tables/consensus_clusters_tpm.csv")
+print("Consensus cluster tpms saved")
+
+# count and plot the number of consensus clusters with signal
+sample_cons_ctss_count <- list()
+for (sample in CAGEr::sampleLabels(ce)) {
+    sample_cons_ctss_count[[sample]] <- sum(
+        as.vector(consclustTpm[,sample]) > 0)
+}
+sample_cons_ctss_count[["Union"]] <- dim(consclustTpm)[1]
+consensus_ctss_plot <- plot_number_of_tag_clusters(
+    sample_tag_count=sample_cons_ctss_count,
+    yaxistitle="Number of non-zero consensus clusters",
+    mytitle="Non-zero consensus clusters per sample and union")
+save_plot(
+    "consensus_counts_plot.pdf",
+    consensus_ctss_plot)
+print("Number of non-zero consensus clusters plotted")
+
+# plot correlation
+plot_correlation(
+    datatype="consensus_clusters",
+    dataframe=consclustTpm,
+    corrplot_tagCountThreshold=0,
     heatmap_cex=heatmap_cex)
+print("CTSS correlation plotted")
+
+# plot PCAs
+pca_plot <- plot_pcs(consclustTpm)
+save_plot(
+    "consensus_clusters_pca_plot.pdf",
+    pca_plot)
+print("Consensus cluster PCA plotted")

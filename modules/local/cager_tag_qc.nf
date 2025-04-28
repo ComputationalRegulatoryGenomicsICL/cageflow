@@ -14,8 +14,8 @@ process CAGER_TAG_QC {
 
     output:
     path "intermediate_cagerobj/annotated_cagexp.rds", emit: cager_rds
-    path "plots/corr_m.rds", emit: correlation_rds
-    tuple path("plots/*.pdf"), path("plots/*plot.rds"), emit: plots
+    path "plots/*correlations_matrix.rds", emit: correlation_rds
+    tuple path("plots/*plot.pdf"), path("plots/*plot.rds"), emit: plots
     path "versions.yml", emit: versions
 
     """

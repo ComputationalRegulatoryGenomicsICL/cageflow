@@ -2,7 +2,7 @@
 // Calling of tag clusters with CAGEr
 // 
 
-process CAGER_PREPROCESSING {
+process CAGER_PROCESSING {
     label 'process_verylong'
     stageInMode 'copy'
 
@@ -35,10 +35,10 @@ process CAGER_PREPROCESSING {
         --alpha ${params.alpha} \
         --sample_num_thr ${params.sample_num_thr} \
         --ctss_thr ${params.ctss_thr} \
-        --iq_low ${params.iq_low} \
-        --iq_high ${params.iq_high} \
         --distclu_maxDist ${params.distclu_maxDist} \
         --keepSingletonsAbove ${params.keepSingletonsAbove} \
+        --iq_low ${params.iq_low} \
+        --iq_high ${params.iq_high} \
         --iqw_tpm_threshold ${params.iqw_tpm_threshold} \
         --consensus_thr ${params.consensus_thr} \
         --consensus_dist ${params.consensus_dist} \
