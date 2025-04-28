@@ -3,9 +3,10 @@
 // 
 include { CAGER_READIN } from '../../modules/local/cager_readin.nf'
 include { CAGER_TAG_QC } from '../../modules/local/cager_tag_qc.nf'
-include { CAGER_PROCESSING } from '../../modules/local/CAGER_PROCESSING.nf'
+include { CAGER_PROCESSING } from '../../modules/local/cager_processing.nf'
 include { CAGER_TAGCLUSTER_QC } from '../../modules/local/cager_tagcluster_qc.nf'
 include { CAGER_REPORT } from "../../modules/local/cager_report.nf"
+include { CAGEFIGHTR_ENHANCERS } from '../../modules/local/cagefightr_enhancers.nf'
 
 
 workflow CAGER {
@@ -62,6 +63,12 @@ workflow CAGER {
         ch_tagc_plots = CAGER_TAGCLUSTER_QC.out.plots
 
         // enhancer calling
+        CAGEFIGHTR_ENHANCERS(
+            clustered_cager_rds,
+            ch_txdb)
+        ch_versions = ch_versions.mix(CAGEFIGHTR_ENHANCERS.out.versions)
+        // enhancer calling plots
+        enhancer_plots = CAGEFIGHTR_ENHANCERS.out.plots
 
         ch_template = Channel.fromPath(params.markdown_path)
 
@@ -71,6 +78,7 @@ workflow CAGER {
             corr_data,
             ch_preproc_res,
             ch_tagc_plots,
+            enhancer_plots,
             params.heatmap_cex)
 
     emit:

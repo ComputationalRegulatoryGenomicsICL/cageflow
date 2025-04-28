@@ -128,3 +128,15 @@ PCA calculated on the TPM values of samples within consensus clusters.
 ccp_plot <- readRDS("consensus_clusters_pca_plot.rds")
 ccp_plot
 ```
+
+### Number of active enhancers per sample
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+ccp_plot <- readRDS("enhancer_count_per_sample_plot.rds")
+ccp_plot
+```
+
+### Enhancer PCA
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+ccp_plot <- readRDS("enhancer_expression_pca_plot.rds")
+ccp_plot
+```

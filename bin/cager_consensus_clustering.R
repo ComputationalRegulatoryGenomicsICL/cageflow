@@ -82,11 +82,13 @@ consensus_clustering <- function(
     ce <- annotateConsensusClusters(
         ce,
         tx_annotation_obj)
-    ce <- cumulativeCTSSdistribution(
-    clusters = "consensusClusters",
+
+    ce <- CAGEr::cumulativeCTSSdistribution(
+        ce,
+        clusters = "consensusClusters",
         useMulticore = multicore,
         nrCores = num_core)
-    ce <- quantilePositions(
+    ce <- CAGEr::quantilePositions(
         ce,
         clusters = "consensusClusters",
         qLow = iqlow,

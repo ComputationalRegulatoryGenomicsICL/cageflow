@@ -1,6 +1,5 @@
 #!/usr/bin/env Rscript
 
-
 # 
 # Script to read in data to CAGEr from BAM or BigWig format
 # 

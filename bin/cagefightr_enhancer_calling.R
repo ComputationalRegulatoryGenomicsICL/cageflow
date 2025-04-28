@@ -111,7 +111,7 @@ enhancer_count_plot <- plot_number_of_tag_clusters(
     mytitle="Number of enhancers per sample",
     myfilename="enhancer_count_per_sample")
 save_plot(
-    "enhancer_count_per_sample.pdf",
+    "enhancer_count_per_sample_plot.pdf",
     enhancer_count_plot)
 print("Enhancer counts plotted")
 

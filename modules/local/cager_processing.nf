@@ -26,7 +26,7 @@ process CAGER_PROCESSING {
         bsgenome=${bsgenome_name}
     fi
 
-    cager_preprocessing.R  \
+    cager_processing.R  \
         --cageexp_object ${cager_obj} \
         --range_min ${params.norm_range_min} \
         --range_max ${params.norm_range_max} \

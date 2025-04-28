@@ -48,3 +48,5 @@ tsslogo_upstream: 35
 # parameters for consensus clusters
 consensus_thr: 2
 consensus_dist: 100
+# parameters for enhancer calling
+cfBalanceThreshold: 0.95
