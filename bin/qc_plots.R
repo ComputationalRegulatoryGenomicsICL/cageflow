@@ -4,7 +4,8 @@
 
 required.libraries <- c(
     "ggplot2",
-    "viridis"
+    "viridis",
+    "tidyverse"
 )
 
 for (lib in required.libraries) {
@@ -91,7 +92,7 @@ plot_pcs <- function(count_matrix){
   pca_out <- top_var %>% as.data.frame %>%
     dplyr::mutate(across(everything(), ~ log10(.x + .1))) %>%
     t() %>%
-    stats::prcomp
+    prcomp
   # get information about PCA
   eigs <- pca_out$sdev^2
   vars_explained <- eigs / sum(eigs)
@@ -99,7 +100,7 @@ plot_pcs <- function(count_matrix){
   # plot PCA
   pca_plot <- as.data.frame(pca_out$x) %>%
     rownames_to_column(var = "sample") %>% 
-    ggplot(aes(PC1, PC2, colour = stage, label=name)) +
+    ggplot(aes(PC1, PC2, label=sample)) +
     geom_point(size = 3) +
     ggrepel::geom_text_repel(
       hjust=0,

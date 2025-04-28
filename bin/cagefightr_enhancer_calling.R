@@ -7,8 +7,11 @@
 # # Load libraries
 required.libraries <- c(
     "optparse",
+    "CAGEr",
     "CAGEfightR",
-    "GenomicRanges"
+    "GenomicRanges",
+    "GenomicFeatures",
+    "dplyr"
 )
 
 
@@ -32,7 +35,22 @@ option_list = list(
         c("-b", "--cfBalanceThreshold"),
         type = "double",
         default = 0.95,
-        help = "threshold for the cagefightr balance score (Default=0.95)")
+        help = "threshold for the cagefightr balance score (Default=0.95)"),
+    make_option(
+        c("-u", "--tssregion_up"),
+        type = "integer",
+        default = -3000,
+        help = "Upstream distance to consider into TSS region for ChIPseeker annotation. Should be negative (Default = -3000)"),
+    make_option(
+        c("-d", "--tssregion_down"),
+        type = "integer",
+        default = 3000,
+        help = "Downstream distance to consider into TSS region for ChIPseeker annotation. Should be positive (Default = 3000)"),
+    make_option(
+        c("-p", "--project_dir"),
+        type = "character",
+        default = 0,
+        help = "Project directory, from which the analysis is run.")
 )
 
 message("; Reading arguments from command line.")
@@ -42,7 +60,10 @@ opt = optparse::parse_args(opt_parser)
 # set variable names
 ce_path             <- opt$cageexp_object
 tx_annotation       <- opt$annotation
-cfBalanceThreshold   <- opt$cfBalanceThreshold
+cfBalanceThreshold  <- opt$cfBalanceThreshold
+tssregion_up    <- opt$tssregion_up
+tssregion_down  <- opt$tssregion_down
+project_dir         <- opt$project_dir
 
 # import functions
 # installing BSgenome
@@ -70,14 +91,18 @@ supported_enhancers <- cagefightr_enhancers(
 true_enhancers <- exclude_enhancers_overlapping_promoters(
     BCs=supported_enhancers,
     ce=ce)
+print("Enhancers overlapping promoters excluded")
 
 # annotate enhancers with transcript database information
+tx_annotation_obj <- loadDb(tx_annotation)
 annotated_enhancers <- annotate_enhancers(
     enhancers=true_enhancers,
-    txdb=tx_annotation)
+    txdb=tx_annotation_obj,
+    tssregion_up=tssregion_up,
+    tssregion_down=tssregion_down)
 
 saveRDS(annotated_enhancers, file = "intermediate_cagerobj/enhancers.rds")
-return("Annotated enhancers rds file saved")
+print("Annotated enhancers rds file saved")
 
 # assign enhancers to samples
 enhancer_expr_per_sample <- identify_sample_specific_enhancers(
@@ -114,5 +139,3 @@ save_plot(
     "enhancer_count_per_sample_plot.pdf",
     enhancer_count_plot)
 print("Enhancer counts plotted")
-
-

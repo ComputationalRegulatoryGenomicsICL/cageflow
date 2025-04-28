@@ -49,7 +49,7 @@ workflow CAGER {
         ch_versions = ch_versions.mix(CAGER_TAG_QC.out.versions)
         // tag region annotation, correlations heatmap
         tra_ch_tss = CAGER_TAG_QC.out.plots
-        corr_data = CAGER_TAG_QC.out.correlation_rds
+        tag_corr_data = CAGER_TAG_QC.out.correlation_rds
 
         CAGER_PROCESSING(annotated_cager_rds, ch_bsgenome_file, ch_bsgenome_name, ch_txdb)
         clustered_cager_rds = CAGER_PROCESSING.out.rds
@@ -61,6 +61,7 @@ workflow CAGER {
         ch_versions = ch_versions.mix(CAGER_TAGCLUSTER_QC.out.versions)
         // tagcluster annotations, nucleotide frequencies, dinucleotide frequencies, TSSlogo
         ch_tagc_plots = CAGER_TAGCLUSTER_QC.out.plots
+        tc_corr_data = CAGER_TAGCLUSTER_QC.out.correlation_rds
 
         // enhancer calling
         CAGEFIGHTR_ENHANCERS(
@@ -75,9 +76,10 @@ workflow CAGER {
         ch_html = CAGER_REPORT(
             ch_template,
             tra_ch_tss,
-            corr_data,
+            tag_corr_data,
             ch_preproc_res,
             ch_tagc_plots,
+            tc_corr_data,
             enhancer_plots,
             params.heatmap_cex)
 

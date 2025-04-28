@@ -78,22 +78,6 @@ chta_plot <- readRDS("chipseeker_tagCluster_annotation_plot.rds")
 chta_plot
 ```
 
-### TSS logo
-Sequence distribution at the dominant TSS of tag clusters within promoter regions (according to annotation by ChipSeeker).
-Note: Before clustering, low expressed CTSS are filtered by the user defined thresholds: sample_num_thr and ctss_thr.
-By default, these values are 1 sample and 1 TPM meaning that these are low-fidelity TSSs supported by less than 1 normalized tag counts in any of the samples.
-```{r eval=TRUE, include=TRUE, echo=FALSE}
-tss_logos <- list.files(pattern = "tagcluster_dominantTSSlogos_plot.rds")
-for (logofile in tss_logos){
-  print(logofile)
-  tss_plot <- readRDS(logofile)
-  tss_plot = tss_plot + ggplot2::theme(
-      axis.text.x = ggplot2::element_text(angle = 90))
-  print(tss_plot)
-}
-
-```
-
 ### Dinucleotide frequencies in tagclusters weighted by expression (tpm)
 Expression-level-aware dinucleotide frequencies at dominant TSSs of tag clusters (sorted by frequencies at the first sample in alphabetical order).
 Note: Before clustering, low expressed CTSS are filtered by the user defined thresholds: sample_num_thr and ctss_thr.
@@ -113,13 +97,6 @@ This plot shows the number of non zero consensus clusters per samples, as well a
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 cc_plot <- readRDS("consensus_counts_plot.rds")
 cc_plot
-```
-
-### Consensus cluster correlations
-```{r eval=TRUE, include=TRUE, echo=FALSE}
-corr_m <- readRDS("consensus_clusters_correlations_matrix.rds")
-hm_plot <- readRDS("consensus_clusters_correlations_plot.rds")
-eval(hm_plot$call)
 ```
 
 ### Consensus cluster PCA

@@ -106,7 +106,7 @@ source(file.path(project_dir, "bin/install_bsgenome.R"))
 # import functions for second quality control and plotting
 source(file.path(project_dir, "bin/plot_saving.R"))
 source(file.path(project_dir, "bin/cager_nucleotide_composition_functions.R"))
-source(file.path(project_dir, "bin/cager_consensus_qc.R"))
+source(file.path(project_dir, "bin/cager_modified_plots.R"))
 source(file.path(project_dir, "bin/qc_plots.R"))
 
 # Create folders for organized analysis
@@ -230,14 +230,6 @@ save_plot(
     "consensus_counts_plot.pdf",
     consensus_ctss_plot)
 print("Number of non-zero consensus clusters plotted")
-
-# plot correlation
-plot_correlation(
-    datatype="consensus_clusters",
-    dataframe=consclustTpm,
-    corrplot_tagCountThreshold=0,
-    heatmap_cex=heatmap_cex)
-print("CTSS correlation plotted")
 
 # plot PCAs
 pca_plot <- plot_pcs(consclustTpm)

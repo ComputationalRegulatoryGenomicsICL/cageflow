@@ -77,8 +77,8 @@ exclude_enhancers_overlapping_promoters <- function(BCs, ce){
     # OR remove regions that overlap
     promoter_overlaps <- GenomicRanges::findOverlaps(
         query=BCs,
-        subject=consensusClustersGR(ce))
-    overlapping_idx <- unique(queryHits(promoter_overlap))
+        subject=CAGEr::consensusClustersGR(ce))
+    overlapping_idx <- unique(queryHits(promoter_overlaps))
     true_enhancers <- BCs[-overlapping_idx]
     return(true_enhancers)
 }

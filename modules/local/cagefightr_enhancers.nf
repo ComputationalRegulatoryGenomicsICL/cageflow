@@ -20,7 +20,10 @@ process CAGEFIGHTR_ENHANCERS {
     cagefightr_enhancer_calling.R  \
         --cageexp_object ${cager_obj} \
         --annotation ${txdb} \
-        --cfBalanceThreshold ${params.cfBalanceThreshold}
+        --cfBalanceThreshold ${params.cfBalanceThreshold} \
+        --tssregion_up ${params.tssregion_up} \
+        --tssregion_down ${params.tssregion_down} \
+        --project_dir ${projectDir}
     
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
