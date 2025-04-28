@@ -1,14 +1,42 @@
 #' Extract CTSS score per sample per region
 
 overlapper <- function(ce, sample){
-    ctss <- CTSSnormalizedTpmGR(ce, sample=sample)
-    overlap <- findOverlaps(
+    ctss <- CAGEr::CTSSnormalizedTpmGR(ce, sample=sample)
+    overlap <- GenomicRanges::findOverlaps(
             query = consensusClustersGR(ce),
             subject = ctss)
     grouped_scores <- extractList(score(ctss), overlap)
     return(grouped_scores)
 }
 
+# Replace scores in consensus clusters with the sum of normalized CTSS scores
+score_from_ctss <- function(ce){
+    # use normalized CTSS to calculate and update score
+    # extract the scores of the first sample
+    sample <- CAGEr::sampleLabels(ce)[[1]]
+    grouped_scores <- overlapper(ce, sample)
+
+    # ...and of the rest of the samples
+    for (sample in CAGEr::sampleLabels(ce)[2:length(CAGEr::sampleLabels(ce))]){
+        new_scores <- overlapper(ce, sample)
+        combined <- mapply(append, grouped_scores, new_scores, SIMPLIFY=FALSE)
+        grouped_scores <- RleList(combined)
+    }
+
+    # sum values
+    result_vector <- numeric(length(grouped_scores))
+    # Loop through each element and add the value at the correct position
+    for (i in seq_along(grouped_scores)) {
+        result_vector[i] <- sum(as.numeric(grouped_scores[[i]]))
+    }
+
+    # Convert to Rle  and assign to consensus cluster
+    # TODO: this does not actually assign the value which is 
+    # interesting because within cager it does
+    score(consensusClustersGR(ce)) <- Rle(result_vector)
+
+    return(ce)
+}
 
 #' Consensus clustering of CTSS across samples
 #'
@@ -47,32 +75,7 @@ consensus_clustering <- function(
         qUp = iqhigh,
         maxDist = maxDist)
 
-    # use normalized CTSS to calculate and update score
-    # extract the scores of the first sample
-    sample <- CAGEr::sampleLabels(ce)[[1]]
-    grouped_scores <- overlapper(ce, sample)
-
-    # ...and of the rest of the samples
-    for (sample in CAGEr::sampleLabels(ce)[2:length(CAGEr::sampleLabels(ce))]){
-        new_scores <- overlapper(ce, sample)
-        combined <- mapply(append, grouped_scores, new_scores, SIMPLIFY=FALSE)
-        grouped_scores <- RleList(combined)
-    }
-
-    # sum values
-    result_vector <- numeric(length(grouped_scores))
-    # Loop through each element and add the value at the correct position
-    for (i in seq_along(grouped_scores)) {
-        summed_value <- sum(as.numeric(grouped_scores[[i]]))
-        result_vector[i] <- summed_value
-    }
-
-    # Convert to Rle  and assign to consensus cluster
-    # TODO: this does not actually assign the value which is 
-    # interesting because within cager it does
-    score(consensusClustersGR(ce)) <- Rle(result_vector)
-
-
+    ce <- score_from_ctss(ce)
 
     # Read in TxDb object
     tx_annotation_obj <- loadDb(tx_annotation)
