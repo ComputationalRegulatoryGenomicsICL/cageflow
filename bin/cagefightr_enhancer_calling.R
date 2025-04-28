@@ -93,6 +93,14 @@ write.table(
     sep='\t')
 print("Enhancer expressions per sample saved to file")
 
+# plot PCA of enhancer expression per sample
+pca_plot <- plot_pcs(
+    count_matrix=enhancer_expr_per_sample)
+save_plot(
+    "enhancer_expression_pca_plot.pdf",
+    pca_plot)
+print("PCA plot of enhancer expression per sample saved")
+
 # count and plot number of enhancers per sample
 sample_enhancer_count <- count_number_of_enhancers(
     enhancer_expr_per_sample=enhancer_expr_per_sample)
