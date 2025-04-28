@@ -72,10 +72,10 @@ option_list = list(
         default = 0,
         help = "Project directory, from which the analysis is run."),
     make_option(
-        c("-k", "--pca_rank"),
-        type = "integer",
-        default = 50,
-        help = "Rank of PCAs for analysis. (Default = 50) ")
+        c("-c", "--heatmap_cex"),
+        type = "double",
+        default = 0.2,
+        help = "Text size for plotting heatmaps of correlation (Default = 0.2)")
 )
 
 message("; Reading arguments from command line.")
@@ -93,7 +93,7 @@ tssregion_up    <- opt$tssregion_up
 tssregion_down  <- opt$tssregion_down
 tsslogo_upstream    <- opt$tsslogo_upstream
 project_dir     <- opt$project_dir
-pca_rank        <- opt$pca_rank
+heatmap_cex <- opt$heatmap_cex
 
 # installing BSgenome
 source(file.path(project_dir, "bin/install_bsgenome.R"))
@@ -101,7 +101,7 @@ source(file.path(project_dir, "bin/install_bsgenome.R"))
 source(file.path(project_dir, "bin/plot_saving.R"))
 source(file.path(project_dir, "bin/cager_nucleotide_composition_functions.R"))
 source(file.path(project_dir, "bin/cager_consensus_qc.R"))
-source(file.path(project_dir, "bin/plot_number_and_pca_of_ctss.R"))
+source(file.path(project_dir, "bin/qc_plots.R"))
 
 # Create folders for organized analysis
 dir.create(file.path("plots"))
@@ -178,5 +178,7 @@ save_plot(
 )
 
 # Consensus clustered CTSS quality plots
-# uses functions from plot_number_and_pca_of_ctss.R
-consensus_qc(ce=ce, pcarank=pca_rank)
+# uses functions from qc_plots.R
+consensus_qc(
+    ce=ce,
+    heatmap_cex=heatmap_cex)

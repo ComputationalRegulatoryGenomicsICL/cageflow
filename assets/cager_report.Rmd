@@ -25,11 +25,9 @@ tagannot_plot
 Correlation of samples by the raw tag counts.
 Note: these are not filtered or normalized yet. The plot is for diagnostic purposes, such as highlighting batch effects.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-suppressMessages(library(memoise))
-corr_m <- readRDS("corr_m.rds")
-hm_plot <- readRDS("correlations_plot.rds")
+corr_m <- readRDS("CTSS_correlations_matrix.rds")
+hm_plot <- readRDS("CTSS_correlations_plot.rds")
 eval(hm_plot$call)
-
 ```
 
 ### Normalization
@@ -41,6 +39,19 @@ The total number of tags (T_norm) defaults to 1000000 which corresponds to TPM, 
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 revc_plot <- readRDS("reverse_cumulative_plot.rds")
 revc_plot
+```
+
+### Correlations of normalized tags
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+corr_m <- readRDS("norm_CTSS_correlations_matrix.rds")
+hm_plot <- readRDS("norm_CTSS_correlations_plot.rds")
+eval(hm_plot$call)
+```
+
+### PCA plot of normalized tag counts
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+pca_plot <- readRDS("CTSS_pca_plot.rds")
+pca_plot
 ```
 
 ### Tag cluster interquartile width
@@ -104,9 +115,15 @@ cc_plot <- readRDS("consensus_counts_plot.rds")
 cc_plot
 ```
 
+### Consensus cluster correlations
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+corr_m <- readRDS("consensus_clusters_correlations_matrix.rds")
+hm_plot <- readRDS("consensus_clusters_correlations_plot.rds")
+eval(hm_plot$call)
+```
+
 ### Consensus cluster PCA
 PCA calculated on the TPM values of samples within consensus clusters.
-By default the first 50 PCs are used, this can be set with the parameter pca_rank.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 ccp_plot <- readRDS("consensus_clusters_pca_plot.rds")
 ccp_plot

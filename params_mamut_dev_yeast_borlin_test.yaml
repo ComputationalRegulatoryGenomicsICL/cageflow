@@ -26,7 +26,7 @@ bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
 # parameter for correlation calculation
 corrplot_tagCountThreshold: 1
 # correlation plotting of 10+ samples
-heatmap_cex_row: 0.2
+heatmap_cex: 0.2
 # parameters for normalization
 norm_range_min: 5
 norm_range_max: 10000

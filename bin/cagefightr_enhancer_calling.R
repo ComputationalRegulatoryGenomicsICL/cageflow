@@ -117,18 +117,6 @@ count_number_of_enhancers <- function(sample_per_enhancer) {
   return(sample_enhancer_count)
 }
 
-plot_pcs <- function(sample_per_enhancer, cagerFolder, pcarank){
-  pca_out <- stats::prcomp(sample_per_enhancer, rank. = pcarank)
-  plca_to_plot <- as_tibble(data.frame(pca_out$x[,c("PC1","PC2")]), rownames = "name")
-  pca_plot <- ggplot2::ggplot(plca_to_plot, aes(x=PC1, y=PC2,label=name)) +
-    geom_point() +
-    ggrepel::geom_text_repel(hjust=0, vjust=0,size=2,max.overlaps=5)
-  ggplot2::ggsave(
-    file.path(cagerFolder, "enhancers_pca.pdf"),
-    pca_plot
-  )
-  return("PCA plotted")
-}
 
 save_to_file <- function(brcage, sample_per_enhancer, cagerFolder){
     outFileNameSamples <- file.path(

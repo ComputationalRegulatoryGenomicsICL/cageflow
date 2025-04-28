@@ -12,9 +12,7 @@ required.libraries <- c(
     "GenomicFeatures",
     "gplots",
     "ggplot2",
-    "ggseqlogo",
-    "memoise"
-    )
+    "ggseqlogo")
 
 for (lib in required.libraries) {
   suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
@@ -43,10 +41,10 @@ option_list = list(
         default = 1,
         help = "Threshold for considering tags when calculating correlations (Default = 1)"),
     make_option(
-        c("-c", "--heatmap_cex_row"),
+        c("-c", "--heatmap_cex"),
         type = "double",
         default = 0.2,
-        help = "Text size for plotting heatmaps of correlation for 10+ samples (Default = 0.2)"),
+        help = "Text size for plotting heatmaps of correlation (Default = 0.2)"),
     make_option(
         c("-p", "--project_dir"),
         type = "character",
@@ -63,7 +61,7 @@ ce_path         <- opt$cageexp_object
 tx_annotation   <- opt$annotation
 bsgenome        <- opt$bsgenome
 corrplot_tagCountThreshold <- opt$corrplot_tagCountThreshold
-heatmap_cex_row <- opt$heatmap_cex_row
+heatmap_cex <- opt$heatmap_cex
 project_dir     <- opt$project_dir
 
 # installing BSgenome
@@ -71,6 +69,7 @@ source(file.path(project_dir, "bin/install_bsgenome.R"))
 # import functions for quality control and plotting
 source(file.path(project_dir, "bin/plot_saving.R"))
 source(file.path(project_dir, "bin/cager_modified_plots.R"))
+source(file.path(project_dir, "bin/qc_plots.R"))
 
 reference_name <- install_bsgenome(bsgenome)
 
@@ -98,25 +97,33 @@ save_plot(
 
 # to compare raw counts CTSStagCountDF is used
 # bypassing the automatic selection of this assay
-# uses function from cager_modified_plots.R
+# uses function from cager_modified_plots.R and qc_plots.R
 
-corr_m <- calculate_correlation_matrix(
-    CTSStagCountDF(ce),
-    samples = "all",
-    tagCountThreshold = corrplot_tagCountThreshold,
-    applyThresholdBoth = FALSE,
-    method = "pearson")
+plot_correlation(
+    datatype="CTSS",
+    dataframe=CTSStagCountDF(ce),
+    corrplot_tagCountThreshold=corrplot_tagCountThreshold,
+    heatmap_cex=heatmap_cex)
+print("CTSS correlation plotted")
 
-# plot correlations in heatmap format
-hm <- gplots::heatmap.2(
-    corr_m,
-    trace="none",
-    margins=c(12, 12),
-    cexRow=heatmap_cex_row)
-pdf("plots/correlations_plot.pdf")
-eval(hm$call)
-dev.off()
-saveRDS(hm, "plots/correlations_plot.rds")
+# plot PCA
+# extract normalized data
+count_mat <- CTSSnormalizedTpmDF(ce)
+for (i in 1:ncol(count_mat)){
+  count_mat[,i] <- as.vector(count_mat[,i])
+}
+count_matmat <- as.matrix(count_mat)
 
-# save intermediate file
-saveRDS(corr_m, "plots/corr_m.rds")
+plot_correlation(
+    datatype="norm_CTSS",
+    dataframe=CTSSnormalizedTpmDF(ce),
+    corrplot_tagCountThreshold=corrplot_tagCountThreshold,
+    heatmap_cex=heatmap_cex)
+print("CTSS correlation plotted")
+
+pca_plot <- plot_pcs(count_matmat)
+save_plot(
+    "CTSS_pca_plot.pdf",
+    pca_plot
+)
+print("CTSS PCA plotted")

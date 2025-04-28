@@ -10,7 +10,7 @@ process CAGER_REPORT {
     path corr_m
     tuple path(cc_iqw_rc_plots), path(cc_txt), path(cc_iqw_rc_data)
     tuple path(tca_dn_n_plots), path(tca_dn_n_data)
-    val(heatmap_cex_row)
+    val(heatmap_cex)
 
     output:
     path "*.html"
@@ -19,7 +19,7 @@ process CAGER_REPORT {
     #!/usr/bin/env Rscript
     library(rmarkdown)
 
-    heatmap_cex_row <- ${heatmap_cex_row}
+    heatmap_cex <- ${heatmap_cex}
     rmarkdown::render('${rmarkd_template}')
     """
 }

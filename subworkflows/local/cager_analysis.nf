@@ -72,7 +72,7 @@ workflow CAGER {
             corr_data,
             ch_preproc_res,
             ch_tagc_plots,
-            params.heatmap_cex_row)
+            params.heatmap_cex)
 
     emit:
         ch_versions
