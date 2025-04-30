@@ -1,7 +1,7 @@
 # pipeline parameters
-fullpipeline: false
+fullpipeline: true
 maponly: false
-cageronly: true
+cageronly: false
 gtf: "/storage/mathelierarea/raw/GENCODE/Gencode_human/release_46/gencode.v46.primary_assembly.annotation.gtf"
 
 # preprocessing parameters
@@ -16,6 +16,8 @@ seq_platform: "illumina"
 seq_center: false
 # whether to take the uniquely mapped only
 unique_only: true
+# whether to remove reads that do not start with G
+remove_non_g: true 
 
 # CAGEr parameters
 cager_sample_file: ../brcell_sample_list.csv

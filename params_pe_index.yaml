@@ -16,6 +16,8 @@ seq_platform: "illumina"
 seq_center: false
 # whether to take the uniquely mapped only (for STAR)
 unique_only: false
+# whether to remove reads that do not start with G
+remove_non_g: false 
 
 # CAGEr parameters
 cager_sample_file:
