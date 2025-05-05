@@ -20,7 +20,7 @@ unique_only: true
 remove_non_g: true 
 
 # CAGEr parameters
-cager_sample_file: ../brcell_sample_list.csv
+cager_sample_file:
 # BSgenome
 forgeseed:
 sourcedir:
