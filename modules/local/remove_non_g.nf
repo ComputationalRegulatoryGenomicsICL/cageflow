@@ -7,7 +7,7 @@ process READ_REMOVAL {
     stageInMode 'copy'
 
     input:
-    tuple val(meta), path input_fastq
+    tuple val(meta), path(input_fastq)
 
     output:
     tuple val(meta), path("filtered_output.fastq.gz")
