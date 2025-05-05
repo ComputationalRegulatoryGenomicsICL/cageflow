@@ -1,141 +1,141 @@
-#' Code of exporting CAGEexp to dgCMatrix is taken from CAGEr 2.12.0
-#' Enhancer calling
-#'
-#' @param ce initial CAGEexp object with CTSS values
-#' @param cfBalanceThreshold threshold for the cagefightr balance score
-#' @param txdb TxDb object for annotation
-#' @return enhancers
-#' @examples
-#' cagefightr_enhancers(
-#' ce,
-#' cfBalanceThreshold = 0.95,
-#' txdb = TxDb.Mmusculus.UCSC.mm9.knownGene
-#' )
+#!/usr/bin/env Rscript
 
-cagefightr_enhancers <- function(
-    ce,
-    cfBalanceThreshold,
-    txdb){
+# #
+# # Call enhancers with CAGEfightR
+# #
 
-    se <- CTSStagCountSE(ce) # take normalizedSE
-    colData(se) <- colData(ce)
-    rowRanges(se) <- as(rowRanges(se), "StitchedGPos")
-    colData(se)$Name <- colData(se)$sampleLabels
-    assays(se, withDimnames=FALSE) <- List(counts=as(as.matrix(as.data.frame(assay(se))), "dgCMatrix"))
-    # TODO: do steps of cagefighter here, maybe after powerlaw normalization?
-    # Damir's task
-    BCs <- clusterBidirectionally(se, balanceThreshold=cfBalanceThreshold)
-    # Calculate number of bidirectional samples
-    BCs <- calcBidirectionality(BCs, samples=se)
-    # remove BCs not observed to be bidirectional in one or more samples
-    enhancers <- subset(BCs, bidirectionality > 0)
-    # annotate enhancers and remove those overlapping known transcripts
-    enhancers <- assignTxType(enhancers, txModels=txdb)
-    enhancers <- subset(enhancers, txType %in% c("intergenic", "intron"))
-    return(enhancers)
+# # Load libraries
+required.libraries <- c(
+    "optparse",
+    "CAGEr",
+    "CAGEfightR",
+    "GenomicRanges",
+    "GenomicFeatures",
+    "dplyr"
+)
+
+
+for (lib in required.libraries) {
+  suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
 }
 
+# parse options
+option_list = list(
+    make_option(
+        c("-i", "--cageexp_object"),
+        type = "character",
+        default = NULL,
+        help = "Path to the CAGEexp object with normalized tags and consensus clusters (Mandatory)"),
+    make_option(
+        c("-x", "--annotation"),
+        type = "character",
+        default = NULL,
+        help = "SQLite file with a TxDb genome annotation package (Mandatory)"),
+    make_option(
+        c("-b", "--cfBalanceThreshold"),
+        type = "double",
+        default = 0.95,
+        help = "threshold for the cagefightr balance score (Default=0.95)"),
+    make_option(
+        c("-u", "--tssregion_up"),
+        type = "integer",
+        default = -3000,
+        help = "Upstream distance to consider into TSS region for ChIPseeker annotation. Should be negative (Default = -3000)"),
+    make_option(
+        c("-d", "--tssregion_down"),
+        type = "integer",
+        default = 3000,
+        help = "Downstream distance to consider into TSS region for ChIPseeker annotation. Should be positive (Default = 3000)"),
+    make_option(
+        c("-p", "--project_dir"),
+        type = "character",
+        default = 0,
+        help = "Project directory, from which the analysis is run.")
+)
 
-identify_sample_specific_enhancers <- function(BCs){
-    
-    supported_enhancers <- CAGEfightR::subsetBySupport(
-        BCs,
-        inputAssay="counts",
-        unexpressed=0,
-        minSamples=1)
-    sample_per_enhancer <- supported_enhancers@assays@data$counts
-    return(sample_per_enhancer)
-}
+message("; Reading arguments from command line.")
+opt_parser = optparse::OptionParser(option_list = option_list)
+opt = optparse::parse_args(opt_parser)
 
-save_each_sample_to_bed <- function(sample_per_enhancer, cagerFolder){
-    # this function also calculates enhancer widths
-    enhancer_widths <- list()
-    for (sample_name in colnames(sample_per_enhancer)){
-        enhancer_widths[[sample_name]] <- c()
-        sample_bed <- lapply(
-            names(
-                sample_per_enhancer[
-                    # filter for enhancers with non-zero tags per sample
-                    sample_per_enhancer[,sample_name]>0,][,sample_name]
-                ),
-            # extract chr and coordinates into separate entities
-            function(x){
-                unlist(strsplit(x, ":|-"))
-                }
-        )
-        # save list of coordinates to bedfile
-        sink(file.path(
-            cagerFolder,
-            "enhancers",
-            paste0(sample_name, "_enhancers.bed")))
-        for (line in sample_bed){
-            width <- as.integer(line[3]) - as.integer(line[2])
-            enhancer_widths[[sample_name]] <- append(
-                enhancer_widths[[sample_name]],
-                width)
-            cat(paste0(line[1], "\t", line[2], "\t", line[3], "\n"))
-            }
-        sink()
-    }
-    print("Enhancers per sample bed files saved")
-    return(enhancer_widths)
-}
+# set variable names
+ce_path             <- opt$cageexp_object
+tx_annotation       <- opt$annotation
+cfBalanceThreshold  <- opt$cfBalanceThreshold
+tssregion_up    <- opt$tssregion_up
+tssregion_down  <- opt$tssregion_down
+project_dir         <- opt$project_dir
 
-plot_enhancer_widths <- function(enhancer_widths, cagerFolder){
-  
-  enhancer_width_tbl <- tibble(name=character(), width=numeric())
+# import functions
+# installing BSgenome
+source(file.path(project_dir, "bin/install_bsgenome.R"))
+# for analysis
+source(file.path(project_dir, "bin/enhancer_functions.R"))
+source(file.path(project_dir, "bin/qc_plots.R"))
+source(file.path(project_dir, "bin/plot_saving.R"))
 
-  for (sample in names(enhancer_widths)){
-    enhancer_width_tbl <- enhancer_width_tbl %>% add_row(
-      name = sample,
-      width = enhancer_widths[[sample]])
-  }
-  
-  enhancer_width_plots <- ggplot2::ggplot(data=enhancer_width_tbl, aes(x=width)) +
-    geom_histogram(color="grey", fill="grey") +
-    facet_wrap(. ~name) +
-    ggtitle("Enhancer widths")
-  
-  tagcluster_width_plots_path <- file.path(cagerFolder, "enhancer_width_plots.pdf")
-  ggplot2::ggsave(tagcluster_width_plots_path, enhancer_width_plots)
-  return("Sample enhancer widths plotted")
-}
+# Create folders for organized analysis
+dir.create(file.path("plots"))
+dir.create(file.path("tracks"))
+dir.create(file.path("tables"))
+dir.create(file.path("intermediate_cagerobj"))
 
-save_to_bed <- function(brcage, cagerFolder){
-    rtracklayer::export.bedGraph(
-        brcage[["enhancers"]]@rowRanges,
-        file.path(cagerFolder, "enhancers", "enhancers.bedGraph"))
-    return("Enhancers saved to bedGraph file")
-}
+# Read in CAGEexp object
+ce <- readRDS(ce_path)
 
-count_number_of_enhancers <- function(sample_per_enhancer) {
-  sample_enhancer_count <- list()
-  for (sample in CAGEr::sampleLabels(brcage)) {
-    sample_enhancer_count[[sample]] <- sum(as.vector(sample_per_enhancer[,sample])>0)
-  }
-  return(sample_enhancer_count)
-}
+# call enhancers with CAGEfightR
+supported_enhancers <- cagefightr_enhancers(
+    ce=ce,
+    cfBalanceThreshold=cfBalanceThreshold)
 
-plot_pcs <- function(sample_per_enhancer, cagerFolder, pcarank){
-  pca_out <- stats::prcomp(sample_per_enhancer, rank. = pcarank)
-  plca_to_plot <- as_tibble(data.frame(pca_out$rotation[,c("PC1","PC2")]), rownames = "name")
-  pca_plot <- ggplot2::ggplot(plca_to_plot, aes(x=PC1, y=PC2,label=name)) +
-    geom_point() +
-    ggrepel::geom_text_repel(hjust=0, vjust=0,size=2,max.overlaps=5)
-  ggplot2::ggsave(
-    file.path(cagerFolder, "enhancers_pca.pdf"),
-    pca_plot
-  )
-  return("PCA plotted")
-}
+# exclude enhancers overlapping promoters defined by consensus clusters
+true_enhancers <- exclude_enhancers_overlapping_promoters(
+    BCs=supported_enhancers,
+    ce=ce)
+print("Enhancers overlapping promoters excluded")
 
-save_to_file <- function(brcage, sample_per_enhancer, cagerFolder){
-    outFileNameSamples <- file.path(
-        cagerFolder, "enhancers", "sample_per_enhancer.tsv")
-    write.table(sample_per_enhancer, file=outFileNameSamples, quote=FALSE, sep='\t')
-    print("Enhancer counts per sample file saved")
-    outFileName <- file.path(
-        cagerFolder, "enhancers", "enhancers.rds")
-    saveRDS(brcage, outFileName)
-    return("Enhancers cager rds file saved")
-}
+# annotate enhancers with transcript database information
+tx_annotation_obj <- loadDb(tx_annotation)
+annotated_enhancers <- annotate_enhancers(
+    enhancers=true_enhancers,
+    txdb=tx_annotation_obj,
+    tssregion_up=tssregion_up,
+    tssregion_down=tssregion_down)
+
+saveRDS(annotated_enhancers, file = "intermediate_cagerobj/enhancers.rds")
+print("Annotated enhancers rds file saved")
+
+# assign enhancers to samples
+enhancer_expr_per_sample <- identify_sample_specific_enhancers(
+    true_enhancers=true_enhancers,
+    ce=ce)
+# save enhancer expression per sample
+outFileNameSamples <- file.path(
+    "tables", "enhancer_expression_per_sample.tsv")
+write.table(
+    enhancer_expr_per_sample,
+    file=outFileNameSamples,
+    quote=FALSE,
+    sep='\t')
+print("Enhancer expressions per sample saved to file")
+
+# plot PCA of enhancer expression per sample
+pca_plot <- plot_pcs(
+    count_matrix=enhancer_expr_per_sample)
+save_plot(
+    "enhancer_expression_pca_plot.pdf",
+    pca_plot)
+print("PCA plot of enhancer expression per sample saved")
+
+# count and plot number of enhancers per sample
+sample_enhancer_count <- count_number_of_enhancers(
+    enhancer_expr_per_sample=enhancer_expr_per_sample)
+# function from qc_plots.R
+enhancer_count_plot <- plot_number_of_tag_clusters(
+    sample_tag_count=sample_enhancer_count,
+    yaxistitle="Number of enhancers per sample",
+    mytitle="Number of enhancers per sample",
+    myfilename="enhancer_count_per_sample")
+save_plot(
+    "enhancer_count_per_sample_plot.pdf",
+    enhancer_count_plot)
+print("Enhancer counts plotted")
