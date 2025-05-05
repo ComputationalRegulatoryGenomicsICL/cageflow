@@ -8,8 +8,7 @@ required_packages_cran = c(
   "rmarkdown",
   "ggplot2",
   "gplots",
-  "ggrepel",
-  "memoise")
+  "ggrepel")
 
 message(
   "; Installing these R packages from CRAN repository: ",

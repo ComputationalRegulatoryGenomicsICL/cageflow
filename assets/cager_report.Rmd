@@ -25,38 +25,9 @@ tagannot_plot
 Correlation of samples by the raw tag counts.
 Note: these are not filtered or normalized yet. The plot is for diagnostic purposes, such as highlighting batch effects.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-suppressMessages(library(memoise))
-corr_m <- readRDS("corr_m.rds")
-hm_plot <- readRDS("correlations_plot.rds")
-.applyThreshold <- function(df, tagCountThreshold, applyThresholdBoth) {
-  if (applyThresholdBoth) {
-    idx <- (df[[1]] >= tagCountThreshold) & (df[[2]] >= tagCountThreshold)
-  } else {
-    idx <- (df[[1]] >= tagCountThreshold) | (df[[2]] >= tagCountThreshold)
-  }
-  df[idx,]
-}
-# TODO: try str(hm_plot)
-if (length(hm_plot)==10){
-  eval(hm_plot$call)
-} else {
-  expr.table <- hm_plot[[1]]
-  pointsUnique <- hm_plot[[2]]
-  panel.cor <- hm_plot[[3]]
-  samples <- hm_plot[[4]]
-  corr.v <- hm_plot[[5]]
-  pseudocount <- hm_plot[[6]]
-  pairs( expr.table
-    , lower.panel = pointsUnique
-    , upper.panel = panel.cor
-    , pch = "."
-    , cex = 4
-    , log = "xy"
-    , las = 1
-    , xaxp = c(1,10,1)
-    , yaxp = c(1,10,1)
-    , labels = samples)
-}
+corr_m <- readRDS("CTSS_correlations_matrix.rds")
+hm_plot <- readRDS("CTSS_correlations_plot.rds")
+eval(hm_plot$call)
 ```
 
 ### Normalization
@@ -68,6 +39,19 @@ The total number of tags (T_norm) defaults to 1000000 which corresponds to TPM, 
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 revc_plot <- readRDS("reverse_cumulative_plot.rds")
 revc_plot
+```
+
+### Correlations of normalized tags
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+corr_m <- readRDS("norm_CTSS_correlations_matrix.rds")
+hm_plot <- readRDS("norm_CTSS_correlations_plot.rds")
+eval(hm_plot$call)
+```
+
+### PCA plot of normalized tag counts
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+pca_plot <- readRDS("CTSS_pca_plot.rds")
+pca_plot
 ```
 
 ### Tag cluster interquartile width
@@ -94,22 +78,6 @@ chta_plot <- readRDS("chipseeker_tagCluster_annotation_plot.rds")
 chta_plot
 ```
 
-### TSS logo
-Sequence distribution at the dominant TSS of tag clusters within promoter regions (according to annotation by ChipSeeker).
-Note: Before clustering, low expressed CTSS are filtered by the user defined thresholds: sample_num_thr and ctss_thr.
-By default, these values are 1 sample and 1 TPM meaning that these are low-fidelity TSSs supported by less than 1 normalized tag counts in any of the samples.
-```{r eval=TRUE, include=TRUE, echo=FALSE}
-tss_logos <- list.files(pattern = "tagcluster_dominantTSSlogos_plot.rds")
-for (logofile in tss_logos){
-  print(logofile)
-  tss_plot <- readRDS(logofile)
-  tss_plot = tss_plot + ggplot2::theme(
-      axis.text.x = ggplot2::element_text(angle = 90))
-  print(tss_plot)
-}
-
-```
-
 ### Dinucleotide frequencies in tagclusters weighted by expression (tpm)
 Expression-level-aware dinucleotide frequencies at dominant TSSs of tag clusters (sorted by frequencies at the first sample in alphabetical order).
 Note: Before clustering, low expressed CTSS are filtered by the user defined thresholds: sample_num_thr and ctss_thr.
@@ -133,8 +101,25 @@ cc_plot
 
 ### Consensus cluster PCA
 PCA calculated on the TPM values of samples within consensus clusters.
-By default the first 50 PCs are used, this can be set with the parameter pca_rank.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 ccp_plot <- readRDS("consensus_clusters_pca_plot.rds")
 ccp_plot
+```
+
+### Number of active enhancers per sample
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+enh_count_plot <- readRDS("enhancer_count_per_sample_plot.rds")
+enh_count_plot
+```
+
+### Annotation of enhancers
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+enh_annot_plot <- readRDS("chipseeker_enhancer_annotation_plot.rds")
+enh_annot_plot
+```
+
+### Enhancer PCA
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+enh_p_plot <- readRDS("enhancer_expression_pca_plot.rds")
+enh_p_plot
 ```

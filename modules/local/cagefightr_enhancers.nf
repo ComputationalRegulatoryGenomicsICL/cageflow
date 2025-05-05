@@ -1,39 +1,30 @@
 // 
-// Quality Control steps of CAGEr
+// Calling of enhancers with CAGEfightr
 // 
 
-process CAGER_TAG_QC {
+process CAGEFIGHTR_ENHANCERS {
     label 'process_verylong'
     stageInMode 'copy'
 
     input:
     path cager_obj
     path txdb
-    path bsgenome_file
-    val bsgenome_name
 
     output:
-    path "intermediate_cagerobj/annotated_cagexp.rds", emit: cager_rds
-    path "plots/*correlations_matrix.rds", emit: correlation_rds
-    tuple path("plots/*plot.pdf"), path("plots/*plot.rds"), emit: plots
+    path "intermediate_cagerobj/enhancers.rds",        emit: rds
+    tuple path("plots/*.pdf"), path("plots/*plot.rds"), emit: plots
+    path "tables/*.tsv", emit: enhancer_table
     path "versions.yml", emit: versions
-
     """
-    if [ -z ${bsgenome_name} ]
-    then
-        bsgenome=${bsgenome_file}
-    else
-        bsgenome=${bsgenome_name}
-    fi
 
-    cager_tag_qc.R  \
+    cagefightr_enhancer_calling.R  \
         --cageexp_object ${cager_obj} \
         --annotation ${txdb} \
-        --bsgenome \${bsgenome} \
-        --corrplot_tagCountThreshold ${params.corrplot_tagCountThreshold} \
-        --heatmap_cex ${params.heatmap_cex} \
+        --cfBalanceThreshold ${params.cfBalanceThreshold} \
+        --tssregion_up ${params.tssregion_up} \
+        --tssregion_down ${params.tssregion_down} \
         --project_dir ${projectDir}
-
+    
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         Bash: \$(echo "\$BASH_VERSION")

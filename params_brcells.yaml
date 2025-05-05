@@ -1,7 +1,7 @@
 # pipeline parameters
-fullpipeline: false
+fullpipeline: true
 maponly: false
-cageronly: true
+cageronly: false
 gtf: "/storage/mathelierarea/raw/GENCODE/Gencode_human/release_46/gencode.v46.primary_assembly.annotation.gtf"
 
 # preprocessing parameters
@@ -16,6 +16,8 @@ seq_platform: "illumina"
 seq_center: false
 # whether to take the uniquely mapped only
 unique_only: true
+# whether to remove reads that do not start with G
+remove_non_g: true 
 
 # CAGEr parameters
 cager_sample_file: ../brcell_sample_list.csv
@@ -25,8 +27,8 @@ sourcedir:
 bsgenome: "BSgenome.Hsapiens.UCSC.hg38"
 # parameter for correlation calculation
 corrplot_tagCountThreshold: 1
-# correlation plotting of 10+ samples
-heatmap_cex_row: 0.2
+# correlation plotting of samples
+heatmap_cex: 1
 # parameters for normalization
 norm_range_min: 5
 norm_range_max: 10000
@@ -48,4 +50,5 @@ tsslogo_upstream: 35
 # parameters for consensus clusters
 consensus_thr: 2
 consensus_dist: 100
-pca_rank: 50
+# parameters for enhancer calling
+cfBalanceThreshold: 0.95
