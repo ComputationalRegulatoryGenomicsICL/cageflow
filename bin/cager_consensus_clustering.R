@@ -9,31 +9,37 @@ overlapper <- function(ce, sample){
     return(grouped_scores)
 }
 
+sum_scores_per_location <- function(scores){
+    # sum values
+    result_vector <- numeric(length(scores))
+    # Loop through each element and add the value at the correct position
+    for (i in seq_along(scores)) {
+        result_vector[i] <- sum(as.numeric(scores[[i]]))
+    }
+    return(result_vector)
+}
+
 # Replace scores in consensus clusters with the sum of normalized CTSS scores
 score_from_ctss <- function(ce){
     # use normalized CTSS to calculate and update score
-    # extract the scores of the first sample
-    sample <- CAGEr::sampleLabels(ce)[[1]]
-    grouped_scores <- overlapper(ce, sample)
+    ctss_score_df <- data.frame(names = names(consensusClustersGR(ce)))
+    sample_sum <- 0
 
-    # ...and of the rest of the samples
-    for (sample in CAGEr::sampleLabels(ce)[2:length(CAGEr::sampleLabels(ce))]){
+    for (sample in CAGEr::sampleLabels(ce)){
         new_scores <- overlapper(ce, sample)
-        combined <- mapply(append, grouped_scores, new_scores, SIMPLIFY=FALSE)
-        grouped_scores <- RleList(combined)
+        ctss_score_df[[sample]] <- sum_scores_per_location(new_scores)
+        sample_sum <- sample_sum + ctss_score_df[[sample]]
     }
 
-    # sum values
-    result_vector <- numeric(length(grouped_scores))
-    # Loop through each element and add the value at the correct position
-    for (i in seq_along(grouped_scores)) {
-        result_vector[i] <- sum(as.numeric(grouped_scores[[i]]))
-    }
+    write.csv(
+        ctss_score_df,
+        "tables/consensus_cluster_per_sample_ctss.csv",
+        row.names = FALSE,
+        quote = FALSE)
 
-    # Convert to Rle  and assign to consensus cluster
-    # TODO: this does not actually assign the value which is 
-    # interesting because within cager it does
-    score(consensusClustersGR(ce)) <- Rle(result_vector)
+    # Convert to Rle and assign to consensus cluster
+    # add to a new column called ctss_score
+    elementMetadata(consensusClustersGR(ce))[["ctss_score"]] <- Rle(sample_sum)
 
     return(ce)
 }

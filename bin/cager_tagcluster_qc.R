@@ -212,7 +212,8 @@ consclustTpm <- CAGEr::consensusClustersTpm(ce)
 # save matrix of sample per consensus cluster TPM
 write.table(
     consclustTpm,
-    file="tables/consensus_clusters_tpm.csv")
+    file="tables/consensus_clusters_tpm.csv",
+    quote = FALSE)
 print("Consensus cluster tpms saved")
 
 # count and plot the number of consensus clusters with signal
