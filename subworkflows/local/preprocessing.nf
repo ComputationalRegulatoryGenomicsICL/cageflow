@@ -21,14 +21,14 @@ workflow PREPROCESSING {
         ).reads.set { ch_cat_fastq }
         ch_versions = ch_versions.mix(CAT_FASTQ.out.versions)
 
-        if (params.remove_non_g){
-            ch_cat_fastq = READ_REMOVAL (ch_cat_fastq)
-        }
-
         FASTQC (
             ch_cat_fastq
         )
         ch_versions = ch_versions.mix(FASTQC.out.versions)
+
+        if (params.remove_non_g){
+            ch_cat_fastq = READ_REMOVAL (ch_cat_fastq)
+        }
 
         TRIMGALORE (
             ch_cat_fastq

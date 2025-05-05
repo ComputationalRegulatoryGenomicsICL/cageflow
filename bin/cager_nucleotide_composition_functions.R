@@ -88,9 +88,9 @@ plot_dinucleotide_frequency_histogram <- function(
         ggtitle("Dominant TSS dinucleotide (-/+ 1bp) proportion weighted by the sum of dominant TSS score per sample") + 
         theme_bw() +
         theme(
-            text = element_text(size = 40, colour = "black"), 
-            axis.text.x = element_text(size = 40, colour = "black"),
-            axis.text.y = element_text(size = 40, colour = "black"),
+            text = element_text(size = 60, colour = "black"), 
+            axis.text.x = element_text(size = 60, colour = "black"),
+            axis.text.y = element_text(size = 60, colour = "black"),
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank(),
             legend.text = element_text(size = 10)) +

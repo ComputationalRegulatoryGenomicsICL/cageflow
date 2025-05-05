@@ -69,12 +69,7 @@ cagefightr_enhancers <- function(
 #' # Example usage:
 #' # filtered_enhancers <- exclude_enhancers_overlapping_promoters(promoters, candidate_enhancers)
 exclude_enhancers_overlapping_promoters <- function(BCs, ce){
-    # remove parts of enhancers that overlap consensus clusters
-    # true_enhancers <- GenomicRanges::setdiff(
-    #     BCs,
-    #     consensusClustersGR(ce),
-    #     ignore.strand=TRUE)
-    # OR remove regions that overlap
+    # remove enhancers that overlap consensus clusters
     promoter_overlaps <- GenomicRanges::findOverlaps(
         query=BCs,
         subject=CAGEr::consensusClustersGR(ce))
@@ -101,7 +96,6 @@ annotate_enhancers <- function(
         txdb,
         tssregion_up,
         tssregion_down){
-    # TODO: maybe rather use from dELS which includes enhancers, only available for some species
     enhancerAnno <- ChIPseeker::annotatePeak(
         enhancers,
         TxDb = txdb,

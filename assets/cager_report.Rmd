@@ -108,12 +108,18 @@ ccp_plot
 
 ### Number of active enhancers per sample
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-ccp_plot <- readRDS("enhancer_count_per_sample_plot.rds")
-ccp_plot
+enh_count_plot <- readRDS("enhancer_count_per_sample_plot.rds")
+enh_count_plot
+```
+
+### Annotation of enhancers
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+enh_annot_plot <- readRDS("chipseeker_enhancer_annotation_plot.rds")
+enh_annot_plot
 ```
 
 ### Enhancer PCA
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-ccp_plot <- readRDS("enhancer_expression_pca_plot.rds")
-ccp_plot
+enh_p_plot <- readRDS("enhancer_expression_pca_plot.rds")
+enh_p_plot
 ```
