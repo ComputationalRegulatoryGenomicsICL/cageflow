@@ -15,7 +15,7 @@ process CAGER_PROCESSING {
     output:
     path "intermediate_cagerobj/normalized_clustered_cagexp.rds",        emit: rds
     tuple path("plots/*.pdf"), path("plots/*.txt"), path("plots/*plot.rds"), emit: results
-    tuple path("tracks/*.bw"), path("tracks/*.bed"), emit: tracks
+    tuple path("tracks/*.bw"), path("tracks/*.bed"), path("tables/*.csv"), emit: tracks
     path "versions.yml", emit: versions
 
     """
