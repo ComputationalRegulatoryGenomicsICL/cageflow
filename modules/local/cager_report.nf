@@ -12,7 +12,6 @@ process CAGER_REPORT {
     tuple path(tca_dn_n_plots), path(tca_dn_n_data)
     path tagcluster_corr_m
     tuple path(enhancer_plots), path(enhancer_data)
-    val(heatmap_cex)
 
     output:
     path "*.html"
@@ -21,7 +20,6 @@ process CAGER_REPORT {
     #!/usr/bin/env Rscript
     library(rmarkdown)
 
-    heatmap_cex <- ${heatmap_cex}
     rmarkdown::render('${rmarkd_template}')
     """
 }

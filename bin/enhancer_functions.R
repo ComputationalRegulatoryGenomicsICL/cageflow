@@ -1,4 +1,5 @@
-#' Code of exporting CAGEexp to dgCMatrix is taken from CAGEr 2.12.0
+# This file includes modifications from CAGEr software under GPL-3 license.
+
 #' Enhancer calling
 #'
 #' @param ce initial CAGEexp object with CTSS values
@@ -13,6 +14,8 @@ cagefightr_enhancers <- function(
         ce,
         cfBalanceThreshold){
 
+    # License note: the code converting the CAGEexp object to a SummarizedExperiment
+    # object is copied and modified from CAGEr: the original code only takes the counts
     # Extract CTSS count matrix as SummarizedExperiment
     se <- CAGEr::CTSStagCountSE(ce)
 

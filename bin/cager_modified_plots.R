@@ -1,5 +1,5 @@
 # This file includes modifications from CAGEr software under GPL-3 license.
-# These are indicated within the file.
+# The places where the original code is modified are indicated within the file.
 
 
 plotInterquantileWidth_local <- function(object, clusters, tpmThreshold, qLow, qUp, xlim){

@@ -1,39 +1,29 @@
 # &beta;
 
+
 ## To-do for version 2
 
 ### Features to implement
 
-1. `CAGEr` pipeline as a set of modules. Include plotting motifs around TSSs on both strands separately to check if a pyrimidine-purine (initiator-like) motif is present on both strands. This lets a user check if TSSs are shifted (are not a pyrimidine-purine pair) and/or initiator motifs are different on the two strands (neither should happen).
+1. Include plotting motifs around TSSs on both strands separately to check if a pyrimidine-purine (initiator-like) motif is present on both strands. This lets a user check if TSSs are shifted (are not a pyrimidine-purine pair) and/or initiator motifs are different on the two strands (neither should happen).
 
-2. `CAGEfightR` (for enhancer calling, with a subsequent filtering by `CAGEr`-generated tag clusters).
+2. Track generation for the genome browser (normalized counts).
 
-3. Track generation for the genome browser (normalized counts).
-
-4. Investigate and ideally resolve the issue with `CAGEr` using only one thread when reading samples and working within the pipeline. Get in touch with Charles Plessy after a reasonable investigation. (Damir discovered that CAGEr uses the number of thread equal to the number of read input files, independently of the number of threads set to it; but it is still unclear why CAGEr uses only one thread for multiple input samples when run within the pipeline.)
-
-5. Tag cluster schematics generation for the genome browser using exon, intron and UTR glyphs.
+3. Investigate and ideally resolve the issue with `CAGEr` using only one thread when reading samples and working within the pipeline. Get in touch with Charles Plessy after a reasonable investigation. (Damir discovered that CAGEr uses the number of thread equal to the number of read input files, independently of the number of threads set to it; but it is still unclear why CAGEr uses only one thread for multiple input samples when run within the pipeline.)
 
 ### Finishing up
 
-6. Check if the `nf-validation` Nextflow plugin or any other nf-core tools could help the user to create the input CSV.
+4. **[in progress]** Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
 
-7. **[done]** Rename `input_reads.sh` into `make_input_csv.sh` for clarity.
-Actually, instead created an alternative input option. Either a samplesheet is given, OR an input path and a flag whether the data is single end or paired end (only one is accepted per run). When input path is given, no need to run the input checks and the creation of channels from the samplesheet file.
+5. Cite in `CITATIONS.md` all the tools that we used.
 
-8. **[in progress]** Make a "metromap" schematic of the pipeline. See, for example, the metromap for [nf-core/cutandrun](https://nf-co.re/cutandrun/3.2.1).
+6. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
 
-9. Cite in `CITATIONS.md` all the tools that we used.
 
-10. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
 
-## Introduction
+- [ReadMe](docs/README.md)
+  - The actual documentation
 
-**ComputationalRegulatoryGenomicsICL/customcageq** is a Nextflow pipeline to process CAGE sequencing data from raw reads to the creation of a CAGEexp (CAGEr) object containing called TSSs. The pipeline is specifically designed to be used upstream of CAGEr. Reads can be mapped using `STAR` (to take splacing into account and to obtain bigWig files with raw 5'-coverage; `STAR` is used by default) or `bowtie2` (see the `--bowtie2` option below). The pipeline can generate a genome index on the fly if provided with a FASTA file. For genome generation with `STAR`, user can also provide a GTF and/or splice junction (TSV) files. Providing at least one of those files for the index generation is highly recommended ("While this is optional, and STAR can be run without annotations, using annotations is highly recommended whenever they are available" [STAR manual](https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf)). Apart from the CAGEexp object and raw 5'-coverage bigWig files (if reads were mapped with `STAR`), the pipeline produces BAM files with filtered alignments that could be used for a separate analysis and a detailed `MultiQC` report.
-
-### Input
-
-Either single-end (SE) or paired-end (PE) raw CAGE reads. Only one type of reads (either single- or paired-end) can be used in one run of the pipeline. The user can list read files in a samplesheet or provide a path to a directory containing the files (stored all together or in per-sample subdirectories).
 
 ### Output
 
@@ -44,6 +34,9 @@ A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with 
 ![Pipeline metromap](docs/images/LeanCAGE_pipeline_schematic.png)
 
 ### Steps
+
+Reads can be mapped using `STAR` (to take splacing into account and to obtain bigWig files with raw 5'-coverage; `STAR` is used by default) or `bowtie2` (see the `--bowtie2` option below). The pipeline can generate a genome index on the fly if provided with a FASTA file. For genome generation with `STAR`, user can also provide a GTF and/or splice junction (TSV) files. Providing at least one of those files for the index generation is highly recommended ("While this is optional, and STAR can be run without annotations, using annotations is highly recommended whenever they are available" [STAR manual](https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf)). Apart from the CAGEexp object and raw 5'-coverage bigWig files (if reads were mapped with `STAR`), the pipeline produces BAM files with filtered alignments that could be used for a separate analysis and a detailed `MultiQC` report.
+
 
 1. Merge per-lane FASTQ files with the [`nf-core/cat_fastq`](https://nf-co.re/modules/cat_fastq) module.
 2. Report raw read quality with [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).

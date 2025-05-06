@@ -80,8 +80,7 @@ workflow CAGER {
             ch_preproc_res,
             ch_tagc_plots,
             tc_corr_data,
-            enhancer_plots,
-            params.heatmap_cex)
+            enhancer_plots)
 
     emit:
         ch_versions

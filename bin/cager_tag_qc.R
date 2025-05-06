@@ -41,11 +41,6 @@ option_list = list(
         default = 1,
         help = "Threshold for considering tags when calculating correlations (Default = 1)"),
     make_option(
-        c("-c", "--heatmap_cex"),
-        type = "double",
-        default = 0.2,
-        help = "Text size for plotting heatmaps of correlation (Default = 0.2)"),
-    make_option(
         c("-p", "--project_dir"),
         type = "character",
         default = NULL,
@@ -61,7 +56,6 @@ ce_path         <- opt$cageexp_object
 tx_annotation   <- opt$annotation
 bsgenome        <- opt$bsgenome
 corrplot_tagCountThreshold <- opt$corrplot_tagCountThreshold
-heatmap_cex <- opt$heatmap_cex
 project_dir     <- opt$project_dir
 
 # installing BSgenome
@@ -102,6 +96,5 @@ save_plot(
 plot_correlation(
     datatype="CTSS",
     dataframe=CTSStagCountDF(ce),
-    corrplot_tagCountThreshold=corrplot_tagCountThreshold,
-    heatmap_cex=heatmap_cex)
+    corrplot_tagCountThreshold=corrplot_tagCountThreshold)
 print("CTSS correlation plotted")
