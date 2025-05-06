@@ -10,17 +10,17 @@ infolder:
 sample_name_fields:
 genome_name: "sacCer3"
 fasta: "assets/sacCer3_genome/sacCer3.fa"
-index: "assets/sacCer3_genome/sacCer3_star_index/"
-star_ignore_sjdbgtf: false
-seq_platform: "illumina"
-seq_center: false
-# whether to take the uniquely mapped only
+index: "assets/sacCer3_genome/sacCer3_bowtie2_index/"
+star_ignore_sjdbgtf:
+seq_platform:
+seq_center:
+# whether to take the uniquely mapped only (for STAR)
 unique_only: false
 # whether to remove reads that do not start with G
 remove_non_g: false 
 
 # CAGEr parameters
-cager_sample_file: "assets/sample_list.csv" # with sorted list of bigwigs, if mapping is run elsewhere
+cager_sample_file:
 # BSgenome
 forgeseed:
 sourcedir:

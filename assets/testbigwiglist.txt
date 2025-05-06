@@ -1,4 +1,0 @@
-bigwig/S10.Signal.UniqueMultiple.str1.out.wig.bw
-bigwig/S10.Signal.UniqueMultiple.str2.out.wig.bw
-bigwig/S14.Signal.UniqueMultiple.str1.out.wig.bw
-bigwig/S14.Signal.UniqueMultiple.str2.out.wig.bw

@@ -1,16 +1,16 @@
 # pipeline parameters
-fullpipeline: true
-maponly: false
+fullpipeline: false
+maponly: true
 cageronly: false
-gtf: "customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf"
+gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
 
 # preprocessing parameters
 samplesheet: "samplesheet_sacer_se_mamut.csv"
 infolder: 
 sample_name_fields: 2
 genome_name: "sacCer3"
-fasta: "customcageq/assets/sacCer3_genome/sacCer3.fa"
-index: "customcageq/assets/sacCer3_genome/sacCer3_star_index"
+fasta: "assets/sacCer3_genome/sacCer3.fa"
+index: "assets/sacCer3_genome/sacCer3_star_index"
 star_ignore_sjdbgtf: false
 seq_platform: "illumina"
 seq_center: false
