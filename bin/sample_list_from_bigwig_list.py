@@ -22,7 +22,7 @@ parser.add_argument(
     help='Additional delimiter to remove parts of the input name, eg pool from sequencing facility')
 parser.add_argument(
     '-l','--field', type=int, default=None,
-    help='Which field to keep after splitting with additional delimiter (0 indexed)')
+    help='Up till which field to remove after splitting with additional delimiter (0 indexed)')
 args = parser.parse_args()
 
 outdict = {}
@@ -31,7 +31,7 @@ with open(args.filepath, "r", encoding="utf-8") as filein:
         samplepath = line.strip()
         sample_name = samplepath.split("/")[-1].split(".Signal.")[0]
         if args.delimiter is not None:
-            sample_name = sample_name.split(args.delimiter)[args.field]
+            sample_name = args.delimiter.join(sample_name.split(args.delimiter)[args.field+1:])
         if sample_name not in outdict:
             outdict[sample_name] = [samplepath]
         else:
