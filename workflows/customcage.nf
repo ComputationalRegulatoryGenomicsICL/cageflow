@@ -37,10 +37,6 @@ params.gtf = "$projectDir/assets/NO_FILE_GTF"
 // bowtie2 parameters
 params.bowtie2 = false
 
-// STAR parameters
-//params.chromsizes = null 
-params.splicesites = "$projectDir/assets/NO_FILE_SPLICESITES"
-
 // CAGEr markdown template location
 params.markdown_path = "$projectDir/assets/cager_report.Rmd"
 
