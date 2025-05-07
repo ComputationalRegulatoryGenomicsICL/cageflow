@@ -1,7 +1,7 @@
 # pipeline parameters
-fullpipeline: true
+fullpipeline: false
 maponly: false
-cageronly: false
+cageronly: true
 gtf: "/storage/mathelierarea/raw/GENCODE/Gencode_human/release_46/gencode.v46.primary_assembly.annotation.gtf"
 
 # preprocessing parameters
@@ -20,7 +20,7 @@ unique_only: true
 remove_non_g: true 
 
 # CAGEr parameters
-cager_sample_file:
+cager_sample_file: "cellines_may_sample_list.csv"
 # BSgenome
 forgeseed:
 sourcedir:

@@ -123,3 +123,9 @@ enh_annot_plot
 enh_p_plot <- readRDS("enhancer_expression_pca_plot.rds")
 enh_p_plot
 ```
+
+### Session info
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+sessionInfo()
+```
+
