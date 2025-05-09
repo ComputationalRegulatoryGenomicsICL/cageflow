@@ -77,7 +77,8 @@ coerceInBSgenome <- function(gr, genome) {
 read_in_bigwig <- function(
     bsgenome_name,
     bigwig_paths,
-    sample_names_files_dict){
+    sample_names_files_dict,
+    action){
 
   bigwig_paths <- stringr::str_squish(bigwig_paths)
 
@@ -197,6 +198,12 @@ read_in_bigwig <- function(
   # Step 5: update the sample metadata (colData).
   ce$librarySizes <- unlist(lapply(CTSStagCountDF(ce), sum))
   
+  # Merge if necessary
+  if (action is not NULL){
+      ce <- mergeSamples(ce, mergeIndex = seq(1,len(camplename)),#c(3,2,4,4,1), 
+                  mergedSampleLabels = action)#c("Zf.unfertilized.egg", "Zf.high", "Zf.30p.dome", "Zf.prim6"))
+  }
+
   # Setp 6: Return the modified object.
   ce
 }

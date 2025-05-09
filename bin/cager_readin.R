@@ -98,6 +98,7 @@ if (tolower(data_type) == "bam"){
         bam_paths=sample_table$path,
         bam_pairedness=bam_type,
         sample_names=sample_table$id,
+        action=sample_table$action,
         cpus=num_core
     )
 }else if(tolower(data_type) == "bigwig") {
@@ -122,7 +123,8 @@ if (tolower(data_type) == "bam"){
     ce <- read_in_bigwig(
         bsgenome_name=reference_name,
         bigwig_paths=sample_table$path,
-        sample_names=sample_names_files_dict
+        sample_names=sample_names_files_dict,
+        action=sample_table$action
     )
 } else {
     stop("Either bigwig or bam files should be provided")
