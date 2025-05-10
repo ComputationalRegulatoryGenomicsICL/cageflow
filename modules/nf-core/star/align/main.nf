@@ -67,9 +67,6 @@ process STAR_ALIGN {
                             }; \\
                             print n * m}'`
 
-    echo "task_memory:"
-    echo \$"{taskmemory}"
-
     STAR \\
         --genomeDir $index \\
         --readFilesIn ${reads1.join(",")} ${reads2.join(",")} \\
