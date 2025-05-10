@@ -2,15 +2,15 @@
 fullpipeline: true
 maponly: false
 cageronly: false
-gtf: "cageflow_test_data/danRer11_genome/danRer11.ensGene.gtf"
+gtf: "cageflow_test_data/sacCer3_genome/sacCer3.ensGene.gtf"
 
 # preprocessing parameters
-samplesheet: "customcageq/samplesheet_danio_nepal_2020_pe_mamut_test.csv"
+samplesheet: "customcageq/samplesheet_yeast_borlin_2018_se_test.csv"
 infolder: 
 sample_name_fields: 2
-genome_name: "danRer11"
-fasta: "cageflow_test_data/danRer11_genome/danRer11.fa"
-index: "cageflow_test_data/danRer11_genome/danRer11_star"
+genome_name: "sacCer3"
+fasta: "cageflow_test_data/sacCer3_genome/sacCer3.fa"
+index: "cageflow_test_data/sacCer3_genome/sacCer3_star_index"
 star_ignore_sjdbgtf: false
 seq_platform: "illumina"
 seq_center: false
@@ -20,11 +20,11 @@ unique_only: true
 remove_non_g: false 
 
 # CAGEr parameters
-cager_sample_file: ../nepal_sample_list_test.csv
+cager_sample_file: ../borlin_sample_list_test.csv
 # BSgenome
 forgeseed:
 sourcedir:
-bsgenome: "BSgenome.Drerio.UCSC.danRer11"
+bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
 # parameter for correlation calculation
 corrplot_tagCountThreshold: 1
 # correlation plotting of samples
