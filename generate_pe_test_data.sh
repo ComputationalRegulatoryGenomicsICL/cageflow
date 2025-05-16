@@ -2,6 +2,8 @@
 
 # Generate a test dataset with paired-end reads
 
+# This script will generate files that are soft-linked from assets/test_fastq/pe .
+
 # Use paired-end CAGE data from Danio rerio:
 # 4-5 somites (SRR10215487) and prim-5 (SRR10215486).
 # The data is publicly available as part of the following publication:
@@ -11,7 +13,10 @@
 # Nat Commun 11, 168 (2020). 
 # https://doi.org/10.1038/s41467-019-13687-0
 
-# This script will generate files that are soft-linked from assets/test_fastq/pe .
+# The script uses the following utilities:
+# - prefetch, vdb-validate, fasterq-dump: https://github.com/ncbi/sra-tools/wiki/08.-prefetch-and-fasterq-dump
+# - gzip: https://www.gzip.org/
+# - seqkit: https://bioinf.shenwei.me/seqkit/
 
 # Approximate number of reads to sample randomly
 readN=1000000
