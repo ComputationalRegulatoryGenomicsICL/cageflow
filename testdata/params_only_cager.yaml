@@ -10,7 +10,7 @@ infolder: ""
 sample_name_fields: 1
 genome_name: "GRCh38"
 fasta: ""
-index: "
+index: ""
 star_ignore_sjdbgtf: false
 seq_platform: "illumina"
 seq_center: false
