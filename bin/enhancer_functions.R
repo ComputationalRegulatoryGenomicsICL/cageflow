@@ -89,7 +89,7 @@ exclude_enhancers_overlapping_promoters <- function(BCs, ce){
 #' @return None. The function writes a BED file to disk.
 #' @export
 save_enhancers_to_bed <- function(enhancers){
-    export.bed(enhancers,con='tracks/enhancers.bed')
+    rtracklayer::export.bed(enhancers,con='tracks/enhancers.bed')
 }
 
 #' Annotate Enhancers with Transcript Database Information
