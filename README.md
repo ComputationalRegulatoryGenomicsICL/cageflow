@@ -25,49 +25,13 @@
   - The actual documentation
 
 
-### Output
 
-A CAGEexp (CAGEr) object with called TSSs, ready for a downstream analysis with CAGEr. The intermediate and final results are stored in the `results` directory.
-
-### Map
-
-![Pipeline metromap](docs/images/LeanCAGE_pipeline_schematic.png)
 
 ### Steps
 
 Reads can be mapped using `STAR` (to take splacing into account and to obtain bigWig files with raw 5'-coverage; `STAR` is used by default) or `bowtie2` (see the `--bowtie2` option below). The pipeline can generate a genome index on the fly if provided with a FASTA file. For genome generation with `STAR`, user can also provide a GTF and/or splice junction (TSV) files. Providing at least one of those files for the index generation is highly recommended ("While this is optional, and STAR can be run without annotations, using annotations is highly recommended whenever they are available" [STAR manual](https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf)). Apart from the CAGEexp object and raw 5'-coverage bigWig files (if reads were mapped with `STAR`), the pipeline produces BAM files with filtered alignments that could be used for a separate analysis and a detailed `MultiQC` report.
 
 
-1. Merge per-lane FASTQ files with the [`nf-core/cat_fastq`](https://nf-co.re/modules/cat_fastq) module.
-2. Report raw read quality with [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).
-3. Trim adapters with [`TrimGalore`](https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md).
-4. Report trimmed read quality with [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).
-5. Trim the first `G` in forward reads with [`cutadapt`](https://cutadapt.readthedocs.io/en/stable/) (optional; done by default).
-6. Build a [`STAR`](https://github.com/alexdobin/STAR) or [`bowtie2`](https://bowtie-bio.sourceforge.net/bowtie2/manual.shtml) index of the reference genome FASTA file, if the index is not provided. For the `STAR` index, use a mandatory genome annotation in a GTF format and/or an optional list of splice junctions (see below for details).
-7. Map trimmed reads onto the genome and filter alignments. If using `STAR`, then retain only the reads with at most 2 alignments (done within the `STAR` alignment module); if using `bowtie2`, then retain only the reads with $MAPQ\geq 20$ with [`samtools view`](https://www.htslib.org/doc/samtools-view.html).
-8. Optionally, remove PCR and optical duplicate reads with [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html) (not shown; see below for details).
-9. Sort the obtained BAM files using [`samtools sort`](https://www.htslib.org/doc/samtools-sort.html).
-10. Index the sorted BAM files with [`samtools index`](https://www.htslib.org/doc/samtools-index.html).
-11. Assess mapping quality using [`samtools stats`](https://www.htslib.org/doc/samtools-stats.html), [`samtools flagstat`](https://www.htslib.org/doc/samtools-flagstat.html) and [`samtools idxstats`](https://www.htslib.org/doc/samtools-idxstats.html).
-12. Create a [BSgenome package](https://bioconductor.org/packages/release/bioc/html/BSgenome.html) for the reference genome, if the package is not available.
-13. Create a CAGEexp object and call TSSs with [`CAGEr`](https://bioconductor.org/packages/release/bioc/html/CAGEr.html) using a [BSgenome package](https://bioconductor.org/packages/release/bioc/html/BSgenome.html) for the respective genome. If reads were mapped with `STAR`, then convert its 5'-coverage wig files into bigWig files to use as input for `CAGEr` (the `CAGEexp-bigWig` module); if reads were mapped with `bowtie2`, then use MAPQ-filtered and sorted BAM files as `CAGEr` input (the `CAGEexp-BAM` module).
-14. Analysis of CAGE reads according to the manual of [`CAGEr`](https://www.bioconductor.org/packages/release/bioc/vignettes/CAGEr/inst/doc/CAGEexp.html). Clustering done using distance based (distclu) method. Merging of the replicates is disabled currently (meaning it is commented out). Hardcoded values to be discussed:
-```
-ce <- CAGEr::distclu(
-        ce,
-        maxDist=20,
-        keepSingletonsAbove = 5)
-```
-```
-iqw_plot <- plotInterquantileWidth_local(
-        ce,
-        clusters = "tagClusters",
-        tpmThreshold = 3,
-        qLow = 0.1,
-        qUp = 0.9,
-        xlim = c(0, 150))
-```
-15. Create a [MultiQC](https://multiqc.info/) report.
 
 ## Usage
 
