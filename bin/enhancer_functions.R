@@ -81,6 +81,17 @@ exclude_enhancers_overlapping_promoters <- function(BCs, ce){
     return(true_enhancers)
 }
 
+#' Save Enhancer Regions to BED File
+#'
+#' This function saves a GRanges object of enhancer regions to a BED file.
+#'
+#' @param enhancers A GRanges object containing enhancer regions.
+#' @return None. The function writes a BED file to disk.
+#' @export
+save_enhancers_to_bed <- function(enhancers){
+    export.bed(enhancers,con='tracks/enhancers.bed')
+}
+
 #' Annotate Enhancers with Transcript Database Information
 #'
 #' This function annotates a set of enhancers with information from a given transcript database.

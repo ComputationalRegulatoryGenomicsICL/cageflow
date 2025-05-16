@@ -11,7 +11,8 @@ required.libraries <- c(
     "CAGEfightR",
     "GenomicRanges",
     "GenomicFeatures",
-    "dplyr"
+    "dplyr",
+    "rtracklayer"
 )
 
 
@@ -87,22 +88,28 @@ supported_enhancers <- cagefightr_enhancers(
     ce=ce,
     cfBalanceThreshold=cfBalanceThreshold)
 
+saveRDS(supported_enhancers, file = "intermediate_cagerobj/supported_enhancers.rds")
+print("Supported enhancers rds file saved")
+
 # exclude enhancers overlapping promoters defined by consensus clusters
 true_enhancers <- exclude_enhancers_overlapping_promoters(
     BCs=supported_enhancers,
     ce=ce)
 print("Enhancers overlapping promoters excluded")
 
+saveRDS(true_enhancers, file = "intermediate_cagerobj/nonTSS_enhancers.rds")
+print("Enhancers excluding promoters (consensus clusters) rds file saved")
+
+save_enhancers_to_bed(enhancers=true_enhancers)
+print("Enhancers saved to BED file")
+
 # annotate enhancers with transcript database information
 tx_annotation_obj <- loadDb(tx_annotation)
-annotated_enhancers <- annotate_enhancers(
+annotate_enhancers(
     enhancers=true_enhancers,
     txdb=tx_annotation_obj,
     tssregion_up=tssregion_up,
     tssregion_down=tssregion_down)
-
-saveRDS(annotated_enhancers, file = "intermediate_cagerobj/enhancers.rds")
-print("Annotated enhancers rds file saved")
 
 # assign enhancers to samples
 enhancer_expr_per_sample <- identify_sample_specific_enhancers(
