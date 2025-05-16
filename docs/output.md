@@ -37,6 +37,12 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - Analysis of CAGE reads according to the manual of [`CAGEr`](https://www.bioconductor.org/packages/release/bioc/vignettes/CAGEr/inst/doc/CAGEexp.html). Final output is a markdown document summarizing the results and QC.
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
+
+Reads can be mapped using `STAR` (to take splacing into account and to obtain bigWig files with raw 5'-coverage; `STAR` is used by default) or `bowtie2` (see the `--bowtie2` option below).
+The pipeline can generate a genome index on the fly if provided with a FASTA file.
+For genome generation with `STAR`, user can also provide a GTF file.
+Apart from the CAGEexp object and raw 5'-coverage bigWig files (if reads were mapped with `STAR`), the pipeline produces BAM files with filtered alignments that could be used for a separate analysis and a detailed `MultiQC` report.
+
 ### FastQC
 
 <details markdown="1">

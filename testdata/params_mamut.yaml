@@ -11,7 +11,6 @@ sample_name_fields:
 genome_name: "sacCer3"
 fasta: "customcageq/assets/sacCer3_genome/sacCer3.fa"
 index: "customcageq/assets/sacCer3_genome/sacCer3_star_index/"
-star_ignore_sjdbgtf: false
 seq_platform: "illumina"
 seq_center: false
 # whether to take the uniquely mapped only (for STAR)

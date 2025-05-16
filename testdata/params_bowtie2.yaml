@@ -11,7 +11,6 @@ sample_name_fields:
 genome_name: "sacCer3"
 fasta: "assets/sacCer3_genome/sacCer3.fa"
 index: "assets/sacCer3_genome/sacCer3_bowtie2_index/"
-star_ignore_sjdbgtf:
 seq_platform:
 seq_center:
 # whether to take the uniquely mapped only (for STAR)

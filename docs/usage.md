@@ -6,14 +6,16 @@
 
 <!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
 
-**ComputationalRegulatoryGenomicsICL/customcageq** is a Nextflow pipeline to process CAGE sequencing data from raw reads to the identification of consensus clusters and enhancers. The pipeline is specifically designed to be used for assessing the quality of the CAGE data, and calling promoters and enhancers with good default values that can be later fine tuned as needed. The pipeline also supports the re-analysis of the reads with updated parameters.
+**ComputationalRegulatoryGenomicsICL/customcageq** is a Nextflow pipeline to process CAGE sequencing data from raw reads to the identification of consensus clusters and enhancers.
+The pipeline is specifically designed to be used for assessing the quality of the CAGE data, and calling promoters and enhancers with good default values that can be later fine tuned as needed.
+The pipeline also supports the re-analysis of the reads with updated parameters.
 
 
 ### Input
 
 #### Parameter file
 
-To customize the analysis the pipeline takes about 40 different parameters, which can be defined in a single `params.yaml` file.
+Customizing the analysis the pipeline requires about 40 different parameters. These can be defined in a single `params.yaml` file.
 An example is shown below.
 
 ```
@@ -31,7 +33,6 @@ sample_name_fields:
 genome_name: "sacCer3"
 fasta: "testdata/sacCer3_genome/sacCer3.fa"
 index: "testdata/sacCer3_genome/sacCer3_star_index/"
-star_ignore_sjdbgtf: false
 seq_platform: "illumina"
 seq_center: false
 # whether to take the uniquely mapped only
@@ -72,6 +73,39 @@ consensus_dist: 100
 cfBalanceThreshold: 0.95
 ```
 
+where the pipeline parameters that should be provided in all runs are
+* `fullpipeline`, `maponly`, and `cageronly` define the mode of the pipeline run. With the `fullpipeline` option, every step will run. `maponly` stops at creating `bigwig` and/or `bam` files, as well as a MultiQC report. `cageronly` starts from `bigwig` or `bam` files and finishes with a CAGEr report.
+* `gtf` specifies a GTF file with a whole-genome annotation to create a STAR index (if a FASTA file is provided) and/or to automatically create a TxDb annotation object to annotate tag clusters.
+
+The parameters specific to mapping, can be left empty when running in `cageronly` mode:
+* `samplesheet` specifies the input CSV samplesheet. This option is mutually exclusive with `infolder`.
+* `infolder` specifies the input directory with FASTQ files (stored together for all samples or located in per-sample subdirectories). This option is mutually exclusive with `samplesheet`, and may be used together with `sample_name_fields`.
+* `sample_name_fields` is a supporting parameter for `infolder` in case your sample name has underscore(s) in it. By default, only the first part of the string before the first underscore is taken for samplename. If you have more, like `my_sample_name_S1_L001_R1_001.fastq.gz`, with this parameter you may specify *how many underscore separated fields* the sample name has in the filename. In the `my_sample_name_S1_L001_R1_001.fastq.gz` example, this parameter should be = 3.
+* `genome_name` specifies the name of the reference genome. It is used as meta information
+* `fasta` specifies a FASTA file containing a reference genome. This option is mandatory, unless `index` is set.
+* `index` specifies a directory with a genome index (`bowtie2` or `STAR`). This is a mandatory option, unless `fasta` is set.
+* `seq_platform` specifies the sequencing platform used. Required for mapping with `STAR`.
+* `seq_center` specifies the name of the sequencing center. Required for mapping with `STAR`.
+
+
+The parameters specific to CAGEr analysis, can be left empty when running in `maponly` mode:
+* `bsgenome` specifies the BSgenome R package to use. If it is a file name (which should have a full path and the `.tar.gz` extension), then the package will be taken from the specified location; otherwise, the pipeline will try to install a BSgenome R package with the name `bsgenome.package` on the fly (see examples below). This option is mutually exclusive with `forgeseed` and `sourcedir`.
+* `forgeseed` specifies a seed file for BSgenome forging (see the [Advanced BSgenomeForge usage vignette](https://bioconductor.org/packages/release/bioc/vignettes/BSgenomeForge/inst/doc/AdvancedBSgenomeForge.pdf) for details). The seed file should not contain the `seqs_srcdir` field (instead, the absolute or relative path to the source directory is set with the `sourcedir` option, see below). This option requires `sourcedir` and is mutually exclusive with `bsgenome`.
+* `sourcedir` specifies a directory containing either a set of FASTA files, one per reference chromosome, or a 2bit file for the whole reference genome. See the [Advanced BSgenomeForge usage vignette](https://bioconductor.org/packages/release/bioc/vignettes/BSgenomeForge/inst/doc/AdvancedBSgenomeForge.pdf) for details. The seed file should be written according to the contents of this directory. This option requires `forgeseed` and is mutually exclusive with `bsgenome`.
+
+
+* `[OPTIONAL_ARGUMENTS]` can be:
+    * `params-trimgalore 'params'` specifies any options that can be passed to `TrimGalore!`. This option is useful for any non-standard read processing (for example, for CAGEscan reads that require the removal of a fixed number of nucleotides from the 5'-ends of the forward and reverse reads ([Bertin et al., 2017](https://www.nature.com/articles/sdata2017147))). The string with the parameters for `TrimGalore!` must be surrounded by single quotes.
+    * `nogtrim` makes the pipeline skip the G-trimming step. This option is useful for processing non-CAGE data (for example, CAGEscan reads which do not seem to require trimming of a 5'-`G` ([Bertin et al., 2017](https://www.nature.com/articles/sdata2017147))). This option can be used together with `params-trimgalore` (see an example below).
+    * `bowtie2` switches the aligner from `STAR` to `bowtie2`. This option is compatible with either `index` or `fasta`.
+    * `dedup` switches on PCR duplicate removal (not shown in the pipeline map above and is switched off by default).
+    * `dist L` sets an optical duplicate distance `L` to remove optical duplicates, in addition to PCR duplicates (see [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html), option `-d`). This option requires `dedup`.
+    * `-profile` is a Nextflow option that specifies a config file to use with Nextflow on a given machine. See [`nf-core/configs`](https://github.com/nf-core/configs) for ready-to-use institutional configs, including the one for Jex (the high-performance computing cluster of the [Laboratory of Medical Sciences](https://lms.mrc.ac.uk/)). Also, see the [Jex wiki](https://hpcwiki.lms.mrc.ac.uk/docs/software/software/workflow_managers/#nextflow) on how to run Nextflow on Jex. Alternatively, this option can be used to specify the containerization technology to use.
+    * `-w` is a Nextflow option that specifies a path to the Nextflow work directory.
+    * Any other Nextflow options (see [Nextflow command line interface](https://www.nextflow.io/docs/latest/cli.html)).
+
+*Note: All pipeline options may be provided to the nextflow command starting with a double dash (`--`). All Nextflow options start with a single dash (`-`).*
+
 #### Complete pipeline
 
 To run the complete pipeline, starting from raw reads, the input is either single-end (SE) or paired-end (PE) raw CAGE reads. **Only one type of reads (either SE or PE) can be used in one run of the pipeline.** The user can list read files in a samplesheet or provide a path to a directory containing the files (stored all together or in subdirectories within the provided folder).
@@ -87,18 +121,26 @@ S14,testdata/sacCer_fastq/pe/S14_S8_L001_R1_001.fastq.gz,testdata/sacCer_fastq/p
 S14,testdata/sacCer_fastq/pe/S14_S8_L002_R1_001.fastq.gz,testdata/sacCer_fastq/pe/S14_S8_L002_R2_001.fastq.gz,False
 ```
 
+where
+* `sample` is a unique identifier of a sample;
+* `fastq_1` (and `fastq_2` in the case of paired-end reads) is a full path to the read libraries. In case of paired-end reads, `fastq_1` contains the full path to forward reads, while `fastq_2` contains the full path to reverse reads. One sample can be represented by more than one library if lanes are stored separately;
+* `single_end` should be set to `True` for single-end reads and to `False` for paired-end reads.
+
+For paired-end reads, `fastq_2` should contain the full path to reverse reads, while `single_end` should be set to `False`.
+
 - [Samplesheet](samplesheet.md)
   - Additional information on the samplesheet.
 
 
 ##### Starting from a folder path
+
 If a foldername including fastq files is provided, the `--infolder` parameter should be selected.
 In this case, the software assumes that the file name follows Illumina naming conventions and has the following structure: `<sample name>_<sample number>_L00<lane number>_<R1/R2/1/2>_001.fastq.gz`.
 From the existence of `R2` (or `2`) values in the expected position, the software assigns the input to be paired end or single end. 
 By default, it takes the first value before the underscore which should be the *sample name*.
 However, it can be overwritten in case the *sample name* itself contains underscore values.
-The additional parameter `--sample_name_fields` should be set to how many underscore separated parts the *sample name* has.
-Note, that if the sample name had any dash (`-`) it is converted to underscore (`_`) to ensure compatibility with subsequent processes.
+The additional parameter `sample_name_fields` should be set to how many underscore separated parts the *sample name* has.
+*Note, that if the sample name had any dash (`-`) it is converted to underscore (`_`) to ensure compatibility with subsequent processes.*
 
 #### CAGEr subpipeline
 
@@ -122,10 +164,10 @@ This script accepts two additional parameters: `--delimiter` and `--field` speci
 
 ## Running the pipeline
 
-The typical command for running the pipeline is as follows:
+After you cloned this repository, the typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run ComputationalRegulatoryGenomicsICL/customcage -params-file params.yaml -profile docker
+nextflow run customcageq/main.nf -params-file params.yaml -profile docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -138,6 +180,14 @@ work                # Directory containing the nextflow working files
 .nextflow_log       # Log file from Nextflow
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```
+
+## Additional information
+
+You can change the maximum number of instances of the same process that can run in parallel (by default, the maximum number of instances of the same process equals 2).
+To do this, change the value of the `maxForks` parameter in `conf/base.config`.
+<!-- TODO: check if this can be overwritten with the -c option in nextflow, that would be cleaner -->
+Limiting this number makes sure that the pipeline does not try to obtain all available resources.
+
 
 - [nextflow_usage](docs/nextflow_usage.md)
   - Nextflow specific information
