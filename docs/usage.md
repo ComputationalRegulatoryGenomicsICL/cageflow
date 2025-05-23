@@ -36,7 +36,7 @@ index: "testdata/sacCer3_genome/sacCer3_star_index/"
 seq_platform: "illumina"
 seq_center: false
 # whether to take the uniquely mapped only
-unique_only: false
+unique_only: true
 # whether to remove reads that do not start with G
 remove_non_g: false 
 
@@ -71,6 +71,8 @@ consensus_thr: 2
 consensus_dist: 100
 # parameters for enhancer calling
 cfBalanceThreshold: 0.95
+unexpressed: 0
+minSamples: 0
 ```
 
 where the pipeline parameters that should be provided in all runs are
@@ -86,23 +88,40 @@ The parameters specific to mapping, can be left empty when running in `cageronly
 * `index` specifies a directory with a genome index (`bowtie2` or `STAR`). This is a mandatory option, unless `fasta` is set.
 * `seq_platform` specifies the sequencing platform used. Required for mapping with `STAR`.
 * `seq_center` specifies the name of the sequencing center. Required for mapping with `STAR`.
+* `unique_only` specifies if only uniquely mapped reads are considered for downstream analysis. Required for mapping with `STAR`. Not considered when using `bowtie2`.
+* `remove_non_g` specifies whether to keep only those reads that start with `G` base, as expected after the CAGE protocol. This step is expected to remove about 15-20% of the reads that would likely be non canonical initiators, but they might take part in ohter biological processes.
 
 
-The parameters specific to CAGEr analysis, can be left empty when running in `maponly` mode:
-* `bsgenome` specifies the BSgenome R package to use. If it is a file name (which should have a full path and the `.tar.gz` extension), then the package will be taken from the specified location; otherwise, the pipeline will try to install a BSgenome R package with the name `bsgenome.package` on the fly (see examples below). This option is mutually exclusive with `forgeseed` and `sourcedir`.
+The parameters specific to CAGEr and CAGEfightR analysis, can be left empty when running in `maponly` mode:
+* `cager_sample_file` specifies the input CSV samplesheet including the name of the samples, their pairedness status, and the location of bigwigs. Optionally, a fourth column is used that sepcifies which samples should be removed, merged, or kept as is. This is achieved by checking if the row is empty (remove), its content is unique (keep as is), or shared with another sample (merge).
 * `forgeseed` specifies a seed file for BSgenome forging (see the [Advanced BSgenomeForge usage vignette](https://bioconductor.org/packages/release/bioc/vignettes/BSgenomeForge/inst/doc/AdvancedBSgenomeForge.pdf) for details). The seed file should not contain the `seqs_srcdir` field (instead, the absolute or relative path to the source directory is set with the `sourcedir` option, see below). This option requires `sourcedir` and is mutually exclusive with `bsgenome`.
 * `sourcedir` specifies a directory containing either a set of FASTA files, one per reference chromosome, or a 2bit file for the whole reference genome. See the [Advanced BSgenomeForge usage vignette](https://bioconductor.org/packages/release/bioc/vignettes/BSgenomeForge/inst/doc/AdvancedBSgenomeForge.pdf) for details. The seed file should be written according to the contents of this directory. This option requires `forgeseed` and is mutually exclusive with `bsgenome`.
+* `bsgenome` specifies the BSgenome R package to use. If it is a file name (which should have a full path and the `.tar.gz` extension), then the package will be taken from the specified location; otherwise, the pipeline will try to install a BSgenome R package with the name `bsgenome.package` on the fly (see examples below). This option is mutually exclusive with `forgeseed` and `sourcedir`.
+* `corrplot_tagCountThreshold` is a threshold above which (raw and normalized) CTSS are considered for the correlation plot.
+* `norm_method` is the method used for normalizing the samples. Options are `simpleTpm` to covert tag counts to tags per million, `powerLaw` to normalize to a reference power-law distribution, or `none` to keep using the raw tag counts in downstream analyses. Case sensitive.
+* `norm_range_min` and `norm_range_max` defines the lower and upper thresold for fitting the power-law distribution and calculate the slope for normalization. Only used when `norm_method` is `powerLaw`.
+* `alpha` user specified alpha, the `-1 *` fitted slope in the log-log representation of the power-law distribution. If none, the average across samples is calculated and used. Considered for `powerLaw` normalization only. 
+* `T_norm` total number of CAGE tags in the reference power-law distribution. Setting `T = 10^6` results in normalized values that correspond to tags per million. Considered for `powerLaw` normalization only.
+* `sample_num_thr` and `ctss_thr` are parameters for filtering low expressed CTSS before clustering. `ctss_thr` specifies the lower threshold above which CTSS are considered, and `sample_num_thr` specifies the number of samples where this threshold should be passed.  
+* `distclu_maxDist` specifies the maximum distance for distance-based clustering (distclu).
+* `keepSingletonsAbove` defines the tpm threshold above which even a single CTSS is kept during clustering.
+* The `iq_low` and `iq_high` parameters are used to define the lower and upper quantile boundaries of the interquartile range within which the majority of the signal lies.
+* `iqw_tpm_threshold` is a threshold above which tag clusters are considered for the interquartile width distribution plot.
+* `tssregion_up` and `tssregion_down` are used for annotation with ChIPseeker. These correspond to the upstream and downstream distance to consider into TSS region for ChIPseeker annotation.
+tssregion_up should be negative, tssregion_down should be positive.
+* `tsslogo_upstream` is used for plotting the TSS logos. This parameter specifies the number of bases to inlcude upstream of the TSS.
+* `consensus_thr` and `consensus_dist` are used for defining the consensus clusters. `consensus_thr` specifies the TPM threshold above which tag clusters are considered for consensus clusters, and  `consensus_dist` define the maximum distance between the interquartile ranges of tag clusters to be joined together into consensus clusters.
+* `cfBalanceThreshold` is used for enhancer calling. It defines the balance threshold above which bidirectionality is considered balanced.
+* `unexpressed` and `minSamples` are used for selecting only supported enhancers. `unexpressed` is a non inclusive lower TPM boundary for expression when calculating support of enhancers. `minSamples` is a non-inclusive lower boundary for the number of samples where the clusters should show bidirectionality.
 
 
-* `[OPTIONAL_ARGUMENTS]` can be:
+* Additional arguments can be:
     * `params-trimgalore 'params'` specifies any options that can be passed to `TrimGalore!`. This option is useful for any non-standard read processing (for example, for CAGEscan reads that require the removal of a fixed number of nucleotides from the 5'-ends of the forward and reverse reads ([Bertin et al., 2017](https://www.nature.com/articles/sdata2017147))). The string with the parameters for `TrimGalore!` must be surrounded by single quotes.
     * `nogtrim` makes the pipeline skip the G-trimming step. This option is useful for processing non-CAGE data (for example, CAGEscan reads which do not seem to require trimming of a 5'-`G` ([Bertin et al., 2017](https://www.nature.com/articles/sdata2017147))). This option can be used together with `params-trimgalore` (see an example below).
     * `bowtie2` switches the aligner from `STAR` to `bowtie2`. This option is compatible with either `index` or `fasta`.
     * `dedup` switches on PCR duplicate removal (not shown in the pipeline map above and is switched off by default).
     * `dist L` sets an optical duplicate distance `L` to remove optical duplicates, in addition to PCR duplicates (see [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html), option `-d`). This option requires `dedup`.
-    * `-profile` is a Nextflow option that specifies a config file to use with Nextflow on a given machine. See [`nf-core/configs`](https://github.com/nf-core/configs) for ready-to-use institutional configs, including the one for Jex (the high-performance computing cluster of the [Laboratory of Medical Sciences](https://lms.mrc.ac.uk/)). Also, see the [Jex wiki](https://hpcwiki.lms.mrc.ac.uk/docs/software/software/workflow_managers/#nextflow) on how to run Nextflow on Jex. Alternatively, this option can be used to specify the containerization technology to use.
     * `-w` is a Nextflow option that specifies a path to the Nextflow work directory.
-    * Any other Nextflow options (see [Nextflow command line interface](https://www.nextflow.io/docs/latest/cli.html)).
 
 *Note: All pipeline options may be provided to the nextflow command starting with a double dash (`--`). All Nextflow options start with a single dash (`-`).*
 

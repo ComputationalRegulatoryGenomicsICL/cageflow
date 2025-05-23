@@ -21,6 +21,8 @@ process CAGEFIGHTR_ENHANCERS {
         --cageexp_object ${cager_obj} \
         --annotation ${txdb} \
         --cfBalanceThreshold ${params.cfBalanceThreshold} \
+        --unexpressed ${params.unexpressed} \
+        --minSamples ${params.minSamples} \
         --tssregion_up ${params.tssregion_up} \
         --tssregion_down ${params.tssregion_down} \
         --project_dir ${projectDir}

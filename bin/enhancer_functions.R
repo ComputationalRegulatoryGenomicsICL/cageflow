@@ -4,15 +4,21 @@
 #'
 #' @param ce initial CAGEexp object with CTSS values
 #' @param cfBalanceThreshold threshold for the cagefightr balance score
+#' @param unexpressed threshold above which normalized CTSS are considered expressed 
+#' @param minSamples non inlcusive lower threshold for number of samples supporting enhancers (i.e. where there is bidirectionality)
 #' @return enhancers
 #' @examples
 #' cagefightr_enhancers(
 #' ce,
 #' cfBalanceThreshold = 0.95,
+#' unexpressed = 0,
+#' minSamples = 0
 #' )
 cagefightr_enhancers <- function(
         ce,
-        cfBalanceThreshold){
+        cfBalanceThreshold,
+        unexpressed,
+        minSamples){
 
     # License note: the code converting the CAGEexp object to a SummarizedExperiment
     # object is copied and modified from CAGEr: the original code only takes the counts
@@ -177,6 +183,7 @@ count_number_of_enhancers <- function(enhancer_expr_per_sample) {
     for (sample in colnames(enhancer_expr_per_sample)) {
         sample_enhancer_count[[sample]] <- sum(as.vector(enhancer_expr_per_sample[,sample]) > 0)
     }
+    sample_enhancer_count[["Union"]] <- dim(enhancer_expr_per_sample)[1]
     return(sample_enhancer_count)
 }
 

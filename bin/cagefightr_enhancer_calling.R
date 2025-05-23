@@ -38,6 +38,16 @@ option_list = list(
         default = 0.95,
         help = "threshold for the cagefightr balance score (Default=0.95)"),
     make_option(
+        c("-e", "--unexpressed"),
+        type = "double",
+        default = 0,
+        help = "threshold above which normalized CTSS are considered expressed (Default=0)"),
+    make_option(
+        c("-s", "--minSamples"),
+        type = "integer",
+        default = 0,
+        help = "non inlcusive lower threshold for number of samples supporting enhancers (i.e. where there is bidirectionality) (Default=0)"),
+    make_option(
         c("-u", "--tssregion_up"),
         type = "integer",
         default = -3000,
@@ -62,6 +72,8 @@ opt = optparse::parse_args(opt_parser)
 ce_path             <- opt$cageexp_object
 tx_annotation       <- opt$annotation
 cfBalanceThreshold  <- opt$cfBalanceThreshold
+unexpressed         <- opt$unexpressed
+minSamples        <- opt$minSamples
 tssregion_up    <- opt$tssregion_up
 tssregion_down  <- opt$tssregion_down
 project_dir         <- opt$project_dir
@@ -86,7 +98,9 @@ ce <- readRDS(ce_path)
 # call enhancers with CAGEfightR
 supported_enhancers <- cagefightr_enhancers(
     ce=ce,
-    cfBalanceThreshold=cfBalanceThreshold)
+    cfBalanceThreshold=cfBalanceThreshold,
+    unexpressed=unexpressed,
+    minSamples=minSamples)
 
 saveRDS(supported_enhancers, file = "intermediate_cagerobj/supported_enhancers.rds")
 print("Supported enhancers rds file saved")

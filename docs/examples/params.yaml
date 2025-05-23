@@ -16,7 +16,7 @@ star_ignore_sjdbgtf: false
 seq_platform: "illumina"
 seq_center: false
 # whether to take the uniquely mapped only
-unique_only: false
+unique_only: true
 # whether to remove reads that do not start with G
 remove_non_g: false 
 
@@ -51,3 +51,5 @@ consensus_thr: 2
 consensus_dist: 100
 # parameters for enhancer calling
 cfBalanceThreshold: 0.95
+unexpressed: 0
+minSamples: 0
