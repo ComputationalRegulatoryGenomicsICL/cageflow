@@ -2,6 +2,8 @@
 
 # Generate a test dataset with single-end reads
 
+# This script will generate files that are soft-linked from assets/test_fastq/se .
+
 # Use single-end CAGE data from Saccharomyces cerevisiae:
 # anaerobic conditions (Ana, ERR2495148) and ethanol limitation (Eth, ERR2495150).
 # The data is publicly available as part of the following publication:
@@ -11,7 +13,10 @@
 # FEMS Yeast Research, 19, foy128 (2019). 
 # https://doi.org/10.1093/femsyr/foy128
 
-# This script will generate files that are soft-linked from assets/test_fastq/se .
+# The script uses the following utilities:
+# - prefetch, vdb-validate, fasterq-dump: https://github.com/ncbi/sra-tools/wiki/08.-prefetch-and-fasterq-dump
+# - gzip: https://www.gzip.org/
+# - seqkit: https://bioinf.shenwei.me/seqkit/
 
 # Approximate number of reads to sample randomly
 readN=300000
