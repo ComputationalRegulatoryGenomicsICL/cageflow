@@ -5,12 +5,12 @@ cageronly: false
 gtf: "cageflow_test_data/sacCer3_genome/sacCer3.ensGene.gtf"
 
 # preprocessing parameters
-samplesheet: "customcageq/samplesheet_yeast_borlin_2018_se_test.csv"
+samplesheet: "testdata/samplesheet_yeast_borlin_2018_se_test.csv"
 infolder: 
 sample_name_fields: 2
 genome_name: "sacCer3"
 fasta: "cageflow_test_data/sacCer3_genome/sacCer3.fa"
-index: "cageflow_test_data/sacCer3_genome/sacCer3_star_index"
+index:
 seq_platform: "illumina"
 seq_center: false
 # whether to take the uniquely mapped only

@@ -15,8 +15,14 @@
 
 # The script uses the following utilities:
 # - prefetch, vdb-validate, fasterq-dump: https://github.com/ncbi/sra-tools/wiki/08.-prefetch-and-fasterq-dump
-# - gzip: https://www.gzip.org/
+# - gzip, gunzip: https://www.gzip.org/
 # - seqkit: https://bioinf.shenwei.me/seqkit/
+
+mkdir cageflow_test_data
+cd cageflow_test_data
+mkdir samples
+mkdir danRer11_genome
+cd samples
 
 # Approximate number of reads to sample randomly
 readN=1000000
@@ -115,3 +121,11 @@ seqkit sample -p 0.1 -s 42 prim5_SRR10215486_2_shuff_bottom-half.fastq.gz | seqk
 # Remove the subset bottom half
 rm prim5_SRR10215486_1_shuff_bottom-half.fastq.gz
 rm prim5_SRR10215486_2_shuff_bottom-half.fastq.gz
+
+# To get the reference genome and its annotation, use the following command:
+cd ../danRer11_genome
+
+wget https://hgdownload.soe.ucsc.edu/goldenPath/danRer11/bigZips/danRer11.fa.gz
+gunzip danRer11.fa.gz
+wget https://hgdownload.soe.ucsc.edu/goldenPath/danRer11/bigZips/genes/danRer11.ensGene.gtf.gz
+gunzip danRer11.ensGene.gtf.gz
