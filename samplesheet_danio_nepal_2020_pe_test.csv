@@ -1,0 +1,5 @@
+sample,fastq_1,fastq_2,single_end
+S10,customcageq/assets/test_fastq/pe/S10_L001_R1.fastq.gz,customcageq/assets/test_fastq/pe/S10_L001_R2.fastq.gz,False
+S10,customcageq/assets/test_fastq/pe/S10_L002_R1.fastq.gz,customcageq/assets/test_fastq/pe/S10_L002_R2.fastq.gz,False
+S14,customcageq/assets/test_fastq/pe/S14_L001_R1.fastq.gz,customcageq/assets/test_fastq/pe/S14_L001_R2.fastq.gz,False
+S14,customcageq/assets/test_fastq/pe/S14_L002_R1.fastq.gz,customcageq/assets/test_fastq/pe/S14_L002_R2.fastq.gz,False

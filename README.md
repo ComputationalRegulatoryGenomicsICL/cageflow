@@ -112,20 +112,35 @@ Alternatively, you can provide a path to a directory containing FASTQ files. Rea
 /path/to/fastq/S2/S2_S2_L002_R1_001.fastq.gz
 ```
 
-### Toy input data for testing
+### Test data
 
-The pipeline has toy *S. cerevisiae* CAGE data stored in [assets/sacCer_fastq](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets/sacCer_fastq) for testing purposes (single-end reads in the [se](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets/sacCer_fastq/se) subfolder and paired-end reads in [pe](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets/sacCer_fastq/pe) subfolder). The single-end reads were obtained by subsampling the [ERR2495152](https://www.ebi.ac.uk/ena/browser/view/ERR2495152) dataset published by ([Börlin et al., 2018](https://academic.oup.com/femsyr/article/19/2/foy128/5257840)), while the paired-end reads were obtained by subsampling the [SRR1631657](https://www.ebi.ac.uk/ena/browser/view/SRR1631657) dataset published by ([Chabbert et al., 2015](https://www.embopress.org/doi/full/10.15252/msb.20145776)).
+The pipeline can be run on test single-end and paired-end data. The directory containing test CAGE libraries and all necessary reference genome files can be downloaded from ... It should be placed next to this repository and uncompressed.
 
-Single-end test datasets were obtained in the following way (subsampling 5,000 reads for each "lane"):
+Single-end test reads were randomly sampled from yeast CAGE libraries "Ana" (replicate 1, ERR2495148, anaerobic conditions) and "Eth" (replicate 1, ERR2495150, ethanol limitation) generated and analyzed in ([Börlin et al., 2019](https://academic.oup.com/femsyr/article/19/2/foy128/5257840)). The test data include two samples split into two lanes each. One lane contains approximately 300,000 reads; therefore, the whole dataset contains around 1.2 mln reads. See `generate_se_test_data.sh` for details on how the test dataset was generated. 
+
+To run the pipeline on these data, use the following command from outside the pipeline repository:
 
 ```
-<20171106_CAGE_SequencingData_Ana_Rep1.fastq head -1000000 | tail -20000 > S1_S1_L001_R1_001.fastq
-<20171106_CAGE_SequencingData_Ana_Rep1.fastq head -5000000 | tail -20000 > S1_S1_L002_R1_001.fastq
-<20171106_CAGE_SequencingData_Eth_Rep1.fastq head -1000000 | tail -20000 > S2_S2_L001_R1_001.fastq
-<20171106_CAGE_SequencingData_Eth_Rep1.fastq head -5000000 | tail -20000 > S2_S2_L002_R1_001.fastq
+nextflow run customcageq/main.nf \
+    -params-file customcageq/params_yeast_borlin_test.yaml \
+    -profile singularity \
+    -w /mnt/scratch/work_se_test
 ```
 
-The corresponding *template* input spreadsheets can be found in [assets](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/tree/dev/assets): [samplesheet_sacer_se_template.csv](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/assets/samplesheet_sacer_se_template.csv) for single-end reads and [samplesheet_sacer_pe_template.csv](https://github.com/ComputationalRegulatoryGenomicsICL/customcageq/blob/dev/assets/samplesheet_sacer_pe_template.csv) for paired-end reads. You will need to add the absolute paths to the `customcageq` repository on your computer / HPC cluster to these templates to use them with the pipeline.
+adapting the suggested values for the options `-profile` (Nextflow profile name) and `-w` (Nextflow work directory) according to your system's setup.
+
+Paired-end test reads were randomly sampled from zebrafish CAGE libraries "4-5 somites" (SRR10215487) and "prim-5" (SRR10215486) generated and analyzed in ([Nepal et al., 2020](https://doi.org/10.1038/s41467-019-13687-0)). The test data include two samples split into two lanes each. One lane contains approximately 1 mln reads; therefore, the whole dataset contains around 4 mln reads. See `generate_pe_test_data.sh` for details on how the test dataset was generated.
+
+To run the pipeline on these data, use the following command from outside the pipeline repository:
+
+```
+nextflow run customcageq/main.nf \
+    -params-file customcageq/params_danio_nepal_test.yaml \
+    -profile singularity \
+    -w /mnt/scratch/work_pe_test
+```
+
+adapting the suggested values for the options `-profile` (Nextflow profile name) and `-w` (Nextflow work directory) according to your system's setup.
 
 ### How to run the pipeline
 
