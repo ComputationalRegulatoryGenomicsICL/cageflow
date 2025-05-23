@@ -32,6 +32,11 @@ The corrplot_tagCountThreshold is shared across correlation plots.
 print(paste0("The current corrplot_tagCountThreshold value is: ", corrplot_tagCountThreshold))
 
 corr_m <- readRDS("CTSS_correlations_matrix.rds")
+if (dim(corr_m)[1] > 10){
+    heatmap_cex = 0.2
+} else {
+    heatmap_cex = 1
+}
 hm_plot <- readRDS("CTSS_correlations_plot.rds")
 eval(hm_plot$call)
 ```
@@ -64,6 +69,11 @@ The corrplot_tagCountThreshold is shared across correlation plots.
 print(paste0("The current corrplot_tagCountThreshold value is: ", corrplot_tagCountThreshold))
 
 corr_m <- readRDS("norm_CTSS_correlations_matrix.rds")
+if (dim(corr_m)[1] > 10){
+    heatmap_cex = 0.2
+} else {
+    heatmap_cex = 1
+}
 hm_plot <- readRDS("norm_CTSS_correlations_plot.rds")
 eval(hm_plot$call)
 ```

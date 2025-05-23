@@ -11,9 +11,9 @@ process CAGEFIGHTR_ENHANCERS {
     path txdb
 
     output:
-    path "intermediate_cagerobj/enhancers.rds",        emit: rds
+    tuple path("intermediate_cagerobj/supported_enhancers.rds"), path("intermediate_cagerobj/nonTSS_enhancers.rds"), emit: rds
     tuple path("plots/*.pdf"), path("plots/*plot.rds"), emit: plots
-    path "tables/*.tsv", emit: enhancer_table
+    tuple path("tables/*.tsv"), path("tracks/*.bed"), emit: enhancer_table
     path "versions.yml", emit: versions
     """
 
