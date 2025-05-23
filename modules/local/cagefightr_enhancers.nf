@@ -11,9 +11,9 @@ process CAGEFIGHTR_ENHANCERS {
     path txdb
 
     output:
-    path "intermediate_cagerobj/enhancers.rds",        emit: rds
+    tuple path("intermediate_cagerobj/supported_enhancers.rds"), path("intermediate_cagerobj/nonTSS_enhancers.rds"), emit: rds
     tuple path("plots/*.pdf"), path("plots/*plot.rds"), emit: plots
-    path "tables/*.tsv", emit: enhancer_table
+    tuple path("tables/*.tsv"), path("tracks/*.bed"), emit: enhancer_table
     path "versions.yml", emit: versions
     """
 
@@ -21,6 +21,8 @@ process CAGEFIGHTR_ENHANCERS {
         --cageexp_object ${cager_obj} \
         --annotation ${txdb} \
         --cfBalanceThreshold ${params.cfBalanceThreshold} \
+        --unexpressed ${params.unexpressed} \
+        --minSamples ${params.minSamples} \
         --tssregion_up ${params.tssregion_up} \
         --tssregion_down ${params.tssregion_down} \
         --project_dir ${projectDir}

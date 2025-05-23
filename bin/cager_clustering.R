@@ -45,8 +45,6 @@ cager_clustering <- function(
         nrPassThreshold = sample_num_thr,
         threshold = ctss_thr)
 
-    # TODO: plot correlation of normalized, filtered tags
-
     # cluster TSS with distclu
     # filtered CTSS are excluded by default
     ce <- CAGEr::distclu(

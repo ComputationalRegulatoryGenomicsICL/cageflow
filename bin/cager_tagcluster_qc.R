@@ -75,12 +75,7 @@ option_list = list(
         c("-t", "--corrplot_tagCountThreshold"),
         type = "integer",
         default = 1,
-        help = "Threshold for considering tags when calculating correlations of normalized CTSS (Default = 1)"),
-    make_option(
-        c("-c", "--heatmap_cex"),
-        type = "double",
-        default = 0.2,
-        help = "Text size for plotting heatmaps of correlation (Default = 0.2)")
+        help = "Threshold for considering tags when calculating correlations of normalized CTSS (Default = 1)")
 )
 
 message("; Reading arguments from command line.")
@@ -99,7 +94,6 @@ tssregion_down  <- opt$tssregion_down
 tsslogo_upstream    <- opt$tsslogo_upstream
 project_dir     <- opt$project_dir
 corrplot_tagCountThreshold <- opt$corrplot_tagCountThreshold
-heatmap_cex <- opt$heatmap_cex
 
 # installing BSgenome
 source(file.path(project_dir, "bin/install_bsgenome.R"))
@@ -134,8 +128,7 @@ count_matmat <- as.matrix(count_mat)
 plot_correlation(
     datatype="norm_CTSS",
     dataframe=CTSSnormalizedTpmDF(ce),
-    corrplot_tagCountThreshold=corrplot_tagCountThreshold,
-    heatmap_cex=heatmap_cex)
+    corrplot_tagCountThreshold=corrplot_tagCountThreshold)
 print("Normalized CTSS correlation plotted")
 
 pca_plot <- plot_pcs(count_matmat)

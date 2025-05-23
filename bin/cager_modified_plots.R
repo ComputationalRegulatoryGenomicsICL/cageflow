@@ -1,3 +1,7 @@
+# This file includes modifications from CAGEr software under GPL-3 license.
+# The places where the original code is modified are indicated within the file.
+
+
 plotInterquantileWidth_local <- function(object, clusters, tpmThreshold, qLow, qUp, xlim){
 #  clusters <- match.arg(clusters)
 #	getClustFun <- switch( clusters
@@ -27,6 +31,7 @@ plotInterquantileWidth_local <- function(object, clusters, tpmThreshold, qLow, q
   # cat("binsize = ", binsize, "\n")
   # end_debug
 	
+  # License note: the plot is modified to use ggplot2
 	iqwidth_plot <- ggplot2::ggplot(iqwidths) +
 	  ggplot2::aes_string(x = "iq_width") +
 	  ggplot2::scale_fill_manual(values = names(sampleLabels(object))) +
@@ -67,6 +72,8 @@ corVector <- function(expr.table, method, tagCountThreshold, applyThresholdBoth)
   }
   corr.v
 }
+
+# License note: parts of plotCorrelation function are taken from CAGEr to calculate correlation matrix
 
 calculate_correlation_matrix <- function(
     expr.table, samples, method, tagCountThreshold,
@@ -153,6 +160,9 @@ prepare_counts <- function(tag_counts){
   return(tag_xy)
 }
 
+# License note: the plotReverseCumulatives function is separated into two functions:
+# calculateReverseCumulative and plotReverseCumulatives_local
+
 calculateReverseCumulative <- function(
     object,
     values = c("raw", "normalized"),
@@ -180,7 +190,7 @@ calculateReverseCumulative <- function(
     }
     tag_count_df <- prepare_counts(tag.count)
 
-    # return(list(tag_count_df, reference.slope, reference.library.size, reference.intercept))
+    # License note: the return values are extended to include the slope and intercept
     return(list(tag_count_df, reference.slope, reference.library.size, reference.intercept, fit.slopes))
 
 }

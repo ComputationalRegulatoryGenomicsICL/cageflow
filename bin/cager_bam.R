@@ -25,6 +25,7 @@ read_in_bam <- function(
         bam_paths,
         bam_pairedness,
         sample_names,
+        # action,
         cpus){
 
     multicore <- TRUE
@@ -44,6 +45,11 @@ read_in_bam <- function(
         correctSystematicG = F,
         useMulticore = multicore,
         nrCores = cpus)
+
+    # if (action is not NULL){
+    #     ce <- mergeSamples(ce, mergeIndex = seq(1,len(camplename)),#c(3,2,4,4,1), 
+    #                mergedSampleLabels = action)#c("Zf.unfertilized.egg", "Zf.high", "Zf.30p.dome", "Zf.prim6"))
+    # }
 
     return(ce)
 }

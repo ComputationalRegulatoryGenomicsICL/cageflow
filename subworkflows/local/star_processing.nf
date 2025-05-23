@@ -37,7 +37,7 @@ workflow STAR_PROCESSING {
             ch_reads_to_align,
             ch_index,
             sample_meta.combine(ch_gtf),
-            params.star_ignore_sjdbgtf,
+            false,
             params.seq_platform,
             params.seq_center
         )

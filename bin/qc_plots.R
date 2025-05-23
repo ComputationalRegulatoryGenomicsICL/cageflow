@@ -54,8 +54,7 @@ plot_number_of_tag_clusters <- function(
 plot_correlation <- function(
     datatype,
     dataframe,
-    corrplot_tagCountThreshold,
-    heatmap_cex){
+    corrplot_tagCountThreshold){
 
   corr_m <- calculate_correlation_matrix(
     dataframe,
@@ -63,6 +62,12 @@ plot_correlation <- function(
     tagCountThreshold = corrplot_tagCountThreshold,
     applyThresholdBoth = FALSE,
     method = "pearson")
+
+  if (dim(corr_m)[1] > 10){
+    heatmap_cex = 0.2
+  } else {
+    heatmap_cex = 1
+  }
 
   # plot correlations in heatmap format
   hm <- gplots::heatmap.2(
