@@ -63,7 +63,7 @@ plot_correlation <- function(
     applyThresholdBoth = FALSE,
     method = "pearson")
 
-  if (dim(corr_m) > 10){
+  if (dim(corr_m)[1] > 10){
     heatmap_cex = 0.2
   } else {
     heatmap_cex = 1

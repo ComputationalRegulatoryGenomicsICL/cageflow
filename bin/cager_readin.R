@@ -123,7 +123,7 @@ if (tolower(data_type) == "bam"){
     ce <- read_in_bigwig(
         bsgenome_name=reference_name,
         bigwig_paths=sample_table$path,
-        sample_names=sample_names_files_dict,
+        sample_names=sample_names_files_dict
         # action=sample_table$action
     )
 } else {
