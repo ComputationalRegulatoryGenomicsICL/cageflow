@@ -1,18 +1,27 @@
-#' Code of exporting CAGEexp to dgCMatrix is taken from CAGEr 2.12.0
+# This file includes modifications from CAGEr software under GPL-3 license.
+
 #' Enhancer calling
 #'
 #' @param ce initial CAGEexp object with CTSS values
 #' @param cfBalanceThreshold threshold for the cagefightr balance score
+#' @param unexpressed threshold above which normalized CTSS are considered expressed 
+#' @param minSamples non inlcusive lower threshold for number of samples supporting enhancers (i.e. where there is bidirectionality)
 #' @return enhancers
 #' @examples
 #' cagefightr_enhancers(
 #' ce,
 #' cfBalanceThreshold = 0.95,
+#' unexpressed = 0,
+#' minSamples = 0
 #' )
 cagefightr_enhancers <- function(
         ce,
-        cfBalanceThreshold){
+        cfBalanceThreshold,
+        unexpressed,
+        minSamples){
 
+    # License note: the code converting the CAGEexp object to a SummarizedExperiment
+    # object is copied and modified from CAGEr: the original code only takes the counts
     # Extract CTSS count matrix as SummarizedExperiment
     se <- CAGEr::CTSStagCountSE(ce)
 
@@ -76,6 +85,17 @@ exclude_enhancers_overlapping_promoters <- function(BCs, ce){
     overlapping_idx <- unique(queryHits(promoter_overlaps))
     true_enhancers <- BCs[-overlapping_idx]
     return(true_enhancers)
+}
+
+#' Save Enhancer Regions to BED File
+#'
+#' This function saves a GRanges object of enhancer regions to a BED file.
+#'
+#' @param enhancers A GRanges object containing enhancer regions.
+#' @return None. The function writes a BED file to disk.
+#' @export
+save_enhancers_to_bed <- function(enhancers){
+    rtracklayer::export.bed(enhancers,con='tracks/enhancers.bed')
 }
 
 #' Annotate Enhancers with Transcript Database Information
@@ -163,6 +183,7 @@ count_number_of_enhancers <- function(enhancer_expr_per_sample) {
     for (sample in colnames(enhancer_expr_per_sample)) {
         sample_enhancer_count[[sample]] <- sum(as.vector(enhancer_expr_per_sample[,sample]) > 0)
     }
+    sample_enhancer_count[["Union"]] <- dim(enhancer_expr_per_sample)[1]
     return(sample_enhancer_count)
 }
 

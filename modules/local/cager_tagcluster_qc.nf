@@ -36,8 +36,7 @@ process CAGER_TAGCLUSTER_QC {
         --tssregion_down ${params.tssregion_down} \
         --tsslogo_upstream ${params.tsslogo_upstream} \
         --project_dir ${projectDir} \
-        --corrplot_tagCountThreshold ${params.corrplot_tagCountThreshold} \
-        --heatmap_cex ${params.heatmap_cex} \
+        --corrplot_tagCountThreshold ${params.corrplot_tagCountThreshold}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

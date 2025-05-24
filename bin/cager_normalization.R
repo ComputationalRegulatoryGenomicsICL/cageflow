@@ -18,39 +18,49 @@
 
 cager_normalization <- function(
     ce,
-    rangeMin, rangeMax,
+    rangeMin,
+    rangeMax,
     method,
     T_norm,
     user_alpha){
 
-    outlist <- calculateReverseCumulative(
-        object = ce,
-        values = "raw",
-        fitInRange = c(rangeMin, rangeMax))
-    tag_count_df <- outlist[[1]]
-    slope <- outlist[[2]]
-    library_size <- outlist[[3]]
-    intercept <- outlist[[4]]
-    fit.slopes <- outlist[[5]]
+    if (method == "powerLaw"){
+        outlist <- calculateReverseCumulative(
+            object = ce,
+            values = "raw",
+            fitInRange = c(rangeMin, rangeMax))
+        tag_count_df <- outlist[[1]]
+        slope <- outlist[[2]]
+        library_size <- outlist[[3]]
+        intercept <- outlist[[4]]
+        fit.slopes <- outlist[[5]]
 
-    revcum_plots <- plotReverseCumulatives_local(
-        tag_count_df=tag_count_df,
-        slope=slope,
-        intercept=intercept,
-        library_size=library_size,
-        fit.slopes = fit.slopes,
-        fitInRange = c(rangeMin, rangeMax))
-    
-    save_plot(
-        "reverse_cumulative_plot.pdf",
-        revcum_plots)
+        revcum_plots <- plotReverseCumulatives_local(
+            tag_count_df=tag_count_df,
+            slope=slope,
+            intercept=intercept,
+            library_size=library_size,
+            fit.slopes = fit.slopes,
+            fitInRange = c(rangeMin, rangeMax))
+        
+        save_plot(
+            "reverse_cumulative_plot.pdf",
+            revcum_plots)
 
-    if (user_alpha == "null"){
-        slope_to_calc = -slope
-    } else{
-        slope_to_calc = user_alpha
+        if (user_alpha == "null"){
+            slope_to_calc = -slope
+        } else{
+            slope_to_calc = user_alpha
+        }
+    } else if (method == "simpleTpm" | method == "none") {
+        slope_to_calc = 0
+        T_norm = 0
+        rangeMin = 0
+        rangeMax = 0
+    } else {
+        stop("Invalid normalization method. Choose either 'powerLaw', 'simpleTpm', or 'none'.")
     }
-
+    
     ce <- CAGEr::normalizeTagCount(
         ce,
         method = method,

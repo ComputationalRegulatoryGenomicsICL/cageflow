@@ -11,7 +11,8 @@ required.libraries <- c(
     "CAGEfightR",
     "GenomicRanges",
     "GenomicFeatures",
-    "dplyr"
+    "dplyr",
+    "rtracklayer"
 )
 
 
@@ -37,6 +38,16 @@ option_list = list(
         default = 0.95,
         help = "threshold for the cagefightr balance score (Default=0.95)"),
     make_option(
+        c("-e", "--unexpressed"),
+        type = "double",
+        default = 0,
+        help = "threshold above which normalized CTSS are considered expressed (Default=0)"),
+    make_option(
+        c("-s", "--minSamples"),
+        type = "integer",
+        default = 0,
+        help = "non inlcusive lower threshold for number of samples supporting enhancers (i.e. where there is bidirectionality) (Default=0)"),
+    make_option(
         c("-u", "--tssregion_up"),
         type = "integer",
         default = -3000,
@@ -61,6 +72,8 @@ opt = optparse::parse_args(opt_parser)
 ce_path             <- opt$cageexp_object
 tx_annotation       <- opt$annotation
 cfBalanceThreshold  <- opt$cfBalanceThreshold
+unexpressed         <- opt$unexpressed
+minSamples        <- opt$minSamples
 tssregion_up    <- opt$tssregion_up
 tssregion_down  <- opt$tssregion_down
 project_dir         <- opt$project_dir
@@ -85,7 +98,12 @@ ce <- readRDS(ce_path)
 # call enhancers with CAGEfightR
 supported_enhancers <- cagefightr_enhancers(
     ce=ce,
-    cfBalanceThreshold=cfBalanceThreshold)
+    cfBalanceThreshold=cfBalanceThreshold,
+    unexpressed=unexpressed,
+    minSamples=minSamples)
+
+saveRDS(supported_enhancers, file = "intermediate_cagerobj/supported_enhancers.rds")
+print("Supported enhancers rds file saved")
 
 # exclude enhancers overlapping promoters defined by consensus clusters
 true_enhancers <- exclude_enhancers_overlapping_promoters(
@@ -93,16 +111,19 @@ true_enhancers <- exclude_enhancers_overlapping_promoters(
     ce=ce)
 print("Enhancers overlapping promoters excluded")
 
+saveRDS(true_enhancers, file = "intermediate_cagerobj/nonTSS_enhancers.rds")
+print("Enhancers excluding promoters (consensus clusters) rds file saved")
+
+save_enhancers_to_bed(enhancers=true_enhancers)
+print("Enhancers saved to BED file")
+
 # annotate enhancers with transcript database information
 tx_annotation_obj <- loadDb(tx_annotation)
-annotated_enhancers <- annotate_enhancers(
+annotate_enhancers(
     enhancers=true_enhancers,
     txdb=tx_annotation_obj,
     tssregion_up=tssregion_up,
     tssregion_down=tssregion_down)
-
-saveRDS(annotated_enhancers, file = "intermediate_cagerobj/enhancers.rds")
-print("Annotated enhancers rds file saved")
 
 # assign enhancers to samples
 enhancer_expr_per_sample <- identify_sample_specific_enhancers(

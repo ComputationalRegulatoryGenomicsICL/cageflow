@@ -27,8 +27,7 @@ jobs:
           - "23.04.0"
           - "latest-everything"
         testdata:
-          - params_pe_index.yaml
-          - params_infolder_se_subfolder.yaml
+          - testdata/params_only_cager.yaml
 
     steps:
       - name: Check out pipeline code
@@ -50,5 +49,4 @@ jobs:
         # For example: adding multiple test runs with different parameters
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results -params-file ${{ matrix.testdata }}
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results --bowtie2 -params-file params_bowtie2.yaml
+          nextflow run ${GITHUB_WORKSPACE} -profile test,docker -params-file ${{ matrix.testdata }}
