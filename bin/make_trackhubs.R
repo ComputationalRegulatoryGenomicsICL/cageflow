@@ -20,19 +20,20 @@ option_list = list(
         c("-b", "--bigwigs"),
         type = "character",
         default = NULL,
-        help = "Path to the bigwig files, separated by commas (Mandatory)"),
+        help = "Path to the bigwig files, separated by whitespace (Mandatory)"),
     make_option(
         c("-r", "--ref_genome"),
         type = "character",
         default = NULL,
-        help = "Name of the reference genome (Mandatory)"),
+        help = "Name of the reference genome (Mandatory)")
 )
 
 message("; Reading arguments from command line.")
 opt_parser = optparse::OptionParser(option_list = option_list)
 opt = optparse::parse_args(opt_parser)
 
-normalized_samples <- opt$bigwigs[grep("normalized", opt$bigwigs)]
+bigwigs <- unlist(strsplit(opt$bigwigs, " "))
+normalized_samples <- bigwigs[grep("normalized", bigwigs)]
 sample_names <- sapply(strsplit(normalized_samples, "_", fixed=TRUE), "[", 1)
 
 cage_bigwig_df <- data.frame(

@@ -7,9 +7,9 @@ process EASY_TRACK_HUBS {
     val(ref_genome)
 
     output:
-    path "question", emit: trackhubs
+    path "trackhubs/*", emit: trackhubs
     
     """
-    make_trackhubs.R --bigwigs ${normalized_bw} --ref_genome ${ref_genome} 
+    make_trackhubs.R --bigwigs '${normalized_bw}' --ref_genome ${ref_genome} 
     """
 }
