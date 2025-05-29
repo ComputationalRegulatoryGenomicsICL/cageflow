@@ -7,6 +7,7 @@ include { CAGER_PROCESSING } from '../../modules/local/cager_processing.nf'
 include { CAGER_TAGCLUSTER_QC } from '../../modules/local/cager_tagcluster_qc.nf'
 include { CAGER_REPORT } from "../../modules/local/cager_report.nf"
 include { CAGEFIGHTR_ENHANCERS } from '../../modules/local/cagefightr_enhancers.nf'
+include { EASY_TRACK_HUBS } from '../../modules/local/easytrackhubs.nf'
 
 
 workflow CAGER {
@@ -56,6 +57,11 @@ workflow CAGER {
         ch_versions = ch_versions.mix(CAGER_PROCESSING.out.versions)
         // reverse cumulative, iterquartile width, ctss counts
         ch_preproc_res = CAGER_PROCESSING.out.results
+
+        // export bigwig files to trackhubs
+        bigwigs = CAGER_PROCESSING.out.bigwigs
+        ch_ref_genome = Channel.of(params.genome_name)
+        EASY_TRACK_HUBS(bigwigs, ch_ref_genome)
 
         CAGER_TAGCLUSTER_QC(clustered_cager_rds, ch_txdb, ch_bsgenome_file, ch_bsgenome_name)
         ch_versions = ch_versions.mix(CAGER_TAGCLUSTER_QC.out.versions)
