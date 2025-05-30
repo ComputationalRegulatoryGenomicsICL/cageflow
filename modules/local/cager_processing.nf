@@ -3,8 +3,9 @@
 // 
 
 process CAGER_PROCESSING {
-    label 'process_verylong'
+    // label 'process_verylong'
     stageInMode 'copy'
+    cpus 8
 
     input:
     path cager_obj
