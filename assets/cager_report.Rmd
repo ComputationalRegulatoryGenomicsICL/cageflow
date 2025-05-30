@@ -20,8 +20,9 @@ Note: tags are not filtered or normalized yet.
 It is expected to see more intergenic reads here than after filtering and clustering which removes much of the noise.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 options(warn=-1)
+sampleNs <- unname(CAGEr::sampleLabels(ce))
 tagannot_plot <- readRDS("tag_region_annotation_plot.rds")
-tagannot_plot
+tagannot_plot + ggplot2::xlim(rev(levels(factor(sampleNs))))
 ```
 
 ### Correlation of samples at raw tag count level
@@ -147,11 +148,13 @@ chta_plot
 Expression-level-aware dinucleotide frequencies at dominant TSSs of tag clusters.
 Dinulceotides are sorted by frequencies at the first sample in alphabetical order.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
+sampleNs <- unname(CAGEr::sampleLabels(ce))
 dinucl_plot <- readRDS("dinucleotide_frequencies_plot.rds")
 dinucl_plot + ggplot2::theme(
     text=ggplot2::element_text(size=5),
     axis.text.x = ggplot2::element_text(angle = 90, size=5),
     axis.text.y = ggplot2::element_text(size=5))
+    + ggplot2::xlim(rev(levels(factor(sampleNs))))
 ```
 
 ### TSS region logos

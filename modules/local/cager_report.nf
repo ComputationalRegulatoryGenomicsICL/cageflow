@@ -12,6 +12,7 @@ process CAGER_REPORT {
     tuple path(tca_dn_n_plots), path(tca_dn_n_data)
     path tagcluster_corr_m
     tuple path(enhancer_plots), path(enhancer_data)
+    path cageexp_object
 
     output:
     path "*.html"
@@ -41,6 +42,7 @@ process CAGER_REPORT {
     cfBalanceThreshold <- '${params.cfBalanceThreshold}'
     unexpressed <- '${params.unexpressed}'
     minSamples <- '${params.minSamples}'
+    ce <- readRDS('${cageexp_object}')
 
     rmarkdown::render('${rmarkd_template}')
     """

@@ -22,3 +22,9 @@ install.packages(
   repos='https://cloud.r-project.org/')
 
 BiocManager::install("S4Vectors")
+
+BiocManager::install("remotes")
+
+BiocManager::install(
+  "CAGEr",
+  version="3.20")
