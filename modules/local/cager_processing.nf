@@ -3,7 +3,7 @@
 // 
 
 process CAGER_PROCESSING {
-    // label 'process_verylong'
+    label 'process_verylong'
     stageInMode 'copy'
     cpus 8
 

@@ -3,7 +3,7 @@
 // 
 
 process CAGER_TAGCLUSTER_QC {
-    // label 'process_high'
+    label 'process_verylong'
     stageInMode 'copy'
 
     input:
