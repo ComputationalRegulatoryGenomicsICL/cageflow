@@ -19,7 +19,7 @@ plotInterquantileWidth_local <- function(object, clusters, tpmThreshold, qLow, q
 	
 	# Bind them together and set factor labels in proper order
 	iqwidths <- do.call(rbind, iqwidths)
-  iqwidths$sampleName <- factor(iqwidths$sampleName, levels = sampleLabels(object))
+  iqwidths$sampleName <- factor(iqwidths$sampleName, levels = sort(sampleLabels(object)))
   iqwidths <- iqwidths[iqwidths$iq_width >= xlim[1] & iqwidths$iq_width <= xlim[2],]
   
 	# binsize <- round(max(iqwidths$iq_width)/2)

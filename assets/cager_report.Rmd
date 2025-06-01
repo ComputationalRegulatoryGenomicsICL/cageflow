@@ -140,8 +140,9 @@ Note: these parameters are shared with enhancer annotation.
 print(paste0("The current tssregion_up value is: ", tssregion_up))
 print(paste0("The current tssregion_down value is: ", tssregion_down))
 
+sampleNs <- unname(CAGEr::sampleLabels(ce))
 chta_plot <- readRDS("chipseeker_tagCluster_annotation_plot.rds")
-chta_plot
+chta_plot + ggplot2::xlim(rev(levels(factor(sampleNs))))
 ```
 
 ### Dinucleotide frequencies in tagclusters weighted by expression (tpm)
