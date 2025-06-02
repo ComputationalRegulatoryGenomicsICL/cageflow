@@ -149,13 +149,11 @@ chta_plot + ggplot2::xlim(rev(levels(factor(sampleNs))))
 Expression-level-aware dinucleotide frequencies at dominant TSSs of tag clusters.
 Dinulceotides are sorted by frequencies at the first sample in alphabetical order.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
-sampleNs <- unname(CAGEr::sampleLabels(ce))
 dinucl_plot <- readRDS("dinucleotide_frequencies_plot.rds")
 dinucl_plot + ggplot2::theme(
     text=ggplot2::element_text(size=5),
     axis.text.x = ggplot2::element_text(angle = 90, size=5),
-    axis.text.y = ggplot2::element_text(size=5)) +
-    ggplot2::xlim(rev(levels(factor(sampleNs))))
+    axis.text.y = ggplot2::element_text(size=5)) 
 ```
 
 ### TSS region logos
