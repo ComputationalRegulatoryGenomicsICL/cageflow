@@ -25,7 +25,7 @@ read_in_bam <- function(
         bam_paths,
         bam_pairedness,
         sample_names,
-        # action,
+        new_names,
         cpus){
 
     multicore <- TRUE
@@ -33,6 +33,13 @@ read_in_bam <- function(
         multicore <- FALSE
         cpus <- NULL
     }
+
+    # remove samples with empty new names
+    # make it a function to call for both bams and bigwigs
+    sample.idx.to.remove = which(new_names == "")
+    sample_names = sample_names[-sample.idx.to.remove]
+    bam_paths = bam_paths[-sample.idx.to.remove]
+    bam_pairedness = bam_pairedness[-sample.idx.to.remove]
 
     ce = CAGEexp(genomeName     = bsgenome_name,
              inputFiles         = bam_paths,
@@ -46,11 +53,26 @@ read_in_bam <- function(
         useMulticore = multicore,
         nrCores = cpus)
 
-    # if (action is not NULL){
-    #     ce <- mergeSamples(ce, mergeIndex = seq(1,len(camplename)),#c(3,2,4,4,1), 
-    #                mergedSampleLabels = action)#c("Zf.unfertilized.egg", "Zf.high", "Zf.30p.dome", "Zf.prim6"))
-    # }
+    # merge / rename samples according to user's instructioins (new_names)
+    # make it a function to call for both bams and bigwigs
+    name.df = data.frame(sample.name = sample_names,
+                         new.name = new_names)
+    
+    name.df = name.df[order(name.df$new.name), ]
+
+    name.df$merge.idx = match(name.df$new.name, unique(name.df$new.name))
+
+    merged.sample.labels = unique(name.df$new.name)
+
+    sample.labels = CAGEr::sampleLabels(ce)
+
+    name.df = name.df[match(sample.labels, name.df$sample.name), ]
+
+    merge.index = name.df$merge.idx
+
+    ce = CAGEr::mergeSamples(ce, 
+                             mergeIndex = merge.index, 
+                             mergedSampleLabels = merged.sample.labels)
 
     return(ce)
 }
-
