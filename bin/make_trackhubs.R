@@ -44,8 +44,7 @@ cage_bigwig_df <- data.frame(
     file_path = normalized_samples,
     file_format = "bigWig",
     reference_genome = opt$ref_genome,
-    shortLabel=stranded_names,
-    longLabel=stranded_names,
+    trackhub_name=stranded_names,
     color=color_names,
     data_type="CAGE",
     stringsAsFactors = FALSE
