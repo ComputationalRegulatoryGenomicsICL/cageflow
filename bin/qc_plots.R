@@ -63,11 +63,8 @@ plot_correlation <- function(
     applyThresholdBoth = FALSE,
     method = "pearson")
 
-  if (dim(corr_m)[1] > 10){
-    heatmap_cex = 0.2
-  } else {
-    heatmap_cex = 1
-  }
+  sample_size <- dim(corr_m)[1]
+  heatmap_cex <- sample_size^(-1)
 
   # plot correlations in heatmap format
   hm <- gplots::heatmap.2(
@@ -75,7 +72,8 @@ plot_correlation <- function(
       trace="none",
       margins=c(12, 12),
       cexRow=heatmap_cex,
-      cexCol=heatmap_cex)
+      cexCol=heatmap_cex,
+      symm=TRUE)
 
   file_prefix = paste0("plots/", datatype, "_correlations")
   pdf(paste0(file_prefix, "_plot.pdf"))

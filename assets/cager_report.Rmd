@@ -29,15 +29,13 @@ tagannot_plot + ggplot2::xlim(rev(levels(factor(sampleNs))))
 Correlation of samples by the raw tag counts above the user defined threshold (corrplot_tagCountThreshold).
 Note: these are not filtered or normalized yet. The plot is for diagnostic purposes, such as highlighting batch effects.
 The corrplot_tagCountThreshold is shared across correlation plots.
+For a higher resolution plot, visit the `pdf` file saved in the results/cager/plots folder. 
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 print(paste0("The current corrplot_tagCountThreshold value is: ", corrplot_tagCountThreshold))
 
 corr_m <- readRDS("CTSS_correlations_matrix.rds")
-if (dim(corr_m)[1] > 10){
-    heatmap_cex = 0.2
-} else {
-    heatmap_cex = 1
-}
+sample_size <- dim(corr_m)[1]
+heatmap_cex <- sample_size^(-1)
 hm_plot <- readRDS("CTSS_correlations_plot.rds")
 eval(hm_plot$call)
 ```
@@ -65,16 +63,14 @@ revc_plot
 Correlation of samples by the normalized tag counts above the user defined threshold (corrplot_tagCountThreshold).
 Normalization should have removed batch effects to some extent.
 The corrplot_tagCountThreshold is shared across correlation plots.
+For a higher resolution plot, visit the `pdf` file saved in the results/cager/plots folder. 
 
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 print(paste0("The current corrplot_tagCountThreshold value is: ", corrplot_tagCountThreshold))
 
 corr_m <- readRDS("norm_CTSS_correlations_matrix.rds")
-if (dim(corr_m)[1] > 10){
-    heatmap_cex = 0.2
-} else {
-    heatmap_cex = 1
-}
+sample_size <- dim(corr_m)[1]
+heatmap_cex <- sample_size^(-1)
 hm_plot <- readRDS("norm_CTSS_correlations_plot.rds")
 eval(hm_plot$call)
 ```
