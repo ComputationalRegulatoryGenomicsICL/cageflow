@@ -63,10 +63,11 @@ workflow CAGER {
         ch_tagc_plots = CAGER_TAGCLUSTER_QC.out.plots
         tc_corr_data = CAGER_TAGCLUSTER_QC.out.correlation_rds
 
-        // enhancer calling
+        // enhancer calling - now enforced to be run after tagcluster QC
         CAGEFIGHTR_ENHANCERS(
             clustered_cager_rds,
-            ch_txdb)
+            ch_txdb,
+            tc_corr_data)
         ch_versions = ch_versions.mix(CAGEFIGHTR_ENHANCERS.out.versions)
         // enhancer calling plots
         enhancer_plots = CAGEFIGHTR_ENHANCERS.out.plots

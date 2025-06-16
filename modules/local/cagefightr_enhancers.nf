@@ -9,6 +9,7 @@ process CAGEFIGHTR_ENHANCERS {
     input:
     path cager_obj
     path txdb
+    path correlation_rds
 
     output:
     tuple path("intermediate_cagerobj/supported_enhancers.rds"), path("intermediate_cagerobj/nonTSS_enhancers.rds"), emit: rds
