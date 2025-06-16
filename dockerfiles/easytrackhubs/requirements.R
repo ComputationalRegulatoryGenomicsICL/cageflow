@@ -5,6 +5,7 @@
 ## CRAN packages:
 required_packages_cran = c(
   "optparse",          ## For parsing command line options
+  "stringr",           ## For string manipulation
   "devtools")        ## Installing from github
 
 message(

@@ -7,6 +7,7 @@
 # Load libraries
 required.libraries <- c(
   "optparse",
+  "stringr",
   "easyTrackHubs"
 )
 
@@ -35,17 +36,22 @@ opt = optparse::parse_args(opt_parser)
 bigwigs <- unlist(strsplit(opt$bigwigs, " "))
 normalized_samples <- bigwigs[grep("normalized", bigwigs)]
 sample_names <- sapply(strsplit(normalized_samples, "_", fixed=TRUE), "[", 1)
+stranded_names <- sapply(strsplit(normalized_samples, ".", fixed=TRUE), "[", 1)
+color_names <- ifelse(stringr::str_detect(stranded_names,"plus"),"red","blue")
 
 cage_bigwig_df <- data.frame(
     sample_name = sample_names,
     file_path = normalized_samples,
     file_format = "bigWig",
     reference_genome = opt$ref_genome,
-    data_type = "CAGE",
+    shortLabel=stranded_names,
+    longLabel=stranded_names,
+    color=color_names,
+    data_type="CAGE",
     stringsAsFactors = FALSE
 )
 
-easyTrackHub(
+easyTrackHubs::easyTrackHub(
     cage_bigwig_df,
     trackhub_name="cageflow",
     trackhub_path="trackhubs",
