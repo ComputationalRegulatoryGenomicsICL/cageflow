@@ -64,7 +64,7 @@ plot_correlation <- function(
     method = "pearson")
 
   sample_size <- dim(corr_m)[1]
-  heatmap_cex <- sample_size^(-1)
+  heatmap_cex <- sample_size^(-0.2)
 
   # plot correlations in heatmap format
   hm <- gplots::heatmap.2(
