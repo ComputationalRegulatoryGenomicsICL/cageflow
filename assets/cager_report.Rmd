@@ -20,23 +20,23 @@ Note: tags are not filtered or normalized yet.
 It is expected to see more intergenic reads here than after filtering and clustering which removes much of the noise.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 options(warn=-1)
+sampleNs <- unname(CAGEr::sampleLabels(ce))
 tagannot_plot <- readRDS("tag_region_annotation_plot.rds")
-tagannot_plot
+tagannot_plot + ggplot2::xlim(rev(levels(factor(sampleNs))))
 ```
 
 ### Correlation of samples at raw tag count level
 Correlation of samples by the raw tag counts above the user defined threshold (corrplot_tagCountThreshold).
 Note: these are not filtered or normalized yet. The plot is for diagnostic purposes, such as highlighting batch effects.
+Note #2: the main correlation is shown on the top-right ot bottom-left diagonal due to the behaviour of the underlying `gplots::heatmap.2` function.
 The corrplot_tagCountThreshold is shared across correlation plots.
+For a higher resolution plot, visit the `pdf` file saved in the results/cager/plots folder. 
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 print(paste0("The current corrplot_tagCountThreshold value is: ", corrplot_tagCountThreshold))
 
 corr_m <- readRDS("CTSS_correlations_matrix.rds")
-if (dim(corr_m)[1] > 10){
-    heatmap_cex = 0.2
-} else {
-    heatmap_cex = 1
-}
+sample_size <- dim(corr_m)[1]
+heatmap_cex <- sample_size^(-0.2)
 hm_plot <- readRDS("CTSS_correlations_plot.rds")
 eval(hm_plot$call)
 ```
@@ -54,7 +54,7 @@ print(paste0("The current norm_range_min value is: ", norm_range_min))
 print(paste0("The current norm_range_max value is: ", norm_range_max))
 print(paste0("The current normalization method (norm_method) is: ", norm_method))
 print(paste0("The current T_norm value is: ", T_norm))
-print(paste0("The user provided alpha value is: ", alpha, ". If this value if None, the calculated value shown on the plot is used for normalization."))
+print(paste0("The user provided alpha value is: ", alpha, ". If this value if None, the calculated value shown on the plot is used for normalization. Note: this value cannot be less than 1.05, if the user provides a lower value the code automatically assumes 1.05."))
 
 revc_plot <- readRDS("reverse_cumulative_plot.rds")
 revc_plot
@@ -63,17 +63,16 @@ revc_plot
 ### Correlations of samples at normalized tag count level
 Correlation of samples by the normalized tag counts above the user defined threshold (corrplot_tagCountThreshold).
 Normalization should have removed batch effects to some extent.
+Note: the main correlation is shown on the top-right ot bottom-left diagonal due to the behaviour of the underlying `gplots::heatmap.2` function.
 The corrplot_tagCountThreshold is shared across correlation plots.
+For a higher resolution plot, visit the `pdf` file saved in the results/cager/plots folder. 
 
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 print(paste0("The current corrplot_tagCountThreshold value is: ", corrplot_tagCountThreshold))
 
 corr_m <- readRDS("norm_CTSS_correlations_matrix.rds")
-if (dim(corr_m)[1] > 10){
-    heatmap_cex = 0.2
-} else {
-    heatmap_cex = 1
-}
+sample_size <- dim(corr_m)[1]
+heatmap_cex <- sample_size^(-0.2)
 hm_plot <- readRDS("norm_CTSS_correlations_plot.rds")
 eval(hm_plot$call)
 ```
@@ -139,8 +138,9 @@ Note: these parameters are shared with enhancer annotation.
 print(paste0("The current tssregion_up value is: ", tssregion_up))
 print(paste0("The current tssregion_down value is: ", tssregion_down))
 
+sampleNs <- unname(CAGEr::sampleLabels(ce))
 chta_plot <- readRDS("chipseeker_tagCluster_annotation_plot.rds")
-chta_plot
+chta_plot + ggplot2::xlim(rev(levels(factor(sampleNs))))
 ```
 
 ### Dinucleotide frequencies in tagclusters weighted by expression (tpm)
@@ -151,7 +151,7 @@ dinucl_plot <- readRDS("dinucleotide_frequencies_plot.rds")
 dinucl_plot + ggplot2::theme(
     text=ggplot2::element_text(size=5),
     axis.text.x = ggplot2::element_text(angle = 90, size=5),
-    axis.text.y = ggplot2::element_text(size=5))
+    axis.text.y = ggplot2::element_text(size=5)) 
 ```
 
 ### TSS region logos
@@ -171,7 +171,7 @@ print(paste0("The current consensus_dist value is: ", consensus_dist))
 print(paste0("The current consensus_thr value is: ", consensus_thr))
 ```
 
-### Consensus cluster TPM counts
+### Number of non-zero consensus clusters
 This plot shows the number of non zero consensus clusters per sample, as well as the total number of consensus clusters (union).
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 cc_plot <- readRDS("consensus_counts_plot.rds")

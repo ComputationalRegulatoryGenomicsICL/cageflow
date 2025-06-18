@@ -1,5 +1,5 @@
 # Use the official R base image
-FROM r-base:4.4.1
+FROM r-base:4.5.0
 
 # Maintainer label
 LABEL maintainer="katalitf@uio.no"
