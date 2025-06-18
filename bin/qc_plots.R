@@ -12,7 +12,7 @@ for (lib in required.libraries) {
   suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
 }
 
-plot_settings <- function(.data, y_value, color_by_value, y_label, title) {
+plot_settings <- function(.data, y_value, color_by_value, y_label, title, y_value_max) {
   .data %>% ggplot(aes(
       x = Sample,
       y = {{y_value}},
@@ -26,6 +26,7 @@ plot_settings <- function(.data, y_value, color_by_value, y_label, title) {
   theme_bw(base_size = 12) +
   ylab(y_label) +
   xlab("") + 
+  ylim(0, y_value_max+1000) +
   ggtitle(title) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),
@@ -47,7 +48,8 @@ plot_number_of_tag_clusters <- function(
       y_value = count,
       color_by_value = Sample,
       y_label = yaxistitle,
-      title = mytitle)
+      title = mytitle,
+      y_value_max=max(sample_tag_count_table$count))
   return(tag_count_plot)
 }
 
@@ -72,8 +74,7 @@ plot_correlation <- function(
       trace="none",
       margins=c(12, 12),
       cexRow=heatmap_cex,
-      cexCol=heatmap_cex,
-      symm=TRUE)
+      cexCol=heatmap_cex)
 
   file_prefix = paste0("plots/", datatype, "_correlations")
   pdf(paste0(file_prefix, "_plot.pdf"))
