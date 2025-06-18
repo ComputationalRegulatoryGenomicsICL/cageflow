@@ -54,7 +54,7 @@ print(paste0("The current norm_range_min value is: ", norm_range_min))
 print(paste0("The current norm_range_max value is: ", norm_range_max))
 print(paste0("The current normalization method (norm_method) is: ", norm_method))
 print(paste0("The current T_norm value is: ", T_norm))
-print(paste0("The user provided alpha value is: ", alpha, ". If this value if None, the calculated value shown on the plot is used for normalization."))
+print(paste0("The user provided alpha value is: ", alpha, ". If this value if None, the calculated value shown on the plot is used for normalization. Note: this value cannot be less than 1.05, if the user provides a lower value the code automatically assumes 1.05."))
 
 revc_plot <- readRDS("reverse_cumulative_plot.rds")
 revc_plot
