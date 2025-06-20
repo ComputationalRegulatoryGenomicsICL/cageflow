@@ -77,10 +77,10 @@ cager_clustering <- function(
         "interquartile_width_tagclusters_plot.pdf",
         iqw_plot)
 
-    # count CTSS
+    # count tag clusters
     sample_tag_cluster_count <- list()
     for (sample in CAGEr::sampleLabels(ce)) {
-        sample_tag_cluster_count[[sample]] <- sum(as.vector(CTSStagCountDF(ce)[[sample]])>0)
+        sample_tag_cluster_count[[sample]] <- sum(as.vector(score(tagClustersGR(ce, sample=sample))))
     }
 
     sink("plots/sample_tag_cluster_count.txt")
