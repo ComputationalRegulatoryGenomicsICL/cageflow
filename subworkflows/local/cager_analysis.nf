@@ -80,7 +80,8 @@ workflow CAGER {
             ch_preproc_res,
             ch_tagc_plots,
             tc_corr_data,
-            enhancer_plots)
+            enhancer_plots,
+            cager_rds)
 
     emit:
         ch_versions
