@@ -1,3 +1,0 @@
-id,single_end,path
-S10,false,[customcageq/testdata/bigwig/nepal_pe/S10.Signal.Unique.str1.out.wig.bw customcageq/testdata/bigwig/nepal_pe/S10.Signal.Unique.str2.out.wig.bw]
-S14,false,[customcageq/testdata/bigwig/nepal_pe/S14.Signal.Unique.str1.out.wig.bw customcageq/testdata/bigwig/nepal_pe/S14.Signal.Unique.str2.out.wig.bw]
