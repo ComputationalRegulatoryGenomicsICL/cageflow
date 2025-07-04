@@ -67,6 +67,7 @@ coerceInBSgenome <- function(gr, genome) {
 #' @param bsgenome_name the name of the reference genome (bsgenome)
 #' @param bigwig_paths list of input bigwig files with full path
 #' @param sample_names_files_dict dictionary of matching sample names to files
+#' @param new_names Character vector of new sample names (after merging/renaming).
 #' @return a CAGEexp object
 #' @examples
 #' read_in_bigwig(
@@ -77,8 +78,8 @@ coerceInBSgenome <- function(gr, genome) {
 read_in_bigwig <- function(
     bsgenome_name,
     bigwig_paths,
-    sample_names_files_dict){
-    # action){
+    sample_names_files_dict,
+    new_names){
 
   bigwig_paths <- stringr::str_squish(bigwig_paths)
 
@@ -100,9 +101,6 @@ read_in_bigwig <- function(
     signal_names <- append(signal_names, sample_names_files_dict[[bn]])
   }
   names(signals) = signal_names
-
-  # print(signals)
-  # print(grepl("str1", names(signals)))
 
   signalsSplit = split(
     signals,
@@ -199,10 +197,7 @@ read_in_bigwig <- function(
   ce$librarySizes <- unlist(lapply(CTSStagCountDF(ce), sum))
   
   # Merge if necessary
-  # if (action is not NULL){
-  #     ce <- mergeSamples(ce, mergeIndex = seq(1,len(camplename)),#c(3,2,4,4,1), 
-  #                 mergedSampleLabels = action)#c("Zf.unfertilized.egg", "Zf.high", "Zf.30p.dome", "Zf.prim6"))
-  # }
+  ce <- merge_labels(plus_sample_names, new_names, ce)
 
   # Setp 6: Return the modified object.
   ce

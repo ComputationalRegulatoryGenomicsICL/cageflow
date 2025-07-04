@@ -31,35 +31,35 @@ wget ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR249/ERR2495148/20171106_CAGE_Sequencing
 wget ftp://ftp.sra.ebi.ac.uk/vol1/run/ERR249/ERR2495150/20171106_CAGE_SequencingData_Eth_Rep1.fastq.gz
 
 # Shuffle full samples and remove originals
-~/seqkit shuffle -s 42 20171106_CAGE_SequencingData_Ana_Rep1.fastq.gz -o 20171106_CAGE_SequencingData_Ana_Rep1_shuff.fastq.gz
+seqkit shuffle -s 42 20171106_CAGE_SequencingData_Ana_Rep1.fastq.gz -o 20171106_CAGE_SequencingData_Ana_Rep1_shuff.fastq.gz
 # [INFO] 9637094 sequences loaded
 rm 20171106_CAGE_SequencingData_Ana_Rep1.fastq.gz
-~/seqkit shuffle -s 42 20171106_CAGE_SequencingData_Eth_Rep1.fastq.gz -o 20171106_CAGE_SequencingData_Eth_Rep1_shuff.fastq.gz
+seqkit shuffle -s 42 20171106_CAGE_SequencingData_Eth_Rep1.fastq.gz -o 20171106_CAGE_SequencingData_Eth_Rep1_shuff.fastq.gz
 # [INFO] 5295517 sequences loaded
 rm 20171106_CAGE_SequencingData_Eth_Rep1.fastq.gz
 
 # Take a random half of reads (after shuffling) to further subset for lane 1 of samples 1 and 2
-~/seqkit head -n 4818547 20171106_CAGE_SequencingData_Ana_Rep1_shuff.fastq.gz -o 20171106_CAGE_SequencingData_Ana_Rep1_shuff_top-half.fastq.gz
-~/seqkit head -n 2647758 20171106_CAGE_SequencingData_Eth_Rep1_shuff.fastq.gz -o 20171106_CAGE_SequencingData_Eth_Rep1_shuff_top-half.fastq.gz
+seqkit head -n 4818547 20171106_CAGE_SequencingData_Ana_Rep1_shuff.fastq.gz -o 20171106_CAGE_SequencingData_Ana_Rep1_shuff_top-half.fastq.gz
+seqkit head -n 2647758 20171106_CAGE_SequencingData_Eth_Rep1_shuff.fastq.gz -o 20171106_CAGE_SequencingData_Eth_Rep1_shuff_top-half.fastq.gz
 
 # Take the other half of reads to further subset for lane 2 of samples 1 and 2
-~/seqkit range -r -4818548:-1 20171106_CAGE_SequencingData_Ana_Rep1_shuff.fastq.gz -o 20171106_CAGE_SequencingData_Ana_Rep1_shuff_bottom-half.fastq.gz
-~/seqkit range -r -2647759:-1 20171106_CAGE_SequencingData_Eth_Rep1_shuff.fastq.gz -o 20171106_CAGE_SequencingData_Eth_Rep1_shuff_bottom-half.fastq.gz
+seqkit range -r -4818548:-1 20171106_CAGE_SequencingData_Ana_Rep1_shuff.fastq.gz -o 20171106_CAGE_SequencingData_Ana_Rep1_shuff_bottom-half.fastq.gz
+seqkit range -r -2647759:-1 20171106_CAGE_SequencingData_Eth_Rep1_shuff.fastq.gz -o 20171106_CAGE_SequencingData_Eth_Rep1_shuff_bottom-half.fastq.gz
 
 # Remove the full shuffled samples
 rm 20171106_CAGE_SequencingData_Ana_Rep1_shuff.fastq.gz
 rm 20171106_CAGE_SequencingData_Eth_Rep1_shuff.fastq.gz
 
 # Randomly subsample reads for lanes 1 and 2 of samples 1 and 2
-~/seqkit sample -p 0.1 -s 42 20171106_CAGE_SequencingData_Ana_Rep1_shuff_top-half.fastq.gz | ~/seqkit sample -n ${readN} -s 42 -o S1_S1_L001_R1_001.fastq.gz
-# See https://bioinf.shenwei.me/~/seqkit/note/#effect-of-random-seed-on-results-of-~/seqkit-sample 
-# on why ~/seqkit sometimes does not output the exact number of reads that was required
+seqkit sample -p 0.1 -s 42 20171106_CAGE_SequencingData_Ana_Rep1_shuff_top-half.fastq.gz | seqkit sample -n ${readN} -s 42 -o S1_S1_L001_R1_001.fastq.gz
+# See https://bioinf.shenwei.me/seqkit/note/#effect-of-random-seed-on-results-of-seqkit-sample 
+# on why seqkit sometimes does not output the exact number of reads that was required
 rm 20171106_CAGE_SequencingData_Ana_Rep1_shuff_top-half.fastq.gz
-~/seqkit sample -p 0.1 -s 42 20171106_CAGE_SequencingData_Ana_Rep1_shuff_bottom-half.fastq.gz | ~/seqkit sample -n ${readN} -s 42 -o S1_S1_L002_R1_001.fastq.gz
+seqkit sample -p 0.1 -s 42 20171106_CAGE_SequencingData_Ana_Rep1_shuff_bottom-half.fastq.gz | seqkit sample -n ${readN} -s 42 -o S1_S1_L002_R1_001.fastq.gz
 rm 20171106_CAGE_SequencingData_Ana_Rep1_shuff_bottom-half.fastq.gz
-~/seqkit sample -p 0.1 -s 42 20171106_CAGE_SequencingData_Eth_Rep1_shuff_top-half.fastq.gz | ~/seqkit sample -n ${readN} -s 42 -o S2_S2_L001_R1_001.fastq.gz
+seqkit sample -p 0.1 -s 42 20171106_CAGE_SequencingData_Eth_Rep1_shuff_top-half.fastq.gz | seqkit sample -n ${readN} -s 42 -o S2_S2_L001_R1_001.fastq.gz
 rm 20171106_CAGE_SequencingData_Eth_Rep1_shuff_top-half.fastq.gz
-~/seqkit sample -p 0.1 -s 42 20171106_CAGE_SequencingData_Eth_Rep1_shuff_bottom-half.fastq.gz | ~/seqkit sample -n ${readN} -s 42 -o S2_S2_L002_R1_001.fastq.gz
+seqkit sample -p 0.1 -s 42 20171106_CAGE_SequencingData_Eth_Rep1_shuff_bottom-half.fastq.gz | seqkit sample -n ${readN} -s 42 -o S2_S2_L002_R1_001.fastq.gz
 rm 20171106_CAGE_SequencingData_Eth_Rep1_shuff_bottom-half.fastq.gz
 
 # To get the reference genome and its annotation, use the following command:

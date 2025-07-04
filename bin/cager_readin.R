@@ -92,13 +92,47 @@ if (length(single_end_uniq) < 1) {
         "bamPairedEnd")
 }
 
+# remove samples with empty new names
+sample_idx_to_remove = which(sample_table$new_name == "")
+new_names = sample_table$new_name[-sample_idx_to_remove]
+sample_names = sample_table$id[-sample_idx_to_remove]
+sample_paths = sample_table$path[-sample_idx_to_remove]
+
+#' Merge and Rename Samples in a CAGEr Object
+#'
+#' Merges or renames samples in a CAGEr object according to user-specified new names.
+#'
+#' @param sample_names Character vector of original sample names.
+#' @param new_names Character vector of new sample names (after merging/renaming).
+#' @param ce A CAGEr::CAGEexp object.
+#'
+#' @return A CAGEr::CAGEexp object with merged/renamed samples.
+#' @importFrom CAGEr sampleLabels mergeSamples
+#' @export
+merge_labels <- function(sample_names, new_names, ce) {
+    # merge / rename samples according to user's instructioins (new_names)
+    # make it a function to call for both bams and bigwigs
+    name_df = data.frame(
+        sample_name = sample_names,
+        new_name = new_names)
+    name_df = name_df[order(name_df$new_name), ]
+    name_df$merge_idx = match(name_df$new_name, unique(name_df$new_name))
+    merged_sample_labels = unique(name_df$new_name)
+    name_df = name_df[match(CAGEr::sampleLabels(ce), name_df$sample_name), ]
+    ce <- CAGEr::mergeSamples(
+        ce, 
+        mergeIndex = name_df$merge_idx, 
+        mergedSampleLabels = merged_sample_labels)
+    return(ce)
+}
+
 if (tolower(data_type) == "bam"){
     ce <- read_in_bam(
         bsgenome_name=reference_name,
-        bam_paths=sample_table$path,
+        bam_paths=sample_paths,
         bam_pairedness=bam_type,
-        sample_names=sample_table$id,
-        new_name=sample_table$new_name,
+        sample_names=sample_names,
+        new_names=new_names,
         cpus=num_core
     )
 }else if(tolower(data_type) == "bigwig") {
@@ -122,9 +156,9 @@ if (tolower(data_type) == "bam"){
     }
     ce <- read_in_bigwig(
         bsgenome_name=reference_name,
-        bigwig_paths=sample_table$path,
-        sample_names=sample_names_files_dict
-        new_name=sample_table$new_name
+        bigwig_paths=sample_paths,
+        sample_names_files_dict=sample_names_files_dict
+        new_names=new_names
     )
 } else {
     stop("Either bigwig or bam files should be provided")
