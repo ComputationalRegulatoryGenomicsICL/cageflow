@@ -197,6 +197,8 @@ read_in_bigwig <- function(
   ce$librarySizes <- unlist(lapply(CTSStagCountDF(ce), sum))
   
   # Merge if necessary
+  new_names <- stringr::str_squish(new_names)
+
   ce <- merge_labels(plus_sample_names, new_names, ce)
 
   # Setp 6: Return the modified object.

@@ -1,7 +1,7 @@
 # pipeline parameters
 fullpipeline: false
-maponly: true
-cageronly: false
+maponly: false
+cageronly: true
 gtf: "cageflow_test_data/danRer11_genome/danRer11.ensGene.gtf"
 
 # preprocessing parameters
@@ -19,7 +19,7 @@ unique_only: true
 remove_non_g: false 
 
 # CAGEr parameters
-cager_sample_file: ../nepal_sample_list_test_dup.csv
+cager_sample_file: customcageq/testdata/samplesheet_cager_nepal_dup.csv
 # BSgenome
 forgeseed:
 sourcedir:

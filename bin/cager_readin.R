@@ -93,10 +93,19 @@ if (length(single_end_uniq) < 1) {
 }
 
 # remove samples with empty new names
-sample_idx_to_remove = which(sample_table$new_name == "")
-new_names = sample_table$new_name[-sample_idx_to_remove]
-sample_names = sample_table$id[-sample_idx_to_remove]
-sample_paths = sample_table$path[-sample_idx_to_remove]
+sample_idx_to_remove = which(sample_table$new_name == " ")
+if (length(sample_idx_to_remove) > 0) {
+    print("Removing samples with empty new names:")
+    print(sample_table[sample_idx_to_remove, ])
+    new_names = sample_table$new_name[-sample_idx_to_remove]
+    sample_names = sample_table$id[-sample_idx_to_remove]
+    sample_paths = sample_table$path[-sample_idx_to_remove]
+} else {
+    print("No samples with empty new names found.")
+    new_names = sample_table$new_name
+    sample_names = sample_table$id
+    sample_paths = sample_table$path
+}
 
 #' Merge and Rename Samples in a CAGEr Object
 #'
@@ -157,7 +166,7 @@ if (tolower(data_type) == "bam"){
     ce <- read_in_bigwig(
         bsgenome_name=reference_name,
         bigwig_paths=sample_paths,
-        sample_names_files_dict=sample_names_files_dict
+        sample_names_files_dict=sample_names_files_dict,
         new_names=new_names
     )
 } else {
