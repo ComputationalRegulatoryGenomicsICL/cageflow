@@ -9,7 +9,7 @@ args = parser.parse_args()
 with open(args.filepath, "r", encoding="utf-8") as filein:
     with open("sample_list_relativepath.csv", "w+", encoding="utf-8") as outfile:
         for line in filein:
-            if line == "id,single_end,path\n":
+            if line == "id,single_end,path,new_name\n":
                 outfile.write(line)
             else:
                 line_parts = line.strip().split(",")
@@ -20,5 +20,6 @@ with open(args.filepath, "r", encoding="utf-8") as filein:
                     path_str = " ".join([os.path.basename(path) for path in paths])
                 else:
                     path_str = os.path.basename(paths)
-                line_to_write = f"{line_id},{line_se},[{path_str}]\n"
+                new_name = line_parts[3]
+                line_to_write = f"{line_id},{line_se},[{path_str}],{new_name}\n"
                 outfile.write(line_to_write)
