@@ -81,8 +81,6 @@ read_in_bigwig <- function(
     sample_names_files_dict,
     new_names){
 
-  bigwig_paths <- stringr::str_squish(bigwig_paths)
-
   bigwigs = unlist(
     stringr::str_split(
       stringr::str_remove_all(
@@ -197,9 +195,6 @@ read_in_bigwig <- function(
   ce$librarySizes <- unlist(lapply(CTSStagCountDF(ce), sum))
   
   # Merge if necessary
-  new_names <- stringr::str_squish(new_names)
-  sample_names <- stringr::str_squish(sample_names)
-
   if (any(sample_names != new_names)) {
     print("Merging samples according to new names")
     ce <- merge_labels(sample_names, new_names, ce)

@@ -97,14 +97,14 @@ sample_idx_to_remove = which(sample_table$new_name == " ")
 if (length(sample_idx_to_remove) > 0) {
     print("Removing samples with empty new names:")
     print(sample_table[sample_idx_to_remove, ])
-    new_names = sample_table$new_name[-sample_idx_to_remove]
-    sample_names = sample_table$id[-sample_idx_to_remove]
-    sample_paths = sample_table$path[-sample_idx_to_remove]
+    new_names = stringr::str_squish(sample_table$new_name[-sample_idx_to_remove])
+    sample_names = stringr::str_squish(sample_table$id[-sample_idx_to_remove])
+    sample_paths = stringr::str_squish(sample_table$path[-sample_idx_to_remove])
 } else {
     print("No samples with empty new names found.")
-    new_names = sample_table$new_name
-    sample_names = sample_table$id
-    sample_paths = sample_table$path
+    new_names = stringr::str_squish(sample_table$new_name)
+    sample_names = stringr::str_squish(sample_table$id)
+    sample_paths = stringr::str_squish(sample_table$path)
 }
 
 #' Merge and Rename Samples in a CAGEr Object

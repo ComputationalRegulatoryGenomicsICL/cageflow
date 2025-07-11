@@ -49,9 +49,6 @@ read_in_bam <- function(
         nrCores = cpus)
 
     # Merge if necessary
-    new_names <- stringr::str_squish(new_names)
-    sample_names <- stringr::str_squish(sample_names)
-
     if (any(sample_names != new_names)) {
         print("Merging samples according to new names")
         ce <- merge_labels(sample_names, new_names, ce)
