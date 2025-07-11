@@ -198,8 +198,15 @@ read_in_bigwig <- function(
   
   # Merge if necessary
   new_names <- stringr::str_squish(new_names)
+  sample_names <- stringr::str_squish(sample_names)
 
-  ce <- merge_labels(plus_sample_names, new_names, ce)
+  if (any(sample_names != new_names)) {
+    print("Merging samples according to new names")
+    ce <- merge_labels(sample_names, new_names, ce)
+  }
+  else {
+    print("No merging performed.")
+  }
 
   # Setp 6: Return the modified object.
   ce
