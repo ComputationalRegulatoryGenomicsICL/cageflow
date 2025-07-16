@@ -157,8 +157,7 @@ workflow CUSTOMCAGE {
             .collect()
 
         ch_sample_files = WRITE_SAMPLE_LIST(ch_for_cager)
-
-        def header = "id,single_end,path"
+        def header = "id,single_end,path,new_name"
 
         ch_collected = ch_sample_files
         .reduce( header ) { acc, table_line ->

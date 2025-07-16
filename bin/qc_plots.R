@@ -12,7 +12,7 @@ for (lib in required.libraries) {
   suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
 }
 
-plot_settings <- function(.data, y_value, color_by_value, y_label, title) {
+plot_settings <- function(.data, y_value, color_by_value, y_label, title, y_value_max) {
   .data %>% ggplot(aes(
       x = Sample,
       y = {{y_value}},
@@ -26,6 +26,7 @@ plot_settings <- function(.data, y_value, color_by_value, y_label, title) {
   theme_bw(base_size = 12) +
   ylab(y_label) +
   xlab("") + 
+  ylim(0, y_value_max+1000) +
   ggtitle(title) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),
@@ -47,7 +48,8 @@ plot_number_of_tag_clusters <- function(
       y_value = count,
       color_by_value = Sample,
       y_label = yaxistitle,
-      title = mytitle)
+      title = mytitle,
+      y_value_max=max(sample_tag_count_table$count))
   return(tag_count_plot)
 }
 
@@ -63,11 +65,8 @@ plot_correlation <- function(
     applyThresholdBoth = FALSE,
     method = "pearson")
 
-  if (dim(corr_m)[1] > 10){
-    heatmap_cex = 0.2
-  } else {
-    heatmap_cex = 1
-  }
+  sample_size <- dim(corr_m)[1]
+  heatmap_cex <- sample_size^(-0.2)
 
   # plot correlations in heatmap format
   hm <- gplots::heatmap.2(

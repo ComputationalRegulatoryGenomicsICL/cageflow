@@ -2,8 +2,6 @@
 
 # Generate a test dataset with single-end reads
 
-# This script will generate files that are soft-linked from assets/test_fastq/se .
-
 # Use single-end CAGE data from Saccharomyces cerevisiae:
 # anaerobic conditions (Ana, ERR2495148) and ethanol limitation (Eth, ERR2495150).
 # The data is publicly available as part of the following publication:
@@ -20,9 +18,10 @@
 
 mkdir cageflow_test_data
 cd cageflow_test_data
-mkdir samples
+mkdir fastq
+mkdir fastq/se
 mkdir danRer11_genome
-cd samples
+cd fastq/se
 
 # Approximate number of reads to sample randomly
 readN=300000
@@ -64,7 +63,7 @@ seqkit sample -p 0.1 -s 42 20171106_CAGE_SequencingData_Eth_Rep1_shuff_bottom-ha
 rm 20171106_CAGE_SequencingData_Eth_Rep1_shuff_bottom-half.fastq.gz
 
 # To get the reference genome and its annotation, use the following command:
-cd ../danRer11_genome
+cd ../../danRer11_genome
 
 wget https://hgdownload.soe.ucsc.edu/goldenPath/danRer11/bigZips/danRer11.fa.gz
 gunzip danRer11.fa.gz

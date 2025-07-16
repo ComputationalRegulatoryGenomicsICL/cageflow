@@ -2,8 +2,6 @@
 
 # Generate a test dataset with paired-end reads
 
-# This script will generate files that are soft-linked from assets/test_fastq/pe .
-
 # Use paired-end CAGE data from Danio rerio:
 # 4-5 somites (SRR10215487) and prim-5 (SRR10215486).
 # The data is publicly available as part of the following publication:
@@ -20,9 +18,10 @@
 
 mkdir cageflow_test_data
 cd cageflow_test_data
-mkdir samples
+mkdir fastq
+mkdir fastq/pe
 mkdir danRer11_genome
-cd samples
+cd fastq/pe
 
 # Approximate number of reads to sample randomly
 readN=1000000
@@ -123,7 +122,7 @@ rm prim5_SRR10215486_1_shuff_bottom-half.fastq.gz
 rm prim5_SRR10215486_2_shuff_bottom-half.fastq.gz
 
 # To get the reference genome and its annotation, use the following command:
-cd ../danRer11_genome
+cd ../../danRer11_genome
 
 wget https://hgdownload.soe.ucsc.edu/goldenPath/danRer11/bigZips/danRer11.fa.gz
 gunzip danRer11.fa.gz

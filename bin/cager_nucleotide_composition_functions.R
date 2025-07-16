@@ -60,9 +60,9 @@ plot_dinucleotide_frequency_heatmap <- function(
         ggtitle(NULL) + 
         theme_bw() +
         theme(
-            text = element_text(size = 20, colour = "black"), 
-            axis.text.x = element_text(size = 20, colour = "black",angle = 90),
-            axis.text.y = element_text(size = 20, colour = "black"),
+            text = element_text(size = 40, colour = "black"), 
+            axis.text.x = element_text(size = 30, colour = "black",angle = 90),
+            axis.text.y = element_text(size = 30, colour = "black"),
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank()) +
         labs(fill = "%")

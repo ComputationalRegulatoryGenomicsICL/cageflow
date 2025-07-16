@@ -4,6 +4,7 @@
 #' @param bam_paths list of input bam files with full path
 #' @param bam_type whether it is single or Paired end
 #' @param sample_names list of sample names
+#' @param new_names Character vector of new sample names (after merging/renaming).
 #' @param cpus number of cores to use
 #' @return a CAGEexp object
 #' @examples
@@ -14,7 +15,7 @@
 #'  sample_names=["S1", "S2"],
 #'  cpus=1)
 #' read_in_bam(
-#'  bsgenome_name=hsapiens,
+#'  bsgenome_name=BSgenome.Drerio.UCSC.danRer11,
 #'  bam_paths=["path/to/file1_r1.bam", "path/to/file1_r2.bam"],
 #'  bam_pairedness="bamPairedEnd",
 #'  sample_names=["S1"],
@@ -25,7 +26,7 @@ read_in_bam <- function(
         bam_paths,
         bam_pairedness,
         sample_names,
-        # action,
+        new_names,
         cpus){
 
     multicore <- TRUE
@@ -34,23 +35,27 @@ read_in_bam <- function(
         cpus <- NULL
     }
 
-    ce = CAGEexp(genomeName     = bsgenome_name,
-             inputFiles         = bam_paths,
-             inputFilesType     = bam_pairedness,
-             sampleLabels       = sample_names)
+    ce = CAGEr::CAGEexp(
+        genomeName     = bsgenome_name,
+        inputFiles         = bam_paths,
+        inputFilesType     = bam_pairedness,
+        sampleLabels       = sample_names)
 
-    ce = getCTSS(
+    ce = CAGEr::getCTSS(
         ce,
         removeFirstG = F,
         correctSystematicG = F,
         useMulticore = multicore,
         nrCores = cpus)
 
-    # if (action is not NULL){
-    #     ce <- mergeSamples(ce, mergeIndex = seq(1,len(camplename)),#c(3,2,4,4,1), 
-    #                mergedSampleLabels = action)#c("Zf.unfertilized.egg", "Zf.high", "Zf.30p.dome", "Zf.prim6"))
-    # }
+    # Merge if necessary
+    if (any(sample_names != new_names)) {
+        print("Merging samples according to new names")
+        ce <- merge_labels(sample_names, new_names, ce)
+    }
+    else {
+        print("No merging performed.")
+    }
 
     return(ce)
 }
-

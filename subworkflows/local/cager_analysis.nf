@@ -81,7 +81,8 @@ workflow CAGER {
             ch_preproc_res,
             ch_tagc_plots,
             tc_corr_data,
-            enhancer_plots)
+            enhancer_plots,
+            cager_rds)
 
     emit:
         ch_versions
@@ -93,7 +94,7 @@ def create_mapping_channel(LinkedHashMap row) {
     single_end = row.single_end
     str1_bw = row.path.split(" ")[0].minus('[')
     str2_bw = row.path.split(" ")[1].minus(']')
-    // action = row.action
+    new_name = row.new_name
 
-    return [id, single_end, str1_bw, str2_bw] //, action]
+    return [id, single_end, str1_bw, str2_bw, new_name]
 }
