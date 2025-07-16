@@ -1,5 +1,5 @@
 samplesheet:
-infolder: "../sequencing_data/250212_LH00770.A.Project_Aronsen-Libs19-2024-12-11/"
+infolder: "../sequencing_data/250704_LH00534.A.Project_Aronsen-Libs20-2025-06-24/"
 bsgenome: "BSgenome.Hsapiens.UCSC.hg38"
 forgeseed:
 sourcedir:
