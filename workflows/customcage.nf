@@ -22,7 +22,7 @@ params.cageronly = false
 params.samplesheet = false
 
 // TrimGalore! parameters
-params.params_trimgalore = ''
+// params.params_trimgalore = ''
 
 // cutadapt parameters
 params.nogtrim = false

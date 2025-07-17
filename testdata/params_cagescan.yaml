@@ -5,18 +5,20 @@ cageronly: false
 gtf: "/storage/mathelierarea/raw/GENCODE/Gencode_human/release_46/gencode.v46.primary_assembly.annotation.gtf"
 
 # preprocessing parameters
-samplesheet:
-infolder: "/storage/mathelierarea/raw/FANTOM5/datafiles/CAGEscan/"
-sample_name_fields: 2
+samplesheet: "/storage/mathelierarea/processed/katalitf/CAGEscan/cagescan_sample_sheet.csv"
+infolder:
+sample_name_fields:
 genome_name: "GRCh38"
 fasta: "/storage/mathelierarea/raw/GENCODE/Gencode_human/release_46/GRCh38.primary_assembly.genome.fa"
-index: "/storage/mathelierarea/raw/GENCODE/Gencode_human/release_46/star_index/star_genomegenerate/"
+index: "/storage/mathelierarea/raw/GENCODE/Gencode_human/release_46/star_index/star_genomegenerate/star"
 seq_platform: "illumina"
 seq_center: false
 # whether to take the uniquely mapped only
 unique_only: true
 # whether to remove reads that do not start with G
-remove_non_g: false 
+remove_non_g: false
+# additional parameters for trimgalore
+params_trimgalore: "--clip_R1 9 --clip_R2 6 --trim-n"
 
 # CAGEr parameters
 cager_sample_file:
