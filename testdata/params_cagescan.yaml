@@ -5,7 +5,7 @@ cageronly: false
 gtf: "/storage/mathelierarea/raw/GENCODE/Gencode_human/release_46/gencode.v46.primary_assembly.annotation.gtf"
 
 # preprocessing parameters
-samplesheet: "/storage/mathelierarea/processed/katalitf/CAGEscan/cagescan_sample_sheet.csv"
+samplesheet: "/storage/mathelierarea/processed/katalitf/CAGEscan/cagescan_sample_sheet_wo_tissue_39.csv"
 infolder:
 sample_name_fields:
 genome_name: "GRCh38"
