@@ -33,7 +33,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - Analysis of CAGE reads according to the manual of [`CAGEr`](https://www.bioconductor.org/packages/release/bioc/vignettes/CAGEr/inst/doc/CAGEexp.html). Final output is a markdown document summarizing the results and QC, as well as tracks: bed and bigwig files, a set of intermediate RDS files, stand-alone plots (all shown or referenced in the report), and data tables.
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
-
 The comprehensive ComputationalRegulatoryGenomicsICL/customcage documentation is split into the following pages:
 
 - [Usage](usage.md)

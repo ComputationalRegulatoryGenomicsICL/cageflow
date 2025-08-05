@@ -30,12 +30,12 @@
 
   > Langmead, B. and Salzberg, S. L. 2012 Fast gapped-read alignment with Bowtie 2. Nature methods, 9(4), p. 357–359. doi: 10.1038/nmeth.1923.
 
-
 - [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
 
   > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
 
 - [Cutadapt](https://doi.org/10.14806/ej.17.1.200)
+
   > Martin, M. (2011). Cutadapt removes adapter sequences from high-throughput sequencing reads. EMBnet.Journal, 17(1), 10. https://doi.org/10.14806/ej.17.1.200
 
 - [Trim Galore!](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/)
@@ -64,7 +64,6 @@
 - [CAGEfightR](https://www.bioconductor.org/packages/release/bioc/html/CAGEfightR.html)
 
   > Thodberg, M., Thieffry, A., Vitting-Seerup, K., Andersson, R., & Sandelin, A. (2019). CAGEfightR: Analysis of 5′-end data using R/Bioconductor. BMC Bioinformatics, 20(1), 487. https://doi.org/10.1186/s12859-019-3029-5
-
 
 ## Software packaging/containerisation tools
 
