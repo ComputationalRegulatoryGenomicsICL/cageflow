@@ -1,6 +1,5 @@
 # &beta;
 
-
 ## To-do for version 2
 
 ### Features to implement
@@ -16,7 +15,6 @@
 4. Cite in `CITATIONS.md` all the tools that we used.
 
 5. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
-
 
 - [ReadMe](docs/README.md)
   - The actual documentation
