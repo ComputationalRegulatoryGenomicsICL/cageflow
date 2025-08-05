@@ -13,16 +13,16 @@
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-f','--filepath', type=str, help='Path to the file with bigwigs')
+parser.add_argument("-f","--filepath", type=str, help="Path to the file with bigwigs")
 parser.add_argument(
-    '-s','--singleend', type=str,
-    help='Whether the samples are single ended or not')
+    "-s","--singleend", type=str,
+    help="Whether the samples are single ended or not")
 parser.add_argument(
-    '-d','--delimiter', type=str, default=None,
-    help='Additional delimiter to remove parts of the input name, eg pool from sequencing facility')
+    "-d","--delimiter", type=str, default=None,
+    help="Additional delimiter to remove parts of the input name, eg pool from sequencing facility")
 parser.add_argument(
-    '-l','--field', type=int, default=None,
-    help='Up till which field to remove after splitting with additional delimiter (0 indexed)')
+    "-l","--field", type=int, default=None,
+    help="Up till which field to remove after splitting with additional delimiter (0 indexed)")
 args = parser.parse_args()
 
 outdict = {}
