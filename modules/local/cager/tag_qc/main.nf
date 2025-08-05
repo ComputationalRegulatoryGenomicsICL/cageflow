@@ -1,6 +1,6 @@
-// 
+//
 // Quality Control steps of CAGEr
-// 
+//
 
 process CAGER_TAG_QC {
     label 'process_verylong'

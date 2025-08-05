@@ -1,6 +1,6 @@
-// 
+//
 // Subworkflow for deduplication tasks
-// 
+//
 
 include { SAMTOOLS_SORT as SORT_FOR_FIXMATE} from '../../modules/nf-core/samtools/sort/main.nf'
 include { SAMTOOLS_FIXMATE } from '../../modules/nf-core/samtools/fixmate/main.nf'

@@ -1,6 +1,6 @@
-// 
+//
 // Processing of files after mapping
-// 
+//
 
 include { SAMTOOLS_SORT } from '../../modules/nf-core/samtools/sort/main.nf'
 include { SAMTOOLS_INDEX } from '../../modules/nf-core/samtools/index/main.nf'

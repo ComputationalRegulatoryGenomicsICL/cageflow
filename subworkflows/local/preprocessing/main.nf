@@ -1,6 +1,6 @@
-// 
+//
 // Processing before mapping
-// 
+//
 
 include { CAT_FASTQ } from '../../modules/nf-core/cat/fastq/main.nf'
 include { FASTQC } from '../../modules/nf-core/fastqc/main.nf'

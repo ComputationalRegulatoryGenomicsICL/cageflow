@@ -1,7 +1,7 @@
 process FORGE_BSGENOME {
     label 'process_medium'
     stageInMode 'copy'
-   
+
     input:
     path forge_seed
     path seqs_srcdir

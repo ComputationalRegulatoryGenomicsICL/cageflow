@@ -1,6 +1,6 @@
-// 
+//
 // Calling of enhancers with CAGEfightr
-// 
+//
 
 process CAGEFIGHTR_ENHANCER_CALLING {
     label 'process_verylong'
@@ -26,7 +26,7 @@ process CAGEFIGHTR_ENHANCER_CALLING {
         --tssregion_up ${params.tssregion_up} \
         --tssregion_down ${params.tssregion_down} \
         --project_dir ${projectDir}
-    
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         Bash: \$(echo "\$BASH_VERSION")

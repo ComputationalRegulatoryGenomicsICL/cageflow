@@ -1,8 +1,8 @@
-include { paramsSummaryLog;
-          paramsSummaryMap;
-          validateParameters;
-          paramsHelp;
-          fromSamplesheet } from 'plugin/nf-validation'
+include {paramsSummaryLog;
+        paramsSummaryMap;
+        validateParameters;
+        paramsHelp;
+        fromSamplesheet } from 'plugin/nf-validation'
 
 def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
 def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
@@ -188,7 +188,7 @@ workflow CUSTOMCAGE {
         )
         multiqc_report = MULTIQC.out.report.toList()
     }
-    
+
     if (params.cageronly || params.fullpipeline) {
 
         PREPARE_CAGER_METADATA( ch_gtf, ch_versions )

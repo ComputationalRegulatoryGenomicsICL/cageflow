@@ -1,6 +1,6 @@
-// 
+//
 // Modifying sample sheet for relative inputs for processing
-// 
+//
 
 process RELATIVISATION {
     label 'process_medium'

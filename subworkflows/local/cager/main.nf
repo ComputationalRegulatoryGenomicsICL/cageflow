@@ -1,6 +1,6 @@
-// 
+//
 // CAGEr analysis steps
-// 
+//
 include { CAGER_READIN } from '../../modules/local/cager/readin/main.nf'
 include { CAGER_TAG_QC } from '../../modules/local/cager/tag_qc/main.nf'
 include { CAGER_PROCESSING } from '../../modules/local/cager_processing.nf'
@@ -18,7 +18,7 @@ workflow CAGER {
         ch_collected
         ch_txdb
         ch_versions
-    
+
     main:
 
         // CAGEr analysis steps

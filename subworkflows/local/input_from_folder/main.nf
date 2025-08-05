@@ -25,7 +25,7 @@ workflow INPUT_FROM_FOLDER {
             ["$infolder/**_R{1,2}*fastq.gz", "$infolder/**_{1,2}*fastq.gz"],
             size: singleEnd ? 1 : 2)
         .map{
-            old_meta, fastq -> 
+            old_meta, fastq ->
                 def meta = [:]
                 num_fields_of_interest = "$params.sample_name_fields".toInteger()
                 split_field_num = old_meta.split('_').size()
@@ -37,7 +37,7 @@ workflow INPUT_FROM_FOLDER {
                     num_fields_to_cut = num_fields_to_cut == 0 ? 2 : num_fields_to_cut + 1
                     sample_name = old_meta.split('_')[0..-num_fields_to_cut].join('_')
                     lane_n_fastq = tuple((fastq.name =~ /L00\d/)[0], fastq)
-                }    
+                }
                 meta.id = sample_name.replaceAll('-','_')
                 meta.single_end = singleEnd
                 [meta, lane_n_fastq] }

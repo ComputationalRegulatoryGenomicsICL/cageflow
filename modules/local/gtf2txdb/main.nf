@@ -1,7 +1,7 @@
 process GTF2TXDB {
     label 'process_medium'
     stageInMode 'copy'
-   
+
     input:
     path gtf
 

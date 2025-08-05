@@ -1,6 +1,6 @@
-// 
+//
 // Sanity checks on input parameters and creation of channels
-// 
+//
 
 include { INPUT_FROM_FOLDER } from '../input_from_folder/main.nf'
 include { INPUT_FROM_SAMPLESHEET } from '../input_from_samplesheet/main.nf'

@@ -1,6 +1,6 @@
-// 
+//
 // Quality Control steps of CAGEr after clustering of CTSS
-// 
+//
 
 process CAGER_TAGCLUSTER_QC {
     label 'process_high'

@@ -3,7 +3,7 @@
 process CAGER_READIN {
     label 'process_medium'
     stageInMode 'copy'
-   
+
     input:
     path bsgenome_file
     val bsgenome_name

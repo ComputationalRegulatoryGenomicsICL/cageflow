@@ -1,11 +1,11 @@
-// 
+//
 // Subworkflow to get the chromsizes
-// 
+//
 
 include { CUSTOM_GETCHROMSIZES } from '../../modules/nf-core/custom/getchromsizes/main.nf'
 
 workflow PREPARE_MAPPING_METADATA {
-    
+
     take:
         ch_fasta
         ch_versions

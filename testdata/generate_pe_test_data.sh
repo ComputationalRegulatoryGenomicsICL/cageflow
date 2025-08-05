@@ -5,10 +5,10 @@
 # Use paired-end CAGE data from Danio rerio:
 # 4-5 somites (SRR10215487) and prim-5 (SRR10215486).
 # The data is publicly available as part of the following publication:
-# Nepal, C., Hadzhiev, Y., Balwierz, P. et al. 
-# Dual-initiation promoters with intertwined canonical and TCT/TOP 
-# transcription start sites diversify transcript processing. 
-# Nat Commun 11, 168 (2020). 
+# Nepal, C., Hadzhiev, Y., Balwierz, P. et al.
+# Dual-initiation promoters with intertwined canonical and TCT/TOP
+# transcription start sites diversify transcript processing.
+# Nat Commun 11, 168 (2020).
 # https://doi.org/10.1038/s41467-019-13687-0
 
 # The script uses the following utilities:

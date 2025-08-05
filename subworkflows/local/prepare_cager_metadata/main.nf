@@ -1,6 +1,6 @@
-// 
+//
 // Subworkflow to get the BSgenome via forging or loading
-// 
+//
 
 include { GTF2TXDB } from '../../modules/local/gtf2txdb/main.nf'
 include { FORGE_BSGENOME } from '../../modules/local/forge_bsgenome/main.nf'
@@ -13,7 +13,7 @@ workflow PREPARE_CAGER_METADATA {
 
     main:
 
-        // prepare or fetch BSgenome 
+        // prepare or fetch BSgenome
         if (params.forgeseed) {
             forge_seed = file(params.forgeseed, checkIfExists: true)
             seqs_srcdir = file(params.sourcedir, checkIfExists: true)

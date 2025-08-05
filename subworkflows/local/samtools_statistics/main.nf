@@ -1,6 +1,6 @@
-// 
+//
 // Steps for creating summary statistics for quality check
-// 
+//
 
 include { SAMTOOLS_STATS } from '../../modules/nf-core/samtools/stats/main.nf'
 include { SAMTOOLS_IDXSTATS } from '../../modules/nf-core/samtools/idxstats/main.nf'
@@ -14,7 +14,7 @@ workflow SAMTOOLS_STATISTICS {
         ch_versions
 
     main:
-        SAMTOOLS_STATS ( 
+        SAMTOOLS_STATS (
             ch_bam_bai,
             ch_fasta.ifEmpty(
                 file("$projectDir/assets/NO_FILE_FASTA",

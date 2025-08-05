@@ -5,10 +5,10 @@
 # Use single-end CAGE data from Saccharomyces cerevisiae:
 # anaerobic conditions (Ana, ERR2495148) and ethanol limitation (Eth, ERR2495150).
 # The data is publicly available as part of the following publication:
-# Borlin, C. S., Cvetesic, N., Holland, P. et al. 
-# Saccharomyces cerevisiae displays a stable transcription start site 
-# landscape in multiple conditions 
-# FEMS Yeast Research, 19, foy128 (2019). 
+# Borlin, C. S., Cvetesic, N., Holland, P. et al.
+# Saccharomyces cerevisiae displays a stable transcription start site
+# landscape in multiple conditions
+# FEMS Yeast Research, 19, foy128 (2019).
 # https://doi.org/10.1093/femsyr/foy128
 
 # The script uses the following utilities:

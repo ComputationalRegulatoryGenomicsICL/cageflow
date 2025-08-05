@@ -1,6 +1,6 @@
-// 
+//
 // Removing reads which do not start with G
-// 
+//
 
 process READ_REMOVAL {
     label 'process_medium'

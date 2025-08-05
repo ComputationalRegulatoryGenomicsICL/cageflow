@@ -1,8 +1,8 @@
-// 
+//
 // Subworkflow to define flow from Bowtie2
-// 
+//
 
-include { BOWTIE2_BUILD } from '../../modules/nf-core/bowtie2/build/main.nf' 
+include { BOWTIE2_BUILD } from '../../modules/nf-core/bowtie2/build/main.nf'
 include { BOWTIE2_ALIGN } from '../../modules/nf-core/bowtie2/align/main.nf'
 include { SAMTOOLS_VIEW_MAPQ } from '../../modules/local/samtools/view_mapq/main.nf'
 
@@ -21,7 +21,7 @@ workflow BOWTIE2 {
                 ch_fasta
             )
             ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions)
-            
+
             ch_index = BOWTIE2_BUILD.out.index
         }
 
