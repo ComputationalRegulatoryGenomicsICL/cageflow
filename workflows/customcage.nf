@@ -45,7 +45,7 @@ params.bsgenome = false
 params.forgeseed = false
 params.sourcedir = false
 
-include { BIGWIG_INPUTS } from "../subworkflows/local/bigwiginputs/main.nf"
+include { BIGWIG_INPUTS } from "../subworkflows/local/bigwig_inputs/main.nf"
 include { RELATIVISATION } from '../modules/local/relativisation/main.nf'
 
 include { PARAMETER_CHECKS } from '../subworkflows/local/parameter_checks/main.nf'

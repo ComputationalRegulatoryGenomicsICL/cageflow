@@ -1,0 +1,39 @@
+name: "forge_bsgenome"
+description: Forging a BSgenome package from a seed and a source directory.
+keywords:
+  - BSGenome
+tools:
+  - "BSgenomeForge":
+      description: "A set of tools to forge BSgenome data packages"
+      homepage: "https://bioconductor.org/packages/devel/bioc/html/BSgenomeForge.html"
+      documentation: "https://bioconductor.org/packages/devel/bioc/vignettes/BSgenomeForge/inst/doc/QuickBSgenomeForge.html"
+      tool_dev_url: "https://github.com/Bioconductor/BSgenomeForge"
+      doi: "10.18129/B9.bioc.BSgenomeForge"
+      licence: ["Artistic-2.0"]
+      identifier: bsgenomeforge
+input:
+  - forge_seed:
+      type: file
+      description: |
+        Path to a forge seed file.
+  - seqs_srcdir:
+      type: file
+      description: |
+        Path to a directory containing the sequences to be used for forging the BSgenome package.
+output:
+  bsgenome:
+    - "BSgenome.*.tar.gz":
+        type: file
+        description: |
+          The forged BSgenome package in tar.gz format.
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+authors:
+  - "@ferenckata"
+maintainers:
+  - "@ferenckata"

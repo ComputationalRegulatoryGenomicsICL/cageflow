@@ -49,6 +49,10 @@
 
   > R Core Team (2017). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria.
 
+- [BSgenomeForge](https://bioconductor.org/packages/devel/bioc/html/BSgenomeForge.html)
+
+  > Pagès, H., Kakopo, A. K., Elendu, E. C., Maduka P. C. (2025) BSgenomeForge: Forge your own BSgenome data package. doi:10.18129/B9.bioc.BSgenomeForge, R package version 1.9.1
+
 - [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html)
 
   > H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.

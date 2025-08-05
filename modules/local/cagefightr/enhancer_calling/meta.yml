@@ -1,0 +1,64 @@
+name: "cagefihtr_enhancer_calling"
+description: Enhancer calling using CAGEfightR starting from normalized CAGEr object
+keywords:
+  - CAGE
+  - enhancer calling
+tools:
+  - "CAGEfightR":
+      description: "Tool for performing a wide range of common data analysis tasks for CAGE and 5'-end data in general."
+      homepage: "https://bioconductor.org/packages/devel/bioc/html/CAGEfightR.html"
+      documentation: "https://bioconductor.org/packages/devel/bioc/vignettes/CAGEfightR/inst/doc/Introduction_to_CAGEfightR.html"
+      tool_dev_url: "https://github.com/MalteThodberg/CAGEfightR"
+      doi: "10.1186/s12859-019-3029-5"
+      licence: ["GPL-3 + file"]
+      identifier: cagefightr
+input:
+  - cager_obj:
+      type: file
+      description: |
+        Path to a CAGEr object file containing normalized CAGE data.
+        The CAGEr object should be saved in RDS format.
+      pattern: "*{.rds}"
+  - txdb:
+      type: file
+      description: SQLite file of a TxDb object containing transcript annotations.
+      pattern: "*{.sqlite}"
+output:
+  rds:
+    - "intermediate_cagerobj/supported_enhancers.rds":
+        type: file
+        description: |
+          Called supported enhancers in rds format.
+    - "intermediate_cagerobj/nonTSS_enhancers.rds":
+        type: file
+        description: |
+          Enhancers not overlapping called consensus clusters in rds format.
+  plots:
+    - "plots/*.pdf":
+        type: file
+        description: |
+          List of PDF files containing plots generated during the enhancer calling process.
+    - "plots/*.plot.rds":
+        type: file
+        description: |
+          List of RDS files containing plots generated during the enhancer calling process.
+  enhancer_table:
+    - "tables/*.tsv":
+        type: file
+        description: |
+          Table with enhancer expression per sample.
+    - "tracks/*.bed":
+        type: file
+        description: |
+          Bed file of enhancer locations.
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+authors:
+  - "@ferenckata"
+maintainers:
+  - "@ferenckata"
