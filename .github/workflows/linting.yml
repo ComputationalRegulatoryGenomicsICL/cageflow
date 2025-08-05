@@ -86,7 +86,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install nf-core
 
-      - name: Run nf-core lint
+      - name: Run nf-core pipelines lint
         env:
           GITHUB_COMMENTS_URL: ${{ github.event.pull_request.comments_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
