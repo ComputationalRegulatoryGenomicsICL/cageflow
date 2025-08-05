@@ -53,10 +53,7 @@ jobs:
           pip install nf-core==${{ steps.read_yml.outputs['nf_core_version'] }}
 
       - name: Run nf-core pipelines lint
-<<<<<<< HEAD
-=======
         if: ${{ github.base_ref != 'master' }}
->>>>>>> TEMPLATE
         env:
           GITHUB_COMMENTS_URL: ${{ github.event.pull_request.comments_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -77,11 +74,7 @@ jobs:
 
       - name: Upload linting log file artifact
         if: ${{ always() }}
-<<<<<<< HEAD
-        uses: actions/upload-artifact@v4
-=======
         uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4
->>>>>>> TEMPLATE
         with:
           name: linting-logs
           path: |

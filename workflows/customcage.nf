@@ -208,8 +208,8 @@ workflow CUSTOMCAGE {
     }
 }
 
-    emit:multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
-    versions       = ch_versions                 // channel: [ path(versions.yml) ]
+    // emit:multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
+    // versions       = ch_versions                 // channel: [ path(versions.yml) ]
 
 // workflow.onComplete {
 //     if (params.email || params.email_on_fail) {
