@@ -61,6 +61,10 @@
 
   > Trevor L Davis (2018). optparse: Command Line Option Parser.
 
+- [txdbmaker](https://www.bioconductor.org/packages/release/bioc/html/txdbmaker.html)
+
+  > Pagès H, Carlson M, Aboyoun P, Falcon S, Morgan M (2025). txdbmaker: Tools for making TxDb objects from genomic annotations. doi:10.18129/B9.bioc.txdbmaker, R package version 1.4.2, https://bioconductor.org/packages/txdbmaker.
+
 - [CAGEr](https://www.bioconductor.org/packages/release/bioc/html/CAGEr.html)
 
   > Haberle, V., Forrest, A. R. R., Hayashizaki, Y., Carninci, P., & Lenhard, B. (2015). CAGEr: Precise TSS data retrieval and high-resolution promoterome mining for integrative analyses. Nucleic Acids Research, 43(8), e51–e51. https://doi.org/10.1093/nar/gkv054

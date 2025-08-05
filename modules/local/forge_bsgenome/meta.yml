@@ -34,6 +34,6 @@ output:
         ontologies:
           - edam: http://edamontology.org/format_3750 # YAML
 authors:
-  - "@ferenckata"
+  - "@sidorov-si"
 maintainers:
-  - "@ferenckata"
+  - "@sidorov-si"

@@ -1,0 +1,43 @@
+name: "gtf2txdb"
+description: Convert GTF files to TxDb objects
+keywords:
+  - BSGenome
+tools:
+  - "optparse":
+      description: "A command-line option parser for R"
+      homepage: "https://CRAN.R-project.org/package=optparse"
+      documentation: "https://cran.r-project.org/web/packages/optparse/refman/optparse.html"
+      doi: "10.32614/CRAN.package.optparse"
+      licence: ["GPL-2 | GPL-3"]
+      identifier: optparse
+  - "txdbmaker":
+      description: "A set of tools for making TxDb objects from genomic annotations from various sources (e.g. UCSC, Ensembl, and GFF files)."
+      homepage: "https://www.bioconductor.org/packages/release/bioc/html/txdbmaker.html"
+      documentation: "https://www.bioconductor.org/packages/release/bioc/vignettes/txdbmaker/inst/doc/txdbmaker.html"
+      tool_dev_url: "https://github.com/Bioconductor/txdbmaker"
+      doi: "10.18129/B9.bioc.txdbmaker"
+      licence: ["Artistic-2.0"]
+      identifier: txdbmaker
+input:
+  - gtf:
+      type: file
+      description: |
+        GTF file containing genomic annotations to be converted into a TxDb object.
+      pattern: "*.gtf"
+output:
+  txdb:
+    - "*.sqlite":
+        type: file
+        description: |
+          The output TxDb object in SQLite format, which can be imported to R.
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: http://edamontology.org/format_3750 # YAML
+authors:
+  - "@sidorov-si"
+maintainers:
+  - "@sidorov-si"

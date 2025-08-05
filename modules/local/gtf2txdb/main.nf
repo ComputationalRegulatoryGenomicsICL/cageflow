@@ -3,7 +3,6 @@ process GTF2TXDB {
     stageInMode 'copy'
    
     input:
-    //tuple val(meta), path(gtf)
     path gtf
 
     output:
