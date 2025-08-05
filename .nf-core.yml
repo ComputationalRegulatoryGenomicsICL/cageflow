@@ -18,7 +18,16 @@ lint:
   nextflow_config:
     - manifest.name
     - manifest.homePage
+nf_core_version: 3.2.0
 repository_type: pipeline
 template:
-  prefix: ComputationalRegulatoryGenomicsICL
-  skip: []
+  author: Damir Baranasic
+  description: This is the first version of the Lenhard\'s group custom CAGE pipeline
+    implemented in nextflow and nf-core
+  force: false
+  is_nfcore: false
+  name: customcage
+  org: ComputationalRegulatoryGenomicsICL
+  outdir: .
+  skip_features: []
+  version: 1.0dev

@@ -1,5 +1,5 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/ComputationalRegulatoryGenomicsICL/customcage/master/assets/schema_input.json",
     "title": "ComputationalRegulatoryGenomicsICL/customcage pipeline - params.samplesheet schema",
     "description": "Schema for the file provided with params.samplesheet",
@@ -10,14 +10,18 @@
             "sample": {
                 "type": "string",
                 "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces"
+                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "meta": ["id"]
             },
             "fastq_1": {
                 "type": "string",
+                "format": "file-path",
+                "exists": true,
                 "pattern": "^\\S+\\.f(ast)?q\\.gz$",
                 "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
             },
             "fastq_2": {
+<<<<<<< HEAD
                 "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'",
                 "anyOf": [
                     {
@@ -34,6 +38,13 @@
                 "type": "string",
                 "errorMessage": "Single-end status must be provided and be one of 'True', which indicates the library is single-end mode or 'False', which indicates paired-end mode",
                 "enum": ["True", "False"]
+=======
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
+                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+>>>>>>> TEMPLATE
             }
         },
         "required": ["sample", "fastq_1", "single_end"]
