@@ -4,7 +4,7 @@
 
 include { CAT_FASTQ } from '../../modules/nf-core/cat/fastq/main.nf'
 include { FASTQC } from '../../modules/nf-core/fastqc/main.nf'
-include { FASTQC_TRIMMED } from '../../modules/nf-core/fastqc/main.nf'
+include { FASTQC as FASTQC_TRIMMED } from '../../modules/nf-core/fastqc/main.nf'
 include { READ_REMOVAL } from '../../modules/local/remove_non_g.nf'
 include { TRIMGALORE } from '../../modules/nf-core/trimgalore/main.nf'
 include { CUTADAPT } from '../../modules/nf-core/cutadapt/main.nf'
