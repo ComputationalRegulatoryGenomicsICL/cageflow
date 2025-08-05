@@ -2,8 +2,8 @@
 // Subworkflow to get the BSgenome via forging or loading
 // 
 
-include { GTF_TO_TXDB } from '../../modules/local/gtf_to_txdb.nf'
-include { FORGE_BSGENOME } from '../../modules/local/forge_bsgenome.nf'
+include { GTF2TXDB } from '../../modules/local/gtf2txdb/main.nf'
+include { FORGE_BSGENOME } from '../../modules/local/forge_bsgenome/main.nf'
 
 workflow PREPARE_CAGER_METADATA {
 
@@ -40,9 +40,9 @@ workflow PREPARE_CAGER_METADATA {
             ch_bsgenome_name = ''
         }
 
-        ch_txdb = GTF_TO_TXDB(ch_gtf)
-        ch_txdb_file = GTF_TO_TXDB.out.txdb
-        ch_versions = ch_versions.mix(GTF_TO_TXDB.out.versions)
+        ch_txdb = GTF2TXDB(ch_gtf)
+        ch_txdb_file = GTF2TXDB.out.txdb
+        ch_versions = ch_versions.mix(GTF2TXDB.out.versions)
 
     emit:
         ch_bsgenome_file

@@ -1,4 +1,4 @@
-process GTF_TO_TXDB {
+process GTF2TXDB {
     label 'process_medium'
     stageInMode 'copy'
    

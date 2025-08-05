@@ -2,7 +2,7 @@
 // Calling of enhancers with CAGEfightr
 // 
 
-process CAGEFIGHTR_ENHANCERS {
+process CAGEFIGHTR_ENHANCER_CALLING {
     label 'process_verylong'
     stageInMode 'copy'
 

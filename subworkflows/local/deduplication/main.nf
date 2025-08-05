@@ -7,10 +7,10 @@ include { SAMTOOLS_FIXMATE } from '../../modules/nf-core/samtools/fixmate/main.n
 include { SAMTOOLS_SORT as SORT_AFTER_FIXMATE} from '../../modules/nf-core/samtools/sort/main.nf'
 include { SAMTOOLS_INDEX as INDEX_AFTER_FIXMATE} from '../../modules/nf-core/samtools/index/main.nf'
 
-include { SAMTOOLS_DEDUP } from '../../modules/local/samtools_dedup.nf'
+include { SAMTOOLS_DEDUP } from '../../modules/local/samtools/dedup/main.nf'
 include { SAMTOOLS_INDEX as INDEX_DEDUP} from '../../modules/nf-core/samtools/index/main.nf'
 
-workflow DEDUP {
+workflow DEDUPLICATION {
     take:
         ch_aligned
         ch_versions

@@ -6,7 +6,7 @@ include { SAMTOOLS_STATS } from '../../modules/nf-core/samtools/stats/main.nf'
 include { SAMTOOLS_IDXSTATS } from '../../modules/nf-core/samtools/idxstats/main.nf'
 include { SAMTOOLS_FLAGSTAT } from '../../modules/nf-core/samtools/flagstat/main.nf'
 
-workflow SUMMARY_STAT {
+workflow SAMTOOLS_STATISTICS {
     take:
         ch_bam_bai
         ch_fasta

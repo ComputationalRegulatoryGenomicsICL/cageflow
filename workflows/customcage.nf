@@ -45,22 +45,22 @@ params.bsgenome = false
 params.forgeseed = false
 params.sourcedir = false
 
-include { BIGWIG_INPUTS } from "../subworkflows/local/read_in_bigwigs.nf"
-include { RELATIVISATION } from '../modules/local/make_paths_relative.nf'
+include { BIGWIG_INPUTS } from "../subworkflows/local/bigwiginputs/main.nf"
+include { RELATIVISATION } from '../modules/local/relativisation/main.nf'
 
-include { PARAMETER_CHECKS } from '../subworkflows/local/parameter_checks.nf'
-include { PREPROCESSING } from '../subworkflows/local/preprocessing.nf'
-include { PREPARE_MAPPING_METADATA } from '../subworkflows/local/prepare_mapping_metadata.nf'
-include { PREPARE_CAGER_METADATA } from '../subworkflows/local/prepare_cager_metadata.nf'
-include { STAR_PROCESSING } from '../subworkflows/local/star_processing.nf'
-include { BOWTIE2_PROCESSING } from '../subworkflows/local/bowtie2_processing.nf'
-include { DEDUP } from '../subworkflows/local/deduplication.nf'
-include { SAMTOOLS_PROCESSING } from '../subworkflows/local/samtools_processing.nf'
-include { SUMMARY_STAT } from '../subworkflows/local/summary_statistics.nf'
+include { PARAMETER_CHECKS } from '../subworkflows/local/parameter_checks/main.nf'
+include { PREPROCESSING } from '../subworkflows/local/preprocessing/main.nf'
+include { PREPARE_MAPPING_METADATA } from '../subworkflows/local/prepare_mapping_metadata/main.nf'
+include { PREPARE_CAGER_METADATA } from '../subworkflows/local/prepare_cager_metadata/main.nf'
+include { STAR } from '../subworkflows/local/star/main.nf'
+include { BOWTIE2 } from '../subworkflows/local/bowtie2/main.nf'
+include { DEDUPLICATION } from '../subworkflows/local/deduplication/main.nf'
+include { SAMTOOLS } from '../subworkflows/local/samtools/main.nf'
+include { SAMTOOLS_STATISTICS } from '../subworkflows/local/samtools_statistics/main.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
-include { WRITE_SAMPLE_LIST } from '../modules/local/write_sample_list.nf'
-include { CAGER } from '../subworkflows/local/cager_analysis.nf'
+include { WRITE_SAMPLE_LIST } from '../modules/local/write_sample_list/main.nf'
+include { CAGER } from '../subworkflows/local/cager/main.nf'
 
 def multiqc_report = []
 

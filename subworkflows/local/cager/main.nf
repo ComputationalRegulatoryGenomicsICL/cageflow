@@ -1,12 +1,12 @@
 // 
 // CAGEr analysis steps
 // 
-include { CAGER_READIN } from '../../modules/local/cager_readin.nf'
-include { CAGER_TAG_QC } from '../../modules/local/cager_tag_qc.nf'
+include { CAGER_READIN } from '../../modules/local/cager/readin/main.nf'
+include { CAGER_TAG_QC } from '../../modules/local/cager/tag_qc/main.nf'
 include { CAGER_PROCESSING } from '../../modules/local/cager_processing.nf'
-include { CAGER_TAGCLUSTER_QC } from '../../modules/local/cager_tagcluster_qc.nf'
-include { CAGER_REPORT } from "../../modules/local/cager_report.nf"
-include { CAGEFIGHTR_ENHANCERS } from '../../modules/local/cagefightr_enhancers.nf'
+include { CAGER_TAGCLUSTER_QC } from '../../modules/local/cager/tagcluster_qc/main.nf'
+include { CAGER_REPORT } from "../../modules/local/cager/report/main.nf"
+include { CAGEFIGHTR_ENHANCER_CALLING } from '../../modules/local/cagefightr/enhancer_calling/main.nf'
 
 
 workflow CAGER {
@@ -64,12 +64,12 @@ workflow CAGER {
         tc_corr_data = CAGER_TAGCLUSTER_QC.out.correlation_rds
 
         // enhancer calling
-        CAGEFIGHTR_ENHANCERS(
+        CAGEFIGHTR_ENHANCER_CALLING(
             clustered_cager_rds,
             ch_txdb)
-        ch_versions = ch_versions.mix(CAGEFIGHTR_ENHANCERS.out.versions)
+        ch_versions = ch_versions.mix(CAGEFIGHTR_ENHANCER_CALLING.out.versions)
         // enhancer calling plots
-        enhancer_plots = CAGEFIGHTR_ENHANCERS.out.plots
+        enhancer_plots = CAGEFIGHTR_ENHANCER_CALLING.out.plots
 
         ch_template = Channel.fromPath(params.markdown_path)
 
