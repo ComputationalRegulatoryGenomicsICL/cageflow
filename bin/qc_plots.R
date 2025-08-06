@@ -14,9 +14,9 @@ for (lib in required.libraries) {
 
 plot_settings <- function(.data, y_value, color_by_value, y_label, title, y_value_max) {
   .data %>% ggplot(aes(
-      x = Sample,
-      y = {{y_value}},
-      colour = {{color_by_value}})) +
+      x = .data[["Sample"]],
+      y = .data[[y_value]],
+      colour = .data[[color_by_value]])) +
   geom_point(size = 5) +
   scale_color_viridis(
       discrete = TRUE,
@@ -45,8 +45,8 @@ plot_number_of_tag_clusters <- function(
     tidyr::unnest(cols=count)
   tag_count_plot <- sample_tag_count_table %>%
     plot_settings(
-      y_value = count,
-      color_by_value = Sample,
+      y_value = "count",
+      color_by_value = "Sample",
       y_label = yaxistitle,
       title = mytitle,
       y_value_max=max(sample_tag_count_table$count))
