@@ -60,7 +60,7 @@ plot_dinucleotide_frequency_heatmap <- function(
         ggtitle(NULL) +
         theme_bw() +
         theme(
-            text = element_text(size = 40, colour = "black"), 
+            text = element_text(size = 40, colour = "black"),
             axis.text.x = element_text(size = 30, colour = "black",angle = 90),
             axis.text.y = element_text(size = 30, colour = "black"),
             panel.grid.major = element_blank(),
@@ -74,18 +74,18 @@ plot_dinucleotide_frequency_histogram <- function(
 
     p <- ggplot(
         data = weigthed_dinuc_vals_df,
-        aes(x = dinucleotide, y = proportion, fill = samples)) + 
+        aes(x = dinucleotide, y = proportion, fill = samples)) +
         scale_fill_manual(values = col) +
         geom_bar(
             stat = "identity",
             position = position_dodge(),
             colour = "black",
             size = 0.3,
-            linewidth = 0.25) + 
+            linewidth = 0.25) +
         coord_flip() +
-        xlab("Initiator dinucleotide") + 
-        ylab("Proportion of total per sample") + 
-        ggtitle("Dominant TSS dinucleotide (-/+ 1bp) proportion weighted by the sum of dominant TSS score per sample") + 
+        xlab("Initiator dinucleotide") +
+        ylab("Proportion of total per sample") +
+        ggtitle("Dominant TSS dinucleotide (-/+ 1bp) proportion weighted by the sum of dominant TSS score per sample") +
         theme_bw() +
         theme(
             text = element_text(size = 60, colour = "black"),

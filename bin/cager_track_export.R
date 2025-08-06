@@ -34,7 +34,7 @@ export_tagclusters <- function(ce, iqlow, iqhigh){
 
 export_consensus_clusters <- function(ce){
     ccbedTracks <- CAGEr::exportToTrack(
-        ce, 
+        ce,
         what = "consensusClusters",
         colorByExpressionProfile = FALSE,
         oneTrack = TRUE)

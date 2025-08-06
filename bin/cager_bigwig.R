@@ -37,18 +37,18 @@ getRefGenome <- function(reference.genome) {
 
 # Function from CAGEr version 2.12.0
 #' coerceInBSgenome
-#' 
+#'
 #' A private (non-exported) function to discard any range that is
 #' not compatible with the CAGEr object's BSgenome.
-#' 
+#'
 #' @param gr The genomic ranges to coerce.
 #' @param genome The name of a BSgenome package, which must me installed,
 #'   or \code{NULL} to skip coercion.
-#' 
+#'
 #' @return A GRanges object in which every range is guaranteed to be compatible
 #' with the given BSgenome object.  The sequnames of the GRanges are also set
 #' accordingly to the BSgenome.
-#' 
+#'
 #' @importFrom GenomeInfoDb seqinfo
 #' @importFrom GenomeInfoDb seqlengths
 #' @importFrom GenomeInfoDb seqlevels seqlevels<-
@@ -56,13 +56,13 @@ getRefGenome <- function(reference.genome) {
 #' @importFrom S4Vectors %in%
 
 coerceInBSgenome <- function(gr, genome) {
-     if (is.null(genome)) return(gr)
-     genome <- getRefGenome(genome)
-     gr <- gr[seqnames(gr) %in% seqnames(genome)]
-     gr <- gr[! end(gr) > seqlengths(genome)[as.character(seqnames(gr))]]
-     seqlevels(gr) <- seqlevels(genome)
-     seqinfo(gr) <- seqinfo(genome)
-     gr
+    if (is.null(genome)) return(gr)
+    genome <- getRefGenome(genome)
+    gr <- gr[seqnames(gr) %in% seqnames(genome)]
+    gr <- gr[! end(gr) > seqlengths(genome)[as.character(seqnames(gr))]]
+    seqlevels(gr) <- seqlevels(genome)
+    seqinfo(gr) <- seqinfo(genome)
+    gr
 }
 
 #' Read in BigWig files to CAGEexp object

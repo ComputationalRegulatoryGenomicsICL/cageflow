@@ -25,7 +25,7 @@ plot_settings <- function(.data, y_value, color_by_value, y_label, title, y_valu
         option = "magma") +
     theme_bw(base_size = 12) +
     ylab(y_label) +
-    xlab("") + 
+    xlab("") +
     ylim(0, y_value_max+1000) +
     ggtitle(title) +
     theme(
@@ -103,7 +103,7 @@ plot_pcs <- function(count_matrix){
 
     # plot PCA
     pca_plot <- as.data.frame(pca_out$x) %>%
-        rownames_to_column(var = "sample") %>% 
+        rownames_to_column(var = "sample") %>%
         ggplot(aes(PC1, PC2, label=sample)) +
         geom_point(size = 3) +
     ggrepel::geom_text_repel(
@@ -111,8 +111,8 @@ plot_pcs <- function(count_matrix){
         vjust=0,
         size=2,
         max.overlaps=5) +
-    theme_bw() + 
-    scale_color_brewer(palette = "Set1") + 
+    theme_bw() +
+    scale_color_brewer(palette = "Set1") +
     xlab(sprintf("PC1 (%.2f%%)", vars_explained[1] *100)) +
     ylab(sprintf("PC2 (%.2f%%)", vars_explained[2] *100))
 
