@@ -85,7 +85,7 @@ The parameters specific to mapping, can be left empty when running in `cageronly
 - `infolder` specifies the input directory with FASTQ files (stored together for all samples or located in per-sample subdirectories). This option is mutually exclusive with `samplesheet`, and may be used together with `sample_name_fields`.
 - `sample_name_fields` is a supporting parameter for `infolder` in case your sample name has underscore(s) in it. By default, only the first part of the string before the first underscore is taken for samplename. If you have more, like `my_sample_name_S1_L001_R1_001.fastq.gz`, with this parameter you may specify _how many underscore separated fields_ the sample name has in the filename. In the `my_sample_name_S1_L001_R1_001.fastq.gz` example, this parameter should be = 3.
 - `genome_name` specifies the name of the reference genome. It is used as meta information
-- `fasta` specifies a FASTA file containing a reference genome. This option is mandatory, unless `index` is set.
+- `genome` specifies a FASTA file containing a reference genome. This option is mandatory, unless `index` is set.
 - `index` specifies a directory with a genome index (`bowtie2` or `STAR`). This is a mandatory option, unless `fasta` is set.
 - `seq_platform` specifies the sequencing platform used. Required for mapping with `STAR`.
 - `seq_center` specifies the name of the sequencing center. Required for mapping with `STAR`.

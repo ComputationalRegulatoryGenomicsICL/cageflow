@@ -1,8 +1,3 @@
-ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
-ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
-ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-
 // pipeline run settings
 params.fullpipeline = true
 params.maponly = false
@@ -73,7 +68,9 @@ params.cfBalanceThreshold = 0.95
 params.unexpressed = 0
 params.minSamples = 0
 
-include { paramsSummaryMultiqc } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { paramsSummaryMap          } from 'plugin/nf-schema'
+include { methodsDescriptionText    } from '../subworkflows/local/utils_nfcore_customcage_pipeline'
+
 include { BIGWIG_INPUTS } from "../subworkflows/local/bigwig_inputs/main.nf"
 include { RELATIVISATION } from '../modules/local/relativisation/main.nf'
 
@@ -96,9 +93,6 @@ workflow CUSTOMCAGE {
 
     if (params.gtf) {
             ch_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
-            // ch_pre_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
-            // ch_gtf = sample_meta.combine(ch_pre_gtf)
-            // ch_gtf = ch_genome_name.combine(ch_pre_gtf)
         } else {
             exit 1, "The --gtf argument is mandatory."
     }
@@ -197,14 +191,6 @@ workflow CUSTOMCAGE {
             newLine: true,
             sort: { file -> file.text })
 
-        summary_params                        = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
-        ch_workflow_summary                   = Channel.value(paramsSummaryMultiqc(summary_params))
-        ch_multiqc_files                      = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-        ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-        ch_methods_description                = Channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
-        ch_multiqc_files                      = ch_multiqc_files.mix(ch_collated_versions)
-        ch_multiqc_files                      = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml',sort: true))
-        ch_multiqc_files                      = ch_multiqc_files.mix(REPORT_BENCHMARK_STATISTICS.out.ch_plots)
 
         MULTIQC (
             ch_multiqc_files.collect(),
@@ -213,6 +199,10 @@ workflow CUSTOMCAGE {
             ch_multiqc_logo.toList()
         )
         ch_report = MULTIQC.out.report.toList()
+
+        summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+        def multiqc_reports = multiqc_report.toList()
+
     }
 
     if (params.cageronly || params.fullpipeline) {

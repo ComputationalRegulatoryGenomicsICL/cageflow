@@ -6,11 +6,11 @@ cageronly: false
 gtf: "cageflow_test_data/danRer11_genome/danRer11.ensGene.gtf"
 
 # preprocessing parameters
-input: "cageflow_to_nfcore/customcageq/testdata/samplesheet_danio_nepal_2020_pe_test.csv"
+samplesheet: "cageflow_to_nfcore/customcageq/testdata/samplesheet_danio_nepal_2020_pe_test.csv"
 infolder:
 sample_name_fields:
 genome_name: "danRer11"
-fasta: "cageflow_test_data/danRer11_genome/danRer11.fa"
+genome: "cageflow_test_data/danRer11_genome/danRer11.fa"
 index:
 seq_platform: "illumina"
 seq_center: false

@@ -223,10 +223,6 @@
             "type": "string",
             "description": "Name of the reference genome. It is used as meta information"
         },
-        "fasta": {
-            "type": "string",
-            "description": "FASTA file containing a reference genome."
-        },
         "index": {
             "type": "string",
             "description": "Specifies a directory with a genome index"
@@ -250,8 +246,7 @@
         },
         "params_trimgalore": {
             "type": "string",
-            "description": "Additional parameters that can be passed to TrimGalore!",
-            "default": "''"
+            "description": "Additional parameters that can be passed to TrimGalore!"
         },
         "cager_sample_file": {
             "type": "string",
@@ -393,6 +388,10 @@
             "type": "boolean",
             "default": true,
             "description": "Whether to save merged fasta files"
+        },
+        "genome": {
+            "type": "string",
+            "description": "FASTA file containing a reference genome."
         }
     },
     "required": ["gtf"]

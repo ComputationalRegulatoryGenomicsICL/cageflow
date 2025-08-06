@@ -26,6 +26,11 @@
                 "exists": true,
                 "pattern": "^\\S+\\.f(ast)?q\\.gz$",
                 "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+            },
+            "single_end": {
+                "type": "boolean",
+                "exists": true,
+                "errorMessage": "Pairedness missing"
             }
         },
         "required": ["sample", "fastq_1", "single_end"]

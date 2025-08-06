@@ -51,16 +51,14 @@ workflow {
         params.validate_params,
         params.monochrome_logs,
         args,
-        params.outdir,
-        params.input
+        params.outdir
     )
 
     //
     // WORKFLOW: Run main workflow
     //
-    CUSTOMCAGE(
-        PIPELINE_INITIALISATION.out.samplesheet
-    )
+    CUSTOMCAGE()
+
     //
     // SUBWORKFLOW: Run completion tasks
     //
@@ -71,7 +69,7 @@ workflow {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE.out.multiqc_report
+        CUSTOMCAGE.out.ch_report
     )
 }
 
