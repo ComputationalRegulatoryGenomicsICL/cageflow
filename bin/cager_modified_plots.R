@@ -25,7 +25,7 @@ plotInterquantileWidth_local <- function(object, clusters, tpmThreshold, qLow, q
 
     # binsize <- round(max(iqwidths$iq_width)/2)
     binsize <- ceiling(max(iqwidths$iq_width)/2)
-    
+
     # License note: the plot is modified to use ggplot2
     iqwidth_plot <- ggplot2::ggplot(iqwidths) +
         ggplot2::aes_string(x = "iq_width") +
@@ -97,7 +97,7 @@ calculate_correlation_matrix <- function(
 
 .fit.power.law.to.reverse.cumulative <- function(values, val.range = c(10, 1000)) {
 
-    # using data.table package    
+    # using data.table package
     v <- data.table(num = 1, nr_tags = values)
     num <- nr_tags <- NULL # Keep R CMD check happy.
     v <- v[, sum(num), by = nr_tags]
@@ -115,7 +115,7 @@ calculate_correlation_matrix <- function(
 
     v <- v[nr_tags >= min(val.range) & nr_tags <= max(val.range)]
 
-    # check if specified range values have at least 1 entry in v 
+    # check if specified range values have at least 1 entry in v
     if(nrow(v) < 1){
         stop(
             paste(
@@ -128,11 +128,11 @@ calculate_correlation_matrix <- function(
     a <- coefficients(lin.m)[2]
     b <- coefficients(lin.m)[1]
 
-    # check if specified range values have >1 entries in v 
+    # check if specified range values have >1 entries in v
     if(is.na(a) && b == 0){
         stop(
             paste(
-                "Selected range for fitting the power law does not", 
+                "Selected range for fitting the power law does not",
                 "contain enough values. Consider changing/increasing 'fitInRange'."))
     }
     return(c(a, b))
@@ -219,7 +219,7 @@ plotReverseCumulatives_local <- function(
             subtitle = paste0("alpha= ", sprintf("%.2f", -1*slope), " T= ", library_size),
             x =xlab, y = ylab) +
         ggplot2::geom_text(data = tag_count_df,
-               mapping= aes(
+                mapping= aes(
                 x=10, y= 10,
                 label = paste0("alpha= ", formatC(-1*fit.slopes[name], format = "f", digits = 2)))) +
         ggplot2::geom_vline(xintercept=fitInRange, linetype="dotted") +

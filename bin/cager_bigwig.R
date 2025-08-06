@@ -154,7 +154,7 @@ read_in_bigwig <- function(
         }
     }
 
-     # Step 0: Create a CAGEexp object, filenames only of str1
+    # Step 0: Create a CAGEexp object, filenames only of str1
     ce <- new(
         "CAGEexp",
         colData = DataFrame(
