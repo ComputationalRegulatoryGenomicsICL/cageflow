@@ -144,15 +144,15 @@ workflow CUSTOMCAGE {
         ch_reads_to_align = PREPROCESSING.out.ch_reads_to_align
         ch_multiqc_files = PREPROCESSING.out.ch_multiqc_files
         ch_versions = PREPROCESSING.out.ch_versions
-        
+
         PREPARE_MAPPING_METADATA( ch_fasta, ch_versions )
         ch_chrom_sizes = PREPARE_MAPPING_METADATA.out.ch_chrom_sizes
         ch_fasta = PREPARE_MAPPING_METADATA.out.ch_fasta
         ch_versions = PREPARE_MAPPING_METADATA.out.ch_versions
 
-        if (params.bowtie2) {            
+        if (params.bowtie2) {
             BOWTIE2_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_multiqc_files, ch_versions)
-            
+
             ch_aligned = BOWTIE2_PROCESSING.out.ch_aligned
             ch_multiqc_files = BOWTIE2_PROCESSING.out.ch_multiqc_files
             ch_versions = BOWTIE2_PROCESSING.out.ch_versions

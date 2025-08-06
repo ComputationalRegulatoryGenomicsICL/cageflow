@@ -52,7 +52,7 @@ rm 20171106_CAGE_SequencingData_Eth_Rep1_shuff.fastq.gz
 
 # Randomly subsample reads for lanes 1 and 2 of samples 1 and 2
 seqkit sample -p 0.1 -s 42 20171106_CAGE_SequencingData_Ana_Rep1_shuff_top-half.fastq.gz | seqkit sample -n ${readN} -s 42 -o S1_S1_L001_R1_001.fastq.gz
-# See https://bioinf.shenwei.me/seqkit/note/#effect-of-random-seed-on-results-of-seqkit-sample 
+# See https://bioinf.shenwei.me/seqkit/note/#effect-of-random-seed-on-results-of-seqkit-sample
 # on why seqkit sometimes does not output the exact number of reads that was required
 rm 20171106_CAGE_SequencingData_Ana_Rep1_shuff_top-half.fastq.gz
 seqkit sample -p 0.1 -s 42 20171106_CAGE_SequencingData_Ana_Rep1_shuff_bottom-half.fastq.gz | seqkit sample -n ${readN} -s 42 -o S1_S1_L002_R1_001.fastq.gz

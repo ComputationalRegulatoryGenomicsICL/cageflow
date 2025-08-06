@@ -21,5 +21,4 @@ process WRITE_SAMPLE_LIST {
         line="${meta.id},${meta.single_end},${PWD}/${params.outdir}/samtools_sort/${bw_or_bam[0]},${meta.id}"
         echo \$line > sample_list.csv
         """
-
 }
