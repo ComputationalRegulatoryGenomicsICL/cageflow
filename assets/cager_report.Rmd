@@ -30,7 +30,7 @@ Correlation of samples by the raw tag counts above the user defined threshold (c
 Note: these are not filtered or normalized yet. The plot is for diagnostic purposes, such as highlighting batch effects.
 Note #2: the main correlation is shown on the top-right ot bottom-left diagonal due to the behaviour of the underlying `gplots::heatmap.2` function.
 The corrplot_tagCountThreshold is shared across correlation plots.
-For a higher resolution plot, visit the `pdf` file saved in the results/cager/plots folder. 
+For a higher resolution plot, visit the `pdf` file saved in the results/cager/plots folder.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 print(paste0("The current corrplot_tagCountThreshold value is: ", corrplot_tagCountThreshold))
 
@@ -65,7 +65,7 @@ Correlation of samples by the normalized tag counts above the user defined thres
 Normalization should have removed batch effects to some extent.
 Note: the main correlation is shown on the top-right ot bottom-left diagonal due to the behaviour of the underlying `gplots::heatmap.2` function.
 The corrplot_tagCountThreshold is shared across correlation plots.
-For a higher resolution plot, visit the `pdf` file saved in the results/cager/plots folder. 
+For a higher resolution plot, visit the `pdf` file saved in the results/cager/plots folder.
 
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 print(paste0("The current corrplot_tagCountThreshold value is: ", corrplot_tagCountThreshold))
@@ -151,7 +151,7 @@ dinucl_plot <- readRDS("dinucleotide_frequencies_plot.rds")
 dinucl_plot + ggplot2::theme(
     text=ggplot2::element_text(size=5),
     axis.text.x = ggplot2::element_text(angle = 90, size=5),
-    axis.text.y = ggplot2::element_text(size=5)) 
+    axis.text.y = ggplot2::element_text(size=5))
 ```
 
 ### TSS region logos
@@ -192,7 +192,7 @@ The balance threshold is a user defined parameter (cfBalanceThreshold).
 The normalized TPM values of the CTSS are used as input to enhancer calling.
 The threshold for TPM values is set by the user with the unexpressed parameter.
 Enhancers are called by pooling all CTSS values, but only those enhancers are kept that has support in more than a user defined number of samples (minSamples).
-To ensure that promoter regions does not get confused with enhancer regions, any enhancer region overlapping consensus clusters is removed. 
+To ensure that promoter regions does not get confused with enhancer regions, any enhancer region overlapping consensus clusters is removed.
 
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 print(paste0("The current cfBalanceThreshold value is: ", cfBalanceThreshold))

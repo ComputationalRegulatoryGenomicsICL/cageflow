@@ -1,6 +1,6 @@
-# 
+#
 # Parse incoming data from channel
-# 
+#
 
 parse_input <- function(sample_info, data_type){
     cleaned_string <- gsub("\\[", "", sample_info[[1]])

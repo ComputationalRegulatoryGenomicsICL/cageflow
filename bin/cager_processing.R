@@ -1,8 +1,8 @@
 #!/usr/bin/env Rscript
 
-# 
+#
 # Process data with CAGEr: normalization, clustering of tags, consensus cluster calling, and track export
-# 
+#
 
 # Load libraries
 required.libraries <- c(
@@ -20,7 +20,7 @@ required.libraries <- c(
     "rtracklayer")
 
 for (lib in required.libraries) {
-  suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
+    suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
 }
 
 # parse options

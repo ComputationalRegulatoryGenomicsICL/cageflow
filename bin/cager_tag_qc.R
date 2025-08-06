@@ -1,8 +1,8 @@
 #!/usr/bin/env Rscript
 
-# 
+#
 # Initial quality control of CAGE reads
-# 
+#
 
 
 # Load libraries
@@ -15,7 +15,7 @@ required.libraries <- c(
     "ggseqlogo")
 
 for (lib in required.libraries) {
-  suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
+    suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
 }
 
 # parse options

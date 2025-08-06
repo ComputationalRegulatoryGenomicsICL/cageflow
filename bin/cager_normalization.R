@@ -42,7 +42,7 @@ cager_normalization <- function(
             library_size=library_size,
             fit.slopes = fit.slopes,
             fitInRange = c(rangeMin, rangeMax))
-        
+
         save_plot(
             "reverse_cumulative_plot.pdf",
             revcum_plots)
@@ -60,7 +60,7 @@ cager_normalization <- function(
     } else {
         stop("Invalid normalization method. Choose either 'powerLaw', 'simpleTpm', or 'none'.")
     }
-    
+
     ce <- CAGEr::normalizeTagCount(
         ce,
         method = method,

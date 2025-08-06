@@ -4,7 +4,7 @@
 #'
 #' @param ce initial CAGEexp object with CTSS values
 #' @param cfBalanceThreshold threshold for the cagefightr balance score
-#' @param unexpressed threshold above which normalized CTSS are considered expressed 
+#' @param unexpressed threshold above which normalized CTSS are considered expressed
 #' @param minSamples non inlcusive lower threshold for number of samples supporting enhancers (i.e. where there is bidirectionality)
 #' @return enhancers
 #' @examples
@@ -34,7 +34,7 @@ cagefightr_enhancers <- function(
     assays(se, withDimnames=FALSE) <- List(
         counts = as(as.matrix(as.data.frame(assays(se)[[1]])), "dgCMatrix"),
         TPM = as(as.matrix(as.data.frame(assays(se)[[2]])), "dgCMatrix"))
-    
+
     # Save as main working object
     cfSampleCTSSs <- se
 
@@ -42,7 +42,7 @@ cagefightr_enhancers <- function(
     cfSampleCTSSs <- CAGEfightR::calcPooled(
         cfSampleCTSSs,
         inputAssay = "TPM")
-    
+
     # Calculate how many samples support expression at each CTSS
     cfSampleCTSSs <- CAGEfightR::calcSupport(
         cfSampleCTSSs,
