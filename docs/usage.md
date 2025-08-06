@@ -91,10 +91,11 @@ The parameters specific to mapping, can be left empty when running in `cageronly
 - `seq_center` specifies the name of the sequencing center. Required for mapping with `STAR`.
 - `unique_only` specifies if only uniquely mapped reads are considered for downstream analysis. Required for mapping with `STAR`. Not considered when using `bowtie2`.
 - `remove_non_g` specifies whether to keep only those reads that start with `G` base, as expected after the CAGE protocol. This step is expected to remove about 15-20% of the reads that would likely be non canonical initiators, but they might take part in ohter biological processes.
+- `params_trimgalore` specifies additional parameters that can be passed to TrimGalore!
 
 The parameters specific to CAGEr and CAGEfightR analysis, can be left empty when running in `maponly` mode:
 
-- `cager_sample_file` specifies the input CSV samplesheet including the name of the samples, their pairedness status, and the location of bigwigs. Optionally, a fourth column is used that sepcifies which samples should be removed, merged, or kept as is. This is achieved by checking if the row is empty (remove), its content is unique (keep as is), or shared with another sample (merge).
+- `cager_sample_file` specifies the input CSV samplesheet including the name of the samples, their pairedness status, and the location of bigwig or bam files. Optionally, a fourth column is used that sepcifies which samples should be removed, merged, or kept as is. This is achieved by checking if the row is empty (remove), its content is unique (keep as is), or shared with another sample (merge).
 - `forgeseed` specifies a seed file for BSgenome forging (see the [Advanced BSgenomeForge usage vignette](https://bioconductor.org/packages/release/bioc/vignettes/BSgenomeForge/inst/doc/AdvancedBSgenomeForge.pdf) for details). The seed file should not contain the `seqs_srcdir` field (instead, the absolute or relative path to the source directory is set with the `sourcedir` option, see below). This option requires `sourcedir` and is mutually exclusive with `bsgenome`.
 - `sourcedir` specifies a directory containing either a set of FASTA files, one per reference chromosome, or a 2bit file for the whole reference genome. See the [Advanced BSgenomeForge usage vignette](https://bioconductor.org/packages/release/bioc/vignettes/BSgenomeForge/inst/doc/AdvancedBSgenomeForge.pdf) for details. The seed file should be written according to the contents of this directory. This option requires `forgeseed` and is mutually exclusive with `bsgenome`.
 - `bsgenome` specifies the BSgenome R package to use. If it is a file name (which should have a full path and the `.tar.gz` extension), then the package will be taken from the specified location; otherwise, the pipeline will try to install a BSgenome R package with the name `bsgenome.package` on the fly (see examples below). This option is mutually exclusive with `forgeseed` and `sourcedir`.
@@ -116,12 +117,11 @@ The parameters specific to CAGEr and CAGEfightR analysis, can be left empty when
 - `unexpressed` and `minSamples` are used for selecting only supported enhancers. `unexpressed` is a non inclusive lower TPM boundary for expression when calculating support of enhancers. `minSamples` is a non-inclusive lower boundary for the number of samples where the clusters should show bidirectionality.
 
 - Additional arguments can be:
-  - `params-trimgalore 'params'` specifies any options that can be passed to `TrimGalore!`. This option is useful for any non-standard read processing (for example, for CAGEscan reads that require the removal of a fixed number of nucleotides from the 5'-ends of the forward and reverse reads ([Bertin et al., 2017](https://www.nature.com/articles/sdata2017147))). The string with the parameters for `TrimGalore!` must be surrounded by single quotes.
+  - `params-trimgalore` specifies any options that can be passed to `TrimGalore!`. This option is useful for any non-standard read processing (for example, for CAGEscan reads that require the removal of a fixed number of nucleotides from the 5'-ends of the forward and reverse reads ([Bertin et al., 2017](https://www.nature.com/articles/sdata2017147))). The string with the parameters for `TrimGalore!` must be surrounded by single quotes.
   - `nogtrim` makes the pipeline skip the G-trimming step. This option is useful for processing non-CAGE data (for example, CAGEscan reads which do not seem to require trimming of a 5'-`G` ([Bertin et al., 2017](https://www.nature.com/articles/sdata2017147))). This option can be used together with `params-trimgalore` (see an example below).
   - `bowtie2` switches the aligner from `STAR` to `bowtie2`. This option is compatible with either `index` or `fasta`.
   - `dedup` switches on PCR duplicate removal (not shown in the pipeline map above and is switched off by default).
   - `dist L` sets an optical duplicate distance `L` to remove optical duplicates, in addition to PCR duplicates (see [`samtools markdup`](https://www.htslib.org/doc/samtools-markdup.html), option `-d`). This option requires `dedup`.
-  - `-w` is a Nextflow option that specifies a path to the Nextflow work directory.
 
 _Note: All pipeline options may be provided to the nextflow command starting with a double dash (`--`). All Nextflow options start with a single dash (`-`)._
 
