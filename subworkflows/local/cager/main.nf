@@ -84,6 +84,7 @@ workflow CAGER {
             cager_rds)
 
     emit:
+        ch_html
         ch_versions
 
 }

@@ -14,11 +14,9 @@
 */
 
 include { CUSTOMCAGE  } from './workflows/customcage'
-// include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_customcage_pipeline'
-// include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_customcage_pipeline'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_customcage_pipeline'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_customcage_pipeline'
 // include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_customcage_pipeline'
-include { UTILS_NFCORE_PIPELINE as utilsNFcore } from './subworkflows/nf-core/utils_nfcore_pipeline'
-include { UTILS_NEXTFLOW_PIPELINE as utilsPipeline } from './subworkflows/nf-core/utils_nextflow_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,61 +35,45 @@ include { UTILS_NEXTFLOW_PIPELINE as utilsPipeline } from './subworkflows/nf-cor
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-//
-// WORKFLOW: Run main analysis pipeline
-//
-// workflow COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE {
-
-//     CUSTOMCAGE().out
-
-// }
-
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-
 workflow {
 
-    main:
-        
-        utilsNFcore(nextflow_cli_args: log.info(workflow))
-        CUSTOMCAGE()
+    //
+    // SUBWORKFLOW: Run initialisation tasks
+    //
+    PIPELINE_INITIALISATION (
+        params.version,
+        params.validate_params,
+        params.monochrome_logs,
+        args,
+        params.outdir,
+        params.samplesheet
+    )
 
+    //
+    // WORKFLOW: Run main workflow
+    //
+    CUSTOMCAGE(
+        PIPELINE_INITIALISATION.out.samplesheet
+    )
+    //
+    // SUBWORKFLOW: Run completion tasks
+    //
+    PIPELINE_COMPLETION (
+        params.email,
+        params.email_on_fail,
+        params.plaintext_email,
+        params.outdir,
+        params.monochrome_logs,
+        params.hook_url,
+        COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE.out.multiqc_report
+    )
 }
-//     //
-//     // SUBWORKFLOW: Run initialisation tasks
-//     //
-//     PIPELINE_INITIALISATION (
-//         params.version,
-//         params.validate_params,
-//         params.monochrome_logs,
-//         args,
-//         params.outdir,
-//         params.input
-//     )
-
-//     //
-//     // WORKFLOW: Run main workflow
-//     //
-//     COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE (
-//         PIPELINE_INITIALISATION.out.samplesheet
-//     )
-//     //
-//     // SUBWORKFLOW: Run completion tasks
-//     //
-//     PIPELINE_COMPLETION (
-//         params.email,
-//         params.email_on_fail,
-//         params.plaintext_email,
-//         params.outdir,
-//         params.monochrome_logs,
-//         params.hook_url,
-//         COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE.out.multiqc_report
-//     )
-// }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -73,6 +73,7 @@ params.cfBalanceThreshold = 0.95
 params.unexpressed = 0
 params.minSamples = 0
 
+include { paramsSummaryMultiqc } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { BIGWIG_INPUTS } from "../subworkflows/local/bigwig_inputs/main.nf"
 include { RELATIVISATION } from '../modules/local/relativisation/main.nf'
 
@@ -85,7 +86,6 @@ include { BOWTIE2 } from '../subworkflows/local/bowtie2/main.nf'
 include { DEDUPLICATION } from '../subworkflows/local/deduplication/main.nf'
 include { SAMTOOLS } from '../subworkflows/local/samtools/main.nf'
 include { SAMTOOLS_STATISTICS } from '../subworkflows/local/samtools_statistics/main.nf'
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
 include { WRITE_SAMPLE_LIST } from '../modules/local/write_sample_list/main.nf'
 include { CAGER } from '../subworkflows/local/cager/main.nf'
@@ -197,13 +197,22 @@ workflow CUSTOMCAGE {
             newLine: true,
             sort: { file -> file.text })
 
+        summary_params                        = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+        ch_workflow_summary                   = Channel.value(paramsSummaryMultiqc(summary_params))
+        ch_multiqc_files                      = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+        ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
+        ch_methods_description                = Channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
+        ch_multiqc_files                      = ch_multiqc_files.mix(ch_collated_versions)
+        ch_multiqc_files                      = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml',sort: true))
+        ch_multiqc_files                      = ch_multiqc_files.mix(REPORT_BENCHMARK_STATISTICS.out.ch_plots)
+
         MULTIQC (
             ch_multiqc_files.collect(),
             ch_multiqc_config.toList(),
             ch_multiqc_custom_config.toList(),
             ch_multiqc_logo.toList()
         )
-        multiqc_report = MULTIQC.out.report.toList()
+        ch_report = MULTIQC.out.report.toList()
     }
 
     if (params.cageronly || params.fullpipeline) {
@@ -222,23 +231,14 @@ workflow CUSTOMCAGE {
             ch_txdb_file,
             ch_versions
         )
+        ch_report = CAGER.out.ch_html.toList()
     }
+
+
+    emit:report = ch_report // channel: /path/to/multiqc_report.html
+    versions    = ch_versions                 // channel: [ path(versions.yml) ]
+
 }
-
-    // emit:multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
-    // versions       = ch_versions                 // channel: [ path(versions.yml) ]
-
-// workflow.onComplete {
-//     if (params.email || params.email_on_fail) {
-//         NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
-//     }
-//     NfcoreTemplate.dump_parameters(workflow, params)
-//     NfcoreTemplate.summary(workflow, params, log)
-//     if (params.hook_url) {
-//         NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
-//     }
-// }
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     THE END
