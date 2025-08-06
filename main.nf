@@ -17,6 +17,8 @@ include { CUSTOMCAGE  } from './workflows/customcage'
 // include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_customcage_pipeline'
 // include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_customcage_pipeline'
 // include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_customcage_pipeline'
+include { UTILS_NFCORE_PIPELINE as utilsNFcore } from './subworkflows/nf-core/utils_nfcore_pipeline'
+include { UTILS_NEXTFLOW_PIPELINE as utilsPipeline } from './subworkflows/nf-core/utils_nextflow_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -54,6 +56,8 @@ include { CUSTOMCAGE  } from './workflows/customcage'
 workflow {
 
     main:
+        
+        utilsNFcore(nextflow_cli_args: log.info(workflow))
         CUSTOMCAGE()
 
 }
