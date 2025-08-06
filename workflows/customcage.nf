@@ -144,22 +144,22 @@ workflow CUSTOMCAGE {
         ch_versions = PREPARE_MAPPING_METADATA.out.ch_versions
 
         if (params.bowtie2) {
-            BOWTIE2_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_multiqc_files, ch_versions)
+            BOWTIE2(ch_reads_to_align, ch_fasta, ch_index, ch_multiqc_files, ch_versions)
 
-            ch_aligned = BOWTIE2_PROCESSING.out.ch_aligned
-            ch_multiqc_files = BOWTIE2_PROCESSING.out.ch_multiqc_files
-            ch_versions = BOWTIE2_PROCESSING.out.ch_versions
+            ch_aligned = BOWTIE2.out.ch_aligned
+            ch_multiqc_files = BOWTIE2.out.ch_multiqc_files
+            ch_versions = BOWTIE2.out.ch_versions
             // NOTE: placeholder so that the channel is not empty
-            // it will be replaced in SAMTOOLS_PROCESSING
+            // it will be replaced in SAMTOOLS
             ch_for_cager = ch_aligned
 
         } else {
-            STAR_PROCESSING(ch_reads_to_align, ch_fasta, ch_index, ch_gtf, ch_chrom_sizes, ch_multiqc_files, ch_versions)
+            STAR(ch_reads_to_align, ch_fasta, ch_index, ch_gtf, ch_chrom_sizes, ch_multiqc_files, ch_versions)
 
-            ch_for_cager = STAR_PROCESSING.out.bigwig_ch_for_cager
-            ch_aligned = STAR_PROCESSING.out.ch_aligned
-            ch_multiqc_files = STAR_PROCESSING.out.ch_multiqc_files
-            ch_versions = STAR_PROCESSING.out.ch_versions
+            ch_for_cager = STAR.out.bigwig_ch_for_cager
+            ch_aligned = STAR.out.ch_aligned
+            ch_multiqc_files = STAR.out.ch_multiqc_files
+            ch_versions = STAR.out.ch_versions
         }
 
         if (params.dedup) {
@@ -169,17 +169,17 @@ workflow CUSTOMCAGE {
             ch_bam_bai = DEDUP.out.ch_bam_bai
             ch_versions = DEDUP.out.ch_versions
         } else {
-            SAMTOOLS_PROCESSING(ch_aligned, ch_versions, ch_for_cager)
+            SAMTOOLS(ch_aligned, ch_versions, ch_for_cager)
 
-            ch_for_cager = SAMTOOLS_PROCESSING.out.ch_for_cager
-            ch_bam_bai = SAMTOOLS_PROCESSING.out.ch_bam_bai
-            ch_versions = SAMTOOLS_PROCESSING.out.ch_versions
+            ch_for_cager = SAMTOOLS.out.ch_for_cager
+            ch_bam_bai = SAMTOOLS.out.ch_bam_bai
+            ch_versions = SAMTOOLS.out.ch_versions
         }
 
-        SUMMARY_STAT(ch_bam_bai, ch_fasta, ch_multiqc_files, ch_versions)
+        SAMTOOLS_STATISTICS(ch_bam_bai, ch_fasta, ch_multiqc_files, ch_versions)
 
-        ch_multiqc_files = SUMMARY_STAT.out.ch_multiqc_files
-        ch_versions = SUMMARY_STAT.out.ch_versions
+        ch_multiqc_files = SAMTOOLS_STATISTICS.out.ch_multiqc_files
+        ch_versions = SAMTOOLS_STATISTICS.out.ch_versions
 
         bigwig_files_ch = ch_for_cager.map{ meta, paths ->
             file1 =  paths[0]
