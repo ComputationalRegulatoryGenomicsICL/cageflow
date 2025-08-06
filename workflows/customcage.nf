@@ -17,9 +17,20 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 params.fullpipeline = true
 params.maponly = false
 params.cageronly = false
+// genome annotation in GTF
+params.gtf = "$projectDir/assets/NO_FILE_GTF"
 
-// input parameters
-params.samplesheet = false
+// preprocessing parameters
+params.samplesheet = "$projectDir/assets/NO_FILE_SAMPLESHEET"
+params.infolder = ''
+params.sample_name_fields = ''
+params.genome_name = ''
+params.fasta = "$projectDir/assets/NO_FILE_FASTA"
+params.index = "$projectDir/assets/NO_FILE_INDEX"
+params.seq_platform = ''
+params.seq_center = false
+params.unique_only = true
+params.remove_non_g = false
 
 // TrimGalore! parameters
 params.params_trimgalore = ''
@@ -31,9 +42,6 @@ params.nogtrim = false
 params.dedup = false
 params.dist = false
 
-// genome annotation in GTF
-params.gtf = "$projectDir/assets/NO_FILE_GTF"
-
 // bowtie2 parameters
 params.bowtie2 = false
 
@@ -42,8 +50,38 @@ params.markdown_path = "$projectDir/assets/cager_report.Rmd"
 
 // BSgenome parameters
 params.bsgenome = false
-params.forgeseed = false
-params.sourcedir = false
+params.forgeseed = "$projectDir/assets/NO_FILE_FORGESEED"
+params.sourcedir = ''
+
+// CAGEr parameters
+params.cager_sample_file = "$projectDir/assets/NO_FILE_CAGERSAMPLESHEET"
+// parameter for correlation calculation
+params.corrplot_tagCountThreshold = 1
+// parameters for normalization
+params.norm_range_min = 5
+params.norm_range_max = 10000
+params.norm_method = "powerLaw"
+params.alpha = false
+params.t_norm = 1000000
+// parameters for tag clustering
+params.sample_num_thr = 1
+params.ctss_thr = 1
+params.distclu_maxDist = 20
+params.keepSingletonsAbove = 5
+params.iq_low = 0.1
+params.iq_high = 0.9
+// plotting for tagclusters QC
+params.iqw_tpm_threshold = 3
+params.tssregion_up = -3000
+params.tssregion_down = 3000
+params.tsslogo_upstream = 35
+// parameters for consensus clusters
+params.consensus_thr = 2
+params.consensus_dist = 100
+// parameters for enhancer calling
+params.cfBalanceThreshold = 0.95
+params.unexpressed = 0
+params.minSamples = 0
 
 include { BIGWIG_INPUTS } from "../subworkflows/local/bigwig_inputs/main.nf"
 include { RELATIVISATION } from '../modules/local/relativisation/main.nf'

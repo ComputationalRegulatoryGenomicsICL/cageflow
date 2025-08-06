@@ -52,7 +52,7 @@ norm_range_min: 5
 norm_range_max: 10000
 norm_method: "powerLaw"
 alpha:
-T_norm: 1000000
+t_norm: 1000000
 # parameters for tag clustering
 sample_num_thr: 1
 ctss_thr: 1
@@ -102,7 +102,7 @@ The parameters specific to CAGEr and CAGEfightR analysis, can be left empty when
 - `norm_method` is the method used for normalizing the samples. Options are `simpleTpm` to covert tag counts to tags per million, `powerLaw` to normalize to a reference power-law distribution, or `none` to keep using the raw tag counts in downstream analyses. Case sensitive.
 - `norm_range_min` and `norm_range_max` defines the lower and upper thresold for fitting the power-law distribution and calculate the slope for normalization. Only used when `norm_method` is `powerLaw`.
 - `alpha` user specified alpha, the `-1 *` fitted slope in the log-log representation of the power-law distribution. If none, the average across samples is calculated and used. Considered for `powerLaw` normalization only. Note: this value cannot be less than 1.05, if the user provides a lower value the code automatically assumes 1.05.
-- `T_norm` total number of CAGE tags in the reference power-law distribution. Setting `T = 10^6` results in normalized values that correspond to tags per million. Considered for `powerLaw` normalization only.
+- `t_norm` total number of CAGE tags in the reference power-law distribution. Setting `T = 10^6` results in normalized values that correspond to tags per million. Considered for `powerLaw` normalization only.
 - `sample_num_thr` and `ctss_thr` are parameters for filtering low expressed CTSS before clustering. `ctss_thr` specifies the lower threshold above which CTSS are considered, and `sample_num_thr` specifies the number of samples where this threshold should be passed.
 - `distclu_maxDist` specifies the maximum distance for distance-based clustering (distclu).
 - `keepSingletonsAbove` defines the tpm threshold above which even a single CTSS is kept during clustering.

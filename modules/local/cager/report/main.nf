@@ -25,7 +25,7 @@ process CAGER_REPORT {
     norm_range_min <- '${params.norm_range_min}'
     norm_range_max <- '${params.norm_range_max}'
     norm_method <- '${params.norm_method}'
-    T_norm <- '${params.T_norm}'
+    t_norm <- '${params.t_norm}'
     alpha <- '${params.alpha}'
     sample_num_thr <- '${params.sample_num_thr}'
     ctss_thr <- '${params.ctss_thr}'
