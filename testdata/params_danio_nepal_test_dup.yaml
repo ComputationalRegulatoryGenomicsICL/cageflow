@@ -26,8 +26,6 @@ sourcedir:
 bsgenome: "BSgenome.Drerio.UCSC.danRer11"
 # parameter for correlation calculation
 corrplot_tagCountThreshold: 1
-# correlation plotting of samples
-heatmap_cex: 1
 # parameters for normalization
 norm_range_min: 5
 norm_range_max: 10000

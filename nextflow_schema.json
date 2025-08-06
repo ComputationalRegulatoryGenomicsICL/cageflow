@@ -250,8 +250,8 @@
         },
         "params_trimgalore": {
             "type": "string",
-            "default": "",
-            "description": "Additional parameters that can be passed to TrimGalore!"
+            "description": "Additional parameters that can be passed to TrimGalore!",
+            "default": "''"
         },
         "cager_sample_file": {
             "type": "string",
@@ -388,6 +388,11 @@
         "dist": {
             "type": "integer",
             "description": "Sets an optical duplicate distance, used together with dedup"
+        },
+        "save_merged_fastq": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to save merged fasta files"
         }
     },
     "required": ["gtf"]
