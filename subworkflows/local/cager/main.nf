@@ -1,12 +1,12 @@
 //
 // CAGEr analysis steps
 //
-include { CAGER_READIN } from '../../modules/local/cager/readin/main.nf'
-include { CAGER_TAG_QC } from '../../modules/local/cager/tag_qc/main.nf'
-include { CAGER_PROCESSING } from '../../modules/local/cager_processing.nf'
-include { CAGER_TAGCLUSTER_QC } from '../../modules/local/cager/tagcluster_qc/main.nf'
-include { CAGER_REPORT } from "../../modules/local/cager/report/main.nf"
-include { CAGEFIGHTR_ENHANCER_CALLING } from '../../modules/local/cagefightr/enhancer_calling/main.nf'
+include { CAGER_READIN } from '../../../modules/local/cager/readin/main.nf'
+include { CAGER_TAG_QC } from '../../../modules/local/cager/tag_qc/main.nf'
+include { CAGER_PROCESSING } from '../../../modules/local/cager/processing/main.nf'
+include { CAGER_TAGCLUSTER_QC } from '../../../modules/local/cager/tagcluster_qc/main.nf'
+include { CAGER_REPORT } from "../../../modules/local/cager/report/main.nf"
+include { CAGEFIGHTR_ENHANCER_CALLING } from '../../../modules/local/cagefightr/enhancer_calling/main.nf'
 
 
 workflow CAGER {

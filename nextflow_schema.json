@@ -250,6 +250,7 @@
         },
         "params_trimgalore": {
             "type": "string",
+            "default": "",
             "description": "Additional parameters that can be passed to TrimGalore!"
         },
         "cager_sample_file": {

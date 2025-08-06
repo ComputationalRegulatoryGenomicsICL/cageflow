@@ -8,7 +8,6 @@ workflow INPUT_FROM_SAMPLESHEET {
 
     main:
     reads = file(samplesheet, checkIfExists: true)
-        .csv
         .splitCsv ( header:true, sep:',' )
         .map { create_fastq_channel(it) }
 

@@ -17,7 +17,6 @@ seq_center: false
 unique_only: true
 # whether to remove reads that do not start with G
 remove_non_g: false
-params_trimgalore:
 
 # CAGEr parameters
 cager_sample_file:

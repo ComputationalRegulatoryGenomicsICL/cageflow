@@ -51,11 +51,12 @@ include { CUSTOMCAGE  } from './workflows/customcage'
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-CUSTOMCAGE()
+workflow {
 
-// workflow {
+    main:
+        CUSTOMCAGE()
 
-//     main:
+}
 //     //
 //     // SUBWORKFLOW: Run initialisation tasks
 //     //
