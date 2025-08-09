@@ -219,7 +219,6 @@ workflow CUSTOMCAGE {
             ch_txdb_file,
             ch_versions
         )
-        ch_multiqc_files = ch_multiqc_files.mix(CAGER.out.ch_plots)
 
     }
 
