@@ -17,6 +17,7 @@ process CAGEFIGHTR_ENHANCER_CALLING {
     path "versions.yml", emit: versions
     """
 
+    echo "Calling enhancers with CAGEfightR."
     cagefightr_enhancer_calling.R  \
         --cageexp_object ${cager_obj} \
         --annotation ${txdb} \

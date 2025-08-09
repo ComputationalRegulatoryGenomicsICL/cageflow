@@ -16,6 +16,7 @@ process CAGER_READIN {
     path "versions.yml", emit: versions
 
     """
+    echo "Reading in to CAGEr object"
     if [ -z ${bsgenome_name} ]
     then
         bsgenome=${bsgenome_file}

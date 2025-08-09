@@ -19,6 +19,7 @@ process CAGER_TAGCLUSTER_QC {
     path "versions.yml", emit: versions
 
     """
+    echo "QC on tag and consensus clusters"
     if [ -z ${bsgenome_name} ]
     then
         bsgenome=${bsgenome_file}

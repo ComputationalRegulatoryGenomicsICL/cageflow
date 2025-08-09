@@ -17,7 +17,6 @@ workflow BOWTIE2 {
 
     main:
 
-        println("Mapping with Bowtie2")
         if (!params.index) {
             BOWTIE2_BUILD (
                 ch_fasta

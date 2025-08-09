@@ -19,6 +19,7 @@ process CAGER_TAG_QC {
     path "versions.yml", emit: versions
 
     """
+    echo "Initial QC on CAGEr tags"
     if [ -z ${bsgenome_name} ]
     then
         bsgenome=${bsgenome_file}

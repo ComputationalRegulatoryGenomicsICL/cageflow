@@ -28,13 +28,10 @@ workflow CAGER {
             ch_data_type = Channel.of("bigwig")
         }
 
-        println("Collecting samples")
         sample_table = ch_sample_file
             .splitCsv( header:true , sep:',')
             .map { create_mapping_channel(it) }
             .collect()
-
-        println("Reading in to CAGEr object")
 
         CAGER_READIN (
             ch_bsgenome_file,
@@ -47,7 +44,6 @@ workflow CAGER {
         cager_rds = CAGER_READIN.out.rds
         ch_versions = ch_versions.mix(CAGER_READIN.out.versions)
 
-        println("Initial QC on CAGEr tags")
         CAGER_TAG_QC(cager_rds, ch_txdb, ch_bsgenome_file, ch_bsgenome_name)
         annotated_cager_rds = CAGER_TAG_QC.out.cager_rds
         ch_versions = ch_versions.mix(CAGER_TAG_QC.out.versions)
@@ -55,14 +51,12 @@ workflow CAGER {
         tra_ch_tss = CAGER_TAG_QC.out.plots
         tag_corr_data = CAGER_TAG_QC.out.correlation_rds
 
-        println("Tagcluster and consensus cluster calling. This may take some time.")
         CAGER_PROCESSING(annotated_cager_rds, ch_bsgenome_file, ch_bsgenome_name, ch_txdb)
         clustered_cager_rds = CAGER_PROCESSING.out.rds
         ch_versions = ch_versions.mix(CAGER_PROCESSING.out.versions)
         // reverse cumulative, iterquartile width, ctss counts
         ch_preproc_res = CAGER_PROCESSING.out.results
 
-        println("Initial QC on tag and consensus clusters")
         CAGER_TAGCLUSTER_QC(clustered_cager_rds, ch_txdb, ch_bsgenome_file, ch_bsgenome_name)
         ch_versions = ch_versions.mix(CAGER_TAGCLUSTER_QC.out.versions)
         // tagcluster annotations, nucleotide frequencies, dinucleotide frequencies, TSSlogo
@@ -70,7 +64,6 @@ workflow CAGER {
         ch_plots = ch_tagc_plots
         tc_corr_data = CAGER_TAGCLUSTER_QC.out.correlation_rds
 
-        println("Calling enhancers with CAGEfightR.")
         // enhancer calling
         CAGEFIGHTR_ENHANCER_CALLING(
             clustered_cager_rds,
@@ -81,7 +74,6 @@ workflow CAGER {
 
         ch_template = Channel.fromPath(params.markdown_path)
 
-        println("Preparing the CAGEr report.")
         ch_html = CAGER_REPORT(
             ch_template,
             tra_ch_tss,

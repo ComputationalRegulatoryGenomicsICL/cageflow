@@ -114,7 +114,6 @@ workflow CUSTOMCAGE {
         println("Running CAGEr analysis subpipeline")
 
         ch_cager_sample_file = Channel.fromPath(params.cager_sample_file)
-        println("Reading in bigwig files")
         bigwig_files_ch = BIGWIG_INPUTS(ch_cager_sample_file).collect()
         merged_sample_file = RELATIVISATION(ch_cager_sample_file)
 
@@ -189,7 +188,6 @@ workflow CUSTOMCAGE {
             [file1, file2]}
             .collect()
 
-        println("Colelcting mapped reads and preparing sample sheet for CAGEr")
         ch_sample_files = WRITE_SAMPLE_LIST(ch_for_cager)
         def header = "id,single_end,path,new_name"
 

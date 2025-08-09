@@ -13,8 +13,6 @@ workflow PREPARE_CAGER_METADATA {
 
     main:
 
-        println("Prepare CAGEr metadata")
-
         // prepare or fetch BSgenome
         if (params.forgeseed) {
             forge_seed = file(params.forgeseed, checkIfExists: true)

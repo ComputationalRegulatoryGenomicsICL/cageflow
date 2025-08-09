@@ -19,7 +19,6 @@ workflow STAR {
 
     main:
 
-        println("Mapping with STAR")
         ch_genome_name = Channel.of(params.genome_name)
 
         sample_meta = ch_reads_to_align.map{ meta, fastq ->
