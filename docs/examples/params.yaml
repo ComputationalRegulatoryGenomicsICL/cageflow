@@ -5,7 +5,7 @@ cageronly: false
 gtf: "testdata/sacCer3_genome/sacCer3.ensGene.gtf"
 
 # preprocessing parameters
-samplesheet: "docs/examples/samplesheet_sacer_pe.csv"
+input: "docs/examples/samplesheet_sacer_pe.csv"
 infolder:
 sample_name_fields:
 # mapping parameters

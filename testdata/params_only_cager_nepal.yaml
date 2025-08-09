@@ -2,10 +2,10 @@
 fullpipeline: false
 maponly: false
 cageronly: true
-gtf: "customcageq/testdata/danRer11_genome/danRer11.ensGene.gtf"
+gtf: "cageflow_test_data/danRer11_genome/danRer11.ensGene.gtf"
 
 # preprocessing parameters
-samplesheet:
+input:
 infolder:
 sample_name_fields: 1
 genome_name: "danRer11"

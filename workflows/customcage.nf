@@ -6,7 +6,7 @@ params.cageronly = false
 params.gtf = "$projectDir/assets/NO_FILE_GTF"
 
 // preprocessing parameters
-params.samplesheet = "$projectDir/assets/NO_FILE_SAMPLESHEET"
+params.input = "$projectDir/assets/NO_FILE_SAMPLESHEET"
 params.infolder = ''
 params.sample_name_fields = ''
 params.genome_name = ''

@@ -25,7 +25,7 @@ cageronly: false
 gtf: "testdata/sacCer3_genome/sacCer3.ensGene.gtf"
 
 # preprocessing parameters
-samplesheet: "docs/examples/samplesheet_sacer_pe.csv"
+input: "docs/examples/samplesheet_sacer_pe.csv"
 infolder:
 sample_name_fields:
 # mapping parameters
@@ -81,8 +81,8 @@ where the pipeline parameters that should be provided in all runs are
 
 The parameters specific to mapping, can be left empty when running in `cageronly` mode:
 
-- `samplesheet` specifies the input CSV samplesheet. This option is mutually exclusive with `infolder`.
-- `infolder` specifies the input directory with FASTQ files (stored together for all samples or located in per-sample subdirectories). This option is mutually exclusive with `samplesheet`, and may be used together with `sample_name_fields`.
+- `input` specifies the input CSV samplesheet. This option is mutually exclusive with `infolder`.
+- `infolder` specifies the input directory with FASTQ files (stored together for all samples or located in per-sample subdirectories). This option is mutually exclusive with `input`, and may be used together with `sample_name_fields`.
 - `sample_name_fields` is a supporting parameter for `infolder` in case your sample name has underscore(s) in it. By default, only the first part of the string before the first underscore is taken for samplename. If you have more, like `my_sample_name_S1_L001_R1_001.fastq.gz`, with this parameter you may specify _how many underscore separated fields_ the sample name has in the filename. In the `my_sample_name_S1_L001_R1_001.fastq.gz` example, this parameter should be = 3.
 - `genome_name` specifies the name of the reference genome. It is used as meta information
 - `genome` specifies a FASTA file containing a reference genome. This option is mandatory, unless `index` is set.
@@ -132,7 +132,7 @@ To run the complete pipeline, starting from raw reads, the input is either singl
 ##### Samplesheet
 
 The samplesheet has to be a comma-separated file with 3 columns and a header row. A PE example is shown below (this file and a SE version can be found at `docs/examples/samplesheet_sacer_\[pe/se\].csv`). It is recommended to use absolute paths for the input files.
-If this option is used, the input is defined with the `--samplesheet` parameter.
+If this option is used, the input is defined with the `--input` parameter.
 
 ```
 sample,fastq_1,fastq_2,single_end
@@ -229,7 +229,7 @@ nextflow run customcageq/main.nf \
     --bsgenome BSgenome.Scerevisiae.UCSC.sacCer3 \
     --gtf customcageq/assets/sacCer3_genome/sacCer3.ensGene.gtf \
     --index customcageq/assets/sacCer3_genome/sacCer3_star_index/ \
-    --samplesheet customcageq/assets/samplesheet_sacer_pe_template.csv \
+    --input customcageq/assets/samplesheet_sacer_pe_template.csv \
     -profile singularity \
     -w /path/to/scratch/work
 ```
@@ -294,7 +294,7 @@ nextflow run customcageq/main.nf \
     --index customcageq/assets/sacCer3_genome/sacCer3_bowtie2_index \
     --dedup \
     --dist 100 \
-    --samplesheet customcageq/assets/samplesheet_sacer_pe_template.csv \
+    --input customcageq/assets/samplesheet_sacer_pe_template.csv \
     -profile singularity
 ```
 

@@ -5,7 +5,7 @@ cageronly: false
 gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
 
 # preprocessing parameters
-samplesheet: "assets/samplesheet_sacer_pe_template_for_GA.csv"
+input: "assets/samplesheet_sacer_pe_template_for_GA.csv"
 infolder:
 sample_name_fields:
 genome_name: "sacCer3"

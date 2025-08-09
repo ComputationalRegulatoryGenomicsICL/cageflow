@@ -207,13 +207,13 @@
             "type": "string",
             "description": "Genome annotation fiel in GTF format"
         },
-        "samplesheet": {
+        "input": {
             "type": "string",
-            "description": "Path to the samplesheet file. Mutually exclusive with infolder"
+            "description": "Path to the input file. Mutually exclusive with infolder"
         },
         "infolder": {
             "type": "string",
-            "description": "Path to the folder with fastq files. Mutually exclusive with samplesheet"
+            "description": "Path to the folder with fastq files. Mutually exclusive with input"
         },
         "sample_name_fields": {
             "type": "integer",

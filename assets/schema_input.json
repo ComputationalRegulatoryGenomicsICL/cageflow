@@ -1,8 +1,8 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/ComputationalRegulatoryGenomicsICL/customcage/master/assets/schema_input.json",
-    "title": "ComputationalRegulatoryGenomicsICL/customcage pipeline - params.samplesheet schema",
-    "description": "Schema for the file provided with params.samplesheet",
+    "title": "ComputationalRegulatoryGenomicsICL/customcage pipeline - params.input schema",
+    "description": "Schema for the file provided with params.input",
     "type": "array",
     "items": {
         "type": "object",
