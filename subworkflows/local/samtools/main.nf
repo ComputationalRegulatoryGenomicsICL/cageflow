@@ -16,6 +16,8 @@ workflow SAMTOOLS {
         ch_for_cager
 
     main:
+
+        println("Sorting and indexing with SAMtools")
         SAMTOOLS_SORT(ch_aligned)
         ch_versions = ch_versions.mix(SAMTOOLS_SORT.out.versions)
         SAMTOOLS_INDEX (SAMTOOLS_SORT.out.bam)

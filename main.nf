@@ -46,7 +46,7 @@ workflow {
     //
     // SUBWORKFLOW: Run initialisation tasks
     //
-    PIPELINE_INITIALISATION (
+    ch_versions = PIPELINE_INITIALISATION (
         params.version,
         params.validate_params,
         params.monochrome_logs,
@@ -57,20 +57,20 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    CUSTOMCAGE()
+    CUSTOMCAGE(ch_versions)
 
-    //
-    // SUBWORKFLOW: Run completion tasks
-    //
-    PIPELINE_COMPLETION (
-        params.email,
-        params.email_on_fail,
-        params.plaintext_email,
-        params.outdir,
-        params.monochrome_logs,
-        params.hook_url,
-        CUSTOMCAGE.out.ch_report
-    )
+    // //
+    // // SUBWORKFLOW: Run completion tasks
+    // //
+    // PIPELINE_COMPLETION (
+    //     params.email,
+    //     params.email_on_fail,
+    //     params.plaintext_email,
+    //     params.outdir,
+    //     params.monochrome_logs,
+    //     params.hook_url,
+    //     CUSTOMCAGE.out.report
+    // )
 }
 
 /*

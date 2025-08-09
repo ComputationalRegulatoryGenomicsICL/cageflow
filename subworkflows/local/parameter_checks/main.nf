@@ -19,30 +19,20 @@ workflow PARAMETER_CHECKS {
             // Create channel from samplesheet file provided through params.samplesheet
             //
 
-            Channel
-                .fromList(samplesheetToList(params.samplesheet, "${projectDir}/assets/schema_input.json"))
-                .map {
-                    meta, fastq_1, fastq_2 ->
-                        if (!fastq_2) {
-                            return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
-                        } else {
-                            return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
-                        }
-                }
-                .groupTuple()
-                .map { samplesheet ->
-                    validateInputSamplesheet(samplesheet)
-                }
-                .map {
-                    meta, fastq ->
-                        meta.id = meta.id.split('_')[0..-2].join('_')
-                        [ meta, fastq ] }
-                    .groupTuple(by: [0])
-                    .map{ meta, fastq -> [ meta, fastq.flatten() ] 
-                }
-                .set { ch_fastq }
+            println("Reading in samplesheet")
+
+            input_handler = Channel.fromPath(params.samplesheet, checkIfExists: true)
+
+            println("Creating channel from samplesheet")
+
+            ch_fastq = input_handler
+                .splitCsv ( header:true, sep:',' )
+                .map { create_fastq_channel(it) }
+                .groupTuple(by: [0])
+                .map{ meta, fastq -> [ meta, fastq.flatten() ] }
 
         } else if (params.infolder) {
+            println("Reading in files from folder")
             ch_fastq = INPUT_FROM_FOLDER(
                 params.infolder
             )
@@ -50,13 +40,14 @@ workflow PARAMETER_CHECKS {
             exit 1, 'Provide input by using the --samplesheet or the --infolder options.'
         }
 
+        println("Initializing channels")
         sample_meta = ch_fastq.map{ meta, fastq ->
             meta = meta
             [meta]}
 
         ch_genome_name = Channel.of(params.genome_name)
 
-        // // if index is specified, it is used as input
+        // if index is specified, it is used as input
         if (!params.genome && !params.index) {
             exit 1, 'Reference genome FASTA file (--fasta) or genome index (--index) should be specified.'
         } else if (params.index) {
@@ -95,19 +86,31 @@ workflow PARAMETER_CHECKS {
 
 }
 
-//
-// Validate channels from input samplesheet
-//
-def validateInputSamplesheet(input) {
-    def (metas, fastqs) = input[1..2]
+// Format: [ meta, [ fastq_1, fastq_2 ] ]
+def create_fastq_channel(LinkedHashMap row) {
+    // create meta map
+    def meta = [:]
+    meta.id         = row.sample
+    meta.single_end = row.single_end.toBoolean()
 
-    // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
-    def endedness_ok = metas.collect{ meta -> meta.single_end }.unique().size == 1
-    if (!endedness_ok) {
-        error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
+    // add path(s) of the fastq file(s) to the meta map
+    def fastq_meta = []
+
+    if ((file(row.fastq_1) == []) || (!file(row.fastq_1).exists())) {
+        throw new Exception("Please check input samplesheet: Read 1 FastQ file does not exist!\nRead 1 FastQ file: ${row.fastq_1}")
     }
 
-    return [ metas[0], fastqs ]
+    if (meta.single_end) {
+        fastq_meta = [ meta, [ file(row.fastq_1) ] ]
+    } else {
+        if ((file(row.fastq_2) == []) || (!file(row.fastq_2).exists())) {
+            throw new Exception("Please check input samplesheet: Read 2 FastQ file does not exist!\nRead 2 FastQ file: ${row.fastq_2}")
+        }
+
+        fastq_meta = [ meta, [ file(row.fastq_1), file(row.fastq_2) ] ]
+    }
+
+    return fastq_meta
 }
 
 //

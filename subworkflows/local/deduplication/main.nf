@@ -17,6 +17,8 @@ workflow DEDUPLICATION {
         ch_for_cager
 
     main:
+
+        println("Deduplicating reads")
         SORT_FOR_FIXMATE (
             ch_aligned
         )

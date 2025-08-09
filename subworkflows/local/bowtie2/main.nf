@@ -16,6 +16,8 @@ workflow BOWTIE2 {
         ch_versions
 
     main:
+
+        println("Mapping with Bowtie2")
         if (!params.index) {
             BOWTIE2_BUILD (
                 ch_fasta

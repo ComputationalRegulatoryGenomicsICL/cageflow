@@ -14,6 +14,7 @@ workflow SAMTOOLS_STATISTICS {
         ch_versions
 
     main:
+        println("Statistics with SAMtools")
         SAMTOOLS_STATS (
             ch_bam_bai,
             ch_fasta.ifEmpty(

@@ -11,6 +11,8 @@ workflow PREPARE_MAPPING_METADATA {
         ch_versions
 
     main:
+
+        println("Prepare mapping metadata")
         // prepare chromosome sizes
         if (params.fasta) {
 

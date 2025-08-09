@@ -68,12 +68,17 @@ params.cfBalanceThreshold = 0.95
 params.unexpressed = 0
 params.minSamples = 0
 
+// workflow utils
 include { paramsSummaryMap          } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText    } from '../subworkflows/local/utils_nfcore_customcage_pipeline'
+include { softwareVersionsToYAML      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 
+// input readers
 include { BIGWIG_INPUTS } from "../subworkflows/local/bigwig_inputs/main.nf"
 include { RELATIVISATION } from '../modules/local/relativisation/main.nf'
 
+// pipeline subworkflows and modules
 include { PARAMETER_CHECKS } from '../subworkflows/local/parameter_checks/main.nf'
 include { PREPROCESSING } from '../subworkflows/local/preprocessing/main.nf'
 include { PREPARE_MAPPING_METADATA } from '../subworkflows/local/prepare_mapping_metadata/main.nf'
@@ -91,6 +96,11 @@ def multiqc_report = []
 
 workflow CUSTOMCAGE {
 
+    take:
+    ch_versions
+
+    main:
+
     if (params.gtf) {
             ch_gtf = Channel.fromPath(params.gtf, checkIfExists: true)
         } else {
@@ -101,14 +111,15 @@ workflow CUSTOMCAGE {
         if (!params.cager_sample_file ) {
             exit 1, 'Sample list file is mandatory if mapping is not done within the pipeline.'
         }
+        println("Running CAGEr analysis subpipeline")
 
         ch_cager_sample_file = Channel.fromPath(params.cager_sample_file)
+        println("Reading in bigwig files")
         bigwig_files_ch = BIGWIG_INPUTS(ch_cager_sample_file).collect()
         merged_sample_file = RELATIVISATION(ch_cager_sample_file)
 
     }
 
-    ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
     if (params.maponly || params.fullpipeline) {
@@ -154,11 +165,11 @@ workflow CUSTOMCAGE {
         }
 
         if (params.dedup) {
-            DEDUP(ch_aligned, ch_versions, ch_for_cager)
+            DEDUPLICATION(ch_aligned, ch_versions, ch_for_cager)
 
-            ch_for_cager = DEDUP.out.ch_for_cager
-            ch_bam_bai = DEDUP.out.ch_bam_bai
-            ch_versions = DEDUP.out.ch_versions
+            ch_for_cager = DEDUPLICATION.out.ch_for_cager
+            ch_bam_bai = DEDUPLICATION.out.ch_bam_bai
+            ch_versions = DEDUPLICATION.out.ch_versions
         } else {
             SAMTOOLS(ch_aligned, ch_versions, ch_for_cager)
 
@@ -178,6 +189,7 @@ workflow CUSTOMCAGE {
             [file1, file2]}
             .collect()
 
+        println("Colelcting mapped reads and preparing sample sheet for CAGEr")
         ch_sample_files = WRITE_SAMPLE_LIST(ch_for_cager)
         def header = "id,single_end,path,new_name"
 
@@ -190,18 +202,6 @@ workflow CUSTOMCAGE {
             name: "sample_list.csv",
             newLine: true,
             sort: { file -> file.text })
-
-
-        MULTIQC (
-            ch_multiqc_files.collect(),
-            ch_multiqc_config.toList(),
-            ch_multiqc_custom_config.toList(),
-            ch_multiqc_logo.toList()
-        )
-        ch_report = MULTIQC.out.report.toList()
-
-        summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
-        def multiqc_reports = multiqc_report.toList()
 
     }
 
@@ -221,11 +221,51 @@ workflow CUSTOMCAGE {
             ch_txdb_file,
             ch_versions
         )
-        ch_report = CAGER.out.ch_html.toList()
+        ch_multiqc_files = ch_multiqc_files.mix(CAGER.out.ch_plots)
+
     }
 
+    ch_multiqc_files.view()
 
-    emit:report = ch_report // channel: /path/to/multiqc_report.html
+    // //
+    // // Collate and save software versions
+    // //
+    // softwareVersionsToYAML(ch_versions)
+    //     .collectFile(
+    //         storeDir: "${params.outdir}/pipeline_info",
+    //         name: 'nf_core_'  +  'variantbenchmarking_software_'  + 'mqc_'  + 'versions.yml',
+    //         sort: true,
+    //         newLine: true
+    //     ).set { ch_collated_versions }
+
+
+    // //
+    // // MODULE: MultiQC
+    // //
+    // ch_multiqc_config                     = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
+    // ch_multiqc_custom_config              = params.multiqc_config ? Channel.fromPath(params.multiqc_config, checkIfExists: true) :Channel.empty()
+    // ch_multiqc_logo                       = params.multiqc_logo ? Channel.fromPath(params.multiqc_logo, checkIfExists: true) : Channel.empty()
+    // summary_params                        = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+    // ch_workflow_summary                   = Channel.value(paramsSummaryMultiqc(summary_params))
+    // ch_multiqc_files                      = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    // ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
+    // ch_methods_description                = Channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
+    // ch_multiqc_files                      = ch_multiqc_files.mix(ch_collated_versions)
+    // ch_multiqc_files                      = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml',sort: true))
+
+    // MULTIQC (
+    //     ch_multiqc_files.collect(),
+    //     ch_multiqc_config.toList(),
+    //     ch_multiqc_custom_config.toList(),
+    //     ch_multiqc_logo.toList(),
+    //     [],
+    //     []
+    // )
+
+    // ch_report = MULTIQC.out.report.toList()
+
+
+    // emit:report = ch_report // channel: /path/to/multiqc_report.html
     versions    = ch_versions                 // channel: [ path(versions.yml) ]
 
 }
