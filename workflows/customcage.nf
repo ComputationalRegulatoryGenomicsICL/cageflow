@@ -220,6 +220,8 @@ workflow CUSTOMCAGE {
             ch_versions
         )
 
+        ch_versions = CAGER.out.ch_versions
+
     }
 
     //

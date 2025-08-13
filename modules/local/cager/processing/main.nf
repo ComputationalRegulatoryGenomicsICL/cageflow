@@ -19,7 +19,6 @@ process CAGER_PROCESSING {
     path "versions.yml", emit: versions
 
     """
-    echo "Tagcluster and consensus cluster calling. This may take some time."
     if [ -z ${bsgenome_name} ]
     then
         bsgenome=${bsgenome_file}

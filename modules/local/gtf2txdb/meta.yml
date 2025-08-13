@@ -31,7 +31,7 @@ output:
     - "*.sqlite":
         type: file
         description: |
-          The output TxDb object in SQLite format, which can be imported to R.
+          A TxDb object in SQLite format, which can be imported to R.
   versions:
     - versions.yml:
         type: file

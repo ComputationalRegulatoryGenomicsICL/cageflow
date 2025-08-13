@@ -61,7 +61,6 @@ workflow CAGER {
         ch_versions = ch_versions.mix(CAGER_TAGCLUSTER_QC.out.versions)
         // tagcluster annotations, nucleotide frequencies, dinucleotide frequencies, TSSlogo
         ch_tagc_plots = CAGER_TAGCLUSTER_QC.out.plots
-        ch_plots = ch_tagc_plots
         tc_corr_data = CAGER_TAGCLUSTER_QC.out.correlation_rds
 
         // enhancer calling
@@ -84,10 +83,7 @@ workflow CAGER {
             enhancer_plots,
             cager_rds)
 
-        ch_plots = ch_plots.mix(enhancer_plots)
-
     emit:
-        ch_plots
         ch_html
         ch_versions
 

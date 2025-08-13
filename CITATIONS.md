@@ -73,6 +73,50 @@
 
   > Thodberg, M., Thieffry, A., Vitting-Seerup, K., Andersson, R., & Sandelin, A. (2019). CAGEfightR: Analysis of 5′-end data using R/Bioconductor. BMC Bioinformatics, 20(1), 487. https://doi.org/10.1186/s12859-019-3029-5
 
+- [GenomicRanges](https://bioconductor.org/packages/devel/bioc/html/GenomicRanges.html)
+
+  > Lawrence M, Huber W, Pagès H, Aboyoun P, Carlson M, Gentleman R, Morgan M, Carey V (2013). Software for Computing and Annotating Genomic Ranges. PLoS Computational Biology, 9. doi:10.1371/journal.pcbi.1003118
+
+- [GenomicFeatures](https://bioconductor.org/packages/devel/bioc/html/GenomicFeatures.html)
+
+  > Lawrence M, Huber W, Pagès H, Aboyoun P, Carlson M, Gentleman R, Morgan M, Carey V (2013). Software for Computing and Annotating Genomic Ranges. PLoS Computational Biology, 9. doi:10.1371/journal.pcbi.1003118
+
+- [rtracklayer](https://bioconductor.org/packages/devel/bioc/html/rtracklayer.html)
+
+  > Lawrence M, Gentleman R, Carey V (2009). “rtracklayer: an R package for interfacing with genome browsers.” Bioinformatics, 25, 1841-1842. doi:10.1093/bioinformatics/btp328
+
+- [dplyr](https://dplyr.tidyverse.org/)
+
+  > Wickham H, François R, Henry L, Müller K, Vaughan D (2025). dplyr: A Grammar of Data Manipulation. R package version 1.1.4, https://dplyr.tidyverse.org
+
+- [rlang](https://rlang.r-lib.org/)
+
+  > Henry L, Wickham H (2025). rlang: Functions for Base Types and Core R and 'Tidyverse' Features. R package version 1.1.6, https://github.com/r-lib/rlang, https://rlang.r-lib.org
+
+- [purr](https://purrr.tidyverse.org/)
+
+  > Wickham H, Henry L (2025). purrr: Functional Programming Tools. R package version 1.1.0, https://purrr.tidyverse.org/
+
+- [magrittr](https://magrittr.tidyverse.org/)
+
+  > Bache S, Wickham H (2022). magrittr: A Forward-Pipe Operator for R. https://magrittr.tidyverse.org, https://github.com/tidyverse/magrittr
+
+- [stringr](https://stringr.tidyverse.org/)
+
+  > Wickham H (2023). stringr: Simple, Consistent Wrappers for Common String Operations. R package version 1.5.1, https://github.com/tidyverse/stringr, https://stringr.tidyverse.org
+
+- [tidyr](https://tidyr.tidyverse.org/)
+
+  > Wickham H, Vaughan D, Girlich M (2025). tidyr: Tidy Messy Data. R package version 1.3.1, https://tidyr.tidyverse.org
+
+- [tibble](https://tibble.tidyverse.org/)
+
+  > Müller K, Wickham H (2025). tibble: Simple Data Frames. R package version 3.3.0, https://tibble.tidyverse.org/
+
+- [data.table](https://cran.r-project.org/web/packages/data.table/index.html)
+
+  > Barrett T, Dowle M, Srinivasan A, Gorecki J, Chirico M, Hocking T, Schwendinger B, Krylov I (2025). data.table: Extension of 'data.frame'. R package version 1.17.99, https://r-datatable.com
+
 ## Software packaging/containerisation tools
 
 - [Anaconda](https://anaconda.com)
