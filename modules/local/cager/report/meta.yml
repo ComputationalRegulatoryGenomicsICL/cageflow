@@ -46,48 +46,48 @@ input:
       pattern: "*{.Rmd}"
   - tss_hm_ta_plots:
       type: file
-        description: |
-          Path to a directory containing various plots generated during the annotation and QC process.
+      description: |
+        Path to a directory containing various plots generated during the annotation and QC process.
   - tss_hm_ta_data:
       type: file
-        description: |
-          Path to a directory containing R objects of the plots generated during the annotation and QC process.
+      description: |
+        Path to a directory containing R objects of the plots generated during the annotation and QC process.
   - tag_corr_m:
       type: file
       description: |
         Path to a R object containing sample tag correlation matrix.
   - cc_iqw_rc_plots:
       type: file
-        description: |
-          List of PDF files containing plots generated during normalization and clustering.
+      description: |
+        List of PDF files containing plots generated during normalization and clustering.
   - cc_txt:
       type: file
-        description: |
-          List of RDS files containing plots generated during normalization and clustering.
+      description: |
+        List of RDS files containing plots generated during normalization and clustering.
   - cc_iqw_rc_data:
       type: file
-        description: |
-          List of txt files generated during normalization and clustering.
+      description: |
+        List of txt files generated during normalization and clustering.
   - tca_dn_n_plots:
       type: file
-        description: |
-          Path to a directory containing various plots generated during the QC process.
+      description: |
+        Path to a directory containing various plots generated during the QC process.
   - tca_dn_n_data:
       type: file
-        description: |
-          Path to a directory containing R objects of the plots generated during QC process.
+      description: |
+        Path to a directory containing R objects of the plots generated during QC process.
   - tagcluster_corr_m:
       type: file
-        description: |
-          Path to a R object containing normaized sample correlation matrix.
+      description: |
+        Path to a R object containing normaized sample correlation matrix.
   - enhancer_plots:
       type: file
-        description: |
-          List of PDF files containing plots generated during the enhancer calling process.
+      description: |
+        List of PDF files containing plots generated during the enhancer calling process.
   - enhancer_data:
       type: file
-        description: |
-          List of RDS files containing plots generated during the enhancer calling process.
+      description: |
+        List of RDS files containing plots generated during the enhancer calling process.
   - cageexp_object:
       type: file
       description: |
