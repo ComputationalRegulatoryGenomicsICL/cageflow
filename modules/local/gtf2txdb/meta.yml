@@ -1,7 +1,9 @@
 name: "gtf2txdb"
 description: Convert GTF files to TxDb objects
 keywords:
-  - BSGenome
+  - GTF
+  - TxDb
+  - Genomic Annotations
 tools:
   - "optparse":
       description: "A command-line option parser for R"

@@ -19,3 +19,5 @@ output:
         A file with a single line listing meta.id, meta.single_end, and the path to the input file(s).
 authors:
   - "@ferenckata"
+maintainers:
+  - "@ferenckata"
