@@ -128,7 +128,7 @@ output:
     - "plots/*correlations_matrix.rds":
         type: file
         description: |
-          Path to a R object containing sample correlation matrix.
+          Path to a R object containing normaized sample correlation matrix.
   versions:
     - versions.yml:
         type: file
