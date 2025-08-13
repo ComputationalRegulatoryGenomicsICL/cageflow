@@ -47,7 +47,6 @@ workflow PREPROCESSING {
         ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.zip.collect{it[1]}.ifEmpty([]))
         ch_reads_to_align = !params.nogtrim ? CUTADAPT.out.reads : TRIMGALORE.out.reads
 
-
     emit:
         ch_reads_to_align
         ch_versions

@@ -1,5 +1,4 @@
 # pipeline parameters
-outdir: "test"
 fullpipeline: false
 maponly: true
 cageronly: false
