@@ -77,6 +77,10 @@
 
   > Lawrence M, Huber W, Pagès H, Aboyoun P, Carlson M, Gentleman R, Morgan M, Carey V (2013). Software for Computing and Annotating Genomic Ranges. PLoS Computational Biology, 9. doi:10.1371/journal.pcbi.1003118
 
+- [BSgenome](https://bioconductor.org/packages/devel/bioc/html/BSgenome.html)
+
+  > Pagès H (2025). BSgenome: Software infrastructure for efficient representation of full genomes and their SNPs. doi:10.18129/B9.bioc.BSgenome, R package version 1.77.1, https://bioconductor.org/packages/BSgenome
+
 - [GenomicFeatures](https://bioconductor.org/packages/devel/bioc/html/GenomicFeatures.html)
 
   > Lawrence M, Huber W, Pagès H, Aboyoun P, Carlson M, Gentleman R, Morgan M, Carey V (2013). Software for Computing and Annotating Genomic Ranges. PLoS Computational Biology, 9. doi:10.1371/journal.pcbi.1003118
@@ -116,6 +120,14 @@
 - [data.table](https://cran.r-project.org/web/packages/data.table/index.html)
 
   > Barrett T, Dowle M, Srinivasan A, Gorecki J, Chirico M, Hocking T, Schwendinger B, Krylov I (2025). data.table: Extension of 'data.frame'. R package version 1.17.99, https://r-datatable.com
+
+- [gplots](https://cran.r-project.org/web/packages/gplots/index.html)
+
+  > Warnes G, Bolker B, Bonebakker L, Gentleman R, Huber W, Liaw A, Lumley T, Maechler M, Magnusson A, Moeller S, Schwartz M, Venables B, Galili T (2024). gplots: Various R Programming Tools for Plotting Data. R package version 3.2.0, https://github.com/talgalili/gplots
+
+- [ggseqlogo](https://cran.r-project.org/web/packages/ggseqlogo/index.html)
+
+  > Wagih, Omar. ggseqlogo: a versatile R package for drawing sequence logos. Bioinformatics 33, no. 22 (2017): 3645-3647. https://doi.org/10.1093/bioinformatics/btx469 PMID: 29036507
 
 ## Software packaging/containerisation tools
 

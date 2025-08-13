@@ -19,13 +19,13 @@ tools:
       licence: ["MIT + file"]
       identifier: rlang
   - "CAGEr":
-      description: "Tool for performing a wide range of common data analysis tasks for CAGE and 5'-end data in general."
-      homepage: "https://bioconductor.org/packages/devel/bioc/html/CAGEfightR.html"
-      documentation: "https://bioconductor.org/packages/devel/bioc/vignettes/CAGEfightR/inst/doc/Introduction_to_CAGEfightR.html"
-      tool_dev_url: "https://github.com/MalteThodberg/CAGEfightR"
-      doi: "10.1186/s12859-019-3029-5"
-      licence: ["GPL-3 + file"]
-      identifier: cagefightr
+      description: "Analysis of CAGE (Cap Analysis of Gene Expression) sequencing data for precise mapping of transcription start sites and promoterome mining"
+      homepage: "https://www.bioconductor.org/packages/release/bioc/html/CAGEr.html"
+      documentation: "https://www.bioconductor.org/packages/release/bioc/vignettes/CAGEr/inst/doc/CAGEexp.html"
+      tool_dev_url: "https://github.com/charles-plessy/CAGEr"
+      doi: "10.18129/B9.bioc.CAGEr"
+      licence: ["GPL-3"]
+      identifier: cager
   - "GenomicFeatures":
       description: "Query the gene models of a given organism/assembly"
       homepage: "https://bioconductor.org/packages/devel/bioc/html/GenomicFeatures.html"
@@ -95,7 +95,7 @@ input:
   - cager_obj:
       type: file
       description: |
-        Path to a CAGEr object file containing initial CAGE data.
+        Path to a CAGEr object file containing annotated CAGE data.
         The CAGEr object should be saved in RDS format.
       pattern: "*{.rds}"
   - bsgenome_file:

@@ -12,11 +12,10 @@ process CAGER_READIN {
     path ch_collected
 
     output:
-    path "intermediate_cagerobj/*.rds",        emit: rds
+    path "intermediate_cagerobj/initial_cagexp.rds",        emit: rds
     path "versions.yml", emit: versions
 
     """
-    echo "Reading in to CAGEr object"
     if [ -z ${bsgenome_name} ]
     then
         bsgenome=${bsgenome_file}
