@@ -16,6 +16,7 @@ tools:
       description: "Functions for Base Types and Core R and 'Tidyverse' Features"
       homepage: "https://cran.r-project.org/web/packages/rlang/index.html"
       documentation: "https://rlang.r-lib.org/"
+      doi: "10.32614/CRAN.package.rlang"
       licence: ["MIT + file"]
       identifier: rlang
   - "CAGEr":
@@ -39,6 +40,7 @@ tools:
       homepage: "https://cloud.r-project.org/web/packages/dplyr/index.html"
       documentation: "https://dplyr.tidyverse.org/"
       tool_dev_url: "https://github.com/tidyverse/dplyr/"
+      doi: "10.32614/CRAN.package.dplyr"
       licence: ["MIT + file"]
       identifier: dplyr
   - "purrr":
@@ -46,6 +48,7 @@ tools:
       homepage: "https://cran.r-project.org/web/packages/purrr/index.html"
       documentation: "https://purrr.tidyverse.org/"
       tool_dev_url: "https://github.com/tidyverse/purrr/"
+      doi: "10.32614/CRAN.package.purrr"
       licence: ["MIT + file"]
       identifier: purrr
   - "magrittr":
@@ -53,6 +56,7 @@ tools:
       homepage: "https://cran.r-project.org/web/packages/magrittr/index.html"
       documentation: "https://magrittr.tidyverse.org/"
       tool_dev_url: "https://github.com/tidyverse/magrittr/"
+      doi: "10.32614/CRAN.package.magrittr"
       licence: ["MIT + file"]
       identifier: magrittr
   - "stringr":
@@ -60,6 +64,7 @@ tools:
       homepage: "https://cran.r-project.org/web/packages/stringr/index.html"
       documentation: "https://stringr.tidyverse.org/"
       tool_dev_url: "https://github.com/tidyverse/stringr/"
+      doi: "10.32614/CRAN.package.stringr"
       licence: ["MIT + file"]
       identifier: stringr
   - "tidyr":
@@ -67,6 +72,7 @@ tools:
       homepage: "https://cran.r-project.org/web/packages/tidyr/index.html"
       documentation: "https://tidyr.tidyverse.org/"
       tool_dev_url: "https://github.com/tidyverse/tidyr/"
+      doi: "10.32614/CRAN.package.tidyr"
       licence: ["MIT + file"]
       identifier: tidyr
   - "tibble":
@@ -74,6 +80,7 @@ tools:
       homepage: "https://cran.r-project.org/web/packages/tibble/index.html"
       documentation: "https://tibble.tidyverse.org/"
       tool_dev_url: "https://github.com/tidyverse/tibble/"
+      doi: "10.32614/CRAN.package.tibble"
       licence: ["MIT + file"]
       identifier: tibble
   - "data.table":
@@ -81,6 +88,7 @@ tools:
       homepage: "https://cran.r-project.org/web/packages/data.table/index.html"
       documentation: "https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html"
       tool_dev_url: "https://github.com/Rdatatable/data.table"
+      doi: "10.32614/CRAN.package.data.table"
       licence: ["MPL-2.0 + file"]
       identifier: data.table
   - "rtracklayer":

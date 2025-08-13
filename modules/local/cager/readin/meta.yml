@@ -32,6 +32,7 @@ tools:
       homepage: "https://cloud.r-project.org/web/packages/dplyr/index.html"
       documentation: "https://dplyr.tidyverse.org/"
       tool_dev_url: "https://github.com/tidyverse/dplyr/"
+      doi: "10.32614/CRAN.package.dplyr"
       licence: ["MIT + file"]
       identifier: dplyr
   - "purrr":
@@ -39,6 +40,7 @@ tools:
       homepage: "https://cran.r-project.org/web/packages/purrr/index.html"
       documentation: "https://purrr.tidyverse.org/"
       tool_dev_url: "https://github.com/tidyverse/purrr/"
+      doi: "10.32614/CRAN.package.purrr"
       licence: ["MIT + file"]
       identifier: purrr
   - "magrittr":
@@ -46,6 +48,7 @@ tools:
       homepage: "https://cran.r-project.org/web/packages/magrittr/index.html"
       documentation: "https://magrittr.tidyverse.org/"
       tool_dev_url: "https://github.com/tidyverse/magrittr/"
+      doi: "10.32614/CRAN.package.magrittr"
       licence: ["MIT + file"]
       identifier: magrittr
   - "stringr":
@@ -53,6 +56,7 @@ tools:
       homepage: "https://cran.r-project.org/web/packages/stringr/index.html"
       documentation: "https://stringr.tidyverse.org/"
       tool_dev_url: "https://github.com/tidyverse/stringr/"
+      doi: "10.32614/CRAN.package.stringr"
       licence: ["MIT + file"]
       identifier: stringr
   - "tidyr":
@@ -60,6 +64,7 @@ tools:
       homepage: "https://cran.r-project.org/web/packages/tidyr/index.html"
       documentation: "https://tidyr.tidyverse.org/"
       tool_dev_url: "https://github.com/tidyverse/tidyr/"
+      doi: "10.32614/CRAN.package.tidyr"
       licence: ["MIT + file"]
       identifier: tidyr
 input:

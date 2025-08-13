@@ -1,5 +1,5 @@
 name: "cager_tag_qc"
-description: Annotation and quality checks on the tag clusters
+description: Annotation and quality checks on the imported tags
 keywords:
   - CAGE
   - annotation

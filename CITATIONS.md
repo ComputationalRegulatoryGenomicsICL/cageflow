@@ -129,6 +129,22 @@
 
   > Wagih, Omar. ggseqlogo: a versatile R package for drawing sequence logos. Bioinformatics 33, no. 22 (2017): 3645-3647. https://doi.org/10.1093/bioinformatics/btx469 PMID: 29036507
 
+- [ChIPseeker](https://bioconductor.org/packages/release/bioc/html/ChIPseeker.html)
+
+  > Wang Q, Li M, Wu T, Zhan L, Li L, Chen M, Xie W, Xie Z, Hu E, Xu S, Yu G (2022). “Exploring epigenomic datasets by ChIPseeker.” Current Protocols, 2(10), e585. doi:10.1002/cpz1.585, https://onlinelibrary.wiley.com/share/author/GYJGUBYCTRMYJFN2JFZZ?target=10.1002/cpz1.585
+
+- [Biostrings](https://bioconductor.org/packages/release/bioc/html/Biostrings.html)
+
+  > Pagès H, Aboyoun P, Gentleman R, DebRoy S (2025). Biostrings: Efficient manipulation of biological strings. doi:10.18129/B9.bioc.Biostrings, R package version 2.76.0, https://bioconductor.org/packages/Biostrings
+
+- [viridis](https://cran.r-project.org/web/packages/viridis/index.html)
+
+  > Garnier, Simon, Ross, Noam, Rudis, Robert, Camargo, Pedro A, Sciaini, Marco, Scherer, Cédric (2024). viridis(Lite) - Colorblind-Friendly Color Maps for R. doi:10.5281/zenodo.4679423, viridis package version 0.6.5, https://sjmgarnier.github.io/viridis/
+
+- [tidyverse](https://www.tidyverse.org/)
+
+  > Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache SM, Müller K, Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H (2019). “Welcome to the tidyverse.” Journal of Open Source Software, 4(43), 1686. doi:10.21105/joss.01686
+
 ## Software packaging/containerisation tools
 
 - [Anaconda](https://anaconda.com)
