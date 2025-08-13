@@ -17,9 +17,13 @@ top_modules:
       info: "shows the quality metrics of raw reads."
       path_filters_exclude:
         - "*_val_*"
-  - cutadapt
+        - "*_trimmed_*"
   - fastqc:
       name: "FastQC (trimmed)"
       info: "shows the quality metrics of trimmed reads."
       path_filters:
         - "*_val_*"
+        - "*_trimmed_*"
+  - cutadapt:
+      name: "Cutadapt"
+      info: "shows the quality metrics of G-trimmed reads."
