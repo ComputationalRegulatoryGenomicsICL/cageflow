@@ -16,10 +16,12 @@ workflow SUMMARY_STAT {
     main:
         SAMTOOLS_STATS ( 
             ch_bam_bai,
-            ch_fasta.ifEmpty(
-                file("$projectDir/assets/NO_FILE_FASTA",
-                checkIfExists: true))
+            ch_bam_bai
+                .combine(ch_fasta.ifEmpty(file("$projectDir/assets/NO_FILE_FASTA",
+                                               checkIfExists: true)))
+                .map{[it[3], it[4]]}
         )
+
         ch_versions = ch_versions.mix(SAMTOOLS_STATS.out.versions)
         ch_multiqc_files = ch_multiqc_files.mix(SAMTOOLS_STATS.out.stats.collect{it[1]})
 
