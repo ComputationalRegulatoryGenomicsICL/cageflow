@@ -48,7 +48,7 @@ cagefightr_enhancers <- function(
         cfSampleCTSSs,
         inputAssay = "counts",
         outputColumn = "support",
-        unexpressed = 0)
+        unexpressed = unexpressed)
 
     # Find bidirectional clusters (potential enhancers)
     sampleBCs <- CAGEfightR::clusterBidirectionally(
@@ -59,7 +59,7 @@ cagefightr_enhancers <- function(
     finalSampleBCs <- CAGEfightR::subsetByBidirectionality(
         sampleBCs,
         samples = cfSampleCTSSs,
-        minSamples = 0)
+        minSamples = minSamples)
 
     return(finalSampleBCs)
 }
