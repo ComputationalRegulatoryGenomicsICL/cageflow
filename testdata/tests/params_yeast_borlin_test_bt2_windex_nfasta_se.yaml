@@ -1,22 +1,28 @@
 # pipeline parameters
-fullpipeline: true
-maponly: false
+fullpipeline: false
+maponly: true
 cageronly: false
 gtf: "cageflow_test_data/sacCer3_genome/sacCer3.ensGene.gtf"
 
 # preprocessing parameters
-samplesheet: "customcageq/testdata/samplesheet_yeast_borlin_2018_se_test.csv"
-infolder: 
+samplesheet: 
+infolder: "/mnt/biggley/home/slava/projects/leancage_dev/cageflow_test_data/fastq/se"
 sample_name_fields: 2
 genome_name: "sacCer3"
-fasta: "cageflow_test_data/sacCer3_genome/sacCer3.fa"
-index:
+fasta: 
+index: "yeast_bowtie2_index/bowtie2"
 seq_platform: "illumina"
 seq_center: false
 # whether to take the uniquely mapped only
 unique_only: true
 # whether to remove reads that do not start with G
 remove_non_g: false 
+# whether to trim G or not
+nogtrim: true
+# mapper to use
+bowtie2: true
+# dedup
+dedup: false
 
 # CAGEr parameters
 cager_sample_file: ../borlin_sample_list_test.csv
