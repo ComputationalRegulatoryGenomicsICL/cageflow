@@ -1,6 +1,6 @@
 # pipeline parameters
-fullpipeline: true
-maponly: false
+fullpipeline: false
+maponly: true
 cageronly: false
 gtf: "cageflow_test_data/sacCer3_genome/sacCer3.ensGene.gtf"
 
@@ -18,7 +18,7 @@ unique_only: true
 # whether to remove reads that do not start with G
 remove_non_g: true 
 # whether to trim G or not
-nogtrim: false
+nogtrim: true
 # mapper to use
 bowtie2: true
 # dedup
