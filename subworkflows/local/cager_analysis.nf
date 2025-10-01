@@ -15,7 +15,7 @@ workflow CAGER {
         ch_bsgenome_file
         ch_bsgenome_name
         ch_sample_file
-        ch_collected
+        //ch_collected
         ch_txdb
         ch_versions
     
@@ -28,17 +28,27 @@ workflow CAGER {
             ch_data_type = Channel.of("bigwig")
         }
 
+        // test
+        //ch_sample_file.view()
+        // end_test
+
         sample_table = ch_sample_file
             .splitCsv( header:true , sep:',')
             .map { create_mapping_channel(it) }
             .collect()
+        
+        // test
+        //sample_table.view()
+        ////ch_data_type.view()
+        //ch_collected.view()
+        // test_end
 
         CAGER_READIN (
             ch_bsgenome_file,
             ch_bsgenome_name,
             sample_table,
-            ch_data_type,
-            ch_collected
+            ch_data_type //,
+            //ch_collected
         )
 
         cager_rds = CAGER_READIN.out.rds
@@ -92,8 +102,14 @@ def create_mapping_channel(LinkedHashMap row) {
     id = row.id
     single_end = row.single_end
     str1_bw = row.path.split(" ")[0].minus('[')
-    str2_bw = row.path.split(" ")[1].minus(']')
     new_name = row.new_name
+    if (str1_bw.split("\\.")[-1] != "bam") {
+        str2_bw = row.path.split(" ")[1].minus(']')
+        return [id, single_end, str1_bw, str2_bw, new_name]
+    }
+    return [id, single_end, str1_bw, new_name]
 
-    return [id, single_end, str1_bw, str2_bw, new_name]
+    // new_name = row.new_name
+
+    // return [id, single_end, str1_bw, str2_bw, new_name]
 }
