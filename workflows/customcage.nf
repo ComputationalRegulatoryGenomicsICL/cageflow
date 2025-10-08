@@ -208,7 +208,7 @@ workflow CUSTOMCAGE {
             ch_bsgenome_file,
             ch_bsgenome_name,
             merged_sample_file,
-            //bigwig_files_ch,
+            bigwig_files_ch,
             ch_txdb_file,
             ch_versions
         )

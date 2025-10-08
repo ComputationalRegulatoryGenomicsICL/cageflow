@@ -119,16 +119,37 @@ print("Enhancers saved to BED file")
 
 # annotate enhancers with transcript database information
 tx_annotation_obj <- loadDb(tx_annotation)
+# test
+print("Debug: loadDb(tx_annotation): successful.")
+# end_test
+
+# test
+tx1 <- transcripts(tx_annotation_obj)
+print("txdb:")
+head(tx1)
+print("true_enhancers:")
+head(true_enhancers)
+# end_test
+
 annotate_enhancers(
     enhancers=true_enhancers,
     txdb=tx_annotation_obj,
     tssregion_up=tssregion_up,
     tssregion_down=tssregion_down)
 
+# test
+print("Debug: annotate_enhancers: successful.")
+# end_test
+
 # assign enhancers to samples
 enhancer_expr_per_sample <- identify_sample_specific_enhancers(
     true_enhancers=true_enhancers,
     ce=ce)
+
+# test
+print("Debug: identify_sample_specific_enhancers: successful.")
+# end_test
+
 # save enhancer expression per sample
 outFileNameSamples <- file.path(
     "tables", "enhancer_expression_per_sample.tsv")
