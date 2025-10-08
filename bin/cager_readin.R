@@ -87,7 +87,7 @@ if (length(single_end_uniq) < 1) {
     stop("Sample table contains both single-end and paired-end reads.")
 } else {
     bam_type <- ifelse(
-        single_end_uniq == "true",
+        trimws(single_end_uniq) == "true",
         "bam",
         "bamPairedEnd")
 }
