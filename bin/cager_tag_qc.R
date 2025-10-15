@@ -73,15 +73,21 @@ dir.create(file.path("tracks"))
 dir.create(file.path("tables"))
 dir.create(file.path("intermediate_cagerobj"))
 
+print("Reading in CAGEexp object...")
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
 
+print("Reading in TxDb object...")
 # Read in TxDb object
 tx_annotation_obj <- loadDb(tx_annotation)
+
+print("Annotating CTSS...")
 ce <- CAGEr::annotateCTSS(ce, tx_annotation_obj)
 
 # Save intermediate annotated object
 saveRDS(ce, "intermediate_cagerobj/annotated_cagexp.rds")
+
+print("Plotting annotations...")
 
 annotations <- CAGEr::plotAnnot(ce, "counts")
 save_plot(

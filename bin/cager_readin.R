@@ -75,7 +75,11 @@ dir.create(file.path("tracks"))
 dir.create(file.path("tables"))
 dir.create(file.path("intermediate_cagerobj"))
 
+print(paste0("Using reference genome: ", bsgenome))
+
 reference_name <- install_bsgenome(bsgenome)
+
+print(paste0("Reading in ", data_type, " files..."))
 
 sample_table <- parse_input(sample_table_list, data_type)
 single_end_uniq <- unique(sample_table$single_end)
