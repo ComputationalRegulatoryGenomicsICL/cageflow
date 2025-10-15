@@ -58,7 +58,7 @@ plot_correlation <- function(
     dataframe,
     corrplot_tagCountThreshold){
 
-  corr_m <- calculate_correlation_matrix(
+  corr_m <- CAGEr::correlationMatrix(
     dataframe,
     samples = "all",
     tagCountThreshold = corrplot_tagCountThreshold,
