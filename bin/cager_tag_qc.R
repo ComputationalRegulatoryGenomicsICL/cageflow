@@ -62,7 +62,6 @@ project_dir     <- opt$project_dir
 source(file.path(project_dir, "bin/install_bsgenome.R"))
 # import functions for quality control and plotting
 source(file.path(project_dir, "bin/plot_saving.R"))
-source(file.path(project_dir, "bin/cager_modified_plots.R"))
 source(file.path(project_dir, "bin/qc_plots.R"))
 
 reference_name <- install_bsgenome(bsgenome)
@@ -97,7 +96,7 @@ save_plot(
 
 # to compare raw counts CTSStagCountDF is used
 # bypassing the automatic selection of this assay
-# uses function from cager_modified_plots.R and qc_plots.R
+# uses function from qc_plots.R
 
 plot_correlation(
     datatype="CTSS",

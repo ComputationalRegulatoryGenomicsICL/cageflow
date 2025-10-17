@@ -23,7 +23,6 @@ options(warn=-1)
 sampleNs <- unname(CAGEr::sampleLabels(ce))
 tagannot_plot <- readRDS("tag_region_annotation_plot.rds")
 tagannot_plot + ggplot2::xlim(rev(levels(factor(sampleNs))))
-```
 
 ### Correlation of samples at raw tag count level
 Correlation of samples by the raw tag counts above the user defined threshold (corrplot_tagCountThreshold).
