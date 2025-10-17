@@ -150,18 +150,11 @@ workflow CUSTOMCAGE {
         ch_multiqc_files = SUMMARY_STAT.out.ch_multiqc_files
         ch_versions = SUMMARY_STAT.out.ch_versions
 
-        // test
-        //ch_for_cager.view()
-        // end_test
-        // bigwig_files_ch = ch_for_cager.map{ meta, paths ->
-        //     file1 = paths[0]
-        //     file2 = paths[1]
-        //     [file1, file2]}
-        //     .collect()
-
-        // test
-        //bigwig_files_ch.view()
-        // end_test
+        bigwig_files_ch = ch_for_cager.map{ meta, paths ->
+            file1 = paths[0]
+            file2 = paths[1]
+            [file1, file2]}
+            .collect()
 
         ch_sample_files = WRITE_SAMPLE_LIST(ch_for_cager)
         def header = "id,single_end,path,new_name"
