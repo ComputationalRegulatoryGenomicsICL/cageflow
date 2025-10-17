@@ -98,8 +98,4 @@ def create_mapping_channel(LinkedHashMap row) {
         return [id, single_end, str1_bw, str2_bw, new_name]
     }
     return [id, single_end, str1_bw, new_name]
-
-    // new_name = row.new_name
-
-    // return [id, single_end, str1_bw, str2_bw, new_name]
 }
