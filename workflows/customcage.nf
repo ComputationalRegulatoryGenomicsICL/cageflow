@@ -153,11 +153,11 @@ workflow CUSTOMCAGE {
         // test
         //ch_for_cager.view()
         // end_test
-        // bigwig_files_ch = ch_for_cager.map{ meta, paths ->
-        //     file1 = paths[0]
-        //     file2 = paths[1]
-        //     [file1, file2]}
-        //     .collect()
+        bigwig_files_ch = ch_for_cager.map{ meta, paths ->
+            file1 = paths[0]
+            file2 = paths[1]
+            [file1, file2]}
+            .collect()
 
         // test
         //bigwig_files_ch.view()
