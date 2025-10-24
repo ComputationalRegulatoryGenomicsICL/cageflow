@@ -1,5 +1,5 @@
-# Use the official R base image
-FROM r-base:4.4.1
+# Use the official Bioconductor base image for R 4.5
+FROM bioconductor/bioconductor_docker:devel-R-4.5.1
 
 # Maintainer label
 LABEL maintainer="katalitf@uio.no"
@@ -29,4 +29,7 @@ RUN apt-get update && \
 # Install R dependencies
 COPY requirements.R /opt/software/requirements.R
 RUN Rscript requirements.R
+
+RUN R -e "sessionInfo()"
+
 CMD ["/bin/bash"]

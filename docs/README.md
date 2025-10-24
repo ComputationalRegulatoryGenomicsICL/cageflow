@@ -4,11 +4,11 @@
 
 The first part of the pipeline is shown here:
 
-![Mapping metromap](images/mappingmap_rot.png)
+![Mapping metromap](images/mappingmap.png)
 
 The second part of the pipeline is shown here:
 
-![CAGEr metromap](images/cagermap_rot.png)
+![CAGEr metromap](images/cagermap.png)
 
 ## Pipeline overview
 
