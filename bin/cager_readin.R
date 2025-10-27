@@ -66,8 +66,6 @@ num_core            <- opt$num_core
 source(file.path(project_dir, "bin/install_bsgenome.R"))
 # reading in bam / bigwig data
 source(file.path(project_dir, "bin/parse_input.R"))
-source(file.path(project_dir, "bin/cager_bam.R"))
-source(file.path(project_dir, "bin/cager_bigwig.R"))
 
 # Create folders for organized analysis
 dir.create(file.path("plots"))
