@@ -17,6 +17,7 @@ Apart from the CAGEexp object and raw 5'-coverage bigWig files (if reads were ma
 
 Below is the complete tree of the results run on 2 samples with the STAR option.
 
+```
 ├── bigwig
 │   ├── <sample_name_1>.Signal.Unique.str1.out.wig.bw
 │   ├── <sample_name_1>.Signal.Unique.str2.out.wig.bw
@@ -336,7 +337,7 @@ Below is the complete tree of the results run on 2 samples with the STAR option.
 └── txdb
     ├── annotation_from_gtf.sqlite
     └── versions.yml
-
+```
 
 #### Outputs from mapping
 
