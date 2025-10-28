@@ -138,9 +138,9 @@ merge_labels <- function(sample_names, new_names, ce) {
 }
 
 multicore <- TRUE
-if(cpus < 2){
+if(num_core < 2){
     multicore <- FALSE
-    cpus <- NULL
+    num_core <- NULL
 }
 
 if (tolower(data_type) == "bam"){
@@ -149,7 +149,7 @@ if (tolower(data_type) == "bam"){
         inputFiles         = sample_paths,
         inputFilesType     = bam_type,
         sampleLabels       = sample_names)
-}else if(tolower(data_type) == "bigwig") {
+} else if(tolower(data_type) == "bigwig") {
     bigwigs = unlist(
         stringr::str_split(
             stringr::str_remove_all(
@@ -171,14 +171,13 @@ ce <- CAGEr::getCTSS(
     removeFirstG = F,
     correctSystematicG = F,
     useMulticore = multicore,
-    nrCores = cpus)
+    nrCores = num_core)
 
 # Merge if necessary
 if (any(sample_names != new_names)) {
     print("Merging samples according to new names")
     ce <- merge_labels(sample_names, new_names, ce)
-}
-else {
+} else {
     print("No merging performed.")
 }
 
