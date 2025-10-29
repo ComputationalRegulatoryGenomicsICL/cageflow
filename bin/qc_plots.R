@@ -58,7 +58,7 @@ plot_correlation <- function(
     dataframe,
     corrplot_tagCountThreshold){
 
-    corr_m <- calculate_correlation_matrix(
+    corr_m <- CAGEr::correlationMatrix(
         dataframe,
         samples = "all",
         tagCountThreshold = corrplot_tagCountThreshold,
@@ -89,7 +89,8 @@ plot_correlation <- function(
 plot_pcs <- function(count_matrix){
     # find top 500 most variable genes
     vars <- apply(count_matrix, 1, var)
-    top_var_idx <- order(vars, decreasing = T)[1:500]
+    top_features <- min(length(vars), 500)
+    top_var_idx <- order(vars, decreasing = T)[1:top_features]
     top_var <- count_matrix[top_var_idx, ]
 
     # run PCA

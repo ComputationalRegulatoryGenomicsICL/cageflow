@@ -114,7 +114,7 @@ workflow CUSTOMCAGE {
         println("Running CAGEr analysis subpipeline")
 
         ch_cager_sample_file = Channel.fromPath(params.cager_sample_file)
-        bigwig_files_ch = BIGWIG_INPUTS(ch_cager_sample_file).collect()
+        mapped_files_ch = BIGWIG_INPUTS(ch_cager_sample_file).collect()
         merged_sample_file = RELATIVISATION(ch_cager_sample_file)
 
     }
@@ -182,11 +182,18 @@ workflow CUSTOMCAGE {
         ch_multiqc_files = SAMTOOLS_STATISTICS.out.ch_multiqc_files
         ch_versions = SAMTOOLS_STATISTICS.out.ch_versions
 
-        bigwig_files_ch = ch_for_cager.map{ meta, paths ->
-            file1 =  paths[0]
-            file2 = paths[1]
-            [file1, file2]}
-            .collect()
+        if (params.bowtie2) {
+            mapped_files_ch = ch_for_cager.map{ meta, paths ->
+                [paths]}
+                .collect()
+        } else {
+            mapped_files_ch = ch_for_cager.map{ meta, paths ->
+                file1 = paths[0]
+                file2 = paths[1]
+                [file1, file2]}
+                .collect()
+        }
+        
 
         ch_sample_files = WRITE_SAMPLE_LIST(ch_for_cager)
         def header = "id,single_end,path,new_name"
@@ -215,7 +222,7 @@ workflow CUSTOMCAGE {
             ch_bsgenome_file,
             ch_bsgenome_name,
             merged_sample_file,
-            bigwig_files_ch,
+            mapped_files_ch,
             ch_txdb_file,
             ch_versions
         )

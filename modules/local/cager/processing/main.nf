@@ -47,8 +47,6 @@ process CAGER_PROCESSING {
         --bsgenome \${bsgenome} \
         --num_core ${task.cpus}
 
-    rm Rplots.pdf
-
     cat tracks/consensusClusters_prefix.bed | awk '{print \$1 "\t" \$2 "\t" \$3 "\t" \$4 "\t" \$5 "\t" \$6 "\t" \$7 }' > tracks/consensusClusters.bed
     rm tracks/consensusClusters_prefix.bed
 

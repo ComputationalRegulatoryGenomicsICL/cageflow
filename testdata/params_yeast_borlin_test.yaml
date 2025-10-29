@@ -1,6 +1,6 @@
 # pipeline parameters
-fullpipeline: false
-maponly: true
+fullpipeline: true
+maponly: false
 cageronly: false
 gtf: "cageflow_test_data/sacCer3_genome/sacCer3.ensGene.gtf"
 

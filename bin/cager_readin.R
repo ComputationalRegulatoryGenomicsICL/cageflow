@@ -66,8 +66,6 @@ num_core            <- opt$num_core
 source(file.path(project_dir, "bin/install_bsgenome.R"))
 # reading in bam / bigwig data
 source(file.path(project_dir, "bin/parse_input.R"))
-source(file.path(project_dir, "bin/cager_bam.R"))
-source(file.path(project_dir, "bin/cager_bigwig.R"))
 
 # Create folders for organized analysis
 dir.create(file.path("plots"))
@@ -75,7 +73,11 @@ dir.create(file.path("tracks"))
 dir.create(file.path("tables"))
 dir.create(file.path("intermediate_cagerobj"))
 
+print(paste0("Using reference genome: ", bsgenome))
+
 reference_name <- install_bsgenome(bsgenome)
+
+print(paste0("Reading in ", data_type, " files..."))
 
 sample_table <- parse_input(sample_table_list, data_type)
 single_end_uniq <- unique(sample_table$single_end)
@@ -87,7 +89,7 @@ if (length(single_end_uniq) < 1) {
     stop("Sample table contains both single-end and paired-end reads.")
 } else {
     bam_type <- ifelse(
-        single_end_uniq == "true",
+        trimws(single_end_uniq) == "true",
         "bam",
         "bamPairedEnd")
 }
@@ -135,42 +137,48 @@ merge_labels <- function(sample_names, new_names, ce) {
     return(ce)
 }
 
-if (tolower(data_type) == "bam"){
-    ce <- read_in_bam(
-        bsgenome_name=reference_name,
-        bam_paths=sample_paths,
-        bam_pairedness=bam_type,
-        sample_names=sample_names,
-        new_names=new_names,
-        cpus=num_core
-    )
-}else if(tolower(data_type) == "bigwig") {
-    sample_names_files_dict <- list()
-    for(idx in 1:nrow(sample_table)) {
-        row <- sample_table[idx,]
-        path1 <- basename(trimws(unlist(strsplit(row$path, ","))[1]))
-        path2 <- basename(trimws(unlist(strsplit(row$path, ","))[2]))
-        if (grepl("str1", path1)){
-            sample_names_files_dict[[path1]] <- paste0(trimws(row$id), "_str1")
-            sample_names_files_dict[[path2]] <- paste0(trimws(row$id), "_str2")
-        } else if (grepl("str2", path1)){
-            sample_names_files_dict[[path1]] <- paste0(trimws(row$id), "_str2")
-            sample_names_files_dict[[path2]] <- paste0(trimws(row$id), "_str1")
-        } else {
-            print(path1)
-            print(path2)
-            stop("Unexpected path names")
-        }
+multicore <- TRUE
+if(num_core < 2){
+    multicore <- FALSE
+    num_core <- NULL
+}
 
-    }
-    ce <- read_in_bigwig(
-        bsgenome_name=reference_name,
-        bigwig_paths=sample_paths,
-        sample_names_files_dict=sample_names_files_dict,
-        new_names=new_names
-    )
+if (tolower(data_type) == "bam"){
+    ce <- CAGEr::CAGEexp(
+        genomeName     = reference_name,
+        inputFiles         = sample_paths,
+        inputFilesType     = bam_type,
+        sampleLabels       = sample_names)
+} else if(tolower(data_type) == "bigwig") {
+    bigwigs = unlist(
+        stringr::str_split(
+            stringr::str_remove_all(
+                sample_paths, ","),
+            stringr::fixed(" ")))
+    # Create a CAGEexp object, filenames only of str1
+    ce <- CAGEexp(
+        genomeName     = reference_name,
+        inputFiles     = bigwigs[grep("str1", bigwigs)],
+        inputFilesType = "bigwig",
+        sampleLabels   = sample_names)
 } else {
     stop("Either bigwig or bam files should be provided")
+}
+
+# Read in samples
+ce <- CAGEr::getCTSS(
+    ce,
+    removeFirstG = F,
+    correctSystematicG = F,
+    useMulticore = multicore,
+    nrCores = num_core)
+
+# Merge if necessary
+if (any(sample_names != new_names)) {
+    print("Merging samples according to new names")
+    ce <- merge_labels(sample_names, new_names, ce)
+} else {
+    print("No merging performed.")
 }
 
 # save the initial CAGEexp object

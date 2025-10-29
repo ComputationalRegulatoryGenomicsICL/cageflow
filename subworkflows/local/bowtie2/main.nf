@@ -16,14 +16,25 @@ workflow BOWTIE2 {
         ch_versions
 
     main:
+        sample_meta = ch_reads_to_align.map{ meta, fastq ->
+            meta = meta
+            [meta]}
 
         if (!params.index) {
             BOWTIE2_BUILD (
                 ch_fasta
             )
             ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions)
+            
+            ch_index = sample_meta.combine(BOWTIE2_BUILD.out.index.map { genome_name, index -> index } )
+        } else {
+            ch_index = sample_meta.combine(ch_index.map { genome_name, index -> index })
+        }
 
-            ch_index = BOWTIE2_BUILD.out.index
+        if (params.fasta) {
+            ch_fasta = sample_meta.combine(ch_fasta.map { genome_name, fasta -> fasta } )
+        } else {
+            ch_fasta = sample_meta.combine(channel.fromPath("$projectDir/assets/NO_FILE_FASTA", checkIfExists: true))
         }
 
         BOWTIE2_ALIGN (

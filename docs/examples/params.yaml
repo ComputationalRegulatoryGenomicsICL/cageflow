@@ -31,7 +31,7 @@ corrplot_tagCountThreshold: 1
 # parameters for normalization
 norm_range_min: 5
 norm_range_max: 10000
-norm_method: "powerLaw"
+norm_method: "powerLaw" # or simpleTpm or none
 alpha:
 t_norm: 1000000
 # parameters for tag clustering

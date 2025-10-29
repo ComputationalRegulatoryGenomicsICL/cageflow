@@ -26,4 +26,4 @@ top_modules:
         - "*_trimmed_*"
   - cutadapt:
       name: "Cutadapt"
-      info: "shows the quality metrics of G-trimmed reads."
+      info: "is used here to trim 5'-G."

@@ -78,7 +78,7 @@ eval(hm_plot$call)
 ```
 
 ### PCA plot of normalized tag counts of samples
-PCA was run on all samples, using the top 500 most variable normalized tag counts.
+PCA was run on all samples, using the top 500 (if less than 500 is available, all are used) most variable normalized tag counts.
 The variance explained by each PC is shown in the brackets.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 pca_plot <- readRDS("CTSS_pca_plot.rds")
@@ -221,7 +221,7 @@ enh_annot_plot
 ```
 
 ### Enhancer PCA
-PCA calculated on the TPM values of the top 500 most variable enhancers across samples.
+PCA calculated on the TPM values of the top 500 (if less than 500 is available, all are used) most variable enhancers across samples.
 The variance explained by each PC is shown in the brackets.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 enh_p_plot <- readRDS("enhancer_expression_pca_plot.rds")

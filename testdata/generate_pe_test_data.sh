@@ -16,9 +16,9 @@
 # - gzip, gunzip: https://www.gzip.org/
 # - seqkit: https://bioinf.shenwei.me/seqkit/
 
-mkdir cageflow_test_data
+mkdir -p cageflow_test_data
 cd cageflow_test_data
-mkdir fastq
+mkdir -p fastq
 mkdir fastq/pe
 mkdir danRer11_genome
 cd fastq/pe
