@@ -156,7 +156,6 @@ source(file.path(project_dir, "bin/install_bsgenome.R"))
 source(file.path(project_dir, "bin/cager_normalization.R"))
 source(file.path(project_dir, "bin/plot_saving.R"))
 source(file.path(project_dir, "bin/qc_plots.R"))
-source(file.path(project_dir, "bin/cager_modified_plots.R"))
 source(file.path(project_dir, "bin/cager_clustering.R"))
 source(file.path(project_dir, "bin/cager_consensus_clustering.R"))
 source(file.path(project_dir, "bin/cager_track_export.R"))
@@ -173,7 +172,6 @@ dir.create(file.path("intermediate_cagerobj"))
 ce <- readRDS(ce_path)
 
 # Normalization
-# uses functions from cager_modified_plots.R
 ce <- cager_normalization(
     ce=ce,
     rangeMin=range_min,
@@ -183,7 +181,7 @@ ce <- cager_normalization(
     user_alpha=alpha)
 
 # CTSS clustering
-# uses functions from cager_modified_plots.R and qc_plots.R
+# uses functions from qc_plots.R
 ce <- cager_clustering(
     ce=ce,
     iqw_plot_lim=c(0, 150),
