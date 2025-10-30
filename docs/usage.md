@@ -163,12 +163,14 @@ The additional parameter `sample_name_fields` should be set to how many undersco
 
 #### CAGEr subpipeline
 
-To run the analysis with CAGEr with already existing bigwig files, the input is another sample sheet with 3 columns and a header row. An example is shown below (this file can be found at `docs/examples/samplesheet_cager.csv`). It is recommended to use absolute paths for the input files.
+To run the analysis with CAGEr with already existing bigwig or bam files, the input is another sample sheet with 4 columns and a header row. 
+the 4th column, `new_name` defines which samples should be merged (provide the same names for the samples), dropped (leave the field empty), or kept as is (match the with the id field).
+An example is shown below (this file can be found at `docs/examples/samplesheet_cager.csv`). It is recommended to use absolute paths for the input files.
 
 ```
-id,single_end,path
-S10,false,[testdata/bigwig/S10.Signal.UniqueMultiple.str1.out.wig.bw testdata/bigwig/S10.Signal.UniqueMultiple.str2.out.wig.bw]
-S14,false,[testdata/bigwig/S14.Signal.UniqueMultiple.str1.out.wig.bw testdata/bigwig/S14.Signal.UniqueMultiple.str2.out.wig.bw]
+id,single_end,path,new_name
+S10,false,[testdata/bigwig/S10.Signal.UniqueMultiple.str1.out.wig.bw testdata/bigwig/S10.Signal.UniqueMultiple.str2.out.wig.bw],S10
+S14,false,[testdata/bigwig/S14.Signal.UniqueMultiple.str1.out.wig.bw testdata/bigwig/S14.Signal.UniqueMultiple.str2.out.wig.bw],S14
 ```
 
 This file may be created in two steps as shown below.

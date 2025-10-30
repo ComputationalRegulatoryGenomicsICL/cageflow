@@ -38,12 +38,12 @@ with open(args.filepath, "r", encoding="utf-8") as filein:
             outdict[sample_name].append(samplepath)
 
 with open("sample_list.csv", "w+", encoding="utf-8") as outfile:
-    header = "id,single_end,path\n"
+    header = "id,single_end,path,new_name\n"
     outfile.write(header)
     for sample, paths in outdict.items():
         if len(paths) > 1:
             path_str = " ".join(paths)
         else:
-            path_str = paths
-        line_to_write = f"{sample},{args.singleend},[{path_str}]\n"
+            path_str = paths[0]
+        line_to_write = f"{sample},{args.singleend},[{path_str}],{sample}\n"
         outfile.write(line_to_write)

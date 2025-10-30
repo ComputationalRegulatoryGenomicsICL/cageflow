@@ -45,7 +45,7 @@ params.bsgenome = false
 params.forgeseed = false
 params.sourcedir = false
 
-include { BIGWIG_INPUTS } from "../subworkflows/local/read_in_bigwigs.nf"
+include { MAPPED_INPUTS } from "../subworkflows/local/read_in_mapped.nf"
 include { RELATIVISATION } from '../modules/local/make_paths_relative.nf'
 
 include { PARAMETER_CHECKS } from '../subworkflows/local/parameter_checks.nf'
@@ -81,7 +81,7 @@ workflow CUSTOMCAGE {
         }
 
         ch_cager_sample_file = Channel.fromPath(params.cager_sample_file)
-        mapped_files_ch = BIGWIG_INPUTS(ch_cager_sample_file).collect()
+        mapped_files_ch = MAPPED_INPUTS(ch_cager_sample_file).collect()
         merged_sample_file = RELATIVISATION(ch_cager_sample_file)
 
     }
