@@ -121,17 +121,7 @@ print("Enhancers saved to BED file")
 
 # annotate enhancers with transcript database information
 tx_annotation_obj <- loadDb(tx_annotation)
-# test
-print("Debug: loadDb(tx_annotation): successful.")
-# end_test
-
-# test
-tx1 <- transcripts(tx_annotation_obj)
-print("txdb:")
-head(tx1)
-print("true_enhancers:")
-head(true_enhancers)
-# end_test
+print("Annotation in TxDb is loaded")
 
 if (length(true_enhancers) > 0) {
   annotate_enhancers(
@@ -147,9 +137,7 @@ if (length(true_enhancers) > 0) {
     )
 }
 
-# test
-print("Debug: annotate_enhancers: successful.")
-# end_test
+print("Enhancers annotated")
 
 if (length(true_enhancers) > 0) {
     # assign enhancers to samples
@@ -157,9 +145,7 @@ if (length(true_enhancers) > 0) {
         true_enhancers=true_enhancers,
         ce=ce)
 
-    # test
-    print("Debug: identify_sample_specific_enhancers: successful.")
-    # end_test
+    print("Enhancers assigned to samples")
 }
 
 # save enhancer expression per sample
