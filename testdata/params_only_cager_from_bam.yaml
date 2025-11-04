@@ -8,9 +8,11 @@ gtf: "cageflow_test_data/danRer11_genome/danRer11.ensGene.gtf"
 samplesheet:
 infolder: ""
 sample_name_fields: 1
+# mapping parameters
 genome_name: "danRer11"
 fasta: ""
 index: ""
+star_ignore_sjdbgtf: false
 seq_platform: "illumina"
 seq_center: false
 # whether to take the uniquely mapped only
@@ -21,6 +23,8 @@ remove_non_g: false
 # CAGEr parameters
 # sample file with sorted list of bigwigs or bams, if mapping is run elsewhere
 cager_sample_file: "cageflow_test_data/danRer_bam/danRer_bam_sample_list.csv"
+# datatype: "bam" or "bigwig". if bowtie2 is used, it will be set to bam
+datatype: "bam"
 # BSgenome
 forgeseed:
 sourcedir:

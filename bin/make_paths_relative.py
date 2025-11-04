@@ -19,7 +19,7 @@ with open(args.filepath, "r", encoding="utf-8") as filein:
                 if len(paths) > 1:
                     path_str = " ".join([os.path.basename(path) for path in paths])
                 else:
-                    path_str = os.path.basename(paths)
+                    path_str = os.path.basename(paths[0])
                 new_name = line_parts[3]
                 line_to_write = f"{line_id},{line_se},[{path_str}],{new_name}\n"
                 outfile.write(line_to_write)
