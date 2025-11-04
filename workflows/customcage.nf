@@ -20,6 +20,7 @@ params.cageronly = false
 
 // input parameters
 params.samplesheet = false
+params.datatype = "bigwig"
 
 // TrimGalore! parameters
 params.params_trimgalore = ''
