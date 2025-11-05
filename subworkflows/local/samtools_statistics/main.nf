@@ -21,8 +21,9 @@ workflow SAMTOOLS_STATISTICS {
         } else {
             ch_meta_fasta = ch_bam_bai
                 .combine(channel.value("NO_FASTA"))
-                .combine(channel.fromPath(file("$projectDir/assets/NO_FILE_FASTA",
-                                               checkIfExists: true)))
+                .combine(channel.fromPath(
+                    file("$projectDir/assets/NO_FILE_FASTA",
+                    checkIfExists: true)))
                 .map{[it[3], it[4]]}
         }
 

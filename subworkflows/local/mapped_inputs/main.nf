@@ -1,6 +1,6 @@
-// 
+//
 // Create channel from mapping file content
-// 
+//
 
 workflow MAPPED_INPUTS {
     take:

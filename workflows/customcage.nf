@@ -194,7 +194,7 @@ workflow CUSTOMCAGE {
                 [file1, file2]}
                 .collect()
         }
-        
+
 
         ch_sample_files = WRITE_SAMPLE_LIST(ch_for_cager)
         def header = "id,single_end,path,new_name"

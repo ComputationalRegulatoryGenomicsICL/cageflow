@@ -11,8 +11,7 @@ parser.add_argument(
     help='Which nuclotide to keep. Defaults to G')
 args = parser.parse_args()
 
-
-def filter_gz_fastq_by_first_base(input_fastq_gz_f, input_fastq_gz_r, 
+def filter_gz_fastq_by_first_base(input_fastq_gz_f, input_fastq_gz_r,
                                   output_fastq_gz_f, output_fastq_gz_r,
                                   base='G'):
     with gzip.open(input_fastq_gz_f, 'rt') as infile_f, \
@@ -42,7 +41,9 @@ def filter_gz_fastq_by_first_base(input_fastq_gz_f, input_fastq_gz_r,
                 outfile_r.write(qual_r)
 
 if __name__ == "__main__":
-    filter_gz_fastq_by_first_base(args.infastqzf, args.infastqzr, 
-                                 'filtered_output.fastq_f.gz',
-                                 'filtered_output.fastq_r.gz', 
-                                 base=args.base_to_keep)
+    filter_gz_fastq_by_first_base(
+        args.infastqzf,
+        args.infastqzr,
+        'filtered_output.fastq_f.gz',
+        'filtered_output.fastq_r.gz',
+        base=args.base_to_keep)

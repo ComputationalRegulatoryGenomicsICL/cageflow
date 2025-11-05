@@ -25,7 +25,6 @@ workflow BOWTIE2 {
                 ch_fasta
             )
             ch_versions = ch_versions.mix(BOWTIE2_BUILD.out.versions)
-            
             ch_index = sample_meta.combine(BOWTIE2_BUILD.out.index.map { genome_name, index -> index } )
         } else {
             ch_index = sample_meta.combine(ch_index.map { genome_name, index -> index })

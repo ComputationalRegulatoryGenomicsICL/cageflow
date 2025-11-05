@@ -29,7 +29,7 @@ cager_normalization <- function(
             object = ce,
             values = "raw",
             fitInRange = c(rangeMin, rangeMax))
-        
+
         save_plot(
             "reverse_cumulative_plot.pdf",
             revcum_plots)
