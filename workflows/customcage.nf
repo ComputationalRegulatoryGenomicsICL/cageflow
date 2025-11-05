@@ -40,6 +40,7 @@ params.sourcedir = ''
 
 // CAGEr parameters
 params.cager_sample_file = "$projectDir/assets/NO_FILE_CAGERSAMPLESHEET"
+params.datatype = "bigwig"
 // parameter for correlation calculation
 params.corrplot_tagCountThreshold = 1
 // parameters for normalization
@@ -75,7 +76,7 @@ include { methodsDescriptionText    } from '../subworkflows/local/utils_nfcore_c
 include { softwareVersionsToYAML      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 
 // input readers
-include { BIGWIG_INPUTS } from "../subworkflows/local/bigwig_inputs/main.nf"
+include { MAPPED_INPUTS } from "../subworkflows/local/mapped_inputs/main.nf"
 include { RELATIVISATION } from '../modules/local/relativisation/main.nf'
 
 // pipeline subworkflows and modules
@@ -114,7 +115,7 @@ workflow CUSTOMCAGE {
         println("Running CAGEr analysis subpipeline")
 
         ch_cager_sample_file = Channel.fromPath(params.cager_sample_file)
-        mapped_files_ch = BIGWIG_INPUTS(ch_cager_sample_file).collect()
+        mapped_files_ch = MAPPED_INPUTS(ch_cager_sample_file).collect()
         merged_sample_file = RELATIVISATION(ch_cager_sample_file)
 
     }

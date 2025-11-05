@@ -21,6 +21,8 @@ params_trimgalore: ""
 
 # CAGEr parameters
 cager_sample_file:
+# datatype: "bam" or "bigwig". if bowtie2 is used, it will be set to bam
+datatype:
 # BSgenome
 forgeseed:
 sourcedir:

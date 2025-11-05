@@ -1,33 +1,30 @@
 # pipeline parameters
 fullpipeline: false
-maponly: true
-cageronly: false
+maponly: false
+cageronly: true
 gtf: "cageflow_test_data/danRer11_genome/danRer11.ensGene.gtf"
 
 # preprocessing parameters
-samplesheet: 
-infolder: "/mnt/biggley/home/slava/projects/leancage_dev/cageflow_test_data/fastq/pe"
-sample_name_fields: 2
+samplesheet:
+infolder: ""
+sample_name_fields: 1
+# mapping parameters
 genome_name: "danRer11"
-fasta: "cageflow_test_data/danRer11_genome/danRer11.fa"
-index: "danio_bowtie2_index/bowtie2"
+fasta: ""
+index: ""
+star_ignore_sjdbgtf: false
 seq_platform: "illumina"
 seq_center: false
 # whether to take the uniquely mapped only
-unique_only: true
+unique_only: false
 # whether to remove reads that do not start with G
 remove_non_g: false 
-# whether to trim G or not
-nogtrim: true
-# mapper to use
-bowtie2: true
-# dedup
-dedup: true
 
 # CAGEr parameters
-cager_sample_file: ../nepal_sample_list_test.csv
+# sample file with sorted list of bigwigs or bams, if mapping is run elsewhere
+cager_sample_file: "cageflow_test_data/danRer_bam/danRer_bam_sample_list.csv"
 # datatype: "bam" or "bigwig". if bowtie2 is used, it will be set to bam
-datatype:
+datatype: "bam"
 # BSgenome
 forgeseed:
 sourcedir:
@@ -38,7 +35,7 @@ corrplot_tagCountThreshold: 1
 norm_range_min: 5
 norm_range_max: 10000
 norm_method: "powerLaw"
-alpha:
+alpha: 1.01
 T_norm: 1000000
 # parameters for tag clustering
 sample_num_thr: 1

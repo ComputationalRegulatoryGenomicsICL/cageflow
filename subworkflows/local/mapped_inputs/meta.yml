@@ -1,16 +1,17 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
-name: "BIGWIG_INPUTS"
-description: Subworkflow for retrieving bigwig inputs for CAGEr subworkflow
+name: "MAPPED_INPUTS"
+description: Subworkflow for retrieving bigwig or bam inputs for CAGEr subworkflow
 keywords:
   - File Input
   - BigWig
+  - Bam
   - CAGE
 components: []
 input:
   - sample_file:
       type: file
       description: |
-        Sample sheet with sample names and paths to bigwig files.
+        Sample sheet with sample names and paths to bigwig or bam files.
 output:
   - input_files:
       type: files
