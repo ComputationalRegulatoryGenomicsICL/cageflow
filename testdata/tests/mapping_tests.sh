@@ -17,7 +17,7 @@ paramsfiles=(
 
 touch mapping_tests_log.txt
 
-for pf in ${paramsfiles[@]}; do 
+for pf in ${paramsfiles[@]}; do
     time ~/tools/nextflow/nextflow run \
         customcageq/main.nf \
         -params-file customcageq/testdata/tests/${pf} \
