@@ -22,14 +22,11 @@ def create_sample_channel(LinkedHashMap row) {
         bigwig_1 = file(files[0].minus('['))
         bigwig_2 = file(files[1].minus(']'))
         return [bigwig_1, bigwig_2]
-    }else if (files.size() == 1){
+    } else if (files.size() == 1){
         bam = file(files[0].minus('[').minus(']'))
         return [bam]
     } else {
         throw new IllegalArgumentException(
             "Only 1 (bam) or 2 (bigwig) files are supported")
     }
-
-
-    
 }

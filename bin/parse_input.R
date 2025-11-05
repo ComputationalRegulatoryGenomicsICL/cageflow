@@ -6,8 +6,6 @@ parse_input <- function(sample_info, data_type){
     cleaned_string <- gsub("\\[", "", sample_info[[1]])
     cleaned_string <- gsub("\\]", "", cleaned_string)
     elements <- strsplit(cleaned_string, ",")[[1]]
-
-    print(elements)
     
     # Make sure that new_name works for BAM too
     if (tolower(data_type) == "bam"){
