@@ -1,4 +1,0 @@
-sample,fastq_1,fastq_2,single_end
-S10,/home/ss18818/projects/leancage/customcageq/assets/sacer_fq/pe/S10_S6_L001_R1_001.fastq.gz,/home/ss18818/projects/leancage/customcageq/assets/sacer_fq/pe/S10_S6_L001_R2_001.fastq.gz,False
-S14,/home/ss18818/projects/leancage/customcageq/assets/sacer_fq/pe/S14_S8_L001_R1_001.fastq.gz,/home/ss18818/projects/leancage/customcageq/assets/sacer_fq/pe/S14_S8_L001_R2_001.fastq.gz,False
-S14,/home/ss18818/projects/leancage/customcageq/assets/sacer_fq/pe/S14_S8_L002_R1_001.fastq.gz,/home/ss18818/projects/leancage/customcageq/assets/sacer_fq/pe/S14_S8_L002_R2_001.fastq.gz,False
