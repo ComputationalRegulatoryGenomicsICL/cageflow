@@ -21,7 +21,10 @@ unique_only: true
 remove_non_g: false 
 
 # CAGEr parameters
+# sample file with sorted list of bigwigs or bams, if mapping is run elsewhere
 cager_sample_file: "docs/examples/sample_list.csv" # with sorted list of bigwigs, if mapping is run elsewhere
+# datatype: "bam" or "bigwig". if bowtie2 is used, it will be set to bam
+datatype: "bam"
 # BSgenome
 forgeseed:
 sourcedir:
