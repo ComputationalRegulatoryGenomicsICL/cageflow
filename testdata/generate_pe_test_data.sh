@@ -5,10 +5,10 @@
 # Use paired-end CAGE data from Danio rerio:
 # 4-5 somites (SRR10215487) and prim-5 (SRR10215486).
 # The data is publicly available as part of the following publication:
-# Nepal, C., Hadzhiev, Y., Balwierz, P. et al. 
-# Dual-initiation promoters with intertwined canonical and TCT/TOP 
-# transcription start sites diversify transcript processing. 
-# Nat Commun 11, 168 (2020). 
+# Nepal, C., Hadzhiev, Y., Balwierz, P. et al.
+# Dual-initiation promoters with intertwined canonical and TCT/TOP
+# transcription start sites diversify transcript processing.
+# Nat Commun 11, 168 (2020).
 # https://doi.org/10.1038/s41467-019-13687-0
 
 # The script uses the following utilities:
@@ -29,7 +29,7 @@ readN=1000000
 # Download and dump full samples
 prefetch SRR10215487 SRR10215486 && \
 vdb-validate SRR* && \
-for srr in SRR*; do fasterq-dump ${srr}; done 
+for srr in SRR*; do fasterq-dump ${srr}; done
 
 # Prepare the data for processing
 echo "Rename and gzip full sample FASTQs..."
@@ -89,7 +89,7 @@ rm prim5_SRR10215486_2_shuff.fastq.gz
 
 # Randomly subsample reads for lane 1 of sample 1
 seqkit sample -p 0.1 -s 42 4somites_SRR10215487_1_shuff_top-half.fastq.gz | seqkit sample -n ${readN} -s 42 -o S10_L001_R1.fastq.gz
-# See https://bioinf.shenwei.me/seqkit/note/#effect-of-random-seed-on-results-of-seqkit-sample 
+# See https://bioinf.shenwei.me/seqkit/note/#effect-of-random-seed-on-results-of-seqkit-sample
 # on why seqkit sometimes does not output the exact number of reads that was required
 seqkit sample -p 0.1 -s 42 4somites_SRR10215487_2_shuff_top-half.fastq.gz | seqkit sample -n ${readN} -s 42 -o S10_L001_R2.fastq.gz
 

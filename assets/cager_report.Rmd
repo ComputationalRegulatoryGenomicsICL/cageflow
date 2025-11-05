@@ -30,7 +30,7 @@ Correlation of samples by the raw tag counts above the user defined threshold (c
 Note: these are not filtered or normalized yet. The plot is for diagnostic purposes, such as highlighting batch effects.
 Note #2: the main correlation is shown on the top-right ot bottom-left diagonal due to the behaviour of the underlying `gplots::heatmap.2` function.
 The corrplot_tagCountThreshold is shared across correlation plots.
-For a higher resolution plot, visit the `pdf` file saved in the results/cager/plots folder. 
+For a higher resolution plot, visit the `pdf` file saved in the results/cager/plots folder.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 print(paste0("The current corrplot_tagCountThreshold value is: ", corrplot_tagCountThreshold))
 
@@ -48,12 +48,12 @@ Next, the tag counts are normalized.
 Number of CAGE tags versus number of TSS supported by at least as many tags should follow the power-law distribution.
 The power-law distribution is fitted in the range between the two dotted lines.
 The positions of the dotted lines are modifiable by user with norm_range_min and norm_range_max parameters.
-The total number of tags (T_norm) defaults to 1000000 which corresponds to TPM, but in cases of very deep sequencing this should be adjusted.
+The total number of tags (t_norm) defaults to 1000000 which corresponds to TPM, but in cases of very deep sequencing this should be adjusted.
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 print(paste0("The current norm_range_min value is: ", norm_range_min))
 print(paste0("The current norm_range_max value is: ", norm_range_max))
 print(paste0("The current normalization method (norm_method) is: ", norm_method))
-print(paste0("The current T_norm value is: ", T_norm))
+print(paste0("The current t_norm value is: ", t_norm))
 print(paste0("The user provided alpha value is: ", alpha, ". If this value if None, the calculated value shown on the plot is used for normalization. Note: this value cannot be less than 1.05, if the user provides a lower value the code automatically assumes 1.05."))
 
 revc_plot <- readRDS("reverse_cumulative_plot.rds")
@@ -65,7 +65,7 @@ Correlation of samples by the normalized tag counts above the user defined thres
 Normalization should have removed batch effects to some extent.
 Note: the main correlation is shown on the top-right ot bottom-left diagonal due to the behaviour of the underlying `gplots::heatmap.2` function.
 The corrplot_tagCountThreshold is shared across correlation plots.
-For a higher resolution plot, visit the `pdf` file saved in the results/cager/plots folder. 
+For a higher resolution plot, visit the `pdf` file saved in the results/cager/plots folder.
 
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 print(paste0("The current corrplot_tagCountThreshold value is: ", corrplot_tagCountThreshold))
@@ -151,7 +151,7 @@ dinucl_plot <- readRDS("dinucleotide_frequencies_plot.rds")
 dinucl_plot + ggplot2::theme(
     text=ggplot2::element_text(size=5),
     axis.text.x = ggplot2::element_text(angle = 90, size=5),
-    axis.text.y = ggplot2::element_text(size=5)) 
+    axis.text.y = ggplot2::element_text(size=5))
 ```
 
 ### TSS region logos
@@ -192,7 +192,7 @@ The balance threshold is a user defined parameter (cfBalanceThreshold).
 The normalized TPM values of the CTSS are used as input to enhancer calling.
 The threshold for TPM values is set by the user with the unexpressed parameter.
 Enhancers are called by pooling all CTSS values, but only those enhancers are kept that has support in more than a user defined number of samples (minSamples).
-To ensure that promoter regions does not get confused with enhancer regions, any enhancer region overlapping consensus clusters is removed. 
+To ensure that promoter regions does not get confused with enhancer regions, any enhancer region overlapping consensus clusters is removed.
 
 ```{r eval=TRUE, include=TRUE, echo=FALSE}
 print(paste0("The current cfBalanceThreshold value is: ", cfBalanceThreshold))

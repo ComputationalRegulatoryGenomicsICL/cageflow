@@ -2,7 +2,10 @@
 
 The pipeline can be run on test single-end and paired-end data. The directory containing test CAGE libraries and all necessary reference genome files can be downloaded from the Sequence Read Archives. It should be placed next to this repository and uncompressed.
 
-Single-end test reads were randomly sampled from yeast CAGE libraries "Ana" (replicate 1, ERR2495148, anaerobic conditions) and "Eth" (replicate 1, ERR2495150, ethanol limitation) generated and analyzed in ([Börlin et al., 2019](https://academic.oup.com/femsyr/article/19/2/foy128/5257840)). The test data include two samples split into two lanes each. One lane contains approximately 300,000 reads; therefore, the whole dataset contains around 1.2 mln reads. See `generate_se_test_data.sh` for details on how the test dataset was generated. 
+Single-end test reads were randomly sampled from yeast CAGE libraries "Ana" (replicate 1, ERR2495148, anaerobic conditions) and "Eth" (replicate 1, ERR2495150, ethanol limitation) generated and analyzed in ([Börlin et al., 2019](https://academic.oup.com/femsyr/article/19/2/foy128/5257840)).
+The test data include two samples split into two lanes each.
+One lane contains approximately 300,000 reads; therefore, the whole dataset contains around 1.2 mln reads.
+See `generate_se_test_data.sh` for details on how the test dataset was generated.
 
 To run the pipeline on these data, use the following command from outside the pipeline repository:
 

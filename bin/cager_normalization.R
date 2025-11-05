@@ -4,7 +4,7 @@
 #' @param rangeMin range min within which the slope is calculated
 #' @param rangeMax range max within which the slope is calculated
 #' @param method method of normalizing tag counts
-#' @param T_norm total number of tags
+#' @param t_norm total number of tags
 #' @param user_alpha alpha value provided by the user to overwrite calculated from fitting reverse cumulative
 #' @return ce normalized CAGEexp object
 #' @examples
@@ -13,7 +13,7 @@
 #' rangeMin=10,
 #' rangeMax=10000,
 #' method="powerLaw",
-#' T_norm=1*10^6,
+#' t_norm=1*10^6,
 #' user_alpha=-1.05)
 
 cager_normalization <- function(
@@ -21,7 +21,7 @@ cager_normalization <- function(
     rangeMin,
     rangeMax,
     method,
-    T_norm,
+    t_norm,
     user_alpha){
 
     if (method == "powerLaw"){
@@ -29,7 +29,7 @@ cager_normalization <- function(
             object = ce,
             values = "raw",
             fitInRange = c(rangeMin, rangeMax))
-        
+
         save_plot(
             "reverse_cumulative_plot.pdf",
             revcum_plots)
@@ -42,19 +42,19 @@ cager_normalization <- function(
     } else if (method == "simpleTpm" | method == "none") {
         # these parameters ignored for these methods
         slope_to_calc = 0
-        T_norm = 0
+        t_norm = 0
         rangeMin = 0
         rangeMax = 0
     } else {
         stop("Invalid normalization method. Choose either 'powerLaw', 'simpleTpm', or 'none'.")
     }
-    
+
     ce <- CAGEr::normalizeTagCount(
         ce,
         method = method,
         fitInRange = c(rangeMin, rangeMax),
         alpha = slope_to_calc,
-        T = T_norm)
+        T = t_norm)
 
     return(ce)
 }

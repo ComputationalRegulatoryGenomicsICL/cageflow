@@ -1,12 +1,12 @@
-# 
+#
 # Parse incoming data from channel
-# 
+#
 
 parse_input <- function(sample_info, data_type){
     cleaned_string <- gsub("\\[", "", sample_info[[1]])
     cleaned_string <- gsub("\\]", "", cleaned_string)
     elements <- strsplit(cleaned_string, ",")[[1]]
-    
+
     # Make sure that new_name works for BAM too
     if (tolower(data_type) == "bam"){
         sample_matrix <- matrix(elements, ncol=4, byrow=TRUE)

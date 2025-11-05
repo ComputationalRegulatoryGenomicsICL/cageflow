@@ -7,7 +7,16 @@
 ----------------------------------------------------------------------------------------
 */
 
-nextflow.enable.dsl = 2
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+include { CUSTOMCAGE  } from './workflows/customcage'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_customcage_pipeline'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_customcage_pipeline'
+// include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_customcage_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,63 +27,50 @@ nextflow.enable.dsl = 2
 // TODO nf-core: Remove this line if you don't need a FASTA file
 //   This is an example of how to use getGenomeAttribute() to fetch parameters
 //   from igenomes.config using `--genome`
-// params.fasta = WorkflowMain.getGenomeAttribute(params, 'fasta')
+// params.fasta = getGenomeAttribute('fasta')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    VALIDATE & PRINT PARAMETER SUMMARY
+    NAMED WORKFLOWS FOR PIPELINE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// include { validateParameters; paramsHelp } from 'plugin/nf-validation'
-
-// Print help message if needed
-// if (params.help) {
-//     def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
-//     def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
-//     def String command = "nextflow run ${workflow.manifest.name} --input samplesheet.csv --genome GRCh37 -profile docker"
-//     log.info logo + paramsHelp(command) + citation + NfcoreTemplate.dashedLine(params.monochrome_logs)
-//     System.exit(0)
-// }
-
-// Validate input parameters
-// if (params.validate_params) {
-//     validateParameters()
-// }
-
-// WorkflowMain.initialise(workflow, params, log)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    NAMED WORKFLOW FOR PIPELINE
+    RUN MAIN WORKFLOW
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-
-include { CUSTOMCAGE } from './workflows/customcage.nf'
-
-//
-// WORKFLOW: Run main ComputationalRegulatoryGenomicsICL/customcage analysis pipeline
-//
-workflow COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE {
-    // CUSTOMCAGE().out.view()
-    CUSTOMCAGE().out
-    // CUSTOMCAGE()
-}
-
-// CUSTOMCAGE()
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    RUN ALL WORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-//
-// WORKFLOW: Execute a single named workflow for the pipeline
-// See: https://github.com/nf-core/rnaseq/issues/619
-//
 workflow {
-    COMPUTATIONALREGULATORYGENOMICSICL_CUSTOMCAGE()
+
+    //
+    // SUBWORKFLOW: Run initialisation tasks
+    //
+    ch_versions = PIPELINE_INITIALISATION (
+        params.version,
+        params.validate_params,
+        params.monochrome_logs,
+        args,
+        params.outdir
+    )
+
+    //
+    // WORKFLOW: Run main workflow
+    //
+    CUSTOMCAGE(ch_versions)
+
+    //
+    // SUBWORKFLOW: Run completion tasks
+    //
+    PIPELINE_COMPLETION (
+        params.email,
+        params.email_on_fail,
+        params.plaintext_email,
+        params.outdir,
+        params.monochrome_logs,
+        params.hook_url,
+        CUSTOMCAGE.out.report
+    )
 }
 
 /*

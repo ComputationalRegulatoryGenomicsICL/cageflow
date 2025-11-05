@@ -1,8 +1,8 @@
 #!/usr/bin/env Rscript
 
-# 
+#
 # QC 2: Tag cluster annotation, nucleotide and dinucleotide composition
-# 
+#
 
 
 # Load libraries
@@ -21,7 +21,7 @@ required.libraries <- c(
     )
 
 for (lib in required.libraries) {
-  suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
+    suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
 }
 
 # parse options
@@ -120,7 +120,7 @@ ce <- readRDS(ce_path)
 # extract normalized data
 count_mat <- CTSSnormalizedTpmDF(ce)
 for (i in 1:ncol(count_mat)){
-  count_mat[,i] <- as.vector(count_mat[,i])
+    count_mat[,i] <- as.vector(count_mat[,i])
 }
 count_matmat <- as.matrix(count_mat)
 

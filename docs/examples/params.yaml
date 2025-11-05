@@ -2,23 +2,23 @@
 fullpipeline: true
 maponly: false
 cageronly: false
-gtf: "testdata/sacCer3_genome/sacCer3.ensGene.gtf"
+gtf: "cageflow_test_data/sacCer3_genome/sacCer3.ensGene.gtf"
 
 # preprocessing parameters
-samplesheet: "docs/examples/samplesheet_sacer_pe.csv"
+input: "docs/examples/samplesheet_sacer_pe.csv"
 infolder:
 sample_name_fields:
 # mapping parameters
 genome_name: "sacCer3"
-fasta: "testdata/sacCer3_genome/sacCer3.fa"
-index: "testdata/sacCer3_genome/sacCer3_star_index/"
+fasta: "cageflow_test_data/sacCer3_genome/sacCer3.fa"
+index: "cageflow_test_data/sacCer3_genome/sacCer3_star_index/"
 star_ignore_sjdbgtf: false
 seq_platform: "illumina"
 seq_center: false
 # whether to take the uniquely mapped only
 unique_only: true
 # whether to remove reads that do not start with G
-remove_non_g: false 
+remove_non_g: false
 
 # CAGEr parameters
 # sample file with sorted list of bigwigs or bams, if mapping is run elsewhere
@@ -36,7 +36,7 @@ norm_range_min: 5
 norm_range_max: 10000
 norm_method: "powerLaw" # or simpleTpm or none
 alpha:
-T_norm: 1000000
+t_norm: 1000000
 # parameters for tag clustering
 sample_num_thr: 1
 ctss_thr: 1

@@ -5,7 +5,7 @@ cageronly: false
 gtf: "assets/sacCer3_genome/sacCer3.ensGene.gtf"
 
 # preprocessing parameters
-samplesheet: "assets/samplesheet_sacer_pe_template_for_GA.csv"
+input: "assets/samplesheet_sacer_pe_template_for_GA.csv"
 infolder:
 sample_name_fields:
 genome_name: "sacCer3"
@@ -16,7 +16,7 @@ seq_center:
 # whether to take the uniquely mapped only (for STAR)
 unique_only: false
 # whether to remove reads that do not start with G
-remove_non_g: false 
+remove_non_g: false
 
 # CAGEr parameters
 cager_sample_file:
@@ -31,7 +31,7 @@ norm_range_min: 5
 norm_range_max: 10000
 norm_method: "powerLaw"
 alpha:
-T_norm: 1000000
+t_norm: 1000000
 # parameters for tag clustering
 sample_num_thr: 1
 ctss_thr: 1

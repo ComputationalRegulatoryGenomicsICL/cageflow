@@ -59,10 +59,10 @@ Below is the complete tree of the results run on 2 samples with the STAR option.
 │   │   ├── norm_CTSS_correlations_plot.rds
 │   │   ├── reverse_cumulative_plot.pdf
 │   │   ├── reverse_cumulative_plot.rds
-│   │   ├── <sample_name_1>_tagcluster_dominantTSSlogos_plot.pdf
-│   │   ├── <sample_name_1>_tagcluster_dominantTSSlogos_plot.rds
-│   │   ├── <sample_name_2>_tagcluster_dominantTSSlogos_plot.pdf
-│   │   ├── <sample_name_2>_tagcluster_dominantTSSlogos_plot.rds
+│   │   ├── <sample_name_1>\_tagcluster_dominantTSSlogos_plot.pdf
+│   │   ├── <sample_name_1>\_tagcluster_dominantTSSlogos_plot.rds
+│   │   ├── <sample_name_2>\_tagcluster_dominantTSSlogos_plot.pdf
+│   │   ├── <sample_name_2>\_tagcluster_dominantTSSlogos_plot.rds
 │   │   ├── sample_tag_cluster_count.txt
 │   │   ├── tag_clusters_counts_plot.pdf
 │   │   ├── tag_clusters_counts_plot.rds
@@ -75,43 +75,43 @@ Below is the complete tree of the results run on 2 samples with the STAR option.
 │   ├── tracks
 │   │   ├── consensusClusters.bed
 │   │   ├── enhancers.bed
-│   │   ├── <sample_name_1>_normalized_minus.bw
-│   │   ├── <sample_name_1>_normalized_plus.bw
-│   │   ├── <sample_name_1>_raw_minus.bw
-│   │   ├── <sample_name_1>_raw_plus.bw
-│   │   ├── <sample_name_1>_tagClusters.bed
-│   │   ├── <sample_name_2>_normalized_minus.bw
-│   │   ├── <sample_name_2>_normalized_plus.bw
-│   │   ├── <sample_name_2>_raw_minus.bw
-│   │   ├── <sample_name_2>_raw_plus.bw
-│   │   └── <sample_name_2>_tagClusters.bed
+│   │   ├── <sample_name_1>\_normalized_minus.bw
+│   │   ├── <sample_name_1>\_normalized_plus.bw
+│   │   ├── <sample_name_1>\_raw_minus.bw
+│   │   ├── <sample_name_1>\_raw_plus.bw
+│   │   ├── <sample_name_1>\_tagClusters.bed
+│   │   ├── <sample_name_2>\_normalized_minus.bw
+│   │   ├── <sample_name_2>\_normalized_plus.bw
+│   │   ├── <sample_name_2>\_raw_minus.bw
+│   │   ├── <sample_name_2>\_raw_plus.bw
+│   │   └── <sample_name_2>\_tagClusters.bed
 │   └── versions.yml
 ├── cat_fastq
-│   ├── <sample_name_1>_1.merged.fastq.gz
-│   ├── <sample_name_1>_2.merged.fastq.gz
-│   ├── <sample_name_2>_1.merged.fastq.gz
-│   └── <sample_name_2>_2.merged.fastq.gz
+│   ├── <sample_name_1>\_1.merged.fastq.gz
+│   ├── <sample_name_1>\_2.merged.fastq.gz
+│   ├── <sample_name_2>\_1.merged.fastq.gz
+│   └── <sample_name_2>\_2.merged.fastq.gz
 ├── chrom_sizes_and_fai
 │   ├── <genome_name>.fa.fai
 │   ├── <genome_name>.fa.sizes
 │   └── versions.yml
 ├── cutadapt
 │   ├── <sample_name_1>.cutadapt.log
-│   ├── <sample_name_1>_R1_gtrimmed.fastq.gz
-│   ├── <sample_name_1>_R2_gtrimmed.fastq.gz
+│   ├── <sample_name_1>\_R1_gtrimmed.fastq.gz
+│   ├── <sample_name_1>\_R2_gtrimmed.fastq.gz
 │   ├── <sample_name_2>.cutadapt.log
-│   ├── <sample_name_2>_R1_gtrimmed.fastq.gz
-│   ├── <sample_name_2>_R2_gtrimmed.fastq.gz
+│   ├── <sample_name_2>\_R1_gtrimmed.fastq.gz
+│   ├── <sample_name_2>\_R2_gtrimmed.fastq.gz
 │   └── versions.yml
 ├── fastqc
-│   ├── <sample_name_1>_1_fastqc.html
-│   ├── <sample_name_1>_1_fastqc.zip
-│   ├── <sample_name_1>_2_fastqc.html
-│   ├── <sample_name_1>_2_fastqc.zip
-│   ├── <sample_name_2>_1_fastqc.html
-│   ├── <sample_name_2>_1_fastqc.zip
-│   ├── <sample_name_2>_2_fastqc.html
-│   ├── <sample_name_2>_2_fastqc.zip
+│   ├── <sample_name_1>\_1_fastqc.html
+│   ├── <sample_name_1>\_1_fastqc.zip
+│   ├── <sample_name_1>\_2_fastqc.html
+│   ├── <sample_name_1>\_2_fastqc.zip
+│   ├── <sample_name_2>\_1_fastqc.html
+│   ├── <sample_name_2>\_1_fastqc.zip
+│   ├── <sample_name_2>\_2_fastqc.html
+│   ├── <sample_name_2>\_2_fastqc.zip
 │   └── versions.yml
 ├── multiqc
 │   ├── multiqc_data
@@ -219,60 +219,59 @@ Below is the complete tree of the results run on 2 samples with the STAR option.
 │   │   │   ├── mqc_star_alignment_plot_1_pc.png
 │   │   │   └── mqc_star_alignment_plot_1.png
 │   │   └── svg
-│   │       ├── mqc_cutadapt_filtered_reads_plot_1_pc.svg
-│   │       ├── mqc_cutadapt_filtered_reads_plot_1.svg
-│   │       ├── mqc_cutadapt_trimmed_sequences_plot_3_Counts.svg
-│   │       ├── mqc_cutadapt_trimmed_sequences_plot_3_Obs_Exp.svg
-│   │       ├── mqc_fastqc_adapter_content_plot_1.svg
-│   │       ├── mqc_fastqc_overrepresented_sequences_plot_1.svg
-│   │       ├── mqc_fastqc_overrepresented_sequences_plot-2_1.svg
-│   │       ├── mqc_fastqc_per_base_n_content_plot_1.svg
-│   │       ├── mqc_fastqc_per_base_n_content_plot-2_1.svg
-│   │       ├── mqc_fastqc_per_base_sequence_quality_plot_1.svg
-│   │       ├── mqc_fastqc_per_base_sequence_quality_plot-2_1.svg
-│   │       ├── mqc_fastqc_per_sequence_gc_content_plot-2_Counts.svg
-│   │       ├── mqc_fastqc_per_sequence_gc_content_plot-2_Percentages.svg
-│   │       ├── mqc_fastqc_per_sequence_gc_content_plot_Counts.svg
-│   │       ├── mqc_fastqc_per_sequence_gc_content_plot_Percentages.svg
-│   │       ├── mqc_fastqc_per_sequence_quality_scores_plot_1.svg
-│   │       ├── mqc_fastqc_per_sequence_quality_scores_plot-2_1.svg
-│   │       ├── mqc_fastqc_sequence_counts_plot_1_pc.svg
-│   │       ├── mqc_fastqc_sequence_counts_plot_1.svg
-│   │       ├── mqc_fastqc_sequence_counts_plot-2_1_pc.svg
-│   │       ├── mqc_fastqc_sequence_counts_plot-2_1.svg
-│   │       ├── mqc_fastqc_sequence_duplication_levels_plot_1.svg
-│   │       ├── mqc_fastqc_sequence_duplication_levels_plot-2_1.svg
-│   │       ├── mqc_fastqc_sequence_length_distribution_plot_1.svg
-│   │       ├── mqc_samtools_alignment_plot_1_pc.svg
-│   │       ├── mqc_samtools_alignment_plot_1.svg
-│   │       ├── mqc_samtools-idxstats-mapped-reads-plot_Normalised_Counts.svg
-│   │       ├── mqc_samtools-idxstats-mapped-reads-plot_Observed_over_Expected_Counts.svg
-│   │       ├── mqc_samtools-idxstats-mapped-reads-plot_Raw_Counts.svg
-│   │       ├── mqc_star_alignment_plot_1_pc.svg
-│   │       └── mqc_star_alignment_plot_1.svg
+│   │   ├── mqc_cutadapt_filtered_reads_plot_1_pc.svg
+│   │   ├── mqc_cutadapt_filtered_reads_plot_1.svg
+│   │   ├── mqc_cutadapt_trimmed_sequences_plot_3_Counts.svg
+│   │   ├── mqc_cutadapt_trimmed_sequences_plot_3_Obs_Exp.svg
+│   │   ├── mqc_fastqc_adapter_content_plot_1.svg
+│   │   ├── mqc_fastqc_overrepresented_sequences_plot_1.svg
+│   │   ├── mqc_fastqc_overrepresented_sequences_plot-2_1.svg
+│   │   ├── mqc_fastqc_per_base_n_content_plot_1.svg
+│   │   ├── mqc_fastqc_per_base_n_content_plot-2_1.svg
+│   │   ├── mqc_fastqc_per_base_sequence_quality_plot_1.svg
+│   │   ├── mqc_fastqc_per_base_sequence_quality_plot-2_1.svg
+│   │   ├── mqc_fastqc_per_sequence_gc_content_plot-2_Counts.svg
+│   │   ├── mqc_fastqc_per_sequence_gc_content_plot-2_Percentages.svg
+│   │   ├── mqc_fastqc_per_sequence_gc_content_plot_Counts.svg
+│   │   ├── mqc_fastqc_per_sequence_gc_content_plot_Percentages.svg
+│   │   ├── mqc_fastqc_per_sequence_quality_scores_plot_1.svg
+│   │   ├── mqc_fastqc_per_sequence_quality_scores_plot-2_1.svg
+│   │   ├── mqc_fastqc_sequence_counts_plot_1_pc.svg
+│   │   ├── mqc_fastqc_sequence_counts_plot_1.svg
+│   │   ├── mqc_fastqc_sequence_counts_plot-2_1_pc.svg
+│   │   ├── mqc_fastqc_sequence_counts_plot-2_1.svg
+│   │   ├── mqc_fastqc_sequence_duplication_levels_plot_1.svg
+│   │   ├── mqc_fastqc_sequence_duplication_levels_plot-2_1.svg
+│   │   ├── mqc_fastqc_sequence_length_distribution_plot_1.svg
+│   │   ├── mqc_samtools_alignment_plot_1_pc.svg
+│   │   ├── mqc_samtools_alignment_plot_1.svg
+│   │   ├── mqc_samtools-idxstats-mapped-reads-plot_Normalised_Counts.svg
+│   │   ├── mqc_samtools-idxstats-mapped-reads-plot_Observed_over_Expected_Counts.svg
+│   │   ├── mqc_samtools-idxstats-mapped-reads-plot_Raw_Counts.svg
+│   │   ├── mqc_star_alignment_plot_1_pc.svg
+│   │   └── mqc_star_alignment_plot_1.svg
 │   └── multiqc_report.html
 ├── pipeline_info
 │   ├── execution_report_2025-06-20_09-00-09.html
 │   ├── execution_timeline_2025-06-20_09-00-09.html
 │   ├── execution_trace_2025-06-20_09-00-09.txt
 │   ├── pipeline_dag_2025-06-20_09-00-09.html
-│   ├── samplesheet.valid.csv
 │   └── software_versions.yml
 ├── samtools_flagstat
-│   ├── <sample_name_1>_sorted.bam.flagstat
-│   ├── <sample_name_2>_sorted.bam.flagstat
+│   ├── <sample_name_1>\_sorted.bam.flagstat
+│   ├── <sample_name_2>\_sorted.bam.flagstat
 │   └── versions.yml
 ├── samtools_idxstats
-│   ├── <sample_name_1>_sorted.bam.idxstats
-│   ├── <sample_name_2>_sorted.bam.idxstats
+│   ├── <sample_name_1>\_sorted.bam.idxstats
+│   ├── <sample_name_2>\_sorted.bam.idxstats
 │   └── versions.yml
 ├── samtools_index
-│   ├── <sample_name_1>_sorted.bam.bai
-│   ├── <sample_name_2>_sorted.bam.bai
+│   ├── <sample_name_1>\_sorted.bam.bai
+│   ├── <sample_name_2>\_sorted.bam.bai
 │   └── versions.yml
 ├── samtools_sort
-│   ├── <sample_name_1>_sorted.bam
-│   ├── <sample_name_2>_sorted.bam
+│   ├── <sample_name_1>\_sorted.bam
+│   ├── <sample_name_2>\_sorted.bam
 │   └── versions.yml
 ├── samtools_stats
 │   ├── <sample_name_1>.stats
@@ -317,22 +316,22 @@ Below is the complete tree of the results run on 2 samples with the STAR option.
 │   │   └── transcriptInfo.tab
 │   └── versions.yml
 ├── trimgalore
-│   ├── <sample_name_1>_1.fastq.gz_trimming_report.txt
-│   ├── <sample_name_1>_1_val_1_fastqc.html
-│   ├── <sample_name_1>_1_val_1_fastqc.zip
-│   ├── <sample_name_1>_1_val_1.fq.gz
-│   ├── <sample_name_1>_2.fastq.gz_trimming_report.txt
-│   ├── <sample_name_1>_2_val_2_fastqc.html
-│   ├── <sample_name_1>_2_val_2_fastqc.zip
-│   ├── <sample_name_1>_2_val_2.fq.gz
-│   ├── <sample_name_2>_1.fastq.gz_trimming_report.txt
-│   ├── <sample_name_2>_1_val_1_fastqc.html
-│   ├── <sample_name_2>_1_val_1_fastqc.zip
-│   ├── <sample_name_2>_1_val_1.fq.gz
-│   ├── <sample_name_2>_2.fastq.gz_trimming_report.txt
-│   ├── <sample_name_2>_2_val_2_fastqc.html
-│   ├── <sample_name_2>_2_val_2_fastqc.zip
-│   ├── <sample_name_2>_2_val_2.fq.gz
+│   ├── <sample_name_1>\_1.fastq.gz_trimming_report.txt
+│   ├── <sample_name_1>\_1_val_1_fastqc.html
+│   ├── <sample_name_1>\_1_val_1_fastqc.zip
+│   ├── <sample_name_1>\_1_val_1.fq.gz
+│   ├── <sample_name_1>\_2.fastq.gz_trimming_report.txt
+│   ├── <sample_name_1>\_2_val_2_fastqc.html
+│   ├── <sample_name_1>\_2_val_2_fastqc.zip
+│   ├── <sample_name_1>\_2_val_2.fq.gz
+│   ├── <sample_name_2>\_1.fastq.gz_trimming_report.txt
+│   ├── <sample_name_2>\_1_val_1_fastqc.html
+│   ├── <sample_name_2>\_1_val_1_fastqc.zip
+│   ├── <sample_name_2>\_1_val_1.fq.gz
+│   ├── <sample_name_2>\_2.fastq.gz_trimming_report.txt
+│   ├── <sample_name_2>\_2_val_2_fastqc.html
+│   ├── <sample_name_2>\_2_val_2_fastqc.zip
+│   ├── <sample_name_2>\_2_val_2.fq.gz
 │   └── versions.yml
 └── txdb
     ├── annotation_from_gtf.sqlite
@@ -344,7 +343,7 @@ Below is the complete tree of the results run on 2 samples with the STAR option.
 `cat_fastq` folder with the input fastq files, merged by sample in case they were separated into different lanes.
 `fastqc` folder with the results of the intitial quality check (before trimming or filtering). Currently it is not included in the MultiQC report.
 `cutadapt` folder with the output from trimming the 5' G.
-`trimgalore` folder with the output of `TrimGalore!` including adapter trimming and `FastQC` report (this one is included in the `MultiQC` report). 
+`trimgalore` folder with the output of `TrimGalore!` including adapter trimming and `FastQC` report (this one is included in the `MultiQC` report).
 `star_genomegenerate` folder with the outpue of the `STAR genomegenerate` mode which creates the genome indeces.
 `chrom_sizes_and_fai` folder with the genome index and chromosome sizes.
 `star_align` folder with the output of `STAR` aligner: bam files, wig files of uniquely mapped and multi-mapped (the `unique_only` parameter defines whether the uniqely mapped wigs or the multi-mapped wigs are used downstream), tab file, and logs.
@@ -373,24 +372,24 @@ Below is the complete tree of the results run on 2 samples with the STAR option.
 
 Results generated by MultiQC collate pipeline QC from supported tools e.g. FastQC. The pipeline has special steps which also allow the software versions to be reported in the MultiQC output for future traceability. For more information about how to use MultiQC reports, see <http://multiqc.info>.
 
-
 #### Outputs from CAGEr and CAGEfightR
 
 `txdb` folder with the `sqlite` file of the TxDb file generated from the user provided `gtf` file.
 `cager` folder with the `cager_report.html` file including the QC plots, with the respective user-provided parameters and descriptions. If the final set of called enhancers is empty, the corresponding plots shown in the report are replaced with placeholders saying "No enhancers found".
 The folder also includes multiple subfolders as listed below with the intermediate files, tables, tracks, and plots in pdf format.
-* `cager/intermediate_cagerobj` folder stores 5 different `RDS` files.
+
+- `cager/intermediate_cagerobj` folder stores 5 different `RDS` files.
   - `initial_cagexp.rds` stores the data right after reading in of the mapped bigwig/bam files
   - `annotated_cagexp.rds` stores the data after it has been annotated.
   - `normalized_clustered_cagexp.rds` stores the data after it has been normalized, tag clusters, and consensus clusters called.
   - `supported_enhancers.rds` is the intermediate output of the `CAGEfightR` enhancer calling script. This inlcudes all enhancers that are called with support from the user defined number of samples.
   - `nonTSS_enhancers.rds` is the final output of the enhancer calling script. It is different from the `supported_enhancers.rds` as the `nonTSS_enhancers.rds` lists the enhancers that are not overlapping any of the consensus clusters identified by `CAGEr`.
-* `cager/plots` folder stores the different plots and `RDS` files for the report. It also includes the TSS logos saved in the `<sample_name>_tagcluster_dominantTSSlogos_plot.pdf` file. Note: when reading in plots from RDS it is a good idea to import magrittr first, otherwise the plot content text is written out instead of the actual plot.
-* `cager/tables` folder stores 3 `csv` files.
-  - `consensus_clusters_tpm.csv` file stores the dataframe which is directly exported from CAGEr consensus clusters matching the scores provided in `consensusClustersTpm(ce)`. Rows are the consensus cluster regions and columns are the samples. 
+- `cager/plots` folder stores the different plots and `RDS` files for the report. It also includes the TSS logos saved in the `<sample_name>_tagcluster_dominantTSSlogos_plot.pdf` file. Note: when reading in plots from RDS it is a good idea to import magrittr first, otherwise the plot content text is written out instead of the actual plot.
+- `cager/tables` folder stores 3 `csv` files.
+  - `consensus_clusters_tpm.csv` file stores the dataframe which is directly exported from CAGEr consensus clusters matching the scores provided in `consensusClustersTpm(ce)`. Rows are the consensus cluster regions and columns are the samples.
   - `consensus_cluster_per_sample_ctss.csv` files stores a dataframe that has the same structure as `consensus_clusters_tpm.csv` but instead of the scores defined by the overlapping TagCluster scores, `consensus_cluster_per_sample_ctss.csv` includes the scores caclulated by including all CTSS scores overlapping the consensus clusters. As tag clusters has already been filtered by a tpm threshold, the CTSS scores is higher or equal to the tag cluster scores. This is the preferred output for downstream analysis.
   - `enhancer_expression_per_sample.tsv` file stores a dataframe with the enhancer regions as rows and samples as columns. The values are tpm normalized CTSS scores.
-* `cager/tracks` folder stores `bed` and `bigwig` files exported after identifying CTSS (raw strand specific bigwig), normalizing CTSS (normalized strand specific bigwig), tag clusters (bed), consensus clusters (bed), and enhancers (bed).
+- `cager/tracks` folder stores `bed` and `bigwig` files exported after identifying CTSS (raw strand specific bigwig), normalizing CTSS (normalized strand specific bigwig), tag clusters (bed), consensus clusters (bed), and enhancers (bed).
 
 ### Pipeline information
 
@@ -400,7 +399,6 @@ The folder also includes multiple subfolders as listed below with the intermedia
 - `pipeline_info/`
   - Reports generated by Nextflow: `execution_report.html`, `execution_timeline.html`, `execution_trace.txt` and `pipeline_dag.dot`/`pipeline_dag.svg`.
   - Reports generated by the pipeline: `pipeline_report.html`, `pipeline_report.txt` and `software_versions.yml`. The `pipeline_report*` files will only be present if the `--email` / `--email_on_fail` parameter's are used when running the pipeline.
-  - Reformatted samplesheet files used as input to the pipeline: `samplesheet.valid.csv`.
   - Parameters used by the pipeline run: `params.json`.
 
 </details>
@@ -408,9 +406,9 @@ The folder also includes multiple subfolders as listed below with the intermedia
 [Nextflow](https://www.nextflow.io/docs/latest/tracing.html) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
 
 ### Details about Nextflow
+
 The pipeline will produce a directory with results (by default, called `results`) and a directory for intermediate files (by default, called `work`) in the directory where it is launched.
 If running the pipeline sequentially on different raw datasets (for example, on data from different species), make sure to launch each run from a different directory, so that the next run does not overwrite the results of the previous run.
-However, if you plan to run two or more instances of the pipeline in parallel, using the same storage, then, apart from running them from different directories, you also must provide a different name for each work directory using the `-w` option. 
+However, if you plan to run two or more instances of the pipeline in parallel, using the same storage, then, apart from running them from different directories, you also must provide a different name for each work directory using the `-w` option.
 
 Since Nextflow work directories can quickly become very large and do not need to be backed-up (but removed after a successful run, instead!), a good practice is to create work directories in a dedicated storage space that gets cleaned once in a while and is usually called a "scratch" space. Make sure to check the documentation of your cluster/server or to ask your system administrator on where you should create Nextflow work directories.
-

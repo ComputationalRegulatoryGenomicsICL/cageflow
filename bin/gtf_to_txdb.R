@@ -1,17 +1,17 @@
 #!/usr/bin/env Rscript
 
-# 
+#
 # Script to convert GTF into TxDb object
-# 
+#
 
 # Load libraries
 required.libraries <- c(
-  "optparse",
-  "txdbmaker"
+    "optparse",
+    "txdbmaker"
 )
 
 for (lib in required.libraries) {
-  suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
+    suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
 }
 
 # parse options

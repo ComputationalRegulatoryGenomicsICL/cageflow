@@ -3,7 +3,7 @@ import argparse
 import os
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-f','--filepath', type=str, help='Path to the samplefile with absolute path bigwigs')
+parser.add_argument("-f", "--filepath", type=str, help="Path to the samplefile with absolute path bigwigs")
 args = parser.parse_args()
 
 with open(args.filepath, "r", encoding="utf-8") as filein:
@@ -15,7 +15,7 @@ with open(args.filepath, "r", encoding="utf-8") as filein:
                 line_parts = line.strip().split(",")
                 line_id = line_parts[0]
                 line_se = line_parts[1]
-                paths = line_parts[2].strip(']').strip('[').split(' ')
+                paths = line_parts[2].strip("]").strip("[").split(" ")
                 if len(paths) > 1:
                     path_str = " ".join([os.path.basename(path) for path in paths])
                 else:

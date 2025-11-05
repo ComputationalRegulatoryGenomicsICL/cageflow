@@ -22,9 +22,9 @@ export_tagclusters <- function(ce, iqlow, iqhigh){
         "raw")
 
     bedTracks <- CAGEr::exportToTrack(
-        ce, 
-        what = "tagClusters", 
-        qLow = iqlow, qUp = iqhigh, 
+        ce,
+        what = "tagClusters",
+        qLow = iqlow, qUp = iqhigh,
         oneTrack = FALSE)
 
     mapply(function(x, y){
@@ -34,8 +34,8 @@ export_tagclusters <- function(ce, iqlow, iqhigh){
 
 export_consensus_clusters <- function(ce){
     ccbedTracks <- CAGEr::exportToTrack(
-        ce, 
-        what = "consensusClusters", 
+        ce,
+        what = "consensusClusters",
         colorByExpressionProfile = FALSE,
         oneTrack = TRUE)
     # should start at 1 for export to be 0

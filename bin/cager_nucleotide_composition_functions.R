@@ -33,9 +33,9 @@ extract_dinucleotide_information <- function(ce, reference_name) {
             dinuc_vals[which(dinuc_vals$dinucleotide==dn),]$sum_score <- sum(
                 dinuc_n_score[which(dinuc_n_score$dinucleotide==dn),]$score)
         }
-        
+
         dinuc_vals$proportion <- dinuc_vals$sum_score/sum(dinuc_vals$sum_score)
-        
+
         dinuc_vals<-dinuc_vals[
             order(dinuc_vals$proportion, decreasing=F),]
         dinuc_vals$dinucleotide <- factor(
@@ -53,14 +53,14 @@ plot_dinucleotide_frequency_heatmap <- function(
 
     p <- ggplot(
         data = weigthed_dinuc_vals_df,
-        aes(x = dinucleotide, y = samples, fill = proportion)) + 
-        geom_tile() + 
-        xlab("Initiator dinucleotide") + 
-        ylab("Samples") + 
-        ggtitle(NULL) + 
+        aes(x = dinucleotide, y = samples, fill = proportion)) +
+        geom_tile() +
+        xlab("Initiator dinucleotide") +
+        ylab("Samples") +
+        ggtitle(NULL) +
         theme_bw() +
         theme(
-            text = element_text(size = 40, colour = "black"), 
+            text = element_text(size = 40, colour = "black"),
             axis.text.x = element_text(size = 30, colour = "black",angle = 90),
             axis.text.y = element_text(size = 30, colour = "black"),
             panel.grid.major = element_blank(),
@@ -74,21 +74,21 @@ plot_dinucleotide_frequency_histogram <- function(
 
     p <- ggplot(
         data = weigthed_dinuc_vals_df,
-        aes(x = dinucleotide, y = proportion, fill = samples)) + 
+        aes(x = dinucleotide, y = proportion, fill = samples)) +
         scale_fill_manual(values = col) +
         geom_bar(
             stat = "identity",
             position = position_dodge(),
             colour = "black",
             size = 0.3,
-            linewidth = 0.25) + 
+            linewidth = 0.25) +
         coord_flip() +
-        xlab("Initiator dinucleotide") + 
-        ylab("Proportion of total per sample") + 
-        ggtitle("Dominant TSS dinucleotide (-/+ 1bp) proportion weighted by the sum of dominant TSS score per sample") + 
+        xlab("Initiator dinucleotide") +
+        ylab("Proportion of total per sample") +
+        ggtitle("Dominant TSS dinucleotide (-/+ 1bp) proportion weighted by the sum of dominant TSS score per sample") +
         theme_bw() +
         theme(
-            text = element_text(size = 60, colour = "black"), 
+            text = element_text(size = 60, colour = "black"),
             axis.text.x = element_text(size = 60, colour = "black"),
             axis.text.y = element_text(size = 60, colour = "black"),
             panel.grid.major = element_blank(),

@@ -1,8 +1,8 @@
 #!/usr/bin/env Rscript
 
-# 
+#
 # Script to read in data to CAGEr from BAM or BigWig format
-# 
+#
 
 # Load libraries
 required.libraries <- c(
@@ -17,7 +17,7 @@ required.libraries <- c(
 )
 
 for (lib in required.libraries) {
-  suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
+    suppressPackageStartupMessages(library(lib, character.only=TRUE, quietly = T))
 }
 
 # parse options
@@ -131,8 +131,8 @@ merge_labels <- function(sample_names, new_names, ce) {
     merged_sample_labels = unique(name_df$new_name)
     name_df = name_df[match(CAGEr::sampleLabels(ce), name_df$sample_name), ]
     ce <- CAGEr::mergeSamples(
-        ce, 
-        mergeIndex = name_df$merge_idx, 
+        ce,
+        mergeIndex = name_df$merge_idx,
         mergedSampleLabels = merged_sample_labels)
     return(ce)
 }

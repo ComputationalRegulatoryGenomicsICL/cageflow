@@ -5,8 +5,8 @@ cageronly: false
 gtf: "cageflow_test_data/sacCer3_genome/sacCer3.ensGene.gtf"
 
 # preprocessing parameters
-samplesheet: "customcageq/testdata/samplesheet_yeast_borlin_2018_se_test.csv"
-infolder: 
+input: "customcageq/testdata/samplesheet_yeast_borlin_2018_se_test.csv"
+infolder:
 sample_name_fields: 2
 genome_name: "sacCer3"
 fasta: "cageflow_test_data/sacCer3_genome/sacCer3.fa"
@@ -16,10 +16,10 @@ seq_center: false
 # whether to take the uniquely mapped only
 unique_only: true
 # whether to remove reads that do not start with G
-remove_non_g: false 
+remove_non_g: false
 
 # CAGEr parameters
-cager_sample_file: ../borlin_sample_list_test.csv
+cager_sample_file:
 # BSgenome
 forgeseed:
 sourcedir:
@@ -31,7 +31,7 @@ norm_range_min: 5
 norm_range_max: 10000
 norm_method: "powerLaw"
 alpha:
-T_norm: 1000000
+t_norm: 1000000
 # parameters for tag clustering
 sample_num_thr: 1
 ctss_thr: 1

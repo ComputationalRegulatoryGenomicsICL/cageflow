@@ -5,18 +5,18 @@ cageronly: true
 gtf: "cageflow_test_data/danRer11_genome/danRer11.ensGene.gtf"
 
 # preprocessing parameters
-samplesheet:
-infolder: ""
+input:
+infolder:
 sample_name_fields: 1
 genome_name: "danRer11"
-fasta: ""
-index: ""
+fasta:
+index:
 seq_platform: "illumina"
 seq_center: false
 # whether to take the uniquely mapped only
 unique_only: false
 # whether to remove reads that do not start with G
-remove_non_g: false 
+remove_non_g: false
 
 # CAGEr parameters
 cager_sample_file: "customcageq/testdata/samplesheet_cager_nepal.csv" # with sorted list of bigwigs, if mapping is run elsewhere
@@ -33,7 +33,7 @@ norm_range_min: 5
 norm_range_max: 10000
 norm_method: "powerLaw"
 alpha: 1.01
-T_norm: 1000000
+t_norm: 1000000
 # parameters for tag clustering
 sample_num_thr: 1
 ctss_thr: 1
