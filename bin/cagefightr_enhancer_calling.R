@@ -115,6 +115,7 @@ print("Enhancers overlapping promoters excluded")
 
 # annotate enhancers with transcript database information
 tx_annotation_obj <- loadDb(tx_annotation)
+print("Annotation in TxDb is loaded")
 
 # save enhancer expression per sample
 outFileNameSamples <- file.path(
@@ -128,7 +129,7 @@ if (length(true_enhancers) > 0) {
         tssregion_up=tssregion_up,
         tssregion_down=tssregion_down)
 
-    print("Enhancers are annotated")
+    print("Enhancers annotated")
 
     saveRDS(true_enhancers, file = "intermediate_cagerobj/nonTSS_enhancers.rds")
     print("Enhancers excluding promoters (consensus clusters) rds file saved")
@@ -142,7 +143,7 @@ if (length(true_enhancers) > 0) {
         true_enhancers=true_enhancers,
         ce=ce)
 
-    print("Identified sample specific enhancers")
+    print("Enhancers assigned to samples")
 
     write.table(
         enhancer_expr_per_sample,

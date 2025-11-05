@@ -25,11 +25,11 @@ bowtie2: false
 dedup: false
 
 # CAGEr parameters
-cager_sample_file: ../nepal_sample_list_test.csv
+cager_sample_file: ../borlin_sample_list_test.csv
 # BSgenome
 forgeseed:
 sourcedir:
-bsgenome: "BSgenome.Drerio.UCSC.danRer11"
+bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
 # parameter for correlation calculation
 corrplot_tagCountThreshold: 1
 # correlation plotting of samples
