@@ -172,11 +172,11 @@ workflow CUSTOMCAGE {
             ch_bam_bai = DEDUPLICATION.out.ch_bam_bai
             ch_versions = DEDUPLICATION.out.ch_versions
         } else {
-            SAMTOOLS(ch_aligned, ch_versions, ch_for_cager)
+            SAMTOOLS_PROCESSING(ch_aligned, ch_versions, ch_for_cager)
 
-            ch_for_cager = SAMTOOLS.out.ch_for_cager
-            ch_bam_bai = SAMTOOLS.out.ch_bam_bai
-            ch_versions = SAMTOOLS.out.ch_versions
+            ch_for_cager = SAMTOOLS_PROCESSING.out.ch_for_cager
+            ch_bam_bai = SAMTOOLS_PROCESSING.out.ch_bam_bai
+            ch_versions = SAMTOOLS_PROCESSING.out.ch_versions
         }
 
         SAMTOOLS_STATISTICS(ch_bam_bai, ch_fasta, ch_multiqc_files, ch_versions)
