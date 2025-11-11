@@ -87,7 +87,7 @@ include { PREPARE_CAGER_METADATA } from '../subworkflows/local/prepare_cager_met
 include { STAR } from '../subworkflows/local/star/main.nf'
 include { BOWTIE2 } from '../subworkflows/local/bowtie2/main.nf'
 include { DEDUPLICATION } from '../subworkflows/local/deduplication/main.nf'
-include { SAMTOOLS } from '../subworkflows/local/samtools/main.nf'
+include { SAMTOOLS_PROCESSING } from '../subworkflows/local/samtools/main.nf'
 include { SAMTOOLS_STATISTICS } from '../subworkflows/local/samtools_statistics/main.nf'
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
 include { WRITE_SAMPLE_LIST } from '../modules/local/write_sample_list/main.nf'
