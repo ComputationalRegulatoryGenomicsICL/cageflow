@@ -392,6 +392,10 @@
         "genome": {
             "type": "string",
             "description": "FASTA file containing a reference genome."
+        },
+        "datatype": {
+            "type": "string",
+            "description": "Format of the mapping data file passed to the TSS analysis part when STAR is used (either 'bam' or 'bigwig')."
         }
     },
     "required": ["gtf"]

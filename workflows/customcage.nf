@@ -2,6 +2,7 @@
 params.fullpipeline = true
 params.maponly = false
 params.cageronly = false
+
 // genome annotation in GTF
 params.gtf = "$projectDir/assets/NO_FILE_GTF"
 
