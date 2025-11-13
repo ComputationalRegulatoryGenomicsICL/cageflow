@@ -44,7 +44,6 @@ process CAGER_TAGCLUSTER_QC {
         Bash: \$(echo "\$BASH_VERSION")
         R: \$(R --version | head -1 | awk '{print \$3}')
         R_CAGEr: \$(Rscript -e 'packageVersion("CAGEr")' | awk '{print \$2}' | tr -d "‘’")
-        R_packages: \$(Rscript -e 'sessionInfo(package = NULL)')
     END_VERSIONS
     """
 }
