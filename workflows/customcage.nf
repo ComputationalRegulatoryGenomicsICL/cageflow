@@ -9,6 +9,7 @@ params.gtf = "$projectDir/assets/NO_FILE_GTF"
 // preprocessing parameters
 params.input = "$projectDir/assets/NO_FILE_SAMPLESHEET"
 params.infolder = ''
+params.outdir = "results"
 params.sample_name_fields = ''
 params.genome_name = ''
 params.fasta = "$projectDir/assets/NO_FILE_FASTA"
