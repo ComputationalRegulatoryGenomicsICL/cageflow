@@ -173,7 +173,8 @@
                     "type": "string",
                     "fa_icon": "far calendar",
                     "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
-                    "hidden": true
+                    "hidden": true,
+                    "default": "2025-11-19_11-40-32"
                 }
             }
         }
@@ -190,6 +191,11 @@
         }
     ],
     "properties": {
+        "datatype": {
+            "type": "string",
+            "description": "Type of mapped data to read in when cageronly is run (bam or bigwig).",
+            "default": "bigwig"
+        },
         "fullpipeline": {
             "type": "boolean",
             "default": true,
