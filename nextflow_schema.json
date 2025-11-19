@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/ComputationalRegulatoryGenomicsICL/customcage/master/nextflow_schema.json",
+    "$id": "https://raw.githubusercontent.com/ComputationalRegulatoryGenomicsICL/customcage/main/nextflow_schema.json",
     "title": "ComputationalRegulatoryGenomicsICL/customcage pipeline parameters",
     "description": "Schema for the inputs provided with params.yaml",
     "type": "object",
@@ -173,8 +173,7 @@
                     "type": "string",
                     "fa_icon": "far calendar",
                     "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
-                    "hidden": true,
-                    "default": "2025-11-19_11-40-32"
+                    "hidden": true
                 }
             }
         }
@@ -182,6 +181,9 @@
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
+        },
+        {
+            "$ref": "#/$defs/reference_genome_options"
         },
         {
             "$ref": "#/$defs/institutional_config_options"

@@ -3,8 +3,13 @@ process MULTIQC {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+<<<<<<< HEAD
         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/8c/8c6c120d559d7ee04c7442b61ad7cf5a9e8970be5feefb37d68eeaa60c1034eb/data' :
         'community.wave.seqera.io/library/multiqc:1.32--d58f60e4deb769bf' }"
+=======
+        'https://depot.galaxyproject.org/singularity/multiqc:1.29--pyhdfd78af_0' :
+        'biocontainers/multiqc:1.29--pyhdfd78af_0' }"
+>>>>>>> TEMPLATE
 
     input:
     path  multiqc_files, stageAs: "?/*"
@@ -52,7 +57,10 @@ process MULTIQC {
     stub:
     """
     mkdir multiqc_data
+<<<<<<< HEAD
     touch multiqc_data/.stub
+=======
+>>>>>>> TEMPLATE
     mkdir multiqc_plots
     touch multiqc_report.html
 
