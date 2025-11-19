@@ -5,7 +5,7 @@ cageronly: false
 gtf: "cageflow_test_data/sacCer3_genome/sacCer3.ensGene.gtf"
 
 # preprocessing parameters
-input: 
+input:
 infolder: "/mnt/biggley/home/slava/projects/leancage_dev/cageflow_test_data/fastq/se"
 outdir: "results"
 sample_name_fields: 2
@@ -17,7 +17,7 @@ seq_center: false
 # whether to take the uniquely mapped only
 unique_only: true
 # whether to remove reads that do not start with G
-remove_non_g: false 
+remove_non_g: false
 # whether to trim G or not
 nogtrim: false
 # mapper to use

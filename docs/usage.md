@@ -186,7 +186,6 @@ TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
 | `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
 | `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
 
-
 ##### Starting from a folder path
 
 If a foldername including fastq files is provided, the `--infolder` parameter should be selected.
@@ -199,7 +198,7 @@ _Note, that if the sample name had any dash (`-`) it is converted to underscore 
 
 #### CAGEr subpipeline
 
-To run the analysis with CAGEr with already existing bigwig or bam files, the input is another sample sheet with 4 columns and a header row. 
+To run the analysis with CAGEr with already existing bigwig or bam files, the input is another sample sheet with 4 columns and a header row.
 the 4th column, `new_name` defines which samples should be merged (provide the same names for the samples), dropped (leave the field empty), or kept as is (match the with the id field).
 An example is shown below (this file can be found at `docs/examples/samplesheet_cager.csv`). It is recommended to use absolute paths for the input files.
 
@@ -366,7 +365,6 @@ nextflow run customcageq/main.nf \
 ```
 
 We recommend adapting the suggested values for the options `-profile` (Nextflow profile name) and `-w` (Nextflow work directory) according to your system's setup.
-
 
 <!--
 ### Updating the pipeline
