@@ -352,7 +352,7 @@ nextflow run customcageq/main.nf \
     -w work_se_test
 ```
 
-adapting the suggested values for the options `-profile` (Nextflow profile name) and `-w` (Nextflow work directory) according to your system's setup.
+We recommend adapting the suggested values for the options `-profile` (Nextflow profile name) and `-w` (Nextflow work directory) according to your system's setup.
 
 Paired-end test reads were randomly sampled from zebrafish CAGE libraries "4-5 somites" (SRR10215487) and "prim-5" (SRR10215486) generated and analyzed in ([Nepal et al., 2020](https://doi.org/10.1038/s41467-019-13687-0)). The test data include two samples split into two lanes each. One lane contains approximately 1 mln reads; therefore, the whole dataset contains around 4 mln reads. See `generate_pe_test_data.sh` for details on how the test dataset was generated.
 
@@ -365,7 +365,7 @@ nextflow run customcageq/main.nf \
     -w work_pe_test
 ```
 
-adapting the suggested values for the options `-profile` (Nextflow profile name) and `-w` (Nextflow work directory) according to your system's setup.
+We recommend adapting the suggested values for the options `-profile` (Nextflow profile name) and `-w` (Nextflow work directory) according to your system's setup.
 
 
 <!--
