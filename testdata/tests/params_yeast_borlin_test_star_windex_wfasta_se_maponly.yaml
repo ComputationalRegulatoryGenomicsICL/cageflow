@@ -1,17 +1,17 @@
 # pipeline parameters
-fullpipeline: true
-maponly: false
+fullpipeline: false
+maponly: true
 cageronly: false
-gtf: "cageflow_test_data/danRer11_genome/danRer11.ensGene.gtf"
+gtf: "cageflow_test_data/sacCer3_genome/sacCer3.ensGene.gtf"
 
 # preprocessing parameters
 input: 
-infolder: "/mnt/biggley/home/slava/projects/leancage_dev/cageflow_test_data/fastq/pe"
+infolder: "/mnt/biggley/home/slava/projects/leancage_dev/cageflow_test_data/fastq/se"
 outdir: "results"
 sample_name_fields: 2
-genome_name: "danRer11"
-genome: "cageflow_test_data/danRer11_genome/danRer11.fa"
-index: "danio_star_index/star"
+genome_name: "sacCer3"
+genome: "cageflow_test_data/sacCer3_genome/sacCer3.fa"
+index: "yeast_star_index/star"
 seq_platform: "illumina"
 seq_center: false
 # whether to take the uniquely mapped only
@@ -26,13 +26,13 @@ bowtie2: false
 dedup: false
 
 # CAGEr parameters
-cager_sample_file: ../nepal_sample_list_test.csv
+cager_sample_file: ../borlin_sample_list_test.csv
 # datatype: "bam" or "bigwig". if bowtie2 is used, it will be set to bam
 datatype: "bigwig"
 # BSgenome
 forgeseed:
 sourcedir:
-bsgenome: "BSgenome.Drerio.UCSC.danRer11"
+bsgenome: "BSgenome.Scerevisiae.UCSC.sacCer3"
 # parameter for correlation calculation
 corrplot_tagCountThreshold: 1
 # parameters for normalization

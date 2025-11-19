@@ -1,6 +1,6 @@
 # pipeline parameters
-fullpipeline: true
-maponly: false
+fullpipeline: false
+maponly: true
 cageronly: false
 gtf: "cageflow_test_data/danRer11_genome/danRer11.ensGene.gtf"
 

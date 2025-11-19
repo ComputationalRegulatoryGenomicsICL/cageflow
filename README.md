@@ -17,11 +17,11 @@
 
 The first part of the pipeline is shown here:
 
-![Mapping metromap](images/mappingmap_rot.png)
+![Mapping metromap](images/mappingmap.png)
 
 The second part of the pipeline is shown here:
 
-![CAGEr metromap](images/cagermap_rot.png)
+![CAGEr metromap](images/cagermap.png)
 
 ## Pipeline overview
 
@@ -46,31 +46,15 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - Analysis of CAGE reads according to the manual of [`CAGEr`](https://www.bioconductor.org/packages/release/bioc/vignettes/CAGEr/inst/doc/CAGEexp.html). Final output is a markdown document summarizing the results and QC, as well as tracks: bed and bigwig files, a set of intermediate RDS files, stand-alone plots (all shown or referenced in the report), and data tables.
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
-## Extended documentation
 
-- [ReadMe](docs/README.md)
-  - More about usage and outputs
+## Usage and Outputs
 
-## Examples
+For extended documentation about the input parameters and usage, please visit [the usage documentation](docs/usage.md). About outputs you can read at [the outputs page](docs/output.md).
 
-- [Example](example.md)
-  - How to run the pipeline with example data.
-
-### Features to implement
-
-1. Include plotting motifs around TSSs on both strands separately to check if a pyrimidine-purine (initiator-like) motif is present on both strands. This lets a user check if TSSs are shifted (are not a pyrimidine-purine pair) and/or initiator motifs are different on the two strands (neither should happen).
-
-2. Track generation for the genome browser (normalized counts).
-
-3. Investigate and ideally resolve the issue with `CAGEr` using only one thread when reading samples and working within the pipeline. Get in touch with Charles Plessy after a reasonable investigation. (Damir discovered that CAGEr uses the number of thread equal to the number of read input files, independently of the number of threads set to it; but it is still unclear why CAGEr uses only one thread for multiple input samples when run within the pipeline.)
-
-4. Cite in `CITATIONS.md` all the tools that we used.
-
-5. Make it possible to run the pipeline by providing the GitHub repository name (and, possibly, a version name / commit hash), instead of making the user clone the repository first.
 
 ## Credits
 
-**ComputationalRegulatoryGenomicsICL/customcageq** has been developed by Sviatoslav Sidorov ([@sidorov-si](https://github.com/sidorov-si)), Katalin Ferenc ([@ferenckata](https://github.com/ferenckata)), Damir Baranasic ([@da-bar](https://github.com/da-bar)), Elena Gómez-Marín ([@ElenaGoMa](https://github.com/ElenaGoMa)), and Pavel Nikitin ([@nikitin-p](https://github.com/nikitin-p)).
+**nf-core/customcageq** has been developed by Sviatoslav Sidorov ([@sidorov-si](https://github.com/sidorov-si)), Katalin Ferenc ([@ferenckata](https://github.com/ferenckata)), Damir Baranasic ([@da-bar](https://github.com/da-bar)), Elena Gómez-Marín ([@ElenaGoMa](https://github.com/ElenaGoMa)), and Pavel Nikitin ([@nikitin-p](https://github.com/nikitin-p)).
 
 ## Citations
 

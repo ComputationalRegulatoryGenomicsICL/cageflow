@@ -2,12 +2,14 @@
 params.fullpipeline = true
 params.maponly = false
 params.cageronly = false
+
 // genome annotation in GTF
 params.gtf = "$projectDir/assets/NO_FILE_GTF"
 
 // preprocessing parameters
 params.input = "$projectDir/assets/NO_FILE_SAMPLESHEET"
 params.infolder = ''
+params.outdir = "results"
 params.sample_name_fields = ''
 params.genome_name = ''
 params.fasta = "$projectDir/assets/NO_FILE_FASTA"
@@ -87,7 +89,7 @@ include { PREPARE_CAGER_METADATA } from '../subworkflows/local/prepare_cager_met
 include { STAR } from '../subworkflows/local/star/main.nf'
 include { BOWTIE2 } from '../subworkflows/local/bowtie2/main.nf'
 include { DEDUPLICATION } from '../subworkflows/local/deduplication/main.nf'
-include { SAMTOOLS } from '../subworkflows/local/samtools/main.nf'
+include { SAMTOOLS_PROCESSING } from '../subworkflows/local/samtools/main.nf'
 include { SAMTOOLS_STATISTICS } from '../subworkflows/local/samtools_statistics/main.nf'
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
 include { WRITE_SAMPLE_LIST } from '../modules/local/write_sample_list/main.nf'
@@ -171,11 +173,11 @@ workflow CUSTOMCAGE {
             ch_bam_bai = DEDUPLICATION.out.ch_bam_bai
             ch_versions = DEDUPLICATION.out.ch_versions
         } else {
-            SAMTOOLS(ch_aligned, ch_versions, ch_for_cager)
+            SAMTOOLS_PROCESSING(ch_aligned, ch_versions, ch_for_cager)
 
-            ch_for_cager = SAMTOOLS.out.ch_for_cager
-            ch_bam_bai = SAMTOOLS.out.ch_bam_bai
-            ch_versions = SAMTOOLS.out.ch_versions
+            ch_for_cager = SAMTOOLS_PROCESSING.out.ch_for_cager
+            ch_bam_bai = SAMTOOLS_PROCESSING.out.ch_bam_bai
+            ch_versions = SAMTOOLS_PROCESSING.out.ch_versions
         }
 
         SAMTOOLS_STATISTICS(ch_bam_bai, ch_fasta, ch_multiqc_files, ch_versions)
