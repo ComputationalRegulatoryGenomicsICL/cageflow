@@ -68,7 +68,7 @@ def process_group(records, N, motif, rc_motif, out_bam):
         return
 
     # Mate R2s coordinates for matching R1s
-    # RNEXT / PNEXT in SAM => next_reference_id / next_reference_start in pysam
+    # RNEXT and PNEXT in SAM are next_reference_id and next_reference_start in pysam
     mate_coords = {
         (r.next_reference_id, r.next_reference_start)
         for r in r1_soft
@@ -94,8 +94,8 @@ def main():
             "    - forward:  first N bases of SEQ == MOTIF\n"
             "    - reverse:  last N bases of SEQ == revcomp(MOTIF)\n"
             "  - Input BAM must be name-sorted.\n"
-            "  - All matching read1 alignments are written, plus their matching\n"
-            "    read2 mates (matched by RNEXT/PNEXT <-> RNAME/RPOS).\n\n"
+            "  Output: read1 alignments that meet the conditions above,"
+            "  with their respective read2 alignments."
             "Example:\n"
             "  python3 softclip5_pe_exact.py in.namesort.bam out.pe.5p3S.ATG.bam 3 ATG\n\n"
         )

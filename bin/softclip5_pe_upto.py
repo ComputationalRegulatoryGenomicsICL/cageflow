@@ -6,7 +6,7 @@ SOFT = 4  # soft-clip in pysam CIGAR codes
 
 def comp_base(base: str) -> str:
     """
-    Complement a of a single DNA base (A/C/G/T/N), case-insensitive.
+    Complement of a single DNA base (A/C/G/T/N), case-insensitive.
     """
     base = base.upper()
     table = {"A": "T", "C": "G", "G": "C", "T": "A", "N": "N"}
@@ -18,22 +18,22 @@ def has_5prime_softclip_homopolymer_upto(aln, M, N, base=None, rc_base=None):
       - a 5' soft-clip of length x (orientation-aware: 5' of read),
       - where M <= x <= N,
       - and if base is provided (A/C/G/T/N):
-          - forward reads: entire 5' soft-clip (first x bases of SEQ) is homopolymer of base
-          - reverse reads: entire 5' soft-clip (last x bases of SEQ) is homopolymer of rc_base
+          - forward reads: entire 5' soft-clip (first x bases of SEQ) is a homopolymer of base
+          - reverse reads: entire 5' soft-clip (last x bases of SEQ) is a homopolymer of rc_base
 
       - For forward (not is_reverse): 5' soft-clip is the first CIGAR element (cig[0] == xS).
       - For reverse (is_reverse): 5' soft-clip is the last CIGAR element (cig[-1] == xS).
-      - As SEQ for reverse reads were reverse-complemented we compare last soft-clipped bases to complement(base).
+      - As SEQ for reverse reads is reverse-complemented, we compare the last soft-clipped bases to complement(base).
     """
     if aln.is_unmapped:
         return False
 
     cig = aln.cigartuples
 
-    # get the 5' operation depending on orientation
+    # get the 5' operation depending on the read orientation
     op, length = cig[-1] if aln.is_reverse else cig[0]
 
-    # must be soft-clip with length in [M, N]
+    # must be soft-clipping with length in [M, N]
     if op != SOFT:
         return False
     x = int(length)
@@ -48,7 +48,7 @@ def has_5prime_softclip_homopolymer_upto(aln, M, N, base=None, rc_base=None):
     if not seq:
         return False
 
-    # extract the soft-clipped segment and test homopolymer
+    # extract the soft-clipped segment
     if aln.is_reverse:
         # reverse 5' == last x bases
         sc = seq[-x:]
@@ -58,24 +58,24 @@ def has_5prime_softclip_homopolymer_upto(aln, M, N, base=None, rc_base=None):
         sc = seq[:x]
         target_base = base.upper()
 
-    # all bases in soft-clip must match target_base (homopolymer)
+    # all bases in the soft-clipped segment must match the target base
     return all(b.upper() == target_base for b in sc)
 
 
 def process_group(records, M, N, base, rc_base, out_bam):
     """
-    records: list of AlignedSegment with same query_name (paired-end).
+    records: list of AlignedSegment with the same query_name (paired-end).
 
-    - If any read1 in this group has a 5' soft-clip of length x in [M, N]
-      (and passes the optional BASE homopolymer check):
-        - write only those read1 alignments that match
-        - write all corresponding read2 alignments (based on RNEXT/PNEXT of R1 vs RNAME/RPOS of R2)
+    - If a read1 alignment in this group has a 5' soft-clip of length x in [M, N]
+      and, optionally, the soft-clipped segment is a homopolymer of a given BASE, then:
+        - write this read1 alignment and
+        - write all corresponding read2 alignments (based on RNEXT/PNEXT of read1)
     - Else: write nothing for this group.
     """
     if not records:
         return
 
-    # R1s that match the soft-clip + homopolymer criteria
+    # read1 alignments that match the soft-clip + homopolymer condition
     r1_soft = [
         r for r in records
         if r.is_read1 and has_5prime_softclip_homopolymer_upto(r, M, N, base, rc_base)
@@ -83,15 +83,15 @@ def process_group(records, M, N, base, rc_base, out_bam):
     if not r1_soft:
         return
 
-    # Mate R2s coordinates for matching R1s
-    # RNEXT / PNEXT in SAM => next_reference_id / next_reference_start in pysam
+    # Coordinates of mate read2 alignments for selected read1 alignments
+    # RNEXT and PNEXT in SAM are next_reference_id and next_reference_start in pysam
     mate_coords = {
         (r.next_reference_id, r.next_reference_start)
         for r in r1_soft
         if r.next_reference_id >= 0 and r.next_reference_start >= 0
     }
 
-    # Now select only those R2 alignments that map to those coordinates
+    # Now select only those R2 alignments that map to mate_coords
     r2_all = [
         r for r in records
         if r.is_read2 and (r.reference_id, r.reference_start) in mate_coords
@@ -112,9 +112,9 @@ def main():
             "  soft-clipped 5' segment must be a homopolymer:\n"
             "    - forward:  5' soft-clip bases == BASE\n"
             "    - reverse:  5' soft-clip bases == complement(BASE)\n\n"
-            "  - Input BAM must be name-sorted.\n"
-            "  - All matching read1 alignments are written, plus their matching\n"
-            "    read2 mates (matched by RNEXT/PNEXT <-> RNAME/RPOS).\n\n"
+            "  Input BAM must be name-sorted.\n"
+            "  Output: read1 alignments that meet the conditions above,"
+            "  with their respective read2 alignments."
             "Example:\n"
             "  python3 softclip5_pe_upto.py in.namesort.bam out.pe.5p1to3S.bam 1 3\n"
             "  python3 softclip5_pe_upto.py in.namesort.bam out.pe.5p2to5S.Gpoly.bam 2 5 G\n"
