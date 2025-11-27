@@ -13,20 +13,31 @@ def revcomp(seq: str) -> str:
 
 def has_5prime_softclip_with_motif(aln, N, motif=None, rc_motif=None):
     """
-    Return True if this alignment has:
-      - an exact N-bp soft-clip at its 5' end (orientation-aware), and
-      - if motif is provided:
-          - forward: first N bases of SEQ == motif
-          - reverse: last N bases of SEQ == RC(motif)
+    If N > 0:
+      Return True if this alignment has:
+        - an exact N-bp soft-clip at its 5' end, and
+        - if motif is provided:
+            - forward: first N bases of SEQ == motif
+            - reverse: last N bases of SEQ == RC(motif)
+
+    If N == 0:
+      Return True if this alignment has:
+        - NO soft-clip at its 5' end
+      (Soft-clips at the 3'-end are allowed.)
     """
     if aln.is_unmapped:
         return False
 
     cig = aln.cigartuples
 
-    # Check 5' soft-clip of length N
+    # Determine the 5'-end CIGAR element 
     op, length = cig[-1] if aln.is_reverse else cig[0]
 
+    # N == 0: select reads with NO 5'-end soft-clip (but allow soft-clip elsewhere)
+    if N == 0:
+        return op != SOFT
+
+    # N > 0: require a 5'-end soft-clip of exact length N
     if op != SOFT or length != N:
         return False
 
@@ -52,9 +63,13 @@ def process_group(records, N, motif, rc_motif, out_bam):
     """
     records: list of AlignedSegment with same query_name
 
-    - If any read1 has 5' N-bp soft-clip (and matches motif if given):
-        - write only those read1 alignments that match
-        - write all corresponding read2 alignments (based on RNEXT/PNEXT of R1 vs RNAME/RPOS of R2)
+    - If any read1:
+        - N > 0: has N-bp 5' soft-clip (and motif if given)
+        - N = 0: has NO 5'-end soft-clip
+      then:
+        - write only those read1 alignments that satisfy the rule
+        - write all corresponding read2 alignments (based on RNEXT/PNEXT of R1
+          vs RNAME/RPOS of R2)
     - Else: write nothing.
     """
     if not records:
@@ -90,13 +105,16 @@ def main():
             "Usage:\n"
             "  python3 softclip5_pe_exact.py IN.bam OUT.bam [N] [MOTIF]\n\n"
             "  - N: exact length of the 5' soft-clip.\n"
-            "  - MOTIF (optional): expected 5' bases on read1.\n"
+            "       If N=0, select read1 alignments with NO 5'-end soft-clip\n"
+            "       (soft-clips at the 3'-end are allowed).\n"
+            "  - MOTIF (optional, only for N>0): expected 5' bases on read1.\n"
             "    - forward:  first N bases of SEQ == MOTIF\n"
             "    - reverse:  last N bases of SEQ == revcomp(MOTIF)\n"
             "  - Input BAM must be name-sorted.\n"
             "  Output: read1 alignments that meet the conditions above,"
             "  with their respective read2 alignments."
             "Example:\n"
+            "  python3 softclip5_pe_exact.py in.namesort.bam out.pe.5p3S.ATG.bam 0\n"
             "  python3 softclip5_pe_exact.py in.namesort.bam out.pe.5p3S.ATG.bam 3 ATG\n\n"
         )
         sys.exit(1)
