@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Usage: softclip5_se_upto.sh IN.bam OUT.bam [M] [N] [T] [BASE]
+# Usage: softclip5_se_range.sh IN.bam OUT.bam [M] [N] [T] [BASE]
 #
 # - M: positive number (default 1) 
 # - N: positive number (default 3) 
@@ -11,8 +11,8 @@
 #   (in reverse reads BASE is complement).
 #
 # Examples:
-#   softclip5_se_upto.sh in.bam out.se.5p1to3S.bam 1 3 8
-#   softclip5_se_upto.sh in.bam out.se.5p2to5S.Gpoly.bam 2 5 8 G
+#   softclip5_se_range.sh in.bam out.se.5p1to3S.bam 1 3 8
+#   softclip5_se_range.sh in.bam out.se.5p2to5S.Gpoly.bam 2 5 8 G
 
 IN=${1:?}; OUT=${2:?}; M=${3:-1}; N=${4:-3}; T=${5:-4}; BASE=${6:-}
 

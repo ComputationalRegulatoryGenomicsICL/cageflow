@@ -3,8 +3,11 @@
 #   softclip5_se_exact.sh IN.bam OUT.bam [N] [T] [MOTIF]
 # Example:
 #   softclip5_se_exact.sh in.bam out.se.5p3S.ATG.bam 3 8 ATG
+#   softclip5_se_exact.sh in.bam out.se.5p3S.ATG.bam 0 8
 #
 # - N: exact length of the 5' soft-clip (default 1)
+#     If N=0, select reads with NO soft-clip at the 5'-end of the read.
+#     Soft-clips at the 3'-end are allowed.
 # - T: number of threads (default 4)
 # - motif (optional): expected 5' bases (e.g., ATG). If given, only reads
 #     with 5' soft-clipped sequence that matches given motif are kept.
@@ -38,8 +41,16 @@ samtools merge -O bam - \
       }
       /^@/ { print; next }
       {
+        # N=0: keep reads with NO 5'-end soft-clip
+        if (N == 0) {
+          if (match($6, "^[0-9]+S")) next
+          print
+          next
+        }
+
         if (!match($6, "^"N"S")) next
         if (!hasToMatch) { print; next }
+
         seq5 = substr($10, 1, N)
         if (seq5 == M) print
       }' | \
@@ -54,8 +65,15 @@ samtools merge -O bam - \
       }
       /^@/ { print; next }
       {
+        if (N == 0) {
+          if (match($6, "[0-9]+S$")) next
+          print
+          next
+        }
+
         if (!match($6, N "S$")) next
         if (!hasToMatch) { print; next }
+
         seq3 = substr($10, length($10) - N + 1, N)
         if (seq3 == MRC) print
       }' | \

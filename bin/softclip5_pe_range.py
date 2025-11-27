@@ -12,7 +12,7 @@ def comp_base(base: str) -> str:
     table = {"A": "T", "C": "G", "G": "C", "T": "A", "N": "N"}
     return table.get(base, "N")
 
-def has_5prime_softclip_homopolymer_upto(aln, M, N, base=None, rc_base=None):
+def has_5prime_softclip_homopolymer_range(aln, M, N, base=None, rc_base=None):
     """
     Return True if this alignment has:
       - a 5' soft-clip of length x (orientation-aware: 5' of read),
@@ -78,7 +78,7 @@ def process_group(records, M, N, base, rc_base, out_bam):
     # read1 alignments that match the soft-clip + homopolymer condition
     r1_soft = [
         r for r in records
-        if r.is_read1 and has_5prime_softclip_homopolymer_upto(r, M, N, base, rc_base)
+        if r.is_read1 and has_5prime_softclip_homopolymer_range(r, M, N, base, rc_base)
     ]
     if not r1_soft:
         return
@@ -105,7 +105,7 @@ def main():
     if len(sys.argv) < 5:
         sys.stderr.write(
             "Usage:\n"
-            "  python3 softclip5_pe_upto.py IN.bam OUT.bam [M] [N] [BASE]\n\n"
+            "  python3 softclip5_pe_range.py IN.bam OUT.bam [M] [N] [BASE]\n\n"
             "Description:\n"
             "  Select paired-end reads where read1 has a 5' soft-clip of length x\n"
             "  such that M <= x <= N. If BASE (A/C/G/T/N) is provided, the entire\n"
@@ -116,8 +116,8 @@ def main():
             "  Output: read1 alignments that meet the conditions above,"
             "  with their respective read2 alignments."
             "Example:\n"
-            "  python3 softclip5_pe_upto.py in.namesort.bam out.pe.5p1to3S.bam 1 3\n"
-            "  python3 softclip5_pe_upto.py in.namesort.bam out.pe.5p2to5S.Gpoly.bam 2 5 G\n"
+            "  python3 softclip5_pe_range.py in.namesort.bam out.pe.5p1to3S.bam 1 3\n"
+            "  python3 softclip5_pe_range.py in.namesort.bam out.pe.5p2to5S.Gpoly.bam 2 5 G\n"
         )
         sys.exit(1)
 
