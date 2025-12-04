@@ -254,6 +254,40 @@
             "type": "string",
             "description": "Additional parameters that can be passed to TrimGalore!"
         },
+        "softclip_mode": {
+            "type": "string",
+            "description": "Soft-clip filtering mode. 'off' disables soft-clip selection, 'exact' uses an exact 5' soft-clip length, 'range' uses a length interval.",
+            "default": "off",
+            "enum": ["off", "exact", "range"]
+        },
+        "softclip_exact_len": {
+            "type": "integer",
+            "description": "Exact length (in nt) of the 5' soft clip when softclip_mode = 'exact'. A value of 0 means no soft clip at the 5' end.",
+            "default": 1,
+            "minimum": 0
+        },
+        "softclip_exact_motif": {
+            "type": "string",
+            "description": "Motif that the 5' soft-clipped sequence must match when softclip_mode = 'exact'. Use an empty string to disable motif filtering.",
+            "default": "G"
+        },
+        "softclip_min_len": {
+            "type": "integer",
+            "description": "Minimum length (in nt) of the 5' soft clip when softclip_mode = 'range'.",
+            "default": 1,
+            "minimum": 1
+        },
+        "softclip_max_len": {
+            "type": "integer",
+            "description": "Maximum length (in nt) of the 5' soft clip when softclip_mode = 'range'.",
+            "default": 3,
+            "minimum": 1
+        },
+        "softclip_homopolymer_base": {
+            "type": "string",
+            "description": "Base for homopolymer 5' soft clips when softclip_mode = 'range'. Use a single character (A/C/G/T), or an empty string to allow any base.",
+            "default": "G"
+        },
         "cager_sample_file": {
             "type": "string",
             "description": "The input CSV samplesheet including the name of the samples, their pairedness status, and the location of bigwig or bam files. Required when cageronly is true."
