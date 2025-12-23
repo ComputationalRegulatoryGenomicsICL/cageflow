@@ -195,7 +195,6 @@ ce <- cager_clustering(
     iqhigh=iqhigh)
 
 # Consensus clustering of clustered CTSS
-
 ce <- consensus_clustering(
     ce=ce,
     tpmThreshold=consensus_thr,

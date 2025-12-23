@@ -38,12 +38,37 @@ cager_clustering <- function(
         num_core <- NULL
     }
 
+    # Removing tags with GG initial dinucleotide that are unlikely to be true TSS (see 10.1038/s41467-019-13687-0)
+    # code from Damir
+    # TODO: move it to as input variable
+    remove_gg_reads <- TRUE
+    if (remove_gg_reads) {
+        dinuc <- rangesCTSS %>%
+            GRanges() %>%
+            promoters(upstream = 1, downstream = 1) %>%
+            {getSeq(reference_name, trim(.))}
+        rangesCTSS$dinuc <- as.character(dinuc)
+        # when GG is the starting dinucleotide, the flag is set to FALSE
+        not_gg_start <- !(rangesCTSS$dinuc == "GG")
+        # do not filter when dinucleotide is missing
+        not_gg_start[is.na(not_gg_start)] <- TRUE
+    }
+
     # CTSS flagging used for filtering
+    # sets CAGEr:::filteredCTSSidx(ce) to FALSE if the tag does not pass
     ce <- CAGEr::filterLowExpCTSS(
         ce,
         thresholdIsTpm = TRUE,
         nrPassThreshold = sample_num_thr,
         threshold = ctss_thr)
+
+    # code from Damir, with comment:
+    # "not the best practice to do, to invoke a non exported function, but for this 
+    # purpose it is much easier than to set the exact object"
+    if (remove_gg_reads) {
+        # pass only if the tag passes both the TPM per sample and the GG starting filter
+        CAGEr:::filteredCTSSidx(ce) <- decode(CAGEr:::filteredCTSSidx(ce)) & (not_gg_start)
+    }
 
     # cluster TSS with distclu
     # filtered CTSS are excluded by default
