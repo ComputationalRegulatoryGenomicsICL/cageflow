@@ -14,12 +14,23 @@ workflow SUMMARY_STAT {
         ch_versions
 
     main:
-        SAMTOOLS_STATS ( 
+        if (params.fasta) {
+            ch_meta_fasta = ch_bam_bai
+                .combine(ch_fasta)
+                .map{[it[3], it[4]]}
+        } else {
+            ch_meta_fasta = ch_bam_bai
+                .combine(channel.value("NO_FASTA"))
+                .combine(channel.fromPath(file("$projectDir/assets/NO_FILE_FASTA",
+                                               checkIfExists: true)))
+                .map{[it[3], it[4]]}
+        }
+
+        SAMTOOLS_STATS (
             ch_bam_bai,
-            ch_fasta.ifEmpty(
-                file("$projectDir/assets/NO_FILE_FASTA",
-                checkIfExists: true))
+            ch_meta_fasta
         )
+
         ch_versions = ch_versions.mix(SAMTOOLS_STATS.out.versions)
         ch_multiqc_files = ch_multiqc_files.mix(SAMTOOLS_STATS.out.stats.collect{it[1]})
 

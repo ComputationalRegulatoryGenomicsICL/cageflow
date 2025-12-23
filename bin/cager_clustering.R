@@ -66,7 +66,7 @@ cager_clustering <- function(
         qUp = iqhigh)
     
     # plot IQ width
-    iqw_plot <- plotInterquantileWidth_local(
+    iqw_plot <- CAGEr::plotInterquantileWidth(
         ce,
         clusters = "tagClusters",
         tpmThreshold = iqw_tpm_threshold,

@@ -16,11 +16,11 @@
 # - gzip, gunzip: https://www.gzip.org/
 # - seqkit: https://bioinf.shenwei.me/seqkit/
 
-mkdir cageflow_test_data
+mkdir -p cageflow_test_data
 cd cageflow_test_data
-mkdir fastq
+mkdir -p fastq
 mkdir fastq/se
-mkdir danRer11_genome
+mkdir sacCer3_genome
 cd fastq/se
 
 # Approximate number of reads to sample randomly
@@ -63,9 +63,9 @@ seqkit sample -p 0.1 -s 42 20171106_CAGE_SequencingData_Eth_Rep1_shuff_bottom-ha
 rm 20171106_CAGE_SequencingData_Eth_Rep1_shuff_bottom-half.fastq.gz
 
 # To get the reference genome and its annotation, use the following command:
-cd ../../danRer11_genome
+cd ../../sacCer3_genome
 
-wget https://hgdownload.soe.ucsc.edu/goldenPath/danRer11/bigZips/danRer11.fa.gz
-gunzip danRer11.fa.gz
-wget https://hgdownload.soe.ucsc.edu/goldenPath/danRer11/bigZips/genes/danRer11.ensGene.gtf.gz
-gunzip danRer11.ensGene.gtf.gz
+wget https://hgdownload.soe.ucsc.edu/goldenPath/sacCer3/bigZips/sacCer3.fa.gz
+gunzip sacCer3.fa.gz
+wget https://hgdownload.soe.ucsc.edu/goldenPath/sacCer3/bigZips/genes/sacCer3.ensGene.gtf.gz
+gunzip sacCer3.ensGene.gtf.gz

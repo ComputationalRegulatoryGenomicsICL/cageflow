@@ -44,6 +44,6 @@ with open("sample_list.csv", "w+", encoding="utf-8") as outfile:
         if len(paths) > 1:
             path_str = " ".join(paths)
         else:
-            path_str = paths
+            path_str = paths[0]
         line_to_write = f"{sample},{args.singleend},[{path_str}],{sample}\n"
         outfile.write(line_to_write)

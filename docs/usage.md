@@ -94,6 +94,7 @@ The parameters specific to mapping, can be left empty when running in `cageronly
 
 The parameters specific to CAGEr and CAGEfightR analysis, can be left empty when running in `maponly` mode:
 * `cager_sample_file` specifies the input CSV samplesheet including the name of the samples, their pairedness status, and the location of bigwigs. Optionally, a fourth column is used that sepcifies which samples should be removed, merged, or kept as is. This is achieved by checking if the row is empty (remove), its content is unique (keep as is), or shared with another sample (merge).
+* `datatype` specifies the type of mapped input in the CSV samplesheet: `bam` or `bigwig` is accepted. Default is `bigwig`.
 * `forgeseed` specifies a seed file for BSgenome forging (see the [Advanced BSgenomeForge usage vignette](https://bioconductor.org/packages/release/bioc/vignettes/BSgenomeForge/inst/doc/AdvancedBSgenomeForge.pdf) for details). The seed file should not contain the `seqs_srcdir` field (instead, the absolute or relative path to the source directory is set with the `sourcedir` option, see below). This option requires `sourcedir` and is mutually exclusive with `bsgenome`.
 * `sourcedir` specifies a directory containing either a set of FASTA files, one per reference chromosome, or a 2bit file for the whole reference genome. See the [Advanced BSgenomeForge usage vignette](https://bioconductor.org/packages/release/bioc/vignettes/BSgenomeForge/inst/doc/AdvancedBSgenomeForge.pdf) for details. The seed file should be written according to the contents of this directory. This option requires `forgeseed` and is mutually exclusive with `bsgenome`.
 * `bsgenome` specifies the BSgenome R package to use. If it is a file name (which should have a full path and the `.tar.gz` extension), then the package will be taken from the specified location; otherwise, the pipeline will try to install a BSgenome R package with the name `bsgenome.package` on the fly (see examples below). This option is mutually exclusive with `forgeseed` and `sourcedir`.
@@ -163,12 +164,14 @@ The additional parameter `sample_name_fields` should be set to how many undersco
 
 #### CAGEr subpipeline
 
-To run the analysis with CAGEr with already existing bigwig files, the input is another sample sheet with 3 columns and a header row. An example is shown below (this file can be found at `docs/examples/samplesheet_cager.csv`). It is recommended to use absolute paths for the input files.
+To run the analysis with CAGEr with already existing bigwig or bam files, the input is another sample sheet with 4 columns and a header row. 
+the 4th column, `new_name` defines which samples should be merged (provide the same names for the samples), dropped (leave the field empty), or kept as is (match the with the id field).
+An example is shown below (this file can be found at `docs/examples/samplesheet_cager.csv`). It is recommended to use absolute paths for the input files.
 
 ```
-id,single_end,path
-S10,false,[testdata/bigwig/S10.Signal.UniqueMultiple.str1.out.wig.bw testdata/bigwig/S10.Signal.UniqueMultiple.str2.out.wig.bw]
-S14,false,[testdata/bigwig/S14.Signal.UniqueMultiple.str1.out.wig.bw testdata/bigwig/S14.Signal.UniqueMultiple.str2.out.wig.bw]
+id,single_end,path,new_name
+S10,false,[testdata/bigwig/S10.Signal.UniqueMultiple.str1.out.wig.bw testdata/bigwig/S10.Signal.UniqueMultiple.str2.out.wig.bw],S10
+S14,false,[testdata/bigwig/S14.Signal.UniqueMultiple.str1.out.wig.bw testdata/bigwig/S14.Signal.UniqueMultiple.str2.out.wig.bw],S14
 ```
 
 This file may be created in two steps as shown below.

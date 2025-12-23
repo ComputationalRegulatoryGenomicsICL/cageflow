@@ -13,9 +13,9 @@ required_packages_cran = c(
   "purrr",            ## Parallel processing
   "magrittr",         ## Code formatting
   "viridis",          ## Plotting
-  "ggplot2",          ## Plotting
   "gplots",           ## Plotting
-  "ggseqlogo")        ## Plotting
+  "ggseqlogo",        ## Plotting
+  "devtools")         ## Install other packages from github
 
 message(
   "; Installing these R packages from CRAN repository: ",
@@ -30,12 +30,20 @@ install.packages(
 
 BiocManager::install("remotes")
 
+remotes::install_version(
+  "ggplot2",
+  version = "3.4.4",
+  repos = "https://cloud.r-project.org/")
+
+Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
+Sys.setenv(R_COMPILE_AND_INSTALL_PACKAGES="never")
+
+BiocManager::install("rtracklayer", ask = FALSE)
+
 ## Bioconductor packages:
 required_packages_bioconductor <- c(
-  "Bioconductor/BiocArchive",
   "BSgenome",
   "ChIPseeker",
-  "rtracklayer",
   "txdbmaker")
 
 message(
@@ -44,6 +52,4 @@ message(
 BiocManager::install(
   required_packages_bioconductor)
 
-BiocManager::install(
-  "CAGEr",
-  version="3.20")
+devtools::install_github("charles-plessy/CAGEr", ref="devel")

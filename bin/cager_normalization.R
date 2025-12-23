@@ -25,22 +25,9 @@ cager_normalization <- function(
     user_alpha){
 
     if (method == "powerLaw"){
-        outlist <- calculateReverseCumulative(
+        revcum_plots <- CAGEr::plotReverseCumulatives(
             object = ce,
             values = "raw",
-            fitInRange = c(rangeMin, rangeMax))
-        tag_count_df <- outlist[[1]]
-        slope <- outlist[[2]]
-        library_size <- outlist[[3]]
-        intercept <- outlist[[4]]
-        fit.slopes <- outlist[[5]]
-
-        revcum_plots <- plotReverseCumulatives_local(
-            tag_count_df=tag_count_df,
-            slope=slope,
-            intercept=intercept,
-            library_size=library_size,
-            fit.slopes = fit.slopes,
             fitInRange = c(rangeMin, rangeMax))
         
         save_plot(
@@ -48,11 +35,12 @@ cager_normalization <- function(
             revcum_plots)
 
         if (user_alpha == "null"){
-            slope_to_calc = -slope
+            slope_to_calc = -revcum_plots@meta$reference.slope
         } else{
             slope_to_calc = user_alpha
         }
     } else if (method == "simpleTpm" | method == "none") {
+        # these parameters ignored for these methods
         slope_to_calc = 0
         T_norm = 0
         rangeMin = 0

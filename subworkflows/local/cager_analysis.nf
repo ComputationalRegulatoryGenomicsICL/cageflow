@@ -25,7 +25,7 @@ workflow CAGER {
         if (params.bowtie2) {
             ch_data_type = Channel.of("bam")
         } else {
-            ch_data_type = Channel.of("bigwig")
+            ch_data_type = Channel.of(params.datatype)
         }
 
         sample_table = ch_sample_file
@@ -93,8 +93,10 @@ def create_mapping_channel(LinkedHashMap row) {
     id = row.id
     single_end = row.single_end
     str1_bw = row.path.split(" ")[0].minus('[')
-    str2_bw = row.path.split(" ")[1].minus(']')
     new_name = row.new_name
-
-    return [id, single_end, str1_bw, str2_bw, new_name]
+    if (str1_bw.split("\\.")[-1].minus(']') != "bam") {
+        str2_bw = row.path.split(" ")[1].minus(']')
+        return [id, single_end, str1_bw, str2_bw, new_name]
+    }
+    return [id, single_end, str1_bw, new_name]
 }

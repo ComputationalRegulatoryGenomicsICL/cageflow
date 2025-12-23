@@ -1,5 +1,3 @@
-# This file includes modifications from CAGEr software under GPL-3 license.
-
 #' Enhancer calling
 #'
 #' @param ce initial CAGEexp object with CTSS values
@@ -20,14 +18,11 @@ cagefightr_enhancers <- function(
         unexpressed,
         minSamples){
 
-    # License note: the code converting the CAGEexp object to a SummarizedExperiment
-    # object is copied and modified from CAGEr: the original code only takes the counts
     # Extract CTSS count matrix as SummarizedExperiment
     se <- CAGEr::CTSStagCountSE(ce)
 
     # Clean up and structure metadata
     colData(se) <- colData(ce)
-    rowRanges(se) <- as(rowRanges(se), "StitchedGPos")
     colData(se)$Name <- colData(se)$sampleLabels
 
     # Convert counts to sparse matrix to save memory
@@ -48,7 +43,7 @@ cagefightr_enhancers <- function(
         cfSampleCTSSs,
         inputAssay = "counts",
         outputColumn = "support",
-        unexpressed = 0)
+        unexpressed = unexpressed)
 
     # Find bidirectional clusters (potential enhancers)
     sampleBCs <- CAGEfightR::clusterBidirectionally(
@@ -59,7 +54,7 @@ cagefightr_enhancers <- function(
     finalSampleBCs <- CAGEfightR::subsetByBidirectionality(
         sampleBCs,
         samples = cfSampleCTSSs,
-        minSamples = 0)
+        minSamples = minSamples)
 
     return(finalSampleBCs)
 }
