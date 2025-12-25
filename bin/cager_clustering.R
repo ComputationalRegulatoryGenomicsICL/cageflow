@@ -43,6 +43,7 @@ cager_clustering <- function(
     # TODO: move it to as input variable
     remove_gg_reads <- TRUE
     if (remove_gg_reads) {
+        rangesCTSS <- CTSScoordinatesGR(ce)
         dinuc <- rangesCTSS %>%
             GRanges() %>%
             promoters(upstream = 1, downstream = 1) %>%
