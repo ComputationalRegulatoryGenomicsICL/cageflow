@@ -30,7 +30,8 @@ cager_clustering <- function(
         iqw_tpm_threshold,
         num_core,
         iqlow,
-        iqhigh){
+        iqhigh,
+        reference_name){
 
     multicore <- TRUE
     if(num_core < 2){
