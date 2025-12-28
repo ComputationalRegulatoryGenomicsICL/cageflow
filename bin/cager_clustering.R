@@ -48,7 +48,7 @@ cager_clustering <- function(
         dinuc <- rangesCTSS %>%
             GRanges() %>%
             promoters(upstream = 1, downstream = 1) %>%
-            {getSeq(reference_name, trim(.))}
+            {getSeq(BSgenome.Hsapiens.UCSC.hg38, trim(.))}
         rangesCTSS$dinuc <- as.character(dinuc)
         # when GG is the starting dinucleotide, the flag is set to FALSE
         not_gg_start <- !(rangesCTSS$dinuc == "GG")
