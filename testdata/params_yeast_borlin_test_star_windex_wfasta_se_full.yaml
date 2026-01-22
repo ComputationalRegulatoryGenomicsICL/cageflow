@@ -24,6 +24,22 @@ bowtie2: false
 # dedup
 dedup: false
 
+# pyselectal parameters
+pyselectal:
+  enabled: true
+  min_softclip: 1
+  max_softclip: 1
+  prefix: G
+  k: null
+  paired: false
+  sort: false
+  threads: 4
+
+bamcoverage:
+  enabled: true
+  binSize: 1
+  normalizeUsing: None
+
 # CAGEr parameters
 cager_sample_file: ../nepal_sample_list_test.csv
 # datatype: "bam" or "bigwig". if bowtie2 is used, it will be set to bam

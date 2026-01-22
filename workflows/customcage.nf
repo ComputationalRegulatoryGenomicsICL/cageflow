@@ -57,6 +57,8 @@ include { STAR_PROCESSING } from '../subworkflows/local/star_processing.nf'
 include { BOWTIE2_PROCESSING } from '../subworkflows/local/bowtie2_processing.nf'
 include { DEDUP } from '../subworkflows/local/deduplication.nf'
 include { SAMTOOLS_PROCESSING } from '../subworkflows/local/samtools_processing.nf'
+include { FILTER_BAM_OPTIONAL } from '../subworkflows/local/filter_bam_optional.nf'
+// include { DEEPTOOLS_BAMCOVERAGE } from '../modules/nf-core/deeptools/bamcoverage/main.nf
 include { SUMMARY_STAT } from '../subworkflows/local/summary_statistics.nf'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main.nf'
 include { MULTIQC } from '../modules/nf-core/multiqc/main.nf'
@@ -131,6 +133,10 @@ workflow CUSTOMCAGE {
             ch_multiqc_files = STAR_PROCESSING.out.ch_multiqc_files
             ch_versions = STAR_PROCESSING.out.ch_versions
         }
+
+        FILTER_BAM_OPTIONAL(ch_aligned, ch_versions)
+        ch_aligned = FILTER_BAM_OPTIONAL.out.ch_aligned
+        ch_versions = FILTER_BAM_OPTIONAL.out.ch_versions
 
         if (params.dedup) {
             DEDUP(ch_aligned, ch_versions, ch_for_cager)
