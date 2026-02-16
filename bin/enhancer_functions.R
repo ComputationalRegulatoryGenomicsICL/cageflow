@@ -21,12 +21,11 @@ cagefightr_enhancers <- function(
         minSamples,
         remove_gg_initiator){
 
-    print(remove_gg_initiator)
-
     # Removing tags with GG initial dinucleotide that are unlikely to be true TSS (see 10.1038/s41467-019-13687-0)
     # code from Damir
     # TODO: figure out how not to hardcode human, although maybe on this branch it is alright
     if (remove_gg_initiator) {
+        print("here at enhancers")
         rangesCTSS <- CAGEr::CTSScoordinatesGR(ce)
         dinuc <- rangesCTSS %>%
             GRanges() %>%
