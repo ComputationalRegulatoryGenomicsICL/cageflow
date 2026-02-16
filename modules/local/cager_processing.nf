@@ -40,6 +40,7 @@ process CAGER_PROCESSING {
         --keepSingletonsAbove ${params.keepSingletonsAbove} \
         --iq_low ${params.iq_low} \
         --iq_high ${params.iq_high} \
+        --remove_gg_initiator ${params.remove_gg_initiator} \
         --iqw_tpm_threshold ${params.iqw_tpm_threshold} \
         --consensus_thr ${params.consensus_thr} \
         --consensus_dist ${params.consensus_dist} \

@@ -85,6 +85,11 @@ option_list = list(
         default = 0.9,
         help = "Higher boundary of interquartile range (Default = 0.9)"),
     make_option(
+        c("-g", "--remove_gg_initiator"),
+        type = "logical",
+        default = FALSE,
+        help = "Whether to remove tags with GG initiator. This can help clean the signal of heavily degraded samples."),
+    make_option(
         c("-w", "--iqw_tpm_threshold"),
         type = "integer",
         default = 3,
@@ -139,6 +144,7 @@ distclu_maxDist     <- opt$distclu_maxDist
 keepSingletonsAbove <- opt$keepSingletonsAbove
 iqlow               <- opt$iq_low
 iqhigh              <- opt$iq_high
+remove_gg_initiator <- opt$remove_gg_initiator
 iqw_tpm_threshold   <- opt$iqw_tpm_threshold
 consensus_thr       <- opt$consensus_thr
 consensus_dist      <- opt$consensus_dist
@@ -193,7 +199,8 @@ ce <- cager_clustering(
     num_core=num_core,
     iqlow=iqlow,
     iqhigh=iqhigh,
-    reference_name=reference_name)
+    reference_name=reference_name,
+    remove_gg_initiator=remove_gg_initiator)
 
 # Consensus clustering of clustered CTSS
 ce <- consensus_clustering(

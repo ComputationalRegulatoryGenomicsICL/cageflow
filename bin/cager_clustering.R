@@ -18,7 +18,11 @@
 #' distclu_maxDist = 20,
 #' keepSingletonsAbove = 5,
 #' iqw_tpm_threshold = 3,
-#' num_core = 4)
+#' num_core = 4,
+#' iqlow = 0.1,
+#' iqhigh = 0.9,
+#' reference_name = BSgenome.Hsapiens.UCSC.hg38,
+#' remove_gg_initiator = TRUE)
 
 cager_clustering <- function(
         ce,
@@ -31,7 +35,8 @@ cager_clustering <- function(
         num_core,
         iqlow,
         iqhigh,
-        reference_name){
+        reference_name,
+        remove_gg_initiator){
 
     multicore <- TRUE
     if(num_core < 2){
@@ -39,11 +44,12 @@ cager_clustering <- function(
         num_core <- NULL
     }
 
+    print(remove_gg_initiator)
+
     # Removing tags with GG initial dinucleotide that are unlikely to be true TSS (see 10.1038/s41467-019-13687-0)
     # code from Damir
-    # TODO: move it to as input variable
-    remove_gg_reads <- TRUE
-    if (remove_gg_reads) {
+    # TODO: figure out how not to hardcode human, although maybe on this branch it is alright
+    if (remove_gg_initiator) {
         rangesCTSS <- CTSScoordinatesGR(ce)
         dinuc <- rangesCTSS %>%
             GRanges() %>%
@@ -67,7 +73,7 @@ cager_clustering <- function(
     # code from Damir, with comment:
     # "not the best practice to do, to invoke a non exported function, but for this 
     # purpose it is much easier than to set the exact object"
-    if (remove_gg_reads) {
+    if (remove_gg_initiator) {
         # pass only if the tag passes both the TPM per sample and the GG starting filter
         CAGEr:::filteredCTSSidx(ce) <- decode(CAGEr:::filteredCTSSidx(ce)) & (not_gg_start)
     }
