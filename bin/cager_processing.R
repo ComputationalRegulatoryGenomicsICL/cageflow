@@ -187,7 +187,7 @@ ce <- cager_normalization(
     user_alpha=alpha)
 
 # TODO: do anything but this
-library(BSgenome.Hsapiens.UCSC.hg38)
+# library(BSgenome.Hsapiens.UCSC.hg38)
 
 # CTSS clustering
 # uses functions from qc_plots.R

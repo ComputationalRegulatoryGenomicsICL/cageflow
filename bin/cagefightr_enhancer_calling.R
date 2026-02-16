@@ -104,7 +104,7 @@ dir.create(file.path("intermediate_cagerobj"))
 ce <- readRDS(ce_path)
 
 # TODO: do anything but this
-library(BSgenome.Hsapiens.UCSC.hg38)
+# library(BSgenome.Hsapiens.UCSC.hg38)
 
 # call enhancers with CAGEfightR
 supported_enhancers <- cagefightr_enhancers(
