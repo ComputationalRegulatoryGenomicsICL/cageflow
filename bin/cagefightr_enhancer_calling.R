@@ -14,7 +14,8 @@ required.libraries <- c(
     "dplyr",
     "rtracklayer",
     "ggplot2",
-    "ggrepel"
+    "ggrepel",
+    "BSgenome.Hsapiens.UCSC.hg38"
 )
 
 
