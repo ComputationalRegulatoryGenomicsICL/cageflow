@@ -14,8 +14,7 @@ required.libraries <- c(
     "dplyr",
     "rtracklayer",
     "ggplot2",
-    "ggrepel",
-    "BSgenome.Hsapiens.UCSC.hg38"
+    "ggrepel"
 )
 
 
@@ -103,6 +102,9 @@ dir.create(file.path("intermediate_cagerobj"))
 
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
+
+# TODO: do anything but this
+library(BSgenome.Hsapiens.UCSC.hg38)
 
 # call enhancers with CAGEfightR
 supported_enhancers <- cagefightr_enhancers(
