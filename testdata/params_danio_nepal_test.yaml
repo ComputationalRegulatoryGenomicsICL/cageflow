@@ -10,7 +10,7 @@ infolder:
 sample_name_fields: 2
 genome_name: "danRer11"
 fasta: "cageflow_test_data/danRer11_genome/danRer11.fa"
-index:
+index: "cageflow_test_data/danRer11_genome/star/"
 seq_platform: "illumina"
 seq_center: false
 # whether to take the uniquely mapped only
