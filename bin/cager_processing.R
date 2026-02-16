@@ -85,7 +85,7 @@ option_list = list(
         default = 0.9,
         help = "Higher boundary of interquartile range (Default = 0.9)"),
     make_option(
-        c("-g", "--remove_gg_initiator"),
+        c("-v", "--remove_gg_initiator"),
         type = "logical",
         default = FALSE,
         help = "Whether to remove tags with GG initiator. This can help clean the signal of heavily degraded samples."),

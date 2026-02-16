@@ -4,19 +4,42 @@
 #' @param cfBalanceThreshold threshold for the cagefightr balance score
 #' @param unexpressed threshold above which normalized CTSS are considered expressed 
 #' @param minSamples non inlcusive lower threshold for number of samples supporting enhancers (i.e. where there is bidirectionality)
+#' @param remove_gg_initiator whether to remove tags starting with GG
 #' @return enhancers
 #' @examples
 #' cagefightr_enhancers(
 #' ce,
 #' cfBalanceThreshold = 0.95,
 #' unexpressed = 0,
-#' minSamples = 0
+#' minSamples = 0,
+#' remove_gg_initiator = FALSE
 #' )
 cagefightr_enhancers <- function(
         ce,
         cfBalanceThreshold,
         unexpressed,
-        minSamples){
+        minSamples,
+        remove_gg_initiator){
+
+    print(remove_gg_initiator)
+
+    # Removing tags with GG initial dinucleotide that are unlikely to be true TSS (see 10.1038/s41467-019-13687-0)
+    # code from Damir
+    # TODO: figure out how not to hardcode human, although maybe on this branch it is alright
+    if (remove_gg_initiator) {
+        rangesCTSS <- CAGEr::CTSScoordinatesGR(ce)
+        dinuc <- rangesCTSS %>%
+            GRanges() %>%
+            promoters(upstream = 1, downstream = 1) %>%
+            {getSeq(BSgenome.Hsapiens.UCSC.hg38, trim(.))}
+        rangesCTSS$dinuc <- as.character(dinuc)
+        # when GG is the starting dinucleotide, the flag is set to FALSE
+        not_gg_start <- !(rangesCTSS$dinuc == "GG")
+        # do not filter when dinucleotide is missing
+        not_gg_start[is.na(not_gg_start)] <- TRUE
+    }
+
+    print(not_gg_start)
 
     # Extract CTSS count matrix as SummarizedExperiment
     se <- CAGEr::CTSStagCountSE(ce)

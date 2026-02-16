@@ -50,6 +50,11 @@ option_list = list(
         default = 0,
         help = "non inlcusive lower threshold for number of samples supporting enhancers (i.e. where there is bidirectionality) (Default=0)"),
     make_option(
+        c("-v", "--remove_gg_initiator"),
+        type = "logical",
+        default = FALSE,
+        help = "Whether to remove tags with GG initiator. This can help clean the signal of heavily degraded samples."),
+    make_option(
         c("-u", "--tssregion_up"),
         type = "integer",
         default = -3000,
@@ -76,6 +81,7 @@ tx_annotation       <- opt$annotation
 cfBalanceThreshold  <- opt$cfBalanceThreshold
 unexpressed         <- opt$unexpressed
 minSamples        <- opt$minSamples
+remove_gg_initiator <- opt$remove_gg_initiator
 tssregion_up    <- opt$tssregion_up
 tssregion_down  <- opt$tssregion_down
 project_dir         <- opt$project_dir
@@ -102,7 +108,8 @@ supported_enhancers <- cagefightr_enhancers(
     ce=ce,
     cfBalanceThreshold=cfBalanceThreshold,
     unexpressed=unexpressed,
-    minSamples=minSamples)
+    minSamples=minSamples,
+    remove_gg_initiator=remove_gg_initiator)
 
 saveRDS(supported_enhancers, file = "intermediate_cagerobj/supported_enhancers.rds")
 print("Supported enhancers rds file saved")
