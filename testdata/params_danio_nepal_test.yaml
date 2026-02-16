@@ -21,7 +21,7 @@ remove_non_g: false
 # CAGEr parameters
 cager_sample_file: ../nepal_sample_list_test.csv
 # datatype: "bam" or "bigwig". if bowtie2 is used, it will be set to bam
-datatype:
+datatype: "bigwig"
 # BSgenome
 forgeseed:
 sourcedir:

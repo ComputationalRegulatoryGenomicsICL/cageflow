@@ -20,6 +20,8 @@ remove_non_g: false
 
 # CAGEr parameters
 cager_sample_file: "all_sample_16july_wo_low_quality_withnewname.csv"
+# datatype: "bam" or "bigwig". if bowtie2 is used, it will be set to bam
+datatype: "bigwig"
 # BSgenome
 forgeseed:
 sourcedir:
