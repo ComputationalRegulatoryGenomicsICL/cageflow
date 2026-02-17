@@ -111,9 +111,6 @@ reference_name <- install_bsgenome(bsgenome)
 # Read in CAGEexp object
 ce <- readRDS(ce_path)
 
-# TODO: do anything but this
-# library(BSgenome.Hsapiens.UCSC.hg38)
-
 # call enhancers with CAGEfightR
 supported_enhancers <- cagefightr_enhancers(
     ce=ce,
