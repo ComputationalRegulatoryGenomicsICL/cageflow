@@ -48,7 +48,6 @@ cager_clustering <- function(
     # code from Damir
     # TODO: figure out how not to hardcode human, although maybe on this branch it is alright
     if (remove_gg_initiator) {
-        print("here")
         rangesCTSS <- CTSScoordinatesGR(ce)
         dinuc <- rangesCTSS %>%
             GRanges() %>%

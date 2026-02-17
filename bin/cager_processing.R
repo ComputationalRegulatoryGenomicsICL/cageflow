@@ -210,7 +210,8 @@ ce <- consensus_clustering(
     tx_annotation=tx_annotation,
     num_core=1,
     iqlow=iqlow,
-    iqhigh=iqhigh)
+    iqhigh=iqhigh,
+    remove_gg_initiator=remove_gg_initiator)
 
 # save output
 # RDS

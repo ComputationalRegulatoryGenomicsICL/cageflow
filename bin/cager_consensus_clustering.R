@@ -1,7 +1,32 @@
 #' Extract CTSS score per sample per region
 
-overlapper <- function(ce, sample){
-    ctss <- CAGEr::CTSSnormalizedTpmGR(ce, sample=sample)
+overlapper <- function(ce, sample, remove_gg_initiator){
+    ctss_raw <- CAGEr::CTSSnormalizedTpmGR(ce, sample=sample)
+
+    print(dim(ctss_raw))
+    print(head(ctss_raw))
+
+    if (remove_gg_initiator) {
+        rangesCTSS <- CAGEr::CTSScoordinatesGR(ce)
+        dinuc <- rangesCTSS %>%
+            GRanges() %>%
+            promoters(upstream = 1, downstream = 1) %>%
+            {getSeq(BSgenome.Hsapiens.UCSC.hg38, trim(.))}
+            # {getSeq(BSgenome.Drerio.UCSC.danRer11, trim(.))}
+        rangesCTSS$dinuc <- as.character(dinuc)
+        # when GG is the starting dinucleotide, the flag is set to FALSE
+        not_gg_start <- !(rangesCTSS$dinuc == "GG")
+        # do not filter when dinucleotide is missing
+        not_gg_start[is.na(not_gg_start)] <- TRUE
+        # Apply GG initiation filter
+        ctss <- ctss_raw[not_gg_start, ]
+    } else {
+        ctss <- ctss_raw
+    }
+
+    print(dim(ctss))
+    print(head(ctss))
+
     overlap <- GenomicRanges::findOverlaps(
             query = consensusClustersGR(ce),
             subject = ctss)
@@ -20,13 +45,13 @@ sum_scores_per_location <- function(scores){
 }
 
 # Replace scores in consensus clusters with the sum of normalized CTSS scores
-score_from_ctss <- function(ce){
+score_from_ctss <- function(ce, remove_gg_initiator){
     # use normalized CTSS to calculate and update score
     ctss_score_df <- data.frame(names = names(consensusClustersGR(ce)))
     sample_sum <- 0
 
     for (sample in CAGEr::sampleLabels(ce)){
-        new_scores <- overlapper(ce, sample)
+        new_scores <- overlapper(ce, sample, remove_gg_initiator)
         ctss_score_df[[sample]] <- sum_scores_per_location(new_scores)
         sample_sum <- sample_sum + ctss_score_df[[sample]]
     }
@@ -66,7 +91,8 @@ consensus_clustering <- function(
         tx_annotation,
         num_core,
         iqlow,
-        iqhigh){
+        iqhigh,
+        remove_gg_initiator){
 
     multicore <- TRUE
     if(num_core < 2){
@@ -81,7 +107,7 @@ consensus_clustering <- function(
         qUp = iqhigh,
         maxDist = maxDist)
 
-    ce <- score_from_ctss(ce)
+    ce <- score_from_ctss(ce, remove_gg_initiator)
 
     # Read in TxDb object
     tx_annotation_obj <- loadDb(tx_annotation)
