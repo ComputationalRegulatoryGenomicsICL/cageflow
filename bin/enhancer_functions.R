@@ -38,8 +38,6 @@ cagefightr_enhancers <- function(
         not_gg_start[is.na(not_gg_start)] <- TRUE
     }
 
-    print(length(not_gg_start))
-
     # Extract CTSS count matrix as SummarizedExperiment
     se <- CAGEr::CTSStagCountSE(ce)
 
@@ -53,11 +51,14 @@ cagefightr_enhancers <- function(
         TPM = as(as.matrix(as.data.frame(assays(se)[[2]])), "dgCMatrix"))
     
     # Save as main working object
-    cfSampleCTSSs <- se
+    cfSampleCTSSs_raw <- se
 
-    print(cfSampleCTSSs)
-
-    stop("Debugging")
+    if (remove_gg_initiator) {
+        # Apply GG initiation filter
+        cfSampleCTSSs <- cfSampleCTSSs_raw[not_gg_start, ]
+    } else {
+        cfSampleCTSSs <- cfSampleCTSSs_raw
+    }
 
     # Calculate pooled signal across all samples (average TPM)
     cfSampleCTSSs <- CAGEfightR::calcPooled(
