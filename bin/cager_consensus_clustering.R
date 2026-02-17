@@ -7,8 +7,8 @@ overlapper <- function(ce, sample, remove_gg_initiator){
         dinuc <- ctss_raw %>%
             GRanges() %>%
             promoters(upstream = 1, downstream = 1) %>%
-            # {getSeq(BSgenome.Hsapiens.UCSC.hg38, trim(.))}
-            {getSeq(BSgenome.Drerio.UCSC.danRer11, trim(.))}
+            {getSeq(BSgenome.Hsapiens.UCSC.hg38, trim(.))}
+            # {getSeq(BSgenome.Drerio.UCSC.danRer11, trim(.))}
         ctss_raw$dinuc <- as.character(dinuc)
         # when GG is the starting dinucleotide, the flag is set to FALSE
         not_gg_start <- !(ctss_raw$dinuc == "GG")
