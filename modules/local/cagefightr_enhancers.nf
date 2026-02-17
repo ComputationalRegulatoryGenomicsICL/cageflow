@@ -24,6 +24,7 @@ process CAGEFIGHTR_ENHANCERS {
         --cfBalanceThreshold ${params.cfBalanceThreshold} \
         --unexpressed ${params.unexpressed} \
         --minSamples ${params.minSamples} \
+        --remove_gg_initiator ${params.remove_gg_initiator} \
         --tssregion_up ${params.tssregion_up} \
         --tssregion_down ${params.tssregion_down} \
         --project_dir ${projectDir}
