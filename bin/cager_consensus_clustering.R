@@ -3,29 +3,22 @@
 overlapper <- function(ce, sample, remove_gg_initiator){
     ctss_raw <- CAGEr::CTSSnormalizedTpmGR(ce, sample=sample)
 
-    print(dim(ctss_raw))
-    print(head(ctss_raw))
-
     if (remove_gg_initiator) {
-        rangesCTSS <- CAGEr::CTSScoordinatesGR(ce)
-        dinuc <- rangesCTSS %>%
+        dinuc <- ctss_raw %>%
             GRanges() %>%
             promoters(upstream = 1, downstream = 1) %>%
-            {getSeq(BSgenome.Hsapiens.UCSC.hg38, trim(.))}
-            # {getSeq(BSgenome.Drerio.UCSC.danRer11, trim(.))}
-        rangesCTSS$dinuc <- as.character(dinuc)
+            # {getSeq(BSgenome.Hsapiens.UCSC.hg38, trim(.))}
+            {getSeq(BSgenome.Drerio.UCSC.danRer11, trim(.))}
+        ctss_raw$dinuc <- as.character(dinuc)
         # when GG is the starting dinucleotide, the flag is set to FALSE
-        not_gg_start <- !(rangesCTSS$dinuc == "GG")
+        not_gg_start <- !(ctss_raw$dinuc == "GG")
         # do not filter when dinucleotide is missing
         not_gg_start[is.na(not_gg_start)] <- TRUE
         # Apply GG initiation filter
-        ctss <- ctss_raw[not_gg_start, ]
+        ctss <- ctss_raw[not_gg_start]
     } else {
         ctss <- ctss_raw
     }
-
-    print(dim(ctss))
-    print(head(ctss))
 
     overlap <- GenomicRanges::findOverlaps(
             query = consensusClustersGR(ce),
