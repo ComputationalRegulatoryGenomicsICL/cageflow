@@ -65,7 +65,7 @@ option_list = list(
         default = 3000,
         help = "Downstream distance to consider into TSS region for ChIPseeker annotation. Should be positive (Default = 3000)"),
     make_option(
-        c("-b", "--bsgenome"),
+        c("-g", "--bsgenome"),
         type = "character",
         default = NULL,
         help = "Name of the BSgenome version to be used (Mandatory)"),
