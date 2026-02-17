@@ -67,7 +67,9 @@ workflow CAGER {
         CAGEFIGHTR_ENHANCERS(
             clustered_cager_rds,
             ch_txdb,
-            tc_corr_data)
+            tc_corr_data,
+            ch_bsgenome_file,
+            ch_bsgenome_name)
         ch_versions = ch_versions.mix(CAGEFIGHTR_ENHANCERS.out.versions)
         // enhancer calling plots
         enhancer_plots = CAGEFIGHTR_ENHANCERS.out.plots

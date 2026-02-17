@@ -65,6 +65,11 @@ option_list = list(
         default = 3000,
         help = "Downstream distance to consider into TSS region for ChIPseeker annotation. Should be positive (Default = 3000)"),
     make_option(
+        c("-b", "--bsgenome"),
+        type = "character",
+        default = NULL,
+        help = "Name of the BSgenome version to be used (Mandatory)"),
+    make_option(
         c("-p", "--project_dir"),
         type = "character",
         default = 0,
@@ -84,6 +89,7 @@ minSamples        <- opt$minSamples
 remove_gg_initiator <- opt$remove_gg_initiator
 tssregion_up    <- opt$tssregion_up
 tssregion_down  <- opt$tssregion_down
+bsgenome            <- opt$bsgenome
 project_dir         <- opt$project_dir
 
 # import functions
@@ -99,6 +105,8 @@ dir.create(file.path("plots"))
 dir.create(file.path("tracks"))
 dir.create(file.path("tables"))
 dir.create(file.path("intermediate_cagerobj"))
+
+reference_name <- install_bsgenome(bsgenome)
 
 # Read in CAGEexp object
 ce <- readRDS(ce_path)

@@ -10,6 +10,8 @@ process CAGEFIGHTR_ENHANCERS {
     path cager_obj
     path txdb
     path correlation_rds
+    path bsgenome_file
+    val bsgenome_name
 
     output:
     tuple path("intermediate_cagerobj/supported_enhancers.rds"), path("intermediate_cagerobj/nonTSS_enhancers.rds"), emit: rds
@@ -17,6 +19,12 @@ process CAGEFIGHTR_ENHANCERS {
     tuple path("tables/*.tsv"), path("tracks/*.bed"), emit: enhancer_table
     path "versions.yml", emit: versions
     """
+    if [ -z ${bsgenome_name} ]
+    then
+        bsgenome=${bsgenome_file}
+    else
+        bsgenome=${bsgenome_name}
+    fi
 
     cagefightr_enhancer_calling.R  \
         --cageexp_object ${cager_obj} \
@@ -27,6 +35,7 @@ process CAGEFIGHTR_ENHANCERS {
         --remove_gg_initiator ${params.remove_gg_initiator} \
         --tssregion_up ${params.tssregion_up} \
         --tssregion_down ${params.tssregion_down} \
+        --bsgenome \${bsgenome} \
         --project_dir ${projectDir}
     
     cat <<-END_VERSIONS > versions.yml
