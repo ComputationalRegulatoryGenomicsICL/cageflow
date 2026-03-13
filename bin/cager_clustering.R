@@ -8,6 +8,8 @@
 #' @param keepSingletonsAbove threshold above which to keep the singletons during tag clustering
 #' @param iqw_tpm_threshold Tpm threshold for plotting tagcluster IQwidth
 #' @param num_core Number of cores to run on
+#' @param remove_gg_initiator whether to remove tags starting with GG
+#' @param keep_only_yr_yc whether to keep only tags starting with YR or YC
 #' @return ce clustered CAGEexp object
 #' @examples
 #' cager_clustering(
@@ -22,7 +24,8 @@
 #' iqlow = 0.1,
 #' iqhigh = 0.9,
 #' reference_name = BSgenome.Hsapiens.UCSC.hg38,
-#' remove_gg_initiator = TRUE)
+#' remove_gg_initiator = FALSE,
+#' keep_only_yr_yc = TRUE)
 
 cager_clustering <- function(
         ce,
@@ -36,7 +39,8 @@ cager_clustering <- function(
         iqlow,
         iqhigh,
         reference_name,
-        remove_gg_initiator){
+        remove_gg_initiator,
+        keep_only_yr_yc){
 
     multicore <- TRUE
     if(num_core < 2){
@@ -47,6 +51,7 @@ cager_clustering <- function(
     # Removing tags with GG initial dinucleotide that are unlikely to be true TSS (see 10.1038/s41467-019-13687-0)
     # code from Damir
     # TODO: figure out how not to hardcode human, although maybe on this branch it is alright
+    # TODO 2: this code is kind of repeated 3 times: for tagclustering, enhancer calling and consensus cluster scoring
     if (remove_gg_initiator) {
         rangesCTSS <- CTSScoordinatesGR(ce)
         dinuc <- rangesCTSS %>%
@@ -59,6 +64,19 @@ cager_clustering <- function(
         not_gg_start <- !(rangesCTSS$dinuc == "GG")
         # do not filter when dinucleotide is missing
         not_gg_start[is.na(not_gg_start)] <- TRUE
+    } else if (keep_only_yr_yc) {
+        rangesCTSS <- CTSScoordinatesGR(ce)
+        dinuc <- rangesCTSS %>%
+            GRanges() %>%
+            promoters(upstream = 1, downstream = 1) %>%
+            {getSeq(BSgenome.Hsapiens.UCSC.hg38, trim(.))}
+            # {getSeq(BSgenome.Drerio.UCSC.danRer11, trim(.))}
+        rangesCTSS$dinuc <- as.character(dinuc)
+        # in YR group, select: CG, CA, TG, TA
+        # in YC group, select: CC, TC
+        yryc_group <- c("CG", "CA", "TG", "TA", "CC", "TC")
+        # when YR or YC is the starting dinucleotide, the flag is set to TRUE, else FALSE
+        yr_yc_start <- (rangesCTSS$dinuc %in% yryc_group)
     }
 
     # CTSS flagging used for filtering
@@ -75,6 +93,9 @@ cager_clustering <- function(
     if (remove_gg_initiator) {
         # pass only if the tag passes both the TPM per sample and the GG starting filter
         CAGEr:::filteredCTSSidx(ce) <- decode(CAGEr:::filteredCTSSidx(ce)) & (not_gg_start)
+    } else if (keep_only_yr_yc) {
+        # pass only if the tag passes both the TPM per sample and the YR YC initiation positive filter
+        CAGEr:::filteredCTSSidx(ce) <- decode(CAGEr:::filteredCTSSidx(ce)) & (yr_yc_start)
     }
 
     # cluster TSS with distclu

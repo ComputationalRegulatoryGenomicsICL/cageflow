@@ -5,6 +5,7 @@
 #' @param unexpressed threshold above which normalized CTSS are considered expressed 
 #' @param minSamples non inlcusive lower threshold for number of samples supporting enhancers (i.e. where there is bidirectionality)
 #' @param remove_gg_initiator whether to remove tags starting with GG
+#' @param keep_only_yr_yc whether to keep only tags starting with YR or YC
 #' @return enhancers
 #' @examples
 #' cagefightr_enhancers(
@@ -12,18 +13,21 @@
 #' cfBalanceThreshold = 0.95,
 #' unexpressed = 0,
 #' minSamples = 0,
-#' remove_gg_initiator = FALSE
+#' remove_gg_initiator = FALSE,
+#' keep_only_yr_yc = TRUE
 #' )
 cagefightr_enhancers <- function(
         ce,
         cfBalanceThreshold,
         unexpressed,
         minSamples,
-        remove_gg_initiator){
+        remove_gg_initiator,
+        keep_only_yr_yc){
 
     # Removing tags with GG initial dinucleotide that are unlikely to be true TSS (see 10.1038/s41467-019-13687-0)
     # code from Damir
     # TODO: figure out how not to hardcode human, although maybe on this branch it is alright
+    # TODO 2: this code is kind of repeated 3 times: for tagclustering, enhancer calling and consensus cluster scoring
     if (remove_gg_initiator) {
         rangesCTSS <- CAGEr::CTSScoordinatesGR(ce)
         dinuc <- rangesCTSS %>%
@@ -36,6 +40,19 @@ cagefightr_enhancers <- function(
         not_gg_start <- !(rangesCTSS$dinuc == "GG")
         # do not filter when dinucleotide is missing
         not_gg_start[is.na(not_gg_start)] <- TRUE
+    } else if (keep_only_yr_yc) {
+        rangesCTSS <- CAGEr::CTSScoordinatesGR(ce)
+        dinuc <- rangesCTSS %>%
+            GRanges() %>%
+            promoters(upstream = 1, downstream = 1) %>%
+            {getSeq(BSgenome.Hsapiens.UCSC.hg38, trim(.))}
+            # {getSeq(BSgenome.Drerio.UCSC.danRer11, trim(.))}
+        rangesCTSS$dinuc <- as.character(dinuc)
+        # in YR group, select: CG, CA, TG, TA
+        # in YC group, select: CC, TC
+        yryc_group <- c("CG", "CA", "TG", "TA", "CC", "TC")
+        # when YR or YC is the starting dinucleotide, the flag is set to TRUE, else FALSE
+        yr_yc_start <- (rangesCTSS$dinuc %in% yryc_group)
     }
 
     # Extract CTSS count matrix as SummarizedExperiment
@@ -56,6 +73,9 @@ cagefightr_enhancers <- function(
     if (remove_gg_initiator) {
         # Apply GG initiation filter
         cfSampleCTSSs <- cfSampleCTSSs_raw[not_gg_start, ]
+    } else if (keep_only_yr_yc) {
+        # Apply YR YC initiation positive filter
+        cfSampleCTSSs <- cfSampleCTSSs_raw[yr_yc_start, ]
     } else {
         cfSampleCTSSs <- cfSampleCTSSs_raw
     }

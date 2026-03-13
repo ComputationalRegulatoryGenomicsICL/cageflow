@@ -1,8 +1,8 @@
 #' Extract CTSS score per sample per region
 
-overlapper <- function(ce, sample, remove_gg_initiator){
+overlapper <- function(ce, sample, remove_gg_initiator, keep_only_yr_yc){
     ctss_raw <- CAGEr::CTSSnormalizedTpmGR(ce, sample=sample)
-
+    # TODO: this code is kind of repeated 3 times: for tagclustering, enhancer calling and consensus cluster scoring
     if (remove_gg_initiator) {
         dinuc <- ctss_raw %>%
             GRanges() %>%
@@ -16,6 +16,20 @@ overlapper <- function(ce, sample, remove_gg_initiator){
         not_gg_start[is.na(not_gg_start)] <- TRUE
         # Apply GG initiation filter
         ctss <- ctss_raw[not_gg_start]
+    } else if (keep_only_yr_yc) {
+        dinuc <- ctss_raw %>%
+            GRanges() %>%
+            promoters(upstream = 1, downstream = 1) %>%
+            {getSeq(BSgenome.Hsapiens.UCSC.hg38, trim(.))}
+            # {getSeq(BSgenome.Drerio.UCSC.danRer11, trim(.))}
+        ctss_raw$dinuc <- as.character(dinuc)
+        # in YR group, select: CG, CA, TG, TA
+        # in YC group, select: CC, TC
+        yryc_group <- c("CG", "CA", "TG", "TA", "CC", "TC")
+        # when YR or YC is the starting dinucleotide, the flag is set to TRUE, else FALSE
+        yr_yc_start <- (ctss_raw$dinuc %in% yryc_group)
+        # Apply initiation filter
+        ctss <- ctss_raw[yr_yc_start]
     } else {
         ctss <- ctss_raw
     }
@@ -38,13 +52,13 @@ sum_scores_per_location <- function(scores){
 }
 
 # Replace scores in consensus clusters with the sum of normalized CTSS scores
-score_from_ctss <- function(ce, remove_gg_initiator){
+score_from_ctss <- function(ce, remove_gg_initiator, keep_only_yr_yc){
     # use normalized CTSS to calculate and update score
     ctss_score_df <- data.frame(names = names(consensusClustersGR(ce)))
     sample_sum <- 0
 
     for (sample in CAGEr::sampleLabels(ce)){
-        new_scores <- overlapper(ce, sample, remove_gg_initiator)
+        new_scores <- overlapper(ce, sample, remove_gg_initiator, keep_only_yr_yc)
         ctss_score_df[[sample]] <- sum_scores_per_location(new_scores)
         sample_sum <- sample_sum + ctss_score_df[[sample]]
     }
@@ -85,7 +99,8 @@ consensus_clustering <- function(
         num_core,
         iqlow,
         iqhigh,
-        remove_gg_initiator){
+        remove_gg_initiator,
+        keep_only_yr_yc){
 
     multicore <- TRUE
     if(num_core < 2){
@@ -100,7 +115,7 @@ consensus_clustering <- function(
         qUp = iqhigh,
         maxDist = maxDist)
 
-    ce <- score_from_ctss(ce, remove_gg_initiator)
+    ce <- score_from_ctss(ce, remove_gg_initiator, keep_only_yr_yc)
 
     # Read in TxDb object
     tx_annotation_obj <- loadDb(tx_annotation)

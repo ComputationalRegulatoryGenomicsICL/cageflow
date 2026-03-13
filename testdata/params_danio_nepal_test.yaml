@@ -42,6 +42,7 @@ keepSingletonsAbove: 5
 iq_low: 0.1
 iq_high: 0.9
 remove_gg_initiator: TRUE
+keep_only_yr_yc: TRUE # does not run if remove GG initiation is set to TRUE
 # plotting for tagclusters QC
 iqw_tpm_threshold: 3
 tssregion_up: -3000

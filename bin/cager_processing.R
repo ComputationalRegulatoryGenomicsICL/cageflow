@@ -90,6 +90,11 @@ option_list = list(
         default = FALSE,
         help = "Whether to remove tags with GG initiator. This can help clean the signal of heavily degraded samples."),
     make_option(
+        c("-y", "--keep_only_yr_yc"),
+        type = "logical",
+        default = FALSE,
+        help = "Whether to remove tags that do not have YR/YC initiator. This can help to clean the signal."),
+    make_option(
         c("-w", "--iqw_tpm_threshold"),
         type = "integer",
         default = 3,
@@ -145,6 +150,7 @@ keepSingletonsAbove <- opt$keepSingletonsAbove
 iqlow               <- opt$iq_low
 iqhigh              <- opt$iq_high
 remove_gg_initiator <- opt$remove_gg_initiator
+keep_only_yr_yc     <- opt$keep_only_yr_yc
 iqw_tpm_threshold   <- opt$iqw_tpm_threshold
 consensus_thr       <- opt$consensus_thr
 consensus_dist      <- opt$consensus_dist
@@ -200,7 +206,8 @@ ce <- cager_clustering(
     iqlow=iqlow,
     iqhigh=iqhigh,
     reference_name=reference_name,
-    remove_gg_initiator=remove_gg_initiator)
+    remove_gg_initiator=remove_gg_initiator,
+    keep_only_yr_yc=keep_only_yr_yc)
 
 # Consensus clustering of clustered CTSS
 ce <- consensus_clustering(
@@ -211,7 +218,8 @@ ce <- consensus_clustering(
     num_core=1,
     iqlow=iqlow,
     iqhigh=iqhigh,
-    remove_gg_initiator=remove_gg_initiator)
+    remove_gg_initiator=remove_gg_initiator,
+    keep_only_yr_yc=keep_only_yr_yc)
 
 # save output
 # RDS

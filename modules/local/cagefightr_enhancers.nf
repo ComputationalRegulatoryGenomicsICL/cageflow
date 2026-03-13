@@ -33,6 +33,7 @@ process CAGEFIGHTR_ENHANCERS {
         --unexpressed ${params.unexpressed} \
         --minSamples ${params.minSamples} \
         --remove_gg_initiator ${params.remove_gg_initiator} \
+        --keep_only_yr_yc ${params.keep_only_yr_yc} \
         --tssregion_up ${params.tssregion_up} \
         --tssregion_down ${params.tssregion_down} \
         --bsgenome \${bsgenome} \
